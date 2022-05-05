@@ -15,7 +15,9 @@ class RegisterView extends StatelessWidget {
     return ViewModelBuilder<RegisterViewModel>.reactive(
       viewModelBuilder: () => RegisterViewModel(),
       builder: (context, viewModel, child) => Scaffold(
-        appBar: AppBar(title: const Text("Register")),
+        appBar: AppBar(
+          title: const Text("Register"),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: viewModel.state == RegisterState.invitation
