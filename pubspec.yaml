@@ -52,6 +52,8 @@ dependencies:
   uuid: 3.0.5
   mobx:
   decimal: 2.1.0
+  google_maps_flutter: ^2.1.4
+  geolocator: ^8.2.1
 
 dev_dependencies:
   flutter_test:

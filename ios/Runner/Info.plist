@@ -43,5 +43,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+  <string>This app needs access to location when open.</string>
+	<key>GoogleMapApiKey</key>
+	<string>${GOOGLE_MAP_API_KEY}</string>  
 </dict>
 </plist>
