@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/ui/report/report_view.dart';
 import 'package:podd_app/ui/report_type/report_type_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -22,6 +24,8 @@ class ReportTypeView extends StatelessWidget {
 }
 
 class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
+  final Logger logger = locator<Logger>();
+
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportTypeViewModel viewModel) {
@@ -58,7 +62,7 @@ class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
                         MaterialPageRoute(
                           builder: (context) => ReportView(reportType),
                         ),
-                      );
+                      ).then((value) => {logger.d("back from from $value")});
                     }
                   },
                   trailing: const Icon(Icons.arrow_right),
