@@ -34,9 +34,11 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
   final ReactiveValue<bool?> _isLogin = ReactiveValue<bool?>(null);
 
   String? _token;
+  @override
   String? get token => _token;
 
   UserProfile? _userProfile;
+  @override
   UserProfile? get userProfile => _userProfile;
 
   AuthService() {

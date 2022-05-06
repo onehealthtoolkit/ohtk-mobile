@@ -49,8 +49,7 @@ class RegisterService extends IRegisterService {
         phone: phone);
 
     if (result is RegisterSuccess) {
-      _authService
-          .saveTokenAndFetchProfile((result as RegisterSuccess).loginSuccess);
+      _authService.saveTokenAndFetchProfile(result.loginSuccess);
     }
     return result;
   }

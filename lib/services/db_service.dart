@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class IDbService {
@@ -10,12 +7,10 @@ abstract class IDbService {
 class DbService extends IDbService {
   late Database _db;
 
+  @override
   Database get db => _db;
 
   init() async {
-    var databasesPath = await getDatabasesPath();
-    var path = join(databasesPath, "podd.db");
-
     // follow this migration pattern https://github.com/tekartik/sqflite/blob/master/sqflite/doc/migration_example.md
     _db = await openDatabase(
       'podd.db',
