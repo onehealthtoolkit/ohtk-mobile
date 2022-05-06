@@ -48,6 +48,10 @@ dependencies:
   dio_cookie_manager: ^2.0.0
   gql_dio_link: ^0.2.2
   sqflite:
+  flutter_mobx: ^2.0.5
+  uuid: 3.0.5
+  mobx:
+  decimal: 2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +64,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
   build_runner: ^2.1.10
+  mobx_codegen:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
