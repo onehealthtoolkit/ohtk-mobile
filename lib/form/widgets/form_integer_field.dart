@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
+import 'package:logger/logger.dart';
+import 'package:podd_app/form/form_store.dart';
+import 'package:podd_app/form/widgets/validation.dart';
 import 'package:provider/provider.dart';
+import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
+import 'package:podd_app/locator.dart';
 
-import '../form_data/form_data.dart';
-import '../form_store.dart';
-import 'validation.dart';
+import 'package:podd_app/form/form_data/form_data.dart';
 
-class FormTextField extends StatefulWidget {
-  final TextFieldUIDefinition fieldDefinition;
+class FormIntegerField extends StatefulWidget {
+  final IntegerFieldUIDefinition fieldDefinition;
 
-  const FormTextField(this.fieldDefinition, {Key? key}) : super(key: key);
+  const FormIntegerField(this.fieldDefinition, {Key? key}) : super(key: key);
 
   @override
-  State<FormTextField> createState() => _FormTextFieldState();
+  State<FormIntegerField> createState() => _FormIntegerFieldState();
 }
 
-class _FormTextFieldState extends State<FormTextField> {
+class _FormIntegerFieldState extends State<FormIntegerField> {
+  final _logger = locator<Logger>();
+
   final TextEditingController _controller = TextEditingController();
   UnRegisterValidationCallback? unRegisterValidationCallback;
   bool valid = true;
@@ -40,6 +45,11 @@ class _FormTextFieldState extends State<FormTextField> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     if (unRegisterValidationCallback != null) {
@@ -57,18 +67,21 @@ class _FormTextFieldState extends State<FormTextField> {
 
     var formData = Provider.of<FormData>(context);
     var formValue =
-        formData.getFormValue(widget.fieldDefinition.name) as StringFormValue;
+        formData.getFormValue(widget.fieldDefinition.name) as IntegerFormValue;
 
     return Observer(builder: (BuildContext context) {
-      var value = formValue.value ?? '';
+      var value = formValue.value?.toString() ?? '';
       if (value != '' && value != _controller.text) {
         _controller.value = TextEditingValue(
             text: value,
             selection: TextSelection.collapsed(offset: value.length));
       }
+
       return TextField(
         controller: _controller,
         textInputAction: TextInputAction.next,
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: widget.fieldDefinition.label,
@@ -81,12 +94,18 @@ class _FormTextFieldState extends State<FormTextField> {
           errorText: valid ? null : errorMessage,
         ),
         onChanged: (val) {
-          formValue.value = val;
-          if (!valid) {
-            // clear error message
-            setState(() {
-              valid = true;
-            });
+          _logger.d(val);
+          if (val != "") {
+            try {
+              formValue.value = int.parse(val);
+              if (!valid) {
+                setState(() {
+                  valid = true;
+                });
+              }
+            } on FormatException catch (_) {
+              _logger.e("parsing error ${val.toString()}");
+            }
           }
         },
       );

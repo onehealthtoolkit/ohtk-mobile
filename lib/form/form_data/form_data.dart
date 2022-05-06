@@ -28,7 +28,25 @@ class DateFormValue extends BaseFormValue<DateTime?> {}
 
 class DecimaFormlValue extends BaseFormValue<Decimal?> {}
 
-class ImagesFormValue extends BaseFormValue<List<String>?> {}
+class ImagesFormValue {
+  final _value = ObservableList<String>.of([]);
+
+  add(String imageId) {
+    Action(() {
+      _value.add(imageId);
+    })();
+  }
+
+  remove(String id) {
+    Action(() {
+      _value.remove(id);
+    })();
+  }
+
+  List<String> get value => _value;
+
+  int get length => _value.length;
+}
 
 class FormData {
   var values = {};
