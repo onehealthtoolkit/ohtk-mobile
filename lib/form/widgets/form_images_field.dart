@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:logger/logger.dart';
 import 'package:podd_app/form/form_data/form_data.dart';
 import 'package:podd_app/form/form_store.dart';
 import 'package:podd_app/form/ui_definition/fields/images_field_ui_definition.dart';
 import 'package:podd_app/form/widgets/validation.dart';
+import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/entities/report_image.dart';
+import 'package:podd_app/services/image_service.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+
+var _uuid = const Uuid();
 
 class FormImagesField extends StatefulWidget {
   final ImagesFieldUIDefinition fieldDefinition;
@@ -16,6 +25,9 @@ class FormImagesField extends StatefulWidget {
 }
 
 class _FormImagesFieldState extends State<FormImagesField> {
+  final IImageService _imageService = locator<IImageService>();
+  final _logger = locator<Logger>();
+
   UnRegisterValidationCallback? unRegisterValidationCallback;
   bool valid = true;
   String errorMessage = '';
@@ -77,16 +89,31 @@ class _FormImagesFieldState extends State<FormImagesField> {
             return _buildAddImageBox();
           }
 
+          var imageId = formValue
+              .value[index - 1]; // minus 1 because of dummy image is the first.
+
           // @TODO get image from image service
-          return RemoveableImage(
-            image: Image.network("https://picsum.photos/200"),
-            imageId: formValue
-                .value[index - 1], // because index 0 alway be dummy image
-            onRemove: _removeImage,
-          );
+          return FutureBuilder<Image>(
+              future: _getImage(imageId),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return RemoveableImage(
+                    image: snapshot.data!,
+                    imageId: formValue.value[
+                        index - 1], // because index 0 alway be dummy image
+                    onRemove: _removeImage,
+                  );
+                }
+                return const CircularProgressIndicator();
+              });
         },
       );
     });
+  }
+
+  Future<Image> _getImage(String imageId) async {
+    var reportImage = await _imageService.getImage(imageId);
+    return Image.memory(reportImage.image);
   }
 
   _buildAddImageBox() {
@@ -124,18 +151,22 @@ class _FormImagesFieldState extends State<FormImagesField> {
             ListTile(
               leading: const Icon(Icons.photo_album),
               title: const Text('Pick from Gallery'),
-              onTap: () {
-                // @TODO call reportService.add
-                _addImage("hi");
+              onTap: () async {
+                var reportType = await _pickImage(ImageSource.gallery);
+                if (reportType != null) {
+                  _addImage(reportType.id);
+                }
                 Navigator.pop(context);
               },
             ),
             ListTile(
               leading: const Icon(Icons.photo_camera),
               title: const Text('Take a Photo'),
-              onTap: () {
-                // @TODO call reportService.add
-                _addImage("x");
+              onTap: () async {
+                var reportType = await _pickImage(ImageSource.camera);
+                if (reportType != null) {
+                  _addImage(reportType.id);
+                }
                 Navigator.pop(context);
               },
             ),
@@ -143,6 +174,23 @@ class _FormImagesFieldState extends State<FormImagesField> {
         );
       },
     );
+  }
+
+  Future<ReportImage?> _pickImage(ImageSource source) async {
+    var formStore = Provider.of<FormStore>(context, listen: false);
+    var picker = ImagePicker();
+    try {
+      XFile? imageFile = await picker.pickImage(source: source);
+      if (imageFile != null) {
+        var bytes = await imageFile.readAsBytes();
+        var reportImage = ReportImage(_uuid.v4(), formStore.uuid, bytes);
+        await _imageService.saveImage(reportImage);
+        return reportImage;
+      }
+    } on PlatformException catch (e) {
+      _logger.e(e);
+    }
+    return null;
   }
 }
 

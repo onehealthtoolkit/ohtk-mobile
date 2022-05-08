@@ -7,6 +7,7 @@ import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/config_service.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:podd_app/services/gql_service.dart';
+import 'package:podd_app/services/image_service.dart';
 import 'package:podd_app/services/register_service.dart';
 import 'package:podd_app/services/report_type_service.dart';
 import 'package:podd_app/services/secure_storage_service.dart';
@@ -30,6 +31,12 @@ void setupLocator(String environment) {
     await dbService.init();
     return dbService;
   }, dependsOn: []);
+
+  locator.registerSingletonAsync<IImageService>(() async {
+    return ImageService();
+  }, dependsOn: [
+    IDbService,
+  ]);
 
   locator.registerSingletonAsync<AuthApi>(() async {
     var gqlService = locator<GqlService>();

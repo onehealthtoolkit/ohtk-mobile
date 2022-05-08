@@ -14,7 +14,7 @@ class DbService extends IDbService {
     // follow this migration pattern https://github.com/tekartik/sqflite/blob/master/sqflite/doc/migration_example.md
     _db = await openDatabase(
       'podd.db',
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onDowngrade: onDatabaseDowngradeDelete,
@@ -23,14 +23,21 @@ class DbService extends IDbService {
 
   _onCreate(Database db, int version) async {
     var batch = db.batch();
-    _createTableReportTypeV1(batch);
-    _createTableCategoryV1(batch);
+    _createTableReportTypeV2(batch);
+    _createTableCategoryV2(batch);
+    _createTableReportImageV2(batch);
     await batch.commit();
   }
 
-  _onUpgrade(Database db, int oldVersion, int newVersion) async {}
+  _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    var batch = db.batch();
+    if (oldVersion == 1) {
+      await _createTableReportImageV2(batch);
+    }
+    await batch.commit();
+  }
 
-  _createTableReportTypeV1(Batch batch) {
+  _createTableReportTypeV2(Batch batch) {
     batch.execute("DROP TABLE IF EXISTS report_type");
     batch.execute('''CREATE TABLE report_type (
       id TEXT PRIMARY KEY,
@@ -42,13 +49,22 @@ class DbService extends IDbService {
     )''');
   }
 
-  _createTableCategoryV1(Batch batch) {
+  _createTableCategoryV2(Batch batch) {
     batch.execute("DROP TABLE IF EXISTS category");
     batch.execute('''CREATE TABLE category (
       id int PRIMARY KEY,
       name TEXT,      
       icon TEXT,
       ordering INT
+    )''');
+  }
+
+  _createTableReportImageV2(Batch batch) {
+    batch.execute("DROP TABLE IF EXISTS report_image");
+    batch.execute('''CREATE TABLE report_image (
+      id TEXT PRIMARY KEY,
+      reportId TEXT,
+      image BLOB
     )''');
   }
 }

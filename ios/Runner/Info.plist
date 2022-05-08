@@ -46,6 +46,10 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
   <string>This app needs access to location when open.</string>
 	<key>GoogleMapApiKey</key>
-	<string>${GOOGLE_MAP_API_KEY}</string>  
+	<string>${GOOGLE_MAP_API_KEY}</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>PODD needs permission for the photo library.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>PODD needs access to the camera.</string>	  
 </dict>
 </plist>
