@@ -76,11 +76,18 @@ class _FormDateFieldState extends State<FormDateField> {
             helperText: widget.fieldDefinition.description != null
                 ? widget.fieldDefinition.description!
                 : null,
+            errorText: valid ? null : errorMessage,
           ),
           mode: DateTimeFieldPickerMode.date,
           selectedDate: formValue.value,
           onDateSelected: (DateTime value) {
             formValue.value = value;
+            if (!valid) {
+              // clear error message
+              setState(() {
+                valid = true;
+              });
+            }
           });
     });
   }
