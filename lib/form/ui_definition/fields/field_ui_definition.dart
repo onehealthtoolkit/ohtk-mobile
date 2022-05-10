@@ -1,4 +1,5 @@
 import 'package:podd_app/form/ui_definition/fields/images_field_ui_definition.dart';
+import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
 
 import 'integer_field_ui_definition.dart';
 import 'location_field_ui_definition.dart';
@@ -38,6 +39,8 @@ abstract class FieldUIDefinition {
         return LocationFieldUIDefinition.fromJson(json);
       case 'images':
         return ImagesFieldUIDefinition.fromJson(json);
+      case 'date':
+        return DateFieldUIDefinition.fromJson(json);
       case 'text':
       default:
         return TextFieldUIDefinition.fromJson(json);

@@ -32,17 +32,16 @@ class _FormLocationFieldState extends State<FormLocationField> {
   ValidationState validate() {
     var isValid = true;
     var msg = '';
-
-    var formData = Provider.of<FormData>(context, listen: false);
-    var formValue =
-        formData.getFormValue(widget.fieldDefinition.name) as StringFormValue;
-
-    if (formValue.value == null) {
-      isValid = false;
-      msg = '${widget.fieldDefinition.name} is required';
-    }
-
     if (mounted) {
+      var formData = Provider.of<FormData>(context, listen: false);
+      var formValue =
+          formData.getFormValue(widget.fieldDefinition.name) as StringFormValue;
+
+      if (formValue.value == null) {
+        isValid = false;
+        msg = '${widget.fieldDefinition.name} is required';
+      }
+
       setState(() {
         valid = isValid;
         errorMessage = msg;
