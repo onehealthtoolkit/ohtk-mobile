@@ -95,7 +95,7 @@ parseFormUIDefinition(FormUIDefinition definition) {
     } else if (field is LocationFieldUIDefinition) {
       builder.define(
         field.name,
-        StringDataDefinition(field.name, validations),
+        LocationDataDefinition(field.name, validations),
       );
     } else if (field is ImagesFieldUIDefinition) {
       builder.define(

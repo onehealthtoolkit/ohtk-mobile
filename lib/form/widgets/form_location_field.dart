@@ -5,13 +5,11 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
-import 'package:podd_app/form/form_data/form_values/string_form_value.dart';
+import 'package:podd_app/form/form_data/form_values/location_form_value.dart';
 import 'package:provider/provider.dart';
 import 'package:podd_app/form/form_data/form_data.dart';
-import 'package:podd_app/form/form_store.dart';
 
 import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
-import 'package:podd_app/form/widgets/validation.dart';
 import 'package:podd_app/locator.dart';
 
 class FormLocationField extends StatefulWidget {
@@ -26,65 +24,16 @@ class FormLocationField extends StatefulWidget {
 class _FormLocationFieldState extends State<FormLocationField> {
   final Completer<GoogleMapController> _controller = Completer();
   final _logger = locator<Logger>();
-  UnRegisterValidationCallback? unRegisterValidationCallback;
-  bool valid = true;
-  String errorMessage = '';
-
-  ValidationState validate() {
-    var isValid = true;
-    var msg = '';
-    if (mounted) {
-      var formData = Provider.of<FormData>(context, listen: false);
-      var formValue =
-          formData.getFormValue(widget.fieldDefinition.name) as StringFormValue;
-
-      if (formValue.value == null) {
-        isValid = false;
-        msg = '${widget.fieldDefinition.name} is required';
-      }
-
-      setState(() {
-        valid = isValid;
-        errorMessage = msg;
-      });
-    }
-    return ValidationState(isValid, msg);
-  }
-
-  @override
-  void dispose() {
-    if (unRegisterValidationCallback != null) {
-      unRegisterValidationCallback!();
-    }
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    var formStore = Provider.of<FormStore>(context);
-    if (widget.fieldDefinition.required == true) {
-      unRegisterValidationCallback = formStore.registerValidation(validate);
-    }
-
     var formData = Provider.of<FormData>(context);
     var formValue =
-        formData.getFormValue(widget.fieldDefinition.name) as StringFormValue;
+        formData.getFormValue(widget.fieldDefinition.name) as LocationFormValue;
 
     return Observer(builder: (BuildContext context) {
-      double? latitude, longitude;
-
-      var latLongStr = formValue.value;
-      if (latLongStr != null) {
-        var latLongAry = latLongStr.split(',');
-        var latValue = double.parse(latLongAry[0]);
-        var longValue = double.parse(latLongAry[1]);
-        if (latValue != latitude) {
-          latitude = latValue;
-        }
-        if (longValue != longitude) {
-          longitude = longValue;
-        }
-      }
+      var latitude = formValue.latitude;
+      var longitude = formValue.longitude;
 
       var markers = <Marker>{};
       if (latitude != null && longitude != null) {
@@ -95,7 +44,7 @@ class _FormLocationFieldState extends State<FormLocationField> {
       }
 
       return Container(
-        decoration: (valid == false)
+        decoration: (formValue.isValid == false)
             ? BoxDecoration(
                 border: Border.all(
                   color: Colors.red,
@@ -145,7 +94,8 @@ class _FormLocationFieldState extends State<FormLocationField> {
                   markers: markers,
                 ),
               ),
-            if (errorMessage != "") Text(errorMessage),
+            if (formValue.invalidateMessage != "")
+              Text(formValue.invalidateMessage ?? ""),
           ],
         ),
       );

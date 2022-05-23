@@ -1,4 +1,5 @@
 import 'package:podd_app/form/form_data/form_values/base_form_value.dart';
+import 'package:podd_app/form/form_data/form_values/location_form_value.dart';
 import 'package:uuid/uuid.dart';
 
 import 'definitions/form_data_definition.dart';
@@ -41,6 +42,8 @@ class FormData implements IValidatable, IFormData {
         addImagesDataValue(key, value.validations);
       } else if (value is SingleChoiceDataDefinition) {
         addSingleChoiceDataValue(value);
+      } else if (value is LocationDataDefinition) {
+        addLocationDataValue(key, value.validations);
       }
     });
   }
@@ -91,6 +94,12 @@ class FormData implements IValidatable, IFormData {
 
   addSingleChoiceDataValue(SingleChoiceDataDefinition definition) {
     values[definition.name] = SingleChoicesFormValue(definition);
+  }
+
+  addLocationDataValue(
+      String name, List<ValidationDataDefinition> validations) {
+    values[name] = LocationFormValue(validations);
+    return values[name];
   }
 
   Map<String, dynamic> toJson() {

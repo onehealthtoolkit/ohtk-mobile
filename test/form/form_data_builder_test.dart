@@ -166,7 +166,7 @@ void main() {
         Map<String, BaseDataDefinition> formValue =
             parseFormUIDefinition(uiDefinition);
         expect(
-            formValue['location'], const TypeMatcher<StringDataDefinition>());
+            formValue['location'], const TypeMatcher<LocationDataDefinition>());
       });
     });
 

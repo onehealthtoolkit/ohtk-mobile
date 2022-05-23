@@ -35,6 +35,10 @@ class ImagesDataDefinition extends BaseDataDefinition {
   ImagesDataDefinition(name, validations) : super(name, validations);
 }
 
+class LocationDataDefinition extends BaseDataDefinition {
+  LocationDataDefinition(name, validations) : super(name, validations);
+}
+
 class SingleChoiceDataDefinition extends BaseDataDefinition {
   SingleChoicesFieldUIDefinition uiDefinition;
 
