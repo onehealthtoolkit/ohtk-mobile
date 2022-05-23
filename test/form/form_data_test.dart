@@ -5,12 +5,14 @@ import 'package:podd_app/form/form_data/form_data_definition.dart';
 void main() {
   group("String Form Value", () {
     test('StringFormValue initialize with null value', () {
-      StringFormValue sv = StringFormValue();
+      StringFormValue sv =
+          StringFormValue(List<ValidationDataDefinition>.empty());
       expect(sv.value, null);
     });
 
     test('StringFormValue initialize with null and then assign some value', () {
-      StringFormValue sv = StringFormValue();
+      StringFormValue sv =
+          StringFormValue(List<ValidationDataDefinition>.empty());
       sv.value = "hello";
       expect(sv.value, "hello");
     });
@@ -18,12 +20,12 @@ void main() {
 
   group("Integer form value", () {
     test("IntegerFormValue init with null", () {
-      var iv = IntegerFormValue();
+      var iv = IntegerFormValue(List<ValidationDataDefinition>.empty());
       expect(iv.value, null);
     });
 
     test("IntegerFormValue init with null and then assign some value", () {
-      var iv = IntegerFormValue();
+      var iv = IntegerFormValue(List<ValidationDataDefinition>.empty());
       iv.value = 230;
       expect(iv.value, 230);
     });
@@ -32,7 +34,6 @@ void main() {
   group("Array of FormData", () {
     test("When initialize should contain empty array", () {
       var ary = ArrayFormValue(FormDataDefinition("cols", {}));
-      expect(ary.value, []);
       expect(ary.length, 0);
     });
 

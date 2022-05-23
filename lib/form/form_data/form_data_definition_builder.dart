@@ -29,32 +29,37 @@ parseFormUIDefinition(FormUIDefinition definition) {
   var builder = FormDataDefinitionBuilder();
 
   _buildField(FieldUIDefinition field) {
+    List<ValidationDataDefinition> validations = [];
+    if (field.required == true) {
+      validations.add(RequiredValidationDefinition());
+    }
+
     if (field is TextFieldUIDefinition) {
       builder.define(
         field.name,
-        StringDataDefinition(field.name),
+        StringDataDefinition(field.name, validations),
       );
     } else if (field is IntegerFieldUIDefinition) {
       builder.define(
         field.name,
-        IntegerDataDefinition(field.name),
+        IntegerDataDefinition(field.name, validations),
       );
     } else if (field is DateFieldUIDefinition) {
       builder.define(
         field.name,
-        DateDataDefinition(field.name),
+        DateDataDefinition(field.name, validations),
       );
     } else if (field is SingleChoicesFieldUIDefinition) {
       builder.define(
         field.name,
-        StringDataDefinition(field.name),
+        StringDataDefinition(field.name, validations),
       );
       for (var option in field.options) {
         if (option.input) {
           var name = '${field.name}Text';
           builder.define(
             name,
-            StringDataDefinition(name),
+            StringDataDefinition(name, emptyValidations),
           );
         }
       }
@@ -62,12 +67,12 @@ parseFormUIDefinition(FormUIDefinition definition) {
       builder.push(field.name);
       for (var option in field.options) {
         var name = option.value;
-        builder.define(name, BooleanDataDefinition(name));
+        builder.define(name, BooleanDataDefinition(name, validations));
         if (option.input) {
           var nameInput = '${name}Text';
           builder.define(
             nameInput,
-            StringDataDefinition(nameInput),
+            StringDataDefinition(nameInput, emptyValidations),
           );
         }
       }
@@ -89,12 +94,12 @@ parseFormUIDefinition(FormUIDefinition definition) {
     } else if (field is LocationFieldUIDefinition) {
       builder.define(
         field.name,
-        StringDataDefinition(field.name),
+        StringDataDefinition(field.name, validations),
       );
     } else if (field is ImagesFieldUIDefinition) {
       builder.define(
         field.name,
-        ImagesDataDefinition(field.name),
+        ImagesDataDefinition(field.name, validations),
       );
     }
   }

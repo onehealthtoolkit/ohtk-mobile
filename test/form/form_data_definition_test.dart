@@ -1,10 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:podd_app/form/form_data/form_data_definition.dart';
 import 'package:podd_app/form/ui_definition/fields/option_field_ui_definition.dart';
 import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
 
+var emptyValidations = List<ValidationDataDefinition>.empty();
 void main() {
   group(
     "Form Data Definition",
@@ -13,10 +12,10 @@ void main() {
         "Initialize.",
         () {
           var formData = FormDataDefinition('root', {
-            "firstName": StringDataDefinition("firstName"),
-            "age": IntegerDataDefinition("age"),
-            "dob": DateDataDefinition("dob"),
-            "salary": DecimalDataDefinition("salary")
+            "firstName": StringDataDefinition("firstName", emptyValidations),
+            "age": IntegerDataDefinition("age", emptyValidations),
+            "dob": DateDataDefinition("dob", emptyValidations),
+            "salary": DecimalDataDefinition("salary", emptyValidations)
           });
 
           expect(4, formData.properties.length);
@@ -36,158 +35,14 @@ void main() {
             FormDataDefinition(
               'education',
               {
-                "year": IntegerDataDefinition("year"),
-                "institute": StringDataDefinition("institute"),
-                "grade": DecimalDataDefinition("grade")
+                "year": IntegerDataDefinition("year", emptyValidations),
+                "institute":
+                    StringDataDefinition("institute", emptyValidations),
+                "grade": DecimalDataDefinition("grade", emptyValidations)
               },
             ),
           );
           expect(3, arrayData.cols.properties.length);
-        },
-      );
-    },
-  );
-
-  group(
-    "Parse Data definition",
-    () {
-      var tests = [
-        {
-          "name": "firstName",
-          "type": "string",
-          "expect": isA<StringDataDefinition>(),
-        },
-        {
-          "name": "age",
-          "type": "int",
-          "expect": isA<IntegerDataDefinition>(),
-        },
-        {
-          "name": "enable",
-          "type": "bool",
-          "expect": isA<BooleanDataDefinition>(),
-        },
-        {
-          "name": "dob",
-          "type": "date",
-          "expect": isA<DateDataDefinition>(),
-        },
-        {
-          "name": "salary",
-          "type": "decimal",
-          "expect": isA<DecimalDataDefinition>(),
-        }
-      ];
-      for (var item in tests) {
-        test(
-          "Primitive: ${item['type']}",
-          () {
-            var jsonStr = """
-              {
-                "${item['name']}": {
-                  "type": "${item['type']}"
-                }
-              }""";
-            var definition =
-                FormDataDefinition.fromJson("root", jsonDecode(jsonStr));
-            expect(definition.properties[item['name']], item['expect']);
-          },
-        );
-      }
-
-      test(
-        "nested object",
-        () {
-          var jsonStr = """
-          {
-            "address": {
-              "type": "object",
-              "properties": {
-                "province": {
-                  "type": "string"
-                },
-                "zipCode": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-          """;
-          var definition =
-              FormDataDefinition.fromJson("root", jsonDecode(jsonStr));
-
-          expect(definition.properties["address"], isA<FormDataDefinition>());
-          expect(
-              (definition.properties['address'] as FormDataDefinition)
-                  .properties['province'],
-              isA<StringDataDefinition>());
-        },
-      );
-
-      test(
-        "Array object",
-        () {
-          var jsonStr = """
-          {
-            "educations": {
-              "type": "array",
-              "columns": {
-                "name": {
-                  "type": "string"
-                },
-                "year": {
-                  "type": "int"
-                }
-              }
-            }
-          }
-          """;
-          var definition =
-              FormDataDefinition.fromJson("root", jsonDecode(jsonStr));
-          expect(
-              definition.properties["educations"], isA<ArrayDataDefinition>());
-          expect(
-              (definition.properties["educations"] as ArrayDataDefinition)
-                  .cols
-                  .properties['name'],
-              isA<StringDataDefinition>());
-        },
-      );
-
-      test(
-        "Array Nested",
-        () {
-          var jsonStr = """
-          {
-            "groups": {
-              "type": "array",
-              "columns": {
-                "name": {
-                  "type": "string"
-                },
-                "members": {
-                  "type": "array",
-                  "columns": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "age": {
-                      "type": "int"
-                    }
-                  }
-                }
-              }
-            }
-          }
-          """;
-          var definition =
-              FormDataDefinition.fromJson("root", jsonDecode(jsonStr));
-          expect(definition.properties["groups"], isA<ArrayDataDefinition>());
-          expect(
-              (definition.properties["groups"] as ArrayDataDefinition)
-                  .cols
-                  .properties["members"],
-              isA<ArrayDataDefinition>());
         },
       );
     },

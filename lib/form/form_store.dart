@@ -53,9 +53,10 @@ abstract class _FormStore with Store {
   @action
   bool validate() {
     var valid = true;
-    for (var callback in validationCallbacks) {
-      var state = callback();
-      valid = state.valid && valid;
+    for (var question in currentSection.questions) {
+      for (var field in question.fields) {
+        valid = valid & formData.getFormValue(field.name).validate(formData);
+      }
     }
     return valid;
   }
