@@ -3,6 +3,7 @@ import 'package:mobx/mobx.dart';
 import 'package:uuid/uuid.dart';
 
 import 'form_data_definition.dart';
+import 'form_data_validation.dart';
 
 var uuid = const Uuid();
 
@@ -45,29 +46,89 @@ abstract class BaseFormValue<T> extends Validatable {
   @override
   BaseFormValue(List<ValidationDataDefinition> validationDefinitions) {
     for (var definition in validationDefinitions) {
-      if (definition is RequiredValidationDefinition) {
-        validationFunctions.add((FormData root) {
-          if (_value.value == null || _value.value == "") {
-            _isValid.value = false;
-            _invalidateMessage.value = "This field is required";
-            return false;
-          } else {
-            _isValid.value = true;
-            _invalidateMessage.value = null;
-          }
-          return true;
-        });
-      }
+      initialValidation(definition);
+    }
+  }
+
+  initialValidation(ValidationDataDefinition validationDefinition) {
+    if (validationDefinition is RequiredValidationDefinition) {
+      validationFunctions.add((FormData root) {
+        if (_value.value == null || _value.value == "") {
+          _isValid.value = false;
+          _invalidateMessage.value = "This field is required";
+          return false;
+        } else {
+          _isValid.value = true;
+          _invalidateMessage.value = null;
+        }
+        return true;
+      });
     }
   }
 }
 
 class StringFormValue extends BaseFormValue<String?> {
   StringFormValue(validationDefinitions) : super(validationDefinitions);
+
+  @override
+  initialValidation(ValidationDataDefinition validationDefinition) {
+    super.initialValidation(validationDefinition);
+    if (validationDefinition is MinMaxLengthValidationDefinition) {
+      validationFunctions.add((FormData root) {
+        if (validationDefinition.minLength != null) {
+          if (_value.value == null ||
+              _value.value!.length < validationDefinition.minLength!) {
+            _isValid.value = false;
+            _invalidateMessage.value =
+                "This field must be at least ${validationDefinition.minLength} characters";
+            return false;
+          }
+        }
+        if (validationDefinition.maxLength != null) {
+          if (_value.value == null ||
+              _value.value!.length > validationDefinition.maxLength!) {
+            _isValid.value = false;
+            _invalidateMessage.value =
+                "This field must not be more than ${validationDefinition.maxLength} characters";
+            return false;
+          }
+        }
+        return true;
+      });
+    }
+  }
 }
 
 class IntegerFormValue extends BaseFormValue<int?> {
   IntegerFormValue(validationDefinitions) : super(validationDefinitions);
+
+  @override
+  initialValidation(ValidationDataDefinition validationDefinition) {
+    super.initialValidation(validationDefinition);
+    if (validationDefinition is MinMaxValidationDefinition) {
+      validationFunctions.add((FormData root) {
+        if (validationDefinition.min != null) {
+          if (_value.value == null ||
+              _value.value! < validationDefinition.min!) {
+            _isValid.value = false;
+            _invalidateMessage.value =
+                "This field value must be at least ${validationDefinition.min}";
+            return false;
+          }
+        }
+        if (validationDefinition.max != null) {
+          if (_value.value == null ||
+              _value.value! > validationDefinition.max!) {
+            _isValid.value = false;
+            _invalidateMessage.value =
+                "This field value must not more than ${validationDefinition.max}";
+            return false;
+          }
+        }
+        return true;
+      });
+    }
+  }
 }
 
 class BooleanFormValue extends BaseFormValue<bool?> {

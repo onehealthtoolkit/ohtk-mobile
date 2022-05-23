@@ -1,5 +1,6 @@
 import '../ui_definition/form_ui_definition.dart';
 import 'form_data_definition.dart';
+import 'form_data_validation.dart';
 
 class FormDataDefinitionBuilder {
   final List<FormDataDefinition> stack = [];
@@ -35,11 +36,19 @@ parseFormUIDefinition(FormUIDefinition definition) {
     }
 
     if (field is TextFieldUIDefinition) {
+      if (field.minLength != null || field.maxLength != null) {
+        validations.add(MinMaxLengthValidationDefinition(
+            minLength: field.minLength, maxLength: field.maxLength));
+      }
       builder.define(
         field.name,
         StringDataDefinition(field.name, validations),
       );
     } else if (field is IntegerFieldUIDefinition) {
+      if (field.min != null || field.max != null) {
+        validations
+            .add(MinMaxValidationDefinition(min: field.min, max: field.max));
+      }
       builder.define(
         field.name,
         IntegerDataDefinition(field.name, validations),

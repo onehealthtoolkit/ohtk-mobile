@@ -1,15 +1,6 @@
 import '../ui_definition/form_ui_definition.dart';
 import 'form_data_definition_builder.dart';
-
-abstract class ValidationDataDefinition {}
-
-var emptyValidations = List<ValidationDataDefinition>.empty();
-
-class RequiredValidationDefinition extends ValidationDataDefinition {
-  String? invalidMessage;
-
-  RequiredValidationDefinition({this.invalidMessage});
-}
+import 'form_data_validation.dart';
 
 abstract class BaseDataDefinition {
   final String name;
