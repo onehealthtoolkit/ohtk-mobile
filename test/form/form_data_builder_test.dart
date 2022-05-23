@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:podd_app/form/form_data/form_data_definition.dart';
-import 'package:podd_app/form/form_data/form_data_definition_builder.dart';
-import 'package:podd_app/form/form_data/form_data_validation.dart';
+import 'package:podd_app/form/form_data/definitions/form_data_definition.dart';
+import 'package:podd_app/form/form_data/definitions/form_data_definition_builder.dart';
+import 'package:podd_app/form/form_data/definitions/form_data_validation.dart';
 import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
 
 template(String body) {
@@ -167,6 +167,64 @@ void main() {
             parseFormUIDefinition(uiDefinition);
         expect(
             formValue['location'], const TypeMatcher<StringDataDefinition>());
+      });
+    });
+
+    group("Singlechoices Field", () {
+      test("ui singlechoices field -> SingleChoicesDataDefinition", () {
+        var uiDefinition = FormUIDefinition.fromJson(template("""{
+            "id": "1",
+            "label": "disease",
+            "name": "disease",
+            "type": "singlechoices",
+            "description": "desc",
+            "required": true,
+            "options": [
+              {
+                "label": "dengue",
+                "value": "dengue"
+              },
+              {
+                "label": "mers",
+                "value": "mers"
+              }
+            ]
+          }"""));
+        Map<String, BaseDataDefinition> formValue =
+            parseFormUIDefinition(uiDefinition);
+        expect(formValue['disease'],
+            const TypeMatcher<SingleChoiceDataDefinition>());
+      });
+
+      test(
+          "ui singlechoices field with input flag -> SingleChoicesDataDefinition",
+          () {
+        var uiDefinition = FormUIDefinition.fromJson(template("""{
+            "id": "1",
+            "label": "disease",
+            "name": "disease",
+            "type": "singlechoices",
+            "description": "desc",
+            "required": true,
+            "options": [
+              {
+                "label": "dengue",
+                "value": "dengue",
+                "input": true            
+              },
+              {
+                "label": "mers",
+                "value": "mers"
+              }
+            ]
+          }"""));
+        Map<String, BaseDataDefinition> formValue =
+            parseFormUIDefinition(uiDefinition);
+        expect(formValue['disease'],
+            const TypeMatcher<SingleChoiceDataDefinition>(),
+            reason: 'formValue must have a disease field');
+        var definition = formValue['disease'] as SingleChoiceDataDefinition;
+        expect(definition.hasInput, true);
       });
     });
   });

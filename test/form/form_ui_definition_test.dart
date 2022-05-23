@@ -127,5 +127,36 @@ void main() {
       expect(textField.minLength, 3);
       expect(textField.maxLength, 20);
     });
+
+    group("singlechoices", () {
+      test("parse single choices field", () {
+        var str = template("""
+          {
+            "id": "1",
+            "label": "disease",
+            "name": "disease",
+            "type": "singlechoices",
+            "description": "desc",
+            "required": true,
+            "options": [
+              {
+                "label": "dengue",
+                "value": "dengue"
+              },
+              {
+                "label": "mers",
+                "value": "mers"
+              }
+            ]
+          }
+        """);
+        var def = FormUIDefinition.fromJson(json.decode(str));
+        var field = def.sections[0].questions[0].fields[0];
+        expect(field, const TypeMatcher<SingleChoicesFieldUIDefinition>());
+        var singleChoicesField = field as SingleChoicesFieldUIDefinition;
+        expect(2, singleChoicesField.options.length);
+        expect("dengue", singleChoicesField.options[0].label);
+      });
+    });
   });
 }

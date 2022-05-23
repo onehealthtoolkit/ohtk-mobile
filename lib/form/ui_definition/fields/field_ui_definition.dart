@@ -41,6 +41,8 @@ abstract class FieldUIDefinition {
         return ImagesFieldUIDefinition.fromJson(json);
       case 'date':
         return DateFieldUIDefinition.fromJson(json);
+      case 'singlechoices':
+        return SingleChoicesFieldUIDefinition.fromJson(json);
       case 'text':
       default:
         return TextFieldUIDefinition.fromJson(json);

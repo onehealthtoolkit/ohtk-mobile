@@ -5,6 +5,7 @@ import 'form_date_field.dart';
 import 'form_images_field.dart';
 import 'form_integer_field.dart';
 import 'form_location_field.dart';
+import 'form_single_choices_field.dart';
 import 'form_text_field.dart';
 
 class FormField extends StatelessWidget {
@@ -31,6 +32,8 @@ class FormField extends StatelessWidget {
       return FormImagesField(field as ImagesFieldUIDefinition);
     } else if (field is DateFieldUIDefinition) {
       return FormDateField(field as DateFieldUIDefinition);
+    } else if (field is SingleChoicesFieldUIDefinition) {
+      return FormSingleChoicesField(field as SingleChoicesFieldUIDefinition);
     }
 
     return const Text("unknown field");

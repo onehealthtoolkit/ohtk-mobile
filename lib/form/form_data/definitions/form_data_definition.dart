@@ -1,4 +1,6 @@
-import '../ui_definition/form_ui_definition.dart';
+import 'package:podd_app/form/ui_definition/fields/option_field_ui_definition.dart';
+import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
+
 import 'form_data_definition_builder.dart';
 import 'form_data_validation.dart';
 
@@ -31,6 +33,17 @@ class DecimalDataDefinition extends BaseDataDefinition {
 
 class ImagesDataDefinition extends BaseDataDefinition {
   ImagesDataDefinition(name, validations) : super(name, validations);
+}
+
+class SingleChoiceDataDefinition extends BaseDataDefinition {
+  SingleChoicesFieldUIDefinition uiDefinition;
+
+  bool get hasInput => uiDefinition.options.any((option) => option.input);
+
+  List<Option> get options => uiDefinition.options;
+
+  SingleChoiceDataDefinition(this.uiDefinition, validations)
+      : super(uiDefinition.name, validations);
 }
 
 class FormDataDefinition extends BaseDataDefinition {

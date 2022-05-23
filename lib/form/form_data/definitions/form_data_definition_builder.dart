@@ -1,4 +1,5 @@
-import '../ui_definition/form_ui_definition.dart';
+import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
+
 import 'form_data_definition.dart';
 import 'form_data_validation.dart';
 
@@ -61,24 +62,15 @@ parseFormUIDefinition(FormUIDefinition definition) {
     } else if (field is SingleChoicesFieldUIDefinition) {
       builder.define(
         field.name,
-        StringDataDefinition(field.name, validations),
+        SingleChoiceDataDefinition(field, validations),
       );
-      for (var option in field.options) {
-        if (option.input) {
-          var name = '${field.name}Text';
-          builder.define(
-            name,
-            StringDataDefinition(name, emptyValidations),
-          );
-        }
-      }
     } else if (field is MultipleChoicesFieldUIDefinition) {
       builder.push(field.name);
       for (var option in field.options) {
         var name = option.value;
         builder.define(name, BooleanDataDefinition(name, validations));
         if (option.input) {
-          var nameInput = '${name}Text';
+          var nameInput = '${name}_text';
           builder.define(
             nameInput,
             StringDataDefinition(nameInput, emptyValidations),

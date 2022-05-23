@@ -8,12 +8,13 @@ class MultipleChoicesFieldUIDefinition extends OptionFieldUIDefinition {
     description,
     suffixLabel,
     required,
+    options,
   }) : super(
-          id: id,
-          name: name,
-          label: label,
-          description: description,
-          suffixLabel: suffixLabel,
-          required: required,
-        );
+            id: id,
+            name: name,
+            label: label,
+            description: description,
+            suffixLabel: suffixLabel,
+            required: required,
+            options: options);
 }

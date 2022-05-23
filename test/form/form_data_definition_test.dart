@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:podd_app/form/form_data/form_data_definition.dart';
-import 'package:podd_app/form/form_data/form_data_validation.dart';
+import 'package:podd_app/form/form_data/definitions/form_data_definition.dart';
+import 'package:podd_app/form/form_data/definitions/form_data_validation.dart';
 import 'package:podd_app/form/ui_definition/fields/option_field_ui_definition.dart';
 import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
 
@@ -100,33 +100,44 @@ void main() {
       expect(dataDefinition.properties["age"], isA<IntegerDataDefinition>());
     });
 
-    test('Map single choice to StringDataDefinition', () {
+    test('Map single choice to SingleChoiceDataDefinition', () {
       var ui = FormUIDefinition();
       var s1 = Section(label: "s1");
       var q1 = Question(label: "q1");
       ui.sections.add(s1);
       s1.addQuestion(q1);
-      q1.addField(SingleChoicesFieldUIDefinition(id: "id1", name: "age"));
+      q1.addField(SingleChoicesFieldUIDefinition(
+          id: "id1", name: "age", options: List<Option>.empty()));
 
       var dataDefinition = FormDataDefinition.fromUIDefinition(ui);
-      expect(dataDefinition.properties["age"], isA<StringDataDefinition>());
+      expect(
+          dataDefinition.properties["age"], isA<SingleChoiceDataDefinition>());
     });
 
-    test('Map single choice to StringDataDefinition with option text', () {
+    test('Map single choice to SingleChoiceDataDefinition with option text',
+        () {
       var ui = FormUIDefinition();
       var s1 = Section(label: "s1");
       var q1 = Question(label: "q1");
       ui.sections.add(s1);
       s1.addQuestion(q1);
-      var f1 = SingleChoicesFieldUIDefinition(id: "id1", name: "age");
-      f1.options.add(Option(label: "5-10", value: "5-10"));
-      f1.options.add(Option(label: "11-18", value: "11-18"));
-      f1.options.add(Option(label: "19-50", value: "19-50", input: true));
+
+      List<Option> options = [
+        Option(label: "5-10", value: "5-10"),
+        Option(label: "11-18", value: "11-18"),
+        Option(label: "19-50", value: "19-50", input: true)
+      ];
+      var f1 = SingleChoicesFieldUIDefinition(
+          id: "id1", name: "age", options: options);
       q1.addField(f1);
 
       var dataDefinition = FormDataDefinition.fromUIDefinition(ui);
-      expect(dataDefinition.properties["age"], isA<StringDataDefinition>());
-      expect(dataDefinition.properties["ageText"], isA<StringDataDefinition>());
+      expect(
+          dataDefinition.properties["age"], isA<SingleChoiceDataDefinition>());
+      expect(
+          (dataDefinition.properties["age"] as SingleChoiceDataDefinition)
+              .hasInput,
+          true);
     });
 
     test(
@@ -137,10 +148,15 @@ void main() {
       var q1 = Question(label: "q1");
       ui.sections.add(s1);
       s1.addQuestion(q1);
-      var f1 = MultipleChoicesFieldUIDefinition(id: "id1", name: "symptom");
-      f1.options.add(Option(label: "cough", value: "cough"));
-      f1.options.add(Option(label: "fever", value: "fever"));
-      f1.options.add(Option(label: "sore throat", value: "sore throat"));
+
+      List<Option> options = [
+        Option(label: "cough", value: "cough"),
+        Option(label: "fever", value: "fever"),
+        Option(label: "sore throat", value: "sore throat")
+      ];
+
+      var f1 = MultipleChoicesFieldUIDefinition(
+          id: "id1", name: "symptom", options: options);
 
       q1.addField(f1);
       var dataDefinition = FormDataDefinition.fromUIDefinition(ui);
@@ -161,9 +177,15 @@ void main() {
       var q1 = Question(label: "q1");
       ui.sections.add(s1);
       s1.addQuestion(q1);
-      var f1 = MultipleChoicesFieldUIDefinition(id: "id1", name: "education");
-      f1.options.add(Option(label: "cough", value: "primary", input: true));
-      f1.options.add(Option(label: "fever", value: "secondary", input: true));
+      List<Option> options = [
+        Option(label: "cough", value: "primary", input: true),
+        Option(label: "fever", value: "secondary", input: true)
+      ];
+      var f1 = MultipleChoicesFieldUIDefinition(
+        id: "id1",
+        name: "education",
+        options: options,
+      );
 
       q1.addField(f1);
       var dataDefinition = FormDataDefinition.fromUIDefinition(ui);
@@ -175,9 +197,9 @@ void main() {
       expect(subDataDefinition.properties['secondary'],
           isA<BooleanDataDefinition>());
 
-      expect(subDataDefinition.properties['primaryText'],
+      expect(subDataDefinition.properties['primary_text'],
           isA<StringDataDefinition>());
-      expect(subDataDefinition.properties['secondaryText'],
+      expect(subDataDefinition.properties['secondary_text'],
           isA<StringDataDefinition>());
     });
 

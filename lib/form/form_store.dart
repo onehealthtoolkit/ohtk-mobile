@@ -1,8 +1,8 @@
 import 'package:mobx/mobx.dart';
 import 'package:podd_app/form/widgets/validation.dart';
 
+import 'form_data/definitions/form_data_definition.dart';
 import 'form_data/form_data.dart';
-import 'form_data/form_data_definition.dart';
 import 'ui_definition/form_ui_definition.dart';
 
 part 'form_store.g.dart';

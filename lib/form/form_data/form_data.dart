@@ -1,196 +1,20 @@
-import 'package:decimal/decimal.dart';
-import 'package:mobx/mobx.dart';
+import 'package:podd_app/form/form_data/form_values/base_form_value.dart';
 import 'package:uuid/uuid.dart';
 
-import 'form_data_definition.dart';
-import 'form_data_validation.dart';
+import 'definitions/form_data_definition.dart';
+import 'definitions/form_data_validation.dart';
+import 'form_values/array_form_value.dart';
+import 'form_values/boolean_form_value.dart';
+import 'form_values/date_form_value.dart';
+import 'form_values/decimal_form_value.dart';
+import 'form_values/images_form_value.dart';
+import 'form_values/integer_form_value.dart';
+import 'form_values/single_choices_form_value.dart';
+import 'form_values/string_form_value.dart';
 
 var uuid = const Uuid();
 
-typedef ValidateFunction = bool Function(FormData root);
-
-abstract class IValidatable {
-  bool validate(FormData root);
-}
-
-abstract class Validatable implements IValidatable {
-  List<ValidateFunction> validationFunctions = [];
-
-  @override
-  bool validate(FormData root) {
-    return validationFunctions.every((v) => v(root));
-  }
-}
-
-abstract class BaseFormValue<T> extends Validatable {
-  final _value = Observable<T?>(null);
-  final _isValid = Observable<bool>(true);
-  final _invalidateMessage = Observable<String?>(null);
-
-  set value(T? newValue) {
-    Action(() {
-      _value.value = newValue;
-      if (_isValid.value == false) {
-        _isValid.value = true;
-        _invalidateMessage.value = null;
-      }
-    })();
-  }
-
-  T? get value => _value.value;
-
-  bool get isValid => _isValid.value;
-
-  String? get invalidateMessage => _invalidateMessage.value;
-
-  @override
-  BaseFormValue(List<ValidationDataDefinition> validationDefinitions) {
-    for (var definition in validationDefinitions) {
-      initialValidation(definition);
-    }
-  }
-
-  initialValidation(ValidationDataDefinition validationDefinition) {
-    if (validationDefinition is RequiredValidationDefinition) {
-      validationFunctions.add((FormData root) {
-        if (_value.value == null || _value.value == "") {
-          _isValid.value = false;
-          _invalidateMessage.value = "This field is required";
-          return false;
-        } else {
-          _isValid.value = true;
-          _invalidateMessage.value = null;
-        }
-        return true;
-      });
-    }
-  }
-}
-
-class StringFormValue extends BaseFormValue<String?> {
-  StringFormValue(validationDefinitions) : super(validationDefinitions);
-
-  @override
-  initialValidation(ValidationDataDefinition validationDefinition) {
-    super.initialValidation(validationDefinition);
-    if (validationDefinition is MinMaxLengthValidationDefinition) {
-      validationFunctions.add((FormData root) {
-        if (validationDefinition.minLength != null) {
-          if (_value.value == null ||
-              _value.value!.length < validationDefinition.minLength!) {
-            _isValid.value = false;
-            _invalidateMessage.value =
-                "This field must be at least ${validationDefinition.minLength} characters";
-            return false;
-          }
-        }
-        if (validationDefinition.maxLength != null) {
-          if (_value.value == null ||
-              _value.value!.length > validationDefinition.maxLength!) {
-            _isValid.value = false;
-            _invalidateMessage.value =
-                "This field must not be more than ${validationDefinition.maxLength} characters";
-            return false;
-          }
-        }
-        return true;
-      });
-    }
-  }
-}
-
-class IntegerFormValue extends BaseFormValue<int?> {
-  IntegerFormValue(validationDefinitions) : super(validationDefinitions);
-
-  @override
-  initialValidation(ValidationDataDefinition validationDefinition) {
-    super.initialValidation(validationDefinition);
-    if (validationDefinition is MinMaxValidationDefinition) {
-      validationFunctions.add((FormData root) {
-        if (validationDefinition.min != null) {
-          if (_value.value == null ||
-              _value.value! < validationDefinition.min!) {
-            _isValid.value = false;
-            _invalidateMessage.value =
-                "This field value must be at least ${validationDefinition.min}";
-            return false;
-          }
-        }
-        if (validationDefinition.max != null) {
-          if (_value.value == null ||
-              _value.value! > validationDefinition.max!) {
-            _isValid.value = false;
-            _invalidateMessage.value =
-                "This field value must not more than ${validationDefinition.max}";
-            return false;
-          }
-        }
-        return true;
-      });
-    }
-  }
-}
-
-class BooleanFormValue extends BaseFormValue<bool?> {
-  BooleanFormValue(validationDefinitions) : super(validationDefinitions);
-}
-
-class DateFormValue extends BaseFormValue<DateTime?> {
-  DateFormValue(validationDefinitions) : super(validationDefinitions);
-}
-
-class DecimaFormlValue extends BaseFormValue<Decimal?> {
-  DecimaFormlValue(validationDefinitions) : super(validationDefinitions);
-}
-
-class ImagesFormValue extends Validatable {
-  final _value = ObservableList<String>.of([]);
-  final _isValid = Observable<bool>(true);
-  final _invalidateMessage = Observable<String?>(null);
-
-  add(String imageId) {
-    Action(() {
-      _value.add(imageId);
-      if (_isValid.value == false) {
-        _isValid.value = true;
-        if (_invalidateMessage.value != null) {
-          _invalidateMessage.value = null;
-        }
-      }
-    })();
-  }
-
-  remove(String id) {
-    Action(() {
-      _value.remove(id);
-    })();
-  }
-
-  List<String> get value => _value;
-
-  bool get isValid => _isValid.value;
-
-  String? get invalidateMessage => _invalidateMessage.value;
-
-  int get length => _value.length;
-
-  ImagesFormValue(validationDefinitions) {
-    for (var definition in validationDefinitions) {
-      if (definition is RequiredValidationDefinition) {
-        validationFunctions.add((FormData root) {
-          if (_value.isEmpty) {
-            _isValid.value = false;
-            _invalidateMessage.value = "this field is required";
-            return false;
-          }
-          return true;
-        });
-      }
-    }
-  }
-}
-
-class FormData implements IValidatable {
+class FormData implements IValidatable, IFormData {
   Map<String, IValidatable> values = {};
   late String id;
   String? name;
@@ -215,6 +39,8 @@ class FormData implements IValidatable {
         addArrayDataValue(key, value.cols);
       } else if (value is ImagesDataDefinition) {
         addImagesDataValue(key, value.validations);
+      } else if (value is SingleChoiceDataDefinition) {
+        addSingleChoiceDataValue(value);
       }
     });
   }
@@ -263,6 +89,10 @@ class FormData implements IValidatable {
     return values[name];
   }
 
+  addSingleChoiceDataValue(SingleChoiceDataDefinition definition) {
+    values[definition.name] = SingleChoicesFormValue(definition);
+  }
+
   Map<String, dynamic> toJson() {
     final values = <String, dynamic>{};
 
@@ -288,37 +118,11 @@ class FormData implements IValidatable {
   }
 
   @override
-  bool validate(FormData root) {
+  bool validate(IFormData root) {
     var valid = true;
     values.forEach((key, value) {
       valid = valid && value.validate(root);
     });
     return valid;
-  }
-}
-
-class ArrayFormValue extends Validatable {
-  final FormDataDefinition cols;
-  final _value = ObservableList<FormData>.of([]);
-
-  ArrayFormValue(this.cols);
-
-  createNewRow() {
-    var formData = FormData(definition: cols);
-    Action(() {
-      _value.add(formData);
-    })();
-  }
-
-  deleteRowAt(int index) {
-    Action(() {
-      _value.removeAt(index);
-    })();
-  }
-
-  int get length => _value.length;
-
-  List<Map<String, dynamic>> toJson() {
-    return _value.map((element) => element.toJson()).toList();
   }
 }

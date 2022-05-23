@@ -6,13 +6,24 @@ class Option {
   bool input;
 
   Option({required this.label, required this.value, this.input = false});
+
+  factory Option.fromJson(Map<String, dynamic> json) => Option(
+      label: json['label'],
+      value: json['value'],
+      input: json['input'] ?? false);
 }
 
 abstract class OptionFieldUIDefinition extends FieldUIDefinition {
-  var options = <Option>[];
+  List<Option> options;
 
   OptionFieldUIDefinition(
-      {required id, required name, label, description, suffixLabel, required})
+      {required id,
+      required name,
+      label,
+      description,
+      suffixLabel,
+      required,
+      required this.options})
       : super(
           id: id,
           name: name,
