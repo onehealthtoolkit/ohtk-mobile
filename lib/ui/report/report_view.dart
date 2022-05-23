@@ -106,7 +106,7 @@ class _Footer extends HookViewModelWidget<ReportViewModel> {
         children: [
           ElevatedButton(
             onPressed: () {
-              if (viewModel.back() == BackAction.popAction) {
+              if (viewModel.back() == BackAction.navigationPop) {
                 logger.d("back using pop");
                 Navigator.popUntil(context, ModalRoute.withName("/"));
               } else {

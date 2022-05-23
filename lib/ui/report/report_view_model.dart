@@ -12,7 +12,7 @@ enum ReportFormState {
 }
 
 enum BackAction {
-  popAction,
+  navigationPop,
   doNothing,
 }
 
@@ -38,7 +38,7 @@ class ReportViewModel extends BaseViewModel {
       if (formStore.couldGoToPreviousSection) {
         formStore.previous();
       } else {
-        return BackAction.popAction;
+        return BackAction.navigationPop;
       }
     } else if (state == ReportFormState.confirmation) {
       state = ReportFormState.formInput;
