@@ -20,8 +20,8 @@ template(text) => """{
       }""";
 
 void main() {
-  group('Test json parser', () {
-    test("text field definition", () {
+  group("Text Field", () {
+    test("Parse text field definition", () {
       var str = template("""
                   {
                     "id": "1",
@@ -39,75 +39,7 @@ void main() {
       expect(field.suffixLabel, "my suffix");
     });
 
-    test("integer field definition", () {
-      var str = template("""
-                  {
-                    "id": "1",
-                    "label": "age",
-                    "name": "age",
-                    "type": "integer",
-                    "description": "desc",
-                    "suffixLabel": "years",
-                    "required": false
-                  }""");
-      var def = FormUIDefinition.fromJson(json.decode(str));
-      var field = def.sections[0].questions[0].fields[0];
-      expect(field, const TypeMatcher<IntegerFieldUIDefinition>());
-      expect(field.required, isFalse);
-      expect(field.suffixLabel, "years");
-    });
-
-    test("Location field definition", () {
-      var str = template("""
-                  {
-                    "id": "1",
-                    "label": "location",
-                    "name": "location",
-                    "type": "location",
-                    "description": "desc",
-                    "required": true
-                  }""");
-      var def = FormUIDefinition.fromJson(json.decode(str));
-      var field = def.sections[0].questions[0].fields[0];
-      expect(field, const TypeMatcher<LocationFieldUIDefinition>());
-      expect(field.required, isTrue);
-    });
-
-    test("Images field definition", () {
-      var str = template("""
-                  {
-                    "id": "1",
-                    "label": "images",
-                    "name": "images",
-                    "type": "images",
-                    "description": "desc",
-                    "required": true
-                  }""");
-      var def = FormUIDefinition.fromJson(json.decode(str));
-      var field = def.sections[0].questions[0].fields[0];
-      expect(field, const TypeMatcher<ImagesFieldUIDefinition>());
-      expect(field.required, isTrue);
-    });
-
-    test("Min, Max Validation for Integer field", () {
-      var str = template("""{
-        "id": "1",
-        "label": "age",
-        "name": "age",
-        "type": "integer",
-        "required": true,
-        "min": 0,
-        "max": 90
-      }""");
-      var def = FormUIDefinition.fromJson(json.decode(str));
-      var field = def.sections[0].questions[0].fields[0];
-      expect(field, const TypeMatcher<IntegerFieldUIDefinition>());
-      var intField = field as IntegerFieldUIDefinition;
-      expect(intField.max, 90);
-      expect(intField.min, 0);
-    });
-
-    test("Min, Max validation for Text Feidl", () {
+    test("Min, Max validation for Text Field", () {
       var str = template("""
                   {
                     "id": "1",
@@ -127,10 +59,85 @@ void main() {
       expect(textField.minLength, 3);
       expect(textField.maxLength, 20);
     });
+  });
 
-    group("singlechoices", () {
-      test("parse single choices field", () {
-        var str = template("""
+  group("Integer Field", () {
+    test("Parse integer field definition", () {
+      var str = template("""
+                  {
+                    "id": "1",
+                    "label": "age",
+                    "name": "age",
+                    "type": "integer",
+                    "description": "desc",
+                    "suffixLabel": "years",
+                    "required": false
+                  }""");
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field, const TypeMatcher<IntegerFieldUIDefinition>());
+      expect(field.required, isFalse);
+      expect(field.suffixLabel, "years");
+    });
+
+    test("Min, Max Validation for Integer field", () {
+      var str = template("""{
+        "id": "1",
+        "label": "age",
+        "name": "age",
+        "type": "integer",
+        "required": true,
+        "min": 0,
+        "max": 90
+      }""");
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field, const TypeMatcher<IntegerFieldUIDefinition>());
+      var intField = field as IntegerFieldUIDefinition;
+      expect(intField.max, 90);
+      expect(intField.min, 0);
+    });
+  });
+
+  group("Location Field", () {
+    test("parse location field definition", () {
+      var str = template("""
+                  {
+                    "id": "1",
+                    "label": "location",
+                    "name": "location",
+                    "type": "location",
+                    "description": "desc",
+                    "required": true
+                  }""");
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field, const TypeMatcher<LocationFieldUIDefinition>());
+      expect(field.required, isTrue);
+    });
+  });
+
+  group("Image Field", () {
+    test("Parse images field definition", () {
+      var str = template("""
+                  {
+                    "id": "1",
+                    "label": "images",
+                    "name": "images",
+                    "type": "images",
+                    "description": "desc",
+                    "required": true
+                  }""");
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field, const TypeMatcher<ImagesFieldUIDefinition>());
+      expect(field.required, isTrue);
+    });
+  });
+
+  group("Singlechoices Field", () {
+    test("Parse single choices field", () {
+      var str = template("""
           {
             "id": "1",
             "label": "disease",
@@ -150,13 +157,40 @@ void main() {
             ]
           }
         """);
-        var def = FormUIDefinition.fromJson(json.decode(str));
-        var field = def.sections[0].questions[0].fields[0];
-        expect(field, const TypeMatcher<SingleChoicesFieldUIDefinition>());
-        var singleChoicesField = field as SingleChoicesFieldUIDefinition;
-        expect(2, singleChoicesField.options.length);
-        expect("dengue", singleChoicesField.options[0].label);
-      });
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field, const TypeMatcher<SingleChoicesFieldUIDefinition>());
+      var singleChoicesField = field as SingleChoicesFieldUIDefinition;
+      expect(2, singleChoicesField.options.length);
+      expect("dengue", singleChoicesField.options[0].label);
+    });
+  });
+
+  group("MultipleChoices Field", () {
+    test("Parse multiple choices field", () {
+      var str = template("""
+          {
+            "id": "1",
+            "label": "symptom",
+            "name": "symptom",
+            "type": "multiplechoices",
+            "description": "desc",
+            "required": true,
+            "options": [
+              {
+                "label": "cough",
+                "value": "cough"
+              },
+              {
+                "label": "fever",
+                "value": "fever"
+              }
+            ]
+          }
+        """);
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field, const TypeMatcher<MultipleChoicesFieldUIDefinition>());
     });
   });
 }

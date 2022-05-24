@@ -5,7 +5,7 @@ import 'base_form_value.dart';
 
 class ImagesFormValue extends IValidatable {
   final _value = ObservableList<String>.of([]);
-  final _invalidateMessage = Observable<String?>(null);
+  final _invalidMessage = Observable<String?>(null);
 
   add(String imageId) {
     Action(() {
@@ -24,19 +24,19 @@ class ImagesFormValue extends IValidatable {
   List<String> get value => _value;
 
   @override
-  bool get isValid => _invalidateMessage.value == null;
+  bool get isValid => _invalidMessage.value == null;
 
   @override
-  String? get invalidateMessage => _invalidateMessage.value;
+  String? get invalidMessage => _invalidMessage.value;
 
   int get length => _value.length;
 
   _validate() {
     if (_value.isEmpty) {
-      _invalidateMessage.value = "this field is required";
+      _invalidMessage.value = "this field is required";
       return false;
     }
-    _invalidateMessage.value = null;
+    _invalidMessage.value = null;
     return true;
   }
 

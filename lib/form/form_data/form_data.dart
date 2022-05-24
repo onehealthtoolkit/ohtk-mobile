@@ -136,7 +136,7 @@ class FormData extends IValidatable with IFormData {
   }
 
   @override
-  String? get invalidateMessage => null;
+  String? get invalidMessage => null;
 
   @override
   bool get isValid {

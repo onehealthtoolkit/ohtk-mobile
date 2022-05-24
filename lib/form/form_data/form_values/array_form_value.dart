@@ -30,8 +30,8 @@ class ArrayFormValue extends IValidatable {
   }
 
   @override
-  // TODO: implement invalidateMessage
-  String? get invalidateMessage => throw UnimplementedError();
+  // TODO: implement invalidMessage
+  String? get invalidMessage => throw UnimplementedError();
 
   @override
   // TODO: implement isValid

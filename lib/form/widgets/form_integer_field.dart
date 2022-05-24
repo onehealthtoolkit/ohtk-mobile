@@ -52,7 +52,7 @@ class _FormIntegerFieldState extends State<FormIntegerField> {
           helperText: widget.fieldDefinition.description != null
               ? widget.fieldDefinition.description!
               : null,
-          errorText: formValue.isValid ? null : formValue.invalidateMessage,
+          errorText: formValue.isValid ? null : formValue.invalidMessage,
         ),
         onChanged: (val) {
           _logger.d(val);

@@ -26,8 +26,6 @@ class _FormTextFieldState extends State<FormTextField> {
 
     return Observer(builder: (BuildContext context) {
       var value = formValue.value ?? '';
-      formValue
-          .isValid; // make sure that this field is registered in mobx listener
       if (value != '' && value != _controller.text) {
         _controller.value = TextEditingValue(
             text: value,
@@ -45,7 +43,7 @@ class _FormTextFieldState extends State<FormTextField> {
           helperText: widget.fieldDefinition.description != null
               ? widget.fieldDefinition.description!
               : null,
-          errorText: formValue.isValid ? null : formValue.invalidateMessage,
+          errorText: formValue.isValid ? null : formValue.invalidMessage,
         ),
         onChanged: (val) {
           formValue.value = val;

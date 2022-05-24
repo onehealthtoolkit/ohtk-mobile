@@ -24,10 +24,6 @@ class _FormDateFieldState extends State<FormDateField> {
         formData.getFormValue(widget.fieldDefinition.name) as DateFormValue;
 
     return Observer(builder: (BuildContext context) {
-      formValue.value;
-      formValue
-          .isValid; // make sure that this field is registered in mobx listener
-
       return DateTimeField(
           dateFormat:
               DateFormat.yMMMd(Localizations.localeOf(context).toString()),
@@ -40,7 +36,7 @@ class _FormDateFieldState extends State<FormDateField> {
             helperText: widget.fieldDefinition.description != null
                 ? widget.fieldDefinition.description!
                 : null,
-            errorText: formValue.isValid ? null : formValue.invalidateMessage,
+            errorText: formValue.isValid ? null : formValue.invalidMessage,
           ),
           mode: DateTimeFieldPickerMode.date,
           selectedDate: formValue.value,

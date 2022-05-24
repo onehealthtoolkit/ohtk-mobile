@@ -114,7 +114,7 @@ void main() {
           dataDefinition.properties["age"], isA<SingleChoiceDataDefinition>());
     });
 
-    test('Map single choice to SingleChoiceDataDefinition with option text',
+    test('Map single choice with option text to SingleChoiceDataDefinition ',
         () {
       var ui = FormUIDefinition();
       var s1 = Section(label: "s1");

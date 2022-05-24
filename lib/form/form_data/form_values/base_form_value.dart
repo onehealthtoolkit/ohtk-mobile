@@ -14,12 +14,12 @@ abstract class IValidatable {
 
   bool get isValid;
 
-  String? get invalidateMessage;
+  String? get invalidMessage;
 }
 
 abstract class BaseFormValue<T> extends IValidatable {
   final _value = Observable<T?>(null);
-  final _invalidateMessage = Observable<String?>(null);
+  final _invalidMessage = Observable<String?>(null);
 
   set value(T? newValue) {
     Action(() {
@@ -31,21 +31,21 @@ abstract class BaseFormValue<T> extends IValidatable {
   T? get value => _value.value;
 
   @override
-  bool get isValid => _invalidateMessage.value == null;
+  bool get isValid => _invalidMessage.value == null;
 
   @override
-  String? get invalidateMessage => _invalidateMessage.value;
+  String? get invalidMessage => _invalidMessage.value;
 
   void markError(String message) {
     Action(() {
-      _invalidateMessage.value = message;
+      _invalidMessage.value = message;
     })();
   }
 
   void clearError() {
-    if (_invalidateMessage.value != null) {
+    if (_invalidMessage.value != null) {
       Action(() {
-        _invalidateMessage.value = null;
+        _invalidMessage.value = null;
       })();
     }
   }
@@ -63,10 +63,10 @@ abstract class BaseFormValue<T> extends IValidatable {
     if (validationDefinition is RequiredValidationDefinition) {
       validationFunctions.add((IFormData root) {
         if (_value.value == null || _value.value == "") {
-          _invalidateMessage.value = "This field is required";
+          _invalidMessage.value = "This field is required";
           return false;
         } else {
-          _invalidateMessage.value = null;
+          _invalidMessage.value = null;
         }
         return true;
       });

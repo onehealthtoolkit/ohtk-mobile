@@ -33,8 +33,6 @@ class _FormLocationFieldState extends State<FormLocationField> {
         formData.getFormValue(widget.fieldDefinition.name) as LocationFormValue;
 
     return Observer(builder: (BuildContext context) {
-      formValue.invalidateMessage;
-
       var latitude = formValue.latitude;
       var longitude = formValue.longitude;
 

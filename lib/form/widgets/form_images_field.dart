@@ -36,9 +36,6 @@ class _FormImagesFieldState extends State<FormImagesField> {
         formData.getFormValue(widget.fieldDefinition.name) as ImagesFormValue;
 
     return Observer(builder: (BuildContext context) {
-      formValue.isValid;
-      formValue.invalidateMessage;
-
       var numberOfCurrentImages = formValue.length;
 
       return ValidationWrapper(
