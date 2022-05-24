@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/form/form_data/form_values/location_form_value.dart';
+import 'package:podd_app/form/widgets/validation_wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:podd_app/form/form_data/form_data.dart';
 
@@ -32,6 +33,8 @@ class _FormLocationFieldState extends State<FormLocationField> {
         formData.getFormValue(widget.fieldDefinition.name) as LocationFormValue;
 
     return Observer(builder: (BuildContext context) {
+      formValue.invalidateMessage;
+
       var latitude = formValue.latitude;
       var longitude = formValue.longitude;
 
@@ -43,16 +46,8 @@ class _FormLocationFieldState extends State<FormLocationField> {
         ));
       }
 
-      return Container(
-        decoration: (formValue.isValid == false)
-            ? BoxDecoration(
-                border: Border.all(
-                  color: Colors.red,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(4),
-              )
-            : null,
+      return ValidationWrapper(
+        formValue,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -94,8 +89,6 @@ class _FormLocationFieldState extends State<FormLocationField> {
                   markers: markers,
                 ),
               ),
-            if (formValue.invalidateMessage != "")
-              Text(formValue.invalidateMessage ?? ""),
           ],
         ),
       );

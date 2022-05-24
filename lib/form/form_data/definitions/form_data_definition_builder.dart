@@ -69,7 +69,7 @@ parseFormUIDefinition(FormUIDefinition definition) {
       for (var option in field.options) {
         var name = option.value;
         builder.define(name, BooleanDataDefinition(name, validations));
-        if (option.input) {
+        if (option.textInput) {
           var nameInput = '${name}_text';
           builder.define(
             nameInput,

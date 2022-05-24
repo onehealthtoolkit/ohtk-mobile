@@ -210,7 +210,7 @@ void main() {
               {
                 "label": "dengue",
                 "value": "dengue",
-                "input": true            
+                "textInput": true            
               },
               {
                 "label": "mers",

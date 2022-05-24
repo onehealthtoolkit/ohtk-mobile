@@ -7,7 +7,7 @@ import 'package:podd_app/form/form_data/form_data.dart';
 import 'package:podd_app/form/form_data/form_values/images_form_value.dart';
 import 'package:podd_app/form/form_store.dart';
 import 'package:podd_app/form/ui_definition/fields/images_field_ui_definition.dart';
-import 'package:podd_app/form/widgets/validation.dart';
+import 'package:podd_app/form/widgets/validation_wrapper.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_image.dart';
 import 'package:podd_app/services/image_service.dart';
@@ -29,85 +29,54 @@ class _FormImagesFieldState extends State<FormImagesField> {
   final IImageService _imageService = locator<IImageService>();
   final _logger = locator<Logger>();
 
-  UnRegisterValidationCallback? unRegisterValidationCallback;
-  bool valid = true;
-  String errorMessage = '';
-
-  ValidationState validate() {
-    var isValid = true;
-    var msg = '';
-
-    var formData = Provider.of<FormData>(context, listen: false);
-    var formValue =
-        formData.getFormValue(widget.fieldDefinition.name) as ImagesFormValue;
-    if (formValue.length == 0) {
-      isValid = false;
-      msg = '${widget.fieldDefinition.name} is required';
-    }
-    if (mounted) {
-      setState(() {
-        valid = isValid;
-        errorMessage = msg;
-      });
-    }
-    return ValidationState(isValid, msg);
-  }
-
-  @override
-  void dispose() {
-    if (unRegisterValidationCallback != null) {
-      unRegisterValidationCallback!();
-    }
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    var formStore = Provider.of<FormStore>(context);
-    if (widget.fieldDefinition.required == true) {
-      unRegisterValidationCallback = formStore.registerValidation(validate);
-    }
-
     var formData = Provider.of<FormData>(context);
     var formValue =
         formData.getFormValue(widget.fieldDefinition.name) as ImagesFormValue;
 
     return Observer(builder: (BuildContext context) {
+      formValue.isValid;
+      formValue.invalidateMessage;
+
       var numberOfCurrentImages = formValue.length;
 
-      return GridView.builder(
-        shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          // width / height: fixed for *all* items
-          childAspectRatio: 1,
+      return ValidationWrapper(
+        formValue,
+        child: GridView.builder(
+          shrinkWrap: true,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            // width / height: fixed for *all* items
+            childAspectRatio: 1,
+          ),
+          itemCount: numberOfCurrentImages + 1,
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return _buildAddImageBox();
+            }
+
+            var imageId = formValue.value[
+                index - 1]; // minus 1 because of dummy image is the first.
+
+            // @TODO get image from image service
+            return FutureBuilder<Image>(
+                future: _getImage(imageId),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return RemoveableImage(
+                      image: snapshot.data!,
+                      imageId: formValue.value[
+                          index - 1], // because index 0 alway be dummy image
+                      onRemove: _removeImage,
+                    );
+                  }
+                  return const CircularProgressIndicator();
+                });
+          },
         ),
-        itemCount: numberOfCurrentImages + 1,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return _buildAddImageBox();
-          }
-
-          var imageId = formValue
-              .value[index - 1]; // minus 1 because of dummy image is the first.
-
-          // @TODO get image from image service
-          return FutureBuilder<Image>(
-              future: _getImage(imageId),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return RemoveableImage(
-                    image: snapshot.data!,
-                    imageId: formValue.value[
-                        index - 1], // because index 0 alway be dummy image
-                    onRemove: _removeImage,
-                  );
-                }
-                return const CircularProgressIndicator();
-              });
-        },
       );
     });
   }

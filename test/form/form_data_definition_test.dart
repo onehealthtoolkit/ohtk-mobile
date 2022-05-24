@@ -125,7 +125,7 @@ void main() {
       List<Option> options = [
         Option(label: "5-10", value: "5-10"),
         Option(label: "11-18", value: "11-18"),
-        Option(label: "19-50", value: "19-50", input: true)
+        Option(label: "19-50", value: "19-50", textInput: true)
       ];
       var f1 = SingleChoicesFieldUIDefinition(
           id: "id1", name: "age", options: options);
@@ -178,8 +178,8 @@ void main() {
       ui.sections.add(s1);
       s1.addQuestion(q1);
       List<Option> options = [
-        Option(label: "cough", value: "primary", input: true),
-        Option(label: "fever", value: "secondary", input: true)
+        Option(label: "cough", value: "primary", textInput: true),
+        Option(label: "fever", value: "secondary", textInput: true)
       ];
       var f1 = MultipleChoicesFieldUIDefinition(
         id: "id1",

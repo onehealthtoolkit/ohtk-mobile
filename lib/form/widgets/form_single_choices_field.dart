@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:podd_app/form/form_data/form_values/single_choices_form_value.dart';
 import 'package:podd_app/form/ui_definition/fields/option_field_ui_definition.dart';
 import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
+import 'package:podd_app/form/widgets/validation_wrapper.dart';
 import 'package:provider/provider.dart';
 
 import '../form_data/form_data.dart';
@@ -28,6 +29,7 @@ class _FormSingleChoicesFieldState extends State<FormSingleChoicesField> {
 
     return Observer(builder: (BuildContext context) {
       formValue.value;
+      formValue.invalidTextInputMessage;
       formValue
           .isValid; // make sure that this field is registered in mobx listener
 
@@ -53,8 +55,11 @@ class _FormSingleChoicesFieldState extends State<FormSingleChoicesField> {
             onSelect,
             onSetInputValue,
           ));
-      return Column(
-        children: tiles.toList(),
+      return ValidationWrapper(
+        formValue,
+        child: Column(
+          children: tiles.toList(),
+        ),
       );
     });
   }
@@ -97,14 +102,16 @@ class _RadioOption extends StatelessWidget {
                   onSelect(option.value);
                 },
               ),
-              if (option.input && formValue.value == option.value)
+              if (option.textInput && formValue.value == option.value)
                 TextField(
                   controller: currentText,
+                  onTap: () {
+                    formValue.clearError();
+                  },
                   onChanged: onSetInputValue,
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
-                    errorText:
-                        formValue.isValid ? null : formValue.invalidateMessage,
+                    errorText: formValue.invalidTextInputMessage,
                   ),
                 )
             ],

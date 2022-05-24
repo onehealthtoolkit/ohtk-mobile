@@ -52,8 +52,10 @@ class ReportViewModel extends BaseViewModel {
       if (formStore.couldGoToNextSection) {
         formStore.next();
       } else {
-        state = ReportFormState.confirmation;
-        notifyListeners();
+        if (formStore.validate()) {
+          state = ReportFormState.confirmation;
+          notifyListeners();
+        }
       }
     } else {}
   }

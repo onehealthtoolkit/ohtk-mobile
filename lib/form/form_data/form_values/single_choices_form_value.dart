@@ -7,16 +7,29 @@ import 'base_form_value.dart';
 class SingleChoicesFormValue extends BaseFormValue<String?> {
   SingleChoiceDataDefinition dataDefinition;
 
+  // viewmodel for custom text input
+  // enable by setting textInput = true
   final _text = Observable<String?>(null);
+
+  // error message for custom text input
+  final _invalidTextInputMessage = Observable<String?>(null);
 
   set text(String? newValue) {
     Action(() {
       _text.value = newValue;
-      clearError();
+      clearTextInputError();
     })();
   }
 
   String? get text => _text.value;
+
+  String? get invalidTextInputMessage => _invalidTextInputMessage.value;
+
+  void clearTextInputError() {
+    Action(() {
+      _invalidTextInputMessage.value = null;
+    })();
+  }
 
   @override
   set value(String? newValue) {
@@ -40,9 +53,11 @@ class SingleChoicesFormValue extends BaseFormValue<String?> {
           if (dataDefinition.hasInput) {
             var selectedOption = dataDefinition.options
                 .firstWhere((option) => option.value == value);
-            if (selectedOption.input) {
-              if (text == null) {
-                markError("This field is required");
+            if (selectedOption.textInput) {
+              if (text == null || text == "") {
+                Action(() {
+                  _invalidTextInputMessage.value = "This field is required";
+                })();
                 return false;
               }
             }

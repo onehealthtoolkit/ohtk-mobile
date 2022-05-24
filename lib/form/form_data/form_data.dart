@@ -15,7 +15,7 @@ import 'form_values/string_form_value.dart';
 
 var uuid = const Uuid();
 
-class FormData implements IValidatable, IFormData {
+class FormData extends IValidatable with IFormData {
   Map<String, IValidatable> values = {};
   late String id;
   String? name;
@@ -131,6 +131,18 @@ class FormData implements IValidatable, IFormData {
     var valid = true;
     values.forEach((key, value) {
       valid = valid && value.validate(root);
+    });
+    return valid;
+  }
+
+  @override
+  String? get invalidateMessage => null;
+
+  @override
+  bool get isValid {
+    var valid = true;
+    values.forEach((key, value) {
+      valid = valid && value.isValid;
     });
     return valid;
   }

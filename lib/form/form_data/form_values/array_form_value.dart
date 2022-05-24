@@ -4,7 +4,7 @@ import 'package:podd_app/form/form_data/form_data.dart';
 
 import 'base_form_value.dart';
 
-class ArrayFormValue extends Validatable {
+class ArrayFormValue extends IValidatable {
   final FormDataDefinition cols;
   final _value = ObservableList<FormData>.of([]);
 
@@ -28,4 +28,12 @@ class ArrayFormValue extends Validatable {
   List<Map<String, dynamic>> toJson() {
     return _value.map((element) => element.toJson()).toList();
   }
+
+  @override
+  // TODO: implement invalidateMessage
+  String? get invalidateMessage => throw UnimplementedError();
+
+  @override
+  // TODO: implement isValid
+  bool get isValid => throw UnimplementedError();
 }

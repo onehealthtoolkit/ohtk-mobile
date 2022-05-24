@@ -42,7 +42,7 @@ class LocationDataDefinition extends BaseDataDefinition {
 class SingleChoiceDataDefinition extends BaseDataDefinition {
   SingleChoicesFieldUIDefinition uiDefinition;
 
-  bool get hasInput => uiDefinition.options.any((option) => option.input);
+  bool get hasInput => uiDefinition.options.any((option) => option.textInput);
 
   List<Option> get options => uiDefinition.options;
 

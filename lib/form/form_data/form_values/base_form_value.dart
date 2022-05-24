@@ -6,21 +6,19 @@ abstract class IFormData {}
 typedef ValidateFunction = bool Function(IFormData root);
 
 abstract class IValidatable {
-  bool validate(IFormData root);
-}
-
-abstract class Validatable implements IValidatable {
   List<ValidateFunction> validationFunctions = [];
 
-  @override
   bool validate(IFormData root) {
     return validationFunctions.every((v) => v(root));
   }
+
+  bool get isValid;
+
+  String? get invalidateMessage;
 }
 
-abstract class BaseFormValue<T> extends Validatable {
+abstract class BaseFormValue<T> extends IValidatable {
   final _value = Observable<T?>(null);
-  final _isValid = Observable<bool>(true);
   final _invalidateMessage = Observable<String?>(null);
 
   set value(T? newValue) {
@@ -32,24 +30,24 @@ abstract class BaseFormValue<T> extends Validatable {
 
   T? get value => _value.value;
 
-  bool get isValid => _isValid.value;
+  @override
+  bool get isValid => _invalidateMessage.value == null;
 
+  @override
   String? get invalidateMessage => _invalidateMessage.value;
 
   void markError(String message) {
     Action(() {
-      _isValid.value = false;
       _invalidateMessage.value = message;
     })();
   }
 
   void clearError() {
-    Action(() {
-      if (_isValid.value == false) {
-        _isValid.value = true;
+    if (_invalidateMessage.value != null) {
+      Action(() {
         _invalidateMessage.value = null;
-      }
-    })();
+      })();
+    }
   }
 
   @override
@@ -59,15 +57,15 @@ abstract class BaseFormValue<T> extends Validatable {
     }
   }
 
+  // implementation of required validation
+  // subclass must override this method to implement another validation method.
   initialValidation(ValidationDataDefinition validationDefinition) {
     if (validationDefinition is RequiredValidationDefinition) {
       validationFunctions.add((IFormData root) {
         if (_value.value == null || _value.value == "") {
-          _isValid.value = false;
           _invalidateMessage.value = "This field is required";
           return false;
         } else {
-          _isValid.value = true;
           _invalidateMessage.value = null;
         }
         return true;
