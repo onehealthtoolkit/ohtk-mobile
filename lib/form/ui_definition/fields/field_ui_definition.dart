@@ -43,6 +43,8 @@ abstract class FieldUIDefinition {
         return DateFieldUIDefinition.fromJson(json);
       case 'singlechoices':
         return SingleChoicesFieldUIDefinition.fromJson(json);
+      case "multiplechoices":
+        return MultipleChoicesFieldUIDefinition.fromJson(json);
       case 'text':
       default:
         return TextFieldUIDefinition.fromJson(json);

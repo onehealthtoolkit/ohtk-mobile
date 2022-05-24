@@ -17,4 +17,16 @@ class MultipleChoicesFieldUIDefinition extends OptionFieldUIDefinition {
             suffixLabel: suffixLabel,
             required: required,
             options: options);
+
+  factory MultipleChoicesFieldUIDefinition.fromJson(
+          Map<String, dynamic> json) =>
+      MultipleChoicesFieldUIDefinition(
+          id: json['id'],
+          name: json['name'],
+          label: json['label'],
+          description: json['description'],
+          required: json['required'],
+          options: (json['options'] as List)
+              .map((item) => Option.fromJson(item))
+              .toList());
 }
