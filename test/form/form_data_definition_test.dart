@@ -140,9 +140,7 @@ void main() {
           true);
     });
 
-    test(
-        'Map multiple choices field to sub FormDataDefinition and each choice will map to BooleanDataDefinition',
-        () {
+    test('Map multiple choices field to MultipleChoiceDataDefinition', () {
       var ui = FormUIDefinition();
       var s1 = Section(label: "s1");
       var q1 = Question(label: "q1");
@@ -160,47 +158,8 @@ void main() {
 
       q1.addField(f1);
       var dataDefinition = FormDataDefinition.fromUIDefinition(ui);
-      expect(dataDefinition.properties['symptom'], isA<FormDataDefinition>());
-      var subDataDefinition =
-          dataDefinition.properties['symptom'] as FormDataDefinition;
-      expect(
-          subDataDefinition.properties['cough'], isA<BooleanDataDefinition>());
-      expect(
-          subDataDefinition.properties['fever'], isA<BooleanDataDefinition>());
-      expect(subDataDefinition.properties['sore throat'],
-          isA<BooleanDataDefinition>());
-    });
-
-    test('multiple choices should support free text input', () {
-      var ui = FormUIDefinition();
-      var s1 = Section(label: "s1");
-      var q1 = Question(label: "q1");
-      ui.sections.add(s1);
-      s1.addQuestion(q1);
-      List<Option> options = [
-        Option(label: "cough", value: "primary", textInput: true),
-        Option(label: "fever", value: "secondary", textInput: true)
-      ];
-      var f1 = MultipleChoicesFieldUIDefinition(
-        id: "id1",
-        name: "education",
-        options: options,
-      );
-
-      q1.addField(f1);
-      var dataDefinition = FormDataDefinition.fromUIDefinition(ui);
-      expect(dataDefinition.properties['education'], isA<FormDataDefinition>());
-      var subDataDefinition =
-          dataDefinition.properties['education'] as FormDataDefinition;
-      expect(subDataDefinition.properties['primary'],
-          isA<BooleanDataDefinition>());
-      expect(subDataDefinition.properties['secondary'],
-          isA<BooleanDataDefinition>());
-
-      expect(subDataDefinition.properties['primary_text'],
-          isA<StringDataDefinition>());
-      expect(subDataDefinition.properties['secondary_text'],
-          isA<StringDataDefinition>());
+      expect(dataDefinition.properties['symptom'],
+          isA<MultipleChoiceDataDefinition>());
     });
 
     test(

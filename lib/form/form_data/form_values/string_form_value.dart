@@ -6,8 +6,8 @@ class StringFormValue extends BaseFormValue<String?> {
   StringFormValue(validationDefinitions) : super(validationDefinitions);
 
   @override
-  initialValidation(ValidationDataDefinition validationDefinition) {
-    super.initialValidation(validationDefinition);
+  initValidation(ValidationDataDefinition validationDefinition) {
+    super.initValidation(validationDefinition);
     if (validationDefinition is MinMaxLengthValidationDefinition) {
       validationFunctions.add((IFormData root) {
         if (validationDefinition.minLength != null) {

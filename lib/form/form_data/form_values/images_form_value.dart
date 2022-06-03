@@ -40,13 +40,15 @@ class ImagesFormValue extends IValidatable {
     return true;
   }
 
-  ImagesFormValue(validationDefinitions) {
-    for (var definition in validationDefinitions) {
-      if (definition is RequiredValidationDefinition) {
-        validationFunctions.add((IFormData root) {
-          return _validate();
-        });
-      }
+  ImagesFormValue(List<ValidationDataDefinition> validationDefinitions)
+      : super(validationDefinitions);
+
+  @override
+  void initValidation(ValidationDataDefinition validationDefinition) {
+    if (validationDefinition is RequiredValidationDefinition) {
+      validationFunctions.add((IFormData root) {
+        return _validate();
+      });
     }
   }
 }

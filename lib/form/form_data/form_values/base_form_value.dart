@@ -15,6 +15,16 @@ abstract class IValidatable {
   bool get isValid;
 
   String? get invalidMessage;
+
+  IValidatable(List<ValidationDataDefinition> validationDefinitions) {
+    for (var definition in validationDefinitions) {
+      initValidation(definition);
+    }
+  }
+
+  // implementation of required validation
+  // subclass must override this method to implement another validation method.
+  void initValidation(ValidationDataDefinition validationDefinition);
 }
 
 abstract class BaseFormValue<T> extends IValidatable {
@@ -50,16 +60,11 @@ abstract class BaseFormValue<T> extends IValidatable {
     }
   }
 
-  @override
-  BaseFormValue(List<ValidationDataDefinition> validationDefinitions) {
-    for (var definition in validationDefinitions) {
-      initialValidation(definition);
-    }
-  }
+  BaseFormValue(List<ValidationDataDefinition> validationDefinitions)
+      : super(validationDefinitions);
 
-  // implementation of required validation
-  // subclass must override this method to implement another validation method.
-  initialValidation(ValidationDataDefinition validationDefinition) {
+  @override
+  initValidation(ValidationDataDefinition validationDefinition) {
     if (validationDefinition is RequiredValidationDefinition) {
       validationFunctions.add((IFormData root) {
         if (_value.value == null || _value.value == "") {

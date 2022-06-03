@@ -6,8 +6,8 @@ class IntegerFormValue extends BaseFormValue<int?> {
   IntegerFormValue(validationDefinitions) : super(validationDefinitions);
 
   @override
-  initialValidation(ValidationDataDefinition validationDefinition) {
-    super.initialValidation(validationDefinition);
+  initValidation(ValidationDataDefinition validationDefinition) {
+    super.initValidation(validationDefinition);
     if (validationDefinition is MinMaxValidationDefinition) {
       validationFunctions.add((IFormData root) {
         if (validationDefinition.min != null) {

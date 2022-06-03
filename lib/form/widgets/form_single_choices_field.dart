@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:podd_app/form/form_data/form_data.dart';
 import 'package:podd_app/form/form_data/form_values/single_choices_form_value.dart';
 import 'package:podd_app/form/ui_definition/fields/option_field_ui_definition.dart';
 import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
 import 'package:podd_app/form/widgets/validation_wrapper.dart';
 import 'package:provider/provider.dart';
-
-import '../form_data/form_data.dart';
 
 class FormSingleChoicesField extends StatefulWidget {
   final SingleChoicesFieldUIDefinition fieldDefinition;

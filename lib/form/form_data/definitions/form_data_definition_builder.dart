@@ -62,26 +62,11 @@ parseFormUIDefinition(FormUIDefinition definition) {
     } else if (field is SingleChoicesFieldUIDefinition) {
       builder.define(
         field.name,
-        SingleChoiceDataDefinition(field, validations),
+        SingleChoiceDataDefinition(field.name, field.options, validations),
       );
     } else if (field is MultipleChoicesFieldUIDefinition) {
-      builder.push(field.name);
-      for (var option in field.options) {
-        var name = option.value;
-        builder.define(name, BooleanDataDefinition(name, validations));
-        if (option.textInput) {
-          var nameInput = '${name}_text';
-          builder.define(
-            nameInput,
-            StringDataDefinition(nameInput, emptyValidations),
-          );
-        }
-      }
-      var data = builder.pop();
-      builder.define(
-        field.name,
-        FormDataDefinition(field.name, data.properties),
-      );
+      builder.define(field.name,
+          MultipleChoiceDataDefinition(field.name, field.options, validations));
     } else if (field is TableFieldUIDefinition) {
       builder.push(field.name);
       for (var field in field.cols) {

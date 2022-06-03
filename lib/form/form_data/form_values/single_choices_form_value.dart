@@ -43,7 +43,7 @@ class SingleChoicesFormValue extends BaseFormValue<String?> {
       : super(dataDefinition.validations);
 
   @override
-  initialValidation(ValidationDataDefinition validationDefinition) {
+  initValidation(ValidationDataDefinition validationDefinition) {
     if (validationDefinition is RequiredValidationDefinition) {
       validationFunctions.add((IFormData root) {
         if (value == null) {

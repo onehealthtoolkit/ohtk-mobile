@@ -40,14 +40,25 @@ class LocationDataDefinition extends BaseDataDefinition {
 }
 
 class SingleChoiceDataDefinition extends BaseDataDefinition {
-  SingleChoicesFieldUIDefinition uiDefinition;
+  final List<Option> _options;
 
-  bool get hasInput => uiDefinition.options.any((option) => option.textInput);
+  bool get hasInput => _options.any((option) => option.textInput);
 
-  List<Option> get options => uiDefinition.options;
+  List<Option> get options => _options;
 
-  SingleChoiceDataDefinition(this.uiDefinition, validations)
-      : super(uiDefinition.name, validations);
+  SingleChoiceDataDefinition(String name, this._options, validations)
+      : super(name, validations);
+}
+
+class MultipleChoiceDataDefinition extends BaseDataDefinition {
+  final List<Option> _options;
+
+  bool get hasInput => _options.any((option) => option.textInput);
+
+  List<Option> get options => _options;
+
+  MultipleChoiceDataDefinition(String name, this._options, validations)
+      : super(name, validations);
 }
 
 class FormDataDefinition extends BaseDataDefinition {

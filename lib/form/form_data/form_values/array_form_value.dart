@@ -1,5 +1,6 @@
 import 'package:mobx/mobx.dart';
 import 'package:podd_app/form/form_data/definitions/form_data_definition.dart';
+import 'package:podd_app/form/form_data/definitions/form_data_validation.dart';
 import 'package:podd_app/form/form_data/form_data.dart';
 
 import 'base_form_value.dart';
@@ -8,7 +9,7 @@ class ArrayFormValue extends IValidatable {
   final FormDataDefinition cols;
   final _value = ObservableList<FormData>.of([]);
 
-  ArrayFormValue(this.cols);
+  ArrayFormValue(this.cols) : super([]);
 
   createNewRow() {
     var formData = FormData(definition: cols);
@@ -36,4 +37,9 @@ class ArrayFormValue extends IValidatable {
   @override
   // TODO: implement isValid
   bool get isValid => throw UnimplementedError();
+
+  @override
+  void initValidation(ValidationDataDefinition validationDefinition) {
+    // TODO: implement initValidation
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:podd_app/form/widgets/form_multiple_choices_field.dart';
 
 import '../ui_definition/form_ui_definition.dart';
 import 'form_date_field.dart';
@@ -34,6 +35,9 @@ class FormField extends StatelessWidget {
       return FormDateField(field as DateFieldUIDefinition);
     } else if (field is SingleChoicesFieldUIDefinition) {
       return FormSingleChoicesField(field as SingleChoicesFieldUIDefinition);
+    } else if (field is MultipleChoicesFieldUIDefinition) {
+      return FormMultipleChoicesField(
+          field as MultipleChoicesFieldUIDefinition);
     }
 
     return const Text("unknown field");

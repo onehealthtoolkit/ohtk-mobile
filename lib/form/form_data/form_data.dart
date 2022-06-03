@@ -10,6 +10,7 @@ import 'form_values/date_form_value.dart';
 import 'form_values/decimal_form_value.dart';
 import 'form_values/images_form_value.dart';
 import 'form_values/integer_form_value.dart';
+import 'form_values/multiple_choices_form_value.dart';
 import 'form_values/single_choices_form_value.dart';
 import 'form_values/string_form_value.dart';
 
@@ -21,7 +22,7 @@ class FormData extends IValidatable with IFormData {
   String? name;
   FormDataDefinition? definition;
 
-  FormData({this.name, this.definition}) {
+  FormData({this.name, this.definition}) : super([]) {
     id = uuid.v4();
     definition?.properties.forEach((key, value) {
       if (value is StringDataDefinition) {
@@ -42,6 +43,8 @@ class FormData extends IValidatable with IFormData {
         addImagesDataValue(key, value.validations);
       } else if (value is SingleChoiceDataDefinition) {
         addSingleChoiceDataValue(value);
+      } else if (value is MultipleChoiceDataDefinition) {
+        addMultipleChoicesDataValue(value);
       } else if (value is LocationDataDefinition) {
         addLocationDataValue(key, value.validations);
       }
@@ -96,6 +99,10 @@ class FormData extends IValidatable with IFormData {
     values[definition.name] = SingleChoicesFormValue(definition);
   }
 
+  addMultipleChoicesDataValue(MultipleChoiceDataDefinition definition) {
+    values[definition.name] = MultipleChoicesFormValue(definition);
+  }
+
   addLocationDataValue(
       String name, List<ValidationDataDefinition> validations) {
     values[name] = LocationFormValue(validations);
@@ -146,4 +153,7 @@ class FormData extends IValidatable with IFormData {
     });
     return valid;
   }
+
+  @override
+  void initValidation(ValidationDataDefinition validationDefinition) {}
 }
