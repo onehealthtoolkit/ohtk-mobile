@@ -5,7 +5,7 @@ import 'package:podd_app/form/form_data/form_data.dart';
 
 import 'base_form_value.dart';
 
-class ArrayFormValue extends IValidatable {
+class ArrayFormValue extends IValidatable with EnableConditionState {
   final FormDataDefinition cols;
   final _value = ObservableList<FormData>.of([]);
 
@@ -41,5 +41,11 @@ class ArrayFormValue extends IValidatable {
   @override
   void initValidation(ValidationDataDefinition validationDefinition) {
     // TODO: implement initValidation
+  }
+
+  @override
+  String getStringValue() {
+    // TODO: implement getStringValue
+    throw UnimplementedError();
   }
 }

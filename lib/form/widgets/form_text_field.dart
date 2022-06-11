@@ -26,6 +26,15 @@ class _FormTextFieldState extends State<FormTextField> {
 
     return Observer(builder: (BuildContext context) {
       var value = formValue.value ?? '';
+
+      if (formValue.dependOn != null) {
+        var _dependFormValue = formData.getFormValue(formValue.dependOn!);
+        _dependFormValue.value;
+      }
+
+      if (!formValue.evaluateCondition(formData)) {
+        return Container();
+      }
       if (value != '' && value != _controller.text) {
         _controller.value = TextEditingValue(
             text: value,

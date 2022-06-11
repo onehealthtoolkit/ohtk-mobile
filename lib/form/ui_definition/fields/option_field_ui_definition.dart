@@ -16,20 +16,22 @@ class Option {
 abstract class OptionFieldUIDefinition extends FieldUIDefinition {
   List<Option> options;
 
-  OptionFieldUIDefinition(
-      {required id,
-      required name,
-      label,
-      description,
-      suffixLabel,
-      required,
-      required this.options})
-      : super(
+  OptionFieldUIDefinition({
+    required id,
+    required name,
+    label,
+    description,
+    suffixLabel,
+    required,
+    required this.options,
+    enableCondition,
+  }) : super(
           id: id,
           name: name,
           label: label,
           description: description,
           suffixLabel: suffixLabel,
           required: required,
+          enableCondition: enableCondition,
         );
 }

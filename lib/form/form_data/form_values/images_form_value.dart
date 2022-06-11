@@ -3,7 +3,7 @@ import 'package:podd_app/form/form_data/definitions/form_data_validation.dart';
 
 import 'base_form_value.dart';
 
-class ImagesFormValue extends IValidatable {
+class ImagesFormValue extends IValidatable with EnableConditionState {
   final _value = ObservableList<String>.of([]);
   final _invalidMessage = Observable<String?>(null);
 
@@ -50,5 +50,10 @@ class ImagesFormValue extends IValidatable {
         return _validate();
       });
     }
+  }
+
+  @override
+  String getStringValue() {
+    return _value.join(',');
   }
 }

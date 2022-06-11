@@ -1,3 +1,4 @@
+import 'package:podd_app/form/ui_definition/condition_definition.dart';
 import 'package:podd_app/form/ui_definition/fields/option_field_ui_definition.dart';
 import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
 
@@ -7,36 +8,60 @@ import 'form_data_validation.dart';
 abstract class BaseDataDefinition {
   final String name;
   final List<ValidationDataDefinition> validations;
+  final ConditionDefinition? enableCondition;
 
-  BaseDataDefinition(this.name, this.validations);
+  BaseDataDefinition(this.name, this.validations, {this.enableCondition});
 }
 
 class StringDataDefinition extends BaseDataDefinition {
-  StringDataDefinition(name, validations) : super(name, validations);
+  StringDataDefinition(name, validations, {enableCondition})
+      : super(name, validations, enableCondition: enableCondition);
 }
 
 class IntegerDataDefinition extends BaseDataDefinition {
-  IntegerDataDefinition(name, validations) : super(name, validations);
+  IntegerDataDefinition(name, validations, {enableCondition})
+      : super(
+          name,
+          validations,
+          enableCondition: enableCondition,
+        );
 }
 
 class DateDataDefinition extends BaseDataDefinition {
-  DateDataDefinition(name, validations) : super(name, validations);
+  DateDataDefinition(name, validations, {enableCondition})
+      : super(
+          name,
+          validations,
+          enableCondition: enableCondition,
+        );
 }
 
 class BooleanDataDefinition extends BaseDataDefinition {
-  BooleanDataDefinition(name, validations) : super(name, validations);
+  BooleanDataDefinition(name, validations, {enableCondition})
+      : super(
+          name,
+          validations,
+          enableCondition: enableCondition,
+        );
 }
 
 class DecimalDataDefinition extends BaseDataDefinition {
-  DecimalDataDefinition(name, validations) : super(name, validations);
+  DecimalDataDefinition(name, validations, {enableCondition})
+      : super(
+          name,
+          validations,
+          enableCondition: enableCondition,
+        );
 }
 
 class ImagesDataDefinition extends BaseDataDefinition {
-  ImagesDataDefinition(name, validations) : super(name, validations);
+  ImagesDataDefinition(name, validations, {enableCondition})
+      : super(name, validations);
 }
 
 class LocationDataDefinition extends BaseDataDefinition {
-  LocationDataDefinition(name, validations) : super(name, validations);
+  LocationDataDefinition(name, validations, {enableCondition})
+      : super(name, validations);
 }
 
 class SingleChoiceDataDefinition extends BaseDataDefinition {
@@ -46,8 +71,13 @@ class SingleChoiceDataDefinition extends BaseDataDefinition {
 
   List<Option> get options => _options;
 
-  SingleChoiceDataDefinition(String name, this._options, validations)
-      : super(name, validations);
+  SingleChoiceDataDefinition(String name, this._options, validations,
+      {enableCondition})
+      : super(
+          name,
+          validations,
+          enableCondition: enableCondition,
+        );
 }
 
 class MultipleChoiceDataDefinition extends BaseDataDefinition {
@@ -57,8 +87,13 @@ class MultipleChoiceDataDefinition extends BaseDataDefinition {
 
   List<Option> get options => _options;
 
-  MultipleChoiceDataDefinition(String name, this._options, validations)
-      : super(name, validations);
+  MultipleChoiceDataDefinition(String name, this._options, validations,
+      {enableCondition})
+      : super(
+          name,
+          validations,
+          enableCondition: enableCondition,
+        );
 }
 
 class FormDataDefinition extends BaseDataDefinition {
@@ -73,5 +108,10 @@ class FormDataDefinition extends BaseDataDefinition {
 
 class ArrayDataDefinition extends BaseDataDefinition {
   final FormDataDefinition cols;
-  ArrayDataDefinition(name, this.cols) : super(name, []);
+  ArrayDataDefinition(name, this.cols, {enableCondition})
+      : super(
+          name,
+          [],
+          enableCondition: enableCondition,
+        );
 }

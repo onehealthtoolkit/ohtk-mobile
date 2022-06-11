@@ -30,7 +30,7 @@ class FormDataDefinitionBuilder {
 parseFormUIDefinition(FormUIDefinition definition) {
   var builder = FormDataDefinitionBuilder();
 
-  _buildField(FieldUIDefinition field) {
+  _buildField(FieldUIDefinition field, Question question) {
     List<ValidationDataDefinition> validations = [];
     if (field.required == true) {
       validations.add(RequiredValidationDefinition());
@@ -43,7 +43,11 @@ parseFormUIDefinition(FormUIDefinition definition) {
       }
       builder.define(
         field.name,
-        StringDataDefinition(field.name, validations),
+        StringDataDefinition(
+          field.name,
+          validations,
+          enableCondition: field.enableCondition ?? question.enableCondition,
+        ),
       );
     } else if (field is IntegerFieldUIDefinition) {
       if (field.min != null || field.max != null) {
@@ -52,40 +56,71 @@ parseFormUIDefinition(FormUIDefinition definition) {
       }
       builder.define(
         field.name,
-        IntegerDataDefinition(field.name, validations),
+        IntegerDataDefinition(
+          field.name,
+          validations,
+          enableCondition: field.enableCondition ?? question.enableCondition,
+        ),
       );
     } else if (field is DateFieldUIDefinition) {
       builder.define(
         field.name,
-        DateDataDefinition(field.name, validations),
+        DateDataDefinition(
+          field.name,
+          validations,
+          enableCondition: field.enableCondition ?? question.enableCondition,
+        ),
       );
     } else if (field is SingleChoicesFieldUIDefinition) {
       builder.define(
         field.name,
-        SingleChoiceDataDefinition(field.name, field.options, validations),
+        SingleChoiceDataDefinition(
+          field.name,
+          field.options,
+          validations,
+          enableCondition: field.enableCondition ?? question.enableCondition,
+        ),
       );
     } else if (field is MultipleChoicesFieldUIDefinition) {
-      builder.define(field.name,
-          MultipleChoiceDataDefinition(field.name, field.options, validations));
+      builder.define(
+          field.name,
+          MultipleChoiceDataDefinition(
+            field.name,
+            field.options,
+            validations,
+            enableCondition: field.enableCondition ?? question.enableCondition,
+          ));
     } else if (field is TableFieldUIDefinition) {
       builder.push(field.name);
       for (var field in field.cols) {
-        _buildField(field);
+        _buildField(field, question);
       }
       var data = builder.pop();
       builder.define(
         field.name,
-        ArrayDataDefinition(field.name, data),
+        ArrayDataDefinition(
+          field.name,
+          data,
+          enableCondition: field.enableCondition ?? question.enableCondition,
+        ),
       );
     } else if (field is LocationFieldUIDefinition) {
       builder.define(
         field.name,
-        LocationDataDefinition(field.name, validations),
+        LocationDataDefinition(
+          field.name,
+          validations,
+          enableCondition: field.enableCondition ?? question.enableCondition,
+        ),
       );
     } else if (field is ImagesFieldUIDefinition) {
       builder.define(
         field.name,
-        ImagesDataDefinition(field.name, validations),
+        ImagesDataDefinition(
+          field.name,
+          validations,
+          enableCondition: field.enableCondition ?? question.enableCondition,
+        ),
       );
     }
   }
@@ -96,7 +131,7 @@ parseFormUIDefinition(FormUIDefinition definition) {
         builder.push(question.objectName!);
       }
       for (var field in question.fields) {
-        _buildField(field);
+        _buildField(field, question);
       }
       if (question.objectName != null) {
         var formDataDefinition = builder.pop();

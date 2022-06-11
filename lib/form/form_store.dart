@@ -54,11 +54,26 @@ abstract class _FormStore with Store {
   bool validate() {
     var valid = true;
     for (var question in currentSection.questions) {
-      for (var field in question.fields) {
-        valid = valid & formData.getFormValue(field.name).validate(formData);
+      if (isQuestionEnable(question)) {
+        for (var field in question.fields) {
+          valid = valid & formData.getFormValue(field.name).validate(formData);
+        }
       }
     }
     return valid;
+  }
+
+  bool isQuestionEnable(Question question) {
+    var shouldEnable = true;
+
+    if (question.enableCondition != null) {
+      for (var field in question.fields) {
+        var fieldValue = formData.getFormValue(field.name);
+        shouldEnable = shouldEnable && fieldValue.evaluateCondition(formData);
+      }
+    }
+
+    return shouldEnable;
   }
 
   @computed

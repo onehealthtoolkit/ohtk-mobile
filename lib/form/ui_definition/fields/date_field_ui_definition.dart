@@ -1,3 +1,4 @@
+import '../condition_definition.dart';
 import 'field_ui_definition.dart';
 
 class DateFieldUIDefinition extends FieldUIDefinition {
@@ -8,6 +9,7 @@ class DateFieldUIDefinition extends FieldUIDefinition {
     description,
     suffixLabel,
     required,
+    enableCondition,
   }) : super(
           id: id,
           name: name,
@@ -15,7 +17,9 @@ class DateFieldUIDefinition extends FieldUIDefinition {
           description: description,
           suffixLabel: suffixLabel,
           required: required,
+          enableCondition: enableCondition,
         );
+
   factory DateFieldUIDefinition.fromJson(Map<String, dynamic> json) {
     return DateFieldUIDefinition(
       id: json['id'],
@@ -24,6 +28,7 @@ class DateFieldUIDefinition extends FieldUIDefinition {
       description: json['description'],
       suffixLabel: json['suffixLabel'],
       required: json['required'],
+      enableCondition: parseCondition(json, 'enableCondition'),
     );
   }
 }

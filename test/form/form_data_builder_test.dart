@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:podd_app/form/form_data/definitions/form_data_definition.dart';
 import 'package:podd_app/form/form_data/definitions/form_data_definition_builder.dart';
 import 'package:podd_app/form/form_data/definitions/form_data_validation.dart';
+import 'package:podd_app/form/ui_definition/condition_definition.dart';
 import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
 
 template(String body) {
@@ -101,6 +102,29 @@ void main() {
             20,
             (dataDefinition.validations[0] as MinMaxLengthValidationDefinition)
                 .maxLength);
+      });
+
+      test("enable condition", () {
+        var uiDefinition = FormUIDefinition.fromJson(template("""{
+                  "id": "citizenId",
+                  "name": "citizenId",
+                  "label": "citizen id",
+                  "type": "text",
+                  "enableCondition": {
+                    "name": "age",
+                    "operator": "=",
+                    "value": "12"
+                  }
+                }"""));
+        Map<String, BaseDataDefinition> formValue =
+            parseFormUIDefinition(uiDefinition);
+        StringDataDefinition dataDefinition =
+            formValue['citizenId'] as StringDataDefinition;
+        expect(dataDefinition.enableCondition, isNotNull);
+        expect(dataDefinition.enableCondition!.name, "age");
+        expect(
+            dataDefinition.enableCondition!.operator, ConditionOperator.equal);
+        expect(dataDefinition.enableCondition!.value, "12");
       });
     });
 

@@ -6,7 +6,7 @@ import 'package:podd_app/form/form_data/definitions/form_data_validation.dart';
 
 import 'base_form_value.dart';
 
-class MultipleChoicesFormValue extends IValidatable {
+class MultipleChoicesFormValue extends IValidatable with EnableConditionState {
   final _invalidMessage = Observable<String?>(null);
 
   @override
@@ -96,5 +96,16 @@ class MultipleChoicesFormValue extends IValidatable {
       }
       clearError();
     })();
+  }
+
+  @override
+  String getStringValue() {
+    var selected = [];
+    _selected.forEach((key, value) {
+      if (value.value) {
+        selected.add(key);
+      }
+    });
+    return selected.join(",");
   }
 }

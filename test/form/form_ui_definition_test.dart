@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:podd_app/form/ui_definition/condition_definition.dart';
 import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
 
 template(text) => """{
@@ -59,6 +60,31 @@ void main() {
       expect(textField.minLength, 3);
       expect(textField.maxLength, 20);
     });
+
+    test("Support display condition", () {
+      var str = template("""
+        {
+          "id": "1",
+          "label": "name",
+          "name": "name",
+          "type": "text",
+          "description": "desc",
+          "suffixLabel": "my suffix",
+          "required": true,
+          "enableCondition": {
+            "name": "age",
+            "operator": "=",
+            "value": "12"
+          }
+        }
+      """);
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field.enableCondition, isNotNull);
+      expect(field.enableCondition!.name, "age");
+      expect(field.enableCondition!.operator, ConditionOperator.equal);
+      expect(field.enableCondition!.value, "12");
+    });
   });
 
   group("Integer Field", () {
@@ -97,6 +123,29 @@ void main() {
       expect(intField.max, 90);
       expect(intField.min, 0);
     });
+
+    test("Support display condition", () {
+      var str = template("""
+        {
+          "id": "1",
+          "label": "age",
+          "name": "age",
+          "type": "integer",
+          "required": true,
+          "enableCondition": {
+            "name": "age",
+            "operator": "=",
+            "value": "12"
+          }
+        }
+      """);
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field.enableCondition, isNotNull);
+      expect(field.enableCondition!.name, "age");
+      expect(field.enableCondition!.operator, ConditionOperator.equal);
+      expect(field.enableCondition!.value, "12");
+    });
   });
 
   group("Location Field", () {
@@ -133,6 +182,30 @@ void main() {
       expect(field, const TypeMatcher<ImagesFieldUIDefinition>());
       expect(field.required, isTrue);
     });
+
+    test("Support display condition", () {
+      var str = template("""
+        {
+          "id": "1",
+          "label": "images",
+          "name": "images",
+          "type": "images",
+          "description": "desc",
+          "required": true,
+          "enableCondition": {
+            "name": "age",
+            "operator": "=",
+            "value": "12"
+          }
+        }
+      """);
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field.enableCondition, isNotNull);
+      expect(field.enableCondition!.name, "age");
+      expect(field.enableCondition!.operator, ConditionOperator.equal);
+      expect(field.enableCondition!.value, "12");
+    });
   });
 
   group("Singlechoices Field", () {
@@ -164,6 +237,40 @@ void main() {
       expect(2, singleChoicesField.options.length);
       expect("dengue", singleChoicesField.options[0].label);
     });
+
+    test("Support display condition", () {
+      var str = template("""
+        {
+          "id": "1",
+          "label": "disease",
+          "name": "disease",
+          "type": "singlechoices",
+          "description": "desc",
+          "required": true,
+          "options": [
+            {
+              "label": "dengue",
+              "value": "dengue"
+            },
+            {
+              "label": "mers",
+              "value": "mers"
+            }
+          ],
+          "enableCondition": {
+            "name": "age",
+            "operator": "=",
+            "value": "12"
+          }
+        }
+      """);
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field.enableCondition, isNotNull);
+      expect(field.enableCondition!.name, "age");
+      expect(field.enableCondition!.operator, ConditionOperator.equal);
+      expect(field.enableCondition!.value, "12");
+    });
   });
 
   group("MultipleChoices Field", () {
@@ -191,6 +298,82 @@ void main() {
       var def = FormUIDefinition.fromJson(json.decode(str));
       var field = def.sections[0].questions[0].fields[0];
       expect(field, const TypeMatcher<MultipleChoicesFieldUIDefinition>());
+    });
+
+    test("Support display condition", () {
+      var str = template("""
+        {
+          "id": "1",
+          "label": "symptom",
+          "name": "symptom",
+          "type": "multiplechoices",
+          "description": "desc",
+          "required": true,
+          "options": [
+            {
+              "label": "cough",
+              "value": "cough"
+            },
+            {
+              "label": "fever",
+              "value": "fever"
+            }
+          ],
+          "enableCondition": {
+            "name": "age",
+            "operator": "=",
+            "value": "12"
+          }
+        }
+      """);
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field.enableCondition, isNotNull);
+      expect(field.enableCondition!.name, "age");
+      expect(field.enableCondition!.operator, ConditionOperator.equal);
+      expect(field.enableCondition!.value, "12");
+    });
+  });
+
+  group("Date field", () {
+    test("Parse date field", () {
+      var str = template("""
+          {
+            "id": "1",
+            "label": "date",
+            "name": "date",
+            "type": "date",
+            "description": "date",
+            "required": true            
+          }
+        """);
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field, const TypeMatcher<DateFieldUIDefinition>());
+    });
+
+    test("Support display condition", () {
+      var str = template("""
+          {
+            "id": "1",
+            "label": "date",
+            "name": "date",
+            "type": "date",
+            "description": "date",
+            "required": true,
+            "enableCondition": {
+              "name": "age",
+              "operator": "=",
+              "value": "12"
+            }                       
+          }
+        """);
+      var def = FormUIDefinition.fromJson(json.decode(str));
+      var field = def.sections[0].questions[0].fields[0];
+      expect(field.enableCondition, isNotNull);
+      expect(field.enableCondition!.name, "age");
+      expect(field.enableCondition!.operator, ConditionOperator.equal);
+      expect(field.enableCondition!.value, "12");
     });
   });
 }

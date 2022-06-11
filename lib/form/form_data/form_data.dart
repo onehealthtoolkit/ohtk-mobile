@@ -1,5 +1,7 @@
 import 'package:podd_app/form/form_data/form_values/base_form_value.dart';
+import 'package:podd_app/form/form_data/form_values/condition.dart';
 import 'package:podd_app/form/form_data/form_values/location_form_value.dart';
+import 'package:podd_app/form/ui_definition/condition_definition.dart';
 import 'package:uuid/uuid.dart';
 
 import 'definitions/form_data_definition.dart';
@@ -25,28 +27,33 @@ class FormData extends IValidatable with IFormData {
   FormData({this.name, this.definition}) : super([]) {
     id = uuid.v4();
     definition?.properties.forEach((key, value) {
+      EnableConditionState? cs;
       if (value is StringDataDefinition) {
-        addStringValue(key, value.validations);
+        cs = addStringValue(key, value.validations);
       } else if (value is IntegerDataDefinition) {
-        addIntegerValue(key, value.validations);
+        cs = addIntegerValue(key, value.validations);
       } else if (value is BooleanDataDefinition) {
-        addBooleanValue(key, value.validations);
+        cs = addBooleanValue(key, value.validations);
       } else if (value is DateDataDefinition) {
-        addDateFormValue(key, value.validations);
+        cs = addDateFormValue(key, value.validations);
       } else if (value is DecimalDataDefinition) {
-        addDecimalValue(key, value.validations);
+        cs = addDecimalValue(key, value.validations);
       } else if (value is FormDataDefinition) {
-        addFormDataValue(key, FormData(name: key, definition: value));
+        cs = addFormDataValue(key, FormData(name: key, definition: value));
       } else if (value is ArrayDataDefinition) {
-        addArrayDataValue(key, value.cols);
+        cs = addArrayDataValue(key, value.cols);
       } else if (value is ImagesDataDefinition) {
-        addImagesDataValue(key, value.validations);
+        cs = addImagesDataValue(key, value.validations);
       } else if (value is SingleChoiceDataDefinition) {
-        addSingleChoiceDataValue(value);
+        cs = addSingleChoiceDataValue(value);
       } else if (value is MultipleChoiceDataDefinition) {
-        addMultipleChoicesDataValue(value);
+        cs = addMultipleChoicesDataValue(value);
       } else if (value is LocationDataDefinition) {
-        addLocationDataValue(key, value.validations);
+        cs = addLocationDataValue(key, value.validations);
+      }
+      if (cs != null) {
+        cs.setConditionEvaluateFn(createCondition(value.enableCondition));
+        cs.dependOn = value.enableCondition?.name;
       }
     });
   }
@@ -156,4 +163,10 @@ class FormData extends IValidatable with IFormData {
 
   @override
   void initValidation(ValidationDataDefinition validationDefinition) {}
+
+  @override
+  String getStringValue() {
+    // TODO: implement getStringValue
+    throw UnimplementedError();
+  }
 }

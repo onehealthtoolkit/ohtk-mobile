@@ -1,9 +1,5 @@
-import 'package:podd_app/form/ui_definition/fields/images_field_ui_definition.dart';
+import 'package:podd_app/form/ui_definition/condition_definition.dart';
 import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
-
-import 'integer_field_ui_definition.dart';
-import 'location_field_ui_definition.dart';
-import 'text_field_ui_definition.dart';
 
 export 'integer_field_ui_definition.dart';
 export 'text_field_ui_definition.dart';
@@ -21,6 +17,7 @@ abstract class FieldUIDefinition {
   String? description;
   String? suffixLabel;
   bool? required;
+  ConditionDefinition? enableCondition;
 
   FieldUIDefinition({
     required this.id,
@@ -29,6 +26,7 @@ abstract class FieldUIDefinition {
     this.description,
     this.suffixLabel,
     this.required = false,
+    this.enableCondition,
   });
 
   factory FieldUIDefinition.fromJson(Map<String, dynamic> json) {

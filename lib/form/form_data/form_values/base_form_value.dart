@@ -1,11 +1,17 @@
 import 'package:mobx/mobx.dart';
 import 'package:podd_app/form/form_data/definitions/form_data_validation.dart';
+import 'package:podd_app/form/form_data/form_data.dart';
+import 'package:podd_app/form/form_data/form_values/condition.dart';
 
 abstract class IFormData {}
 
 typedef ValidateFunction = bool Function(IFormData root);
 
-abstract class IValidatable {
+abstract class IValue {
+  String getStringValue();
+}
+
+abstract class IValidatable extends EnableConditionState with IValue {
   List<ValidateFunction> validationFunctions = [];
 
   bool validate(IFormData root) {
@@ -25,6 +31,19 @@ abstract class IValidatable {
   // implementation of required validation
   // subclass must override this method to implement another validation method.
   void initValidation(ValidationDataDefinition validationDefinition);
+}
+
+abstract class EnableConditionState {
+  String? dependOn;
+  ConditionEvaluateFn conditionEvaluateFn = alwaysEnable;
+
+  setConditionEvaluateFn(ConditionEvaluateFn fn) {
+    conditionEvaluateFn = fn;
+  }
+
+  bool evaluateCondition(FormData formData) {
+    return conditionEvaluateFn(formData);
+  }
 }
 
 abstract class BaseFormValue<T> extends IValidatable {
@@ -76,5 +95,10 @@ abstract class BaseFormValue<T> extends IValidatable {
         return true;
       });
     }
+  }
+
+  @override
+  String getStringValue() {
+    return _value.value.toString();
   }
 }
