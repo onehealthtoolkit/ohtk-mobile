@@ -12,7 +12,7 @@ ConditionEvaluateFn createCondition(ConditionDefinition? definition) {
     if (definition.operator == ConditionOperator.equal) {
       return (FormData formData) {
         var formValue = formData.getFormValue(definition.name);
-        var strValue = formValue.getStringValue();
+        var strValue = formValue.toString();
         if (definition.operator == ConditionOperator.equal) {
           return strValue == definition.value;
         }

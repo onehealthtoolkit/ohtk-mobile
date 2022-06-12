@@ -167,7 +167,7 @@ void main() {
       var formValue = formData.getFormValue("salary") as DecimalFormValue;
       formValue.value = Decimal.ten;
       var json = formData.toJson();
-      expect(json["salary"], Decimal.ten.toJson());
+      expect(json["salary"], Decimal.ten.toStringAsFixed(2));
     });
 
     test("Location value", () {
@@ -297,13 +297,14 @@ void main() {
       formValue.setSelectedFor("headache", true);
       var json = formData.toJson();
 
-      expect(json[NAME], isNotNull);
-      expect(json[NAME], "cough,headache");
       var subName = "${NAME}_values";
       expect(json[subName], isNotNull);
-      expect(json[subName]["sore throat"], false);
-      expect(json[subName]["cough"], true);
-      expect(json[subName]["headache"], true);
+      expect(json[subName], "cough,headache");
+
+      expect(json[NAME], isNotNull);
+      expect(json[NAME]["sore throat"], false);
+      expect(json[NAME]["cough"], true);
+      expect(json[NAME]["headache"], true);
     });
 
     test("images value", () {

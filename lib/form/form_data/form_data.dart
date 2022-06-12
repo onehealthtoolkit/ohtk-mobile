@@ -17,13 +17,13 @@ import 'form_values/string_form_value.dart';
 
 var uuid = const Uuid();
 
-class FormData extends IValidatable with IFormData {
-  Map<String, IValidatable> values = {};
+class FormData extends FormValue with IFormData {
+  Map<String, FormValue> values = {};
   late String id;
   String? name;
   FormDataDefinition? definition;
 
-  FormData({this.name, this.definition}) : super([]) {
+  FormData({this.name, this.definition}) : super(emptyValidations) {
     id = uuid.v4();
     definition?.properties.forEach((key, value) {
       EnableConditionState? cs;
@@ -57,8 +57,8 @@ class FormData extends IValidatable with IFormData {
     });
   }
 
-  getFormValue(String name) {
-    return values[name];
+  FormValue getFormValue(String name) {
+    return values[name]!;
   }
 
   addStringValue(String name, List<ValidationDataDefinition> validations) {
@@ -115,41 +115,23 @@ class FormData extends IValidatable with IFormData {
     return values[name];
   }
 
+  @override
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
 
     definition?.properties.forEach((key, value) {
-      if (value is StringDataDefinition) {
-        json[key] = (getFormValue(key) as StringFormValue).value;
-      } else if (value is IntegerDataDefinition) {
-        json[key] = (getFormValue(key) as IntegerFormValue).value;
-      } else if (value is BooleanDataDefinition) {
-        json[key] = (getFormValue(key) as BooleanFormValue).value;
-      } else if (value is DateDataDefinition) {
-        json[key] =
-            (getFormValue(key) as DateFormValue).value?.toIso8601String();
-      } else if (value is DecimalDataDefinition) {
-        json[key] = (getFormValue(key) as DecimalFormValue).value?.toJson();
-      } else if (value is FormDataDefinition) {
-        json[key] = (getFormValue(key) as FormData).toJson();
-      } else if (value is ArrayDataDefinition) {
-        addArrayDataValue(key, value.cols);
-        json[key] = (getFormValue(key) as ArrayFormValue).toJson();
-      } else if (value is LocationDataDefinition) {
-        json[key] = (getFormValue(key) as LocationFormValue).value;
-      } else if (value is SingleChoiceDataDefinition) {
-        var formValue = getFormValue(key) as SingleChoicesFormValue;
-        json[key] = formValue.value;
+      var formValue = getFormValue(key);
+      json[key] = formValue.toJson();
+
+      if (value is SingleChoiceDataDefinition) {
+        var singleChoicesValue = getFormValue(key) as SingleChoicesFormValue;
         if (value.hasInput) {
-          json["${key}_text"] = formValue.text;
+          json["${key}_text"] = singleChoicesValue.text;
         }
       } else if (value is MultipleChoiceDataDefinition) {
-        var formValue = (getFormValue(key) as MultipleChoicesFormValue);
-        json[key] = formValue.getStringValue();
-        json["${key}_values"] = formValue.toJson();
-      } else if (value is ImagesDataDefinition) {
-        var formValue = (getFormValue(key) as ImagesFormValue);
-        json[key] = formValue.getStringValue();
+        var multipleChoicesValue =
+            (getFormValue(key) as MultipleChoicesFormValue);
+        json["${key}_values"] = multipleChoicesValue.toString();
       }
     });
     return json;
@@ -178,10 +160,4 @@ class FormData extends IValidatable with IFormData {
 
   @override
   void initValidation(ValidationDataDefinition validationDefinition) {}
-
-  @override
-  String getStringValue() {
-    // TODO: implement getStringValue
-    throw UnimplementedError();
-  }
 }

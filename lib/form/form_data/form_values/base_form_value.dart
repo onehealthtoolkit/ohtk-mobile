@@ -7,11 +7,14 @@ abstract class IFormData {}
 
 typedef ValidateFunction = bool Function(IFormData root);
 
-abstract class IValue {
-  String getStringValue();
+abstract class FormValue extends IValidatable with EnableConditionState {
+  FormValue(List<ValidationDataDefinition> validationDefinition)
+      : super(validationDefinition);
+
+  dynamic toJson();
 }
 
-abstract class IValidatable extends EnableConditionState with IValue {
+abstract class IValidatable {
   List<ValidateFunction> validationFunctions = [];
 
   bool validate(IFormData root) {
@@ -46,7 +49,7 @@ abstract class EnableConditionState {
   }
 }
 
-abstract class BaseFormValue<T> extends IValidatable {
+abstract class BaseFormValue<T> extends FormValue {
   final _value = Observable<T?>(null);
   final _invalidMessage = Observable<String?>(null);
 
@@ -98,7 +101,12 @@ abstract class BaseFormValue<T> extends IValidatable {
   }
 
   @override
-  String getStringValue() {
+  String toString() {
     return _value.value.toString();
+  }
+
+  @override
+  toJson() {
+    return _value.value;
   }
 }

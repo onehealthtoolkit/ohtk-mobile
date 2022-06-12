@@ -29,7 +29,7 @@ class _FormTextFieldState extends State<FormTextField> {
 
       if (formValue.dependOn != null) {
         var _dependFormValue = formData.getFormValue(formValue.dependOn!);
-        _dependFormValue.value;
+        _dependFormValue.toString();
       }
 
       if (!formValue.evaluateCondition(formData)) {
