@@ -160,4 +160,9 @@ class FormData extends FormValue with IFormData {
 
   @override
   void initValidation(ValidationDataDefinition validationDefinition) {}
+
+  @override
+  bool isEqual(String value) {
+    throw UnimplementedError();
+  }
 }

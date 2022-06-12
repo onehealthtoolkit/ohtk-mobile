@@ -9,15 +9,16 @@ bool alwaysEnable(FormData _data) {
 
 ConditionEvaluateFn createCondition(ConditionDefinition? definition) {
   if (definition != null) {
+    bool equalEvalate(FormData formData) {
+      var formValue = formData.getFormValue(definition.name);
+      if (definition.operator == ConditionOperator.equal) {
+        return formValue.isEqual(definition.value);
+      }
+      return true;
+    }
+
     if (definition.operator == ConditionOperator.equal) {
-      return (FormData formData) {
-        var formValue = formData.getFormValue(definition.name);
-        var strValue = formValue.toString();
-        if (definition.operator == ConditionOperator.equal) {
-          return strValue == definition.value;
-        }
-        return true;
-      };
+      return equalEvalate;
     }
   }
   return alwaysEnable;

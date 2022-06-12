@@ -61,4 +61,9 @@ class ImagesFormValue extends FormValue {
   toJson() {
     return _value.join(',');
   }
+
+  @override
+  bool isEqual(String value) {
+    return toString() == value;
+  }
 }

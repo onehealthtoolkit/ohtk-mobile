@@ -120,4 +120,9 @@ class MultipleChoicesFormValue extends FormValue {
     });
     return json;
   }
+
+  @override
+  bool isEqual(String value) {
+    return toString() == value;
+  }
 }

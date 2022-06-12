@@ -12,6 +12,8 @@ abstract class FormValue extends IValidatable with EnableConditionState {
       : super(validationDefinition);
 
   dynamic toJson();
+
+  bool isEqual(String value);
 }
 
 abstract class IValidatable {
@@ -108,5 +110,10 @@ abstract class BaseFormValue<T> extends FormValue {
   @override
   toJson() {
     return _value.value;
+  }
+
+  @override
+  bool isEqual(String value) {
+    return _value.value.toString() == value;
   }
 }

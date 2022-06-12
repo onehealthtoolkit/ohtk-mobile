@@ -43,4 +43,10 @@ class ArrayFormValue extends FormValue {
   void initValidation(ValidationDataDefinition validationDefinition) {
     // TODO: implement initValidation
   }
+
+  @override
+  bool isEqual(String value) {
+    // TODO: implement isEqual
+    throw UnimplementedError();
+  }
 }
