@@ -1,7 +1,6 @@
 import 'package:podd_app/form/form_data/form_values/base_form_value.dart';
 import 'package:podd_app/form/form_data/form_values/condition.dart';
 import 'package:podd_app/form/form_data/form_values/location_form_value.dart';
-import 'package:podd_app/form/ui_definition/condition_definition.dart';
 import 'package:uuid/uuid.dart';
 
 import 'definitions/form_data_definition.dart';
@@ -83,7 +82,7 @@ class FormData extends IValidatable with IFormData {
   }
 
   addDecimalValue(String name, List<ValidationDataDefinition> validations) {
-    values[name] = DecimaFormlValue(validations);
+    values[name] = DecimalFormValue(validations);
     return values[name];
   }
 
@@ -117,27 +116,43 @@ class FormData extends IValidatable with IFormData {
   }
 
   Map<String, dynamic> toJson() {
-    final values = <String, dynamic>{};
+    final json = <String, dynamic>{};
 
     definition?.properties.forEach((key, value) {
       if (value is StringDataDefinition) {
-        values[key] = (getFormValue(key) as StringFormValue).value;
+        json[key] = (getFormValue(key) as StringFormValue).value;
       } else if (value is IntegerDataDefinition) {
-        values[key] = (getFormValue(key) as IntegerFormValue).value;
+        json[key] = (getFormValue(key) as IntegerFormValue).value;
       } else if (value is BooleanDataDefinition) {
-        values[key] = (getFormValue(key) as BooleanFormValue).value;
+        json[key] = (getFormValue(key) as BooleanFormValue).value;
       } else if (value is DateDataDefinition) {
-        values[key] = (getFormValue(key) as DateFormValue).value;
+        json[key] =
+            (getFormValue(key) as DateFormValue).value?.toIso8601String();
       } else if (value is DecimalDataDefinition) {
-        values[key] = (getFormValue(key) as DecimaFormlValue).value;
+        json[key] = (getFormValue(key) as DecimalFormValue).value?.toJson();
       } else if (value is FormDataDefinition) {
-        values[key] = (getFormValue(key) as FormData).toJson();
+        json[key] = (getFormValue(key) as FormData).toJson();
       } else if (value is ArrayDataDefinition) {
         addArrayDataValue(key, value.cols);
-        values[key] = (getFormValue(key) as ArrayFormValue).toJson();
+        json[key] = (getFormValue(key) as ArrayFormValue).toJson();
+      } else if (value is LocationDataDefinition) {
+        json[key] = (getFormValue(key) as LocationFormValue).value;
+      } else if (value is SingleChoiceDataDefinition) {
+        var formValue = getFormValue(key) as SingleChoicesFormValue;
+        json[key] = formValue.value;
+        if (value.hasInput) {
+          json["${key}_text"] = formValue.text;
+        }
+      } else if (value is MultipleChoiceDataDefinition) {
+        var formValue = (getFormValue(key) as MultipleChoicesFormValue);
+        json[key] = formValue.getStringValue();
+        json["${key}_values"] = formValue.toJson();
+      } else if (value is ImagesDataDefinition) {
+        var formValue = (getFormValue(key) as ImagesFormValue);
+        json[key] = formValue.getStringValue();
       }
     });
-    return values;
+    return json;
   }
 
   @override

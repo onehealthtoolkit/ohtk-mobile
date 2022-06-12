@@ -101,11 +101,22 @@ class MultipleChoicesFormValue extends IValidatable with EnableConditionState {
   @override
   String getStringValue() {
     var selected = [];
-    _selected.forEach((key, value) {
-      if (value.value) {
-        selected.add(key);
+    for (var option in dataDefinition.options) {
+      if (_selected[option.value]!.value) {
+        selected.add(option.value);
       }
-    });
+    }
     return selected.join(",");
+  }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    _selected.forEach((key, value) {
+      json[key] = value.value;
+    });
+    _text.forEach((key, value) {
+      json["${key}_text"] = value.value;
+    });
+    return json;
   }
 }
