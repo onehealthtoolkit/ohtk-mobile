@@ -5,6 +5,7 @@ import 'package:podd_app/form/form_data/form_data.dart';
 import 'package:podd_app/form/form_store.dart';
 import 'package:podd_app/form/widgets/form_question.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/report_submit_result.dart';
 import 'package:provider/provider.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/ui/report/report_view_model.dart';
@@ -76,8 +77,11 @@ class _ConfirmSubmit extends HookViewModelWidget<ReportViewModel> {
       child: Column(
         children: [
           ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
+            onPressed: () async {
+              var result = await viewModel.submit();
+              if (result is ReportSubmitSuccess) {
+                Navigator.pop(context);
+              }
             },
             child: const Text("Submit"),
           ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
 import 'package:podd_app/models/entities/utils.dart';
 
 class ReportType {
@@ -45,5 +46,9 @@ class ReportType {
       "updatedAt": updatedAt
     };
     return map;
+  }
+
+  FormUIDefinition get formUIDefinition {
+    return FormUIDefinition.fromJson(json.decode(definition));
   }
 }

@@ -136,6 +136,7 @@ abstract class GraphQlBaseApi {
         document: gql(mutation),
         variables: variables,
         cacheRereadPolicy: cacheRereadPolicy,
+        fetchPolicy: FetchPolicy.noCache,
       );
 
       final QueryResult response = await client.mutate(options);

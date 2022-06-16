@@ -6,6 +6,8 @@ abstract class IImageService {
   Future<void> saveImage(ReportImage reportImage);
 
   Future<ReportImage> getImage(String id);
+
+  Future<List<ReportImage>> findByReportId(String reportId);
 }
 
 class ImageService extends IImageService {
@@ -32,5 +34,18 @@ class ImageService extends IImageService {
     }
 
     throw "import not found";
+  }
+
+  @override
+  Future<List<ReportImage>> findByReportId(String reportId) async {
+    var _db = _dbService.db;
+    var results = await _db.query(
+      'report_image',
+      where: "reportId = ?",
+      whereArgs: [
+        reportId,
+      ],
+    );
+    return results.map((row) => ReportImage.fromMap(row)).toList();
   }
 }
