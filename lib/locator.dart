@@ -98,5 +98,6 @@ void setupLocator(String environment) {
     ReportApi,
     ImageApi,
     IImageService,
+    IDbService,
   ]);
 }

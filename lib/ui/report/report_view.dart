@@ -79,7 +79,8 @@ class _ConfirmSubmit extends HookViewModelWidget<ReportViewModel> {
           ElevatedButton(
             onPressed: () async {
               var result = await viewModel.submit();
-              if (result is ReportSubmitSuccess) {
+              if (result is ReportSubmitSuccess ||
+                  result is ReportSubmitPending) {
                 Navigator.pop(context);
               }
             },

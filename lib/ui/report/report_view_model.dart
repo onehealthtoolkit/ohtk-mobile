@@ -2,6 +2,7 @@ import 'package:podd_app/form/form_data/form_values/location_form_value.dart';
 import 'package:podd_app/form/form_store.dart';
 import 'package:podd_app/form/ui_definition/form_ui_definition.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/entities/report.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/services/report_service.dart';
@@ -79,13 +80,15 @@ class ReportViewModel extends BaseViewModel {
       gpsLocation = formValue.toString();
     }
 
-    var result = await _reportService.submit(
-      reportId: _reportId,
-      reportTypeId: _reportType.id,
+    var report = Report(
+      id: _reportId,
       data: _formStore.formData.toJson(),
+      reportTypeId: _reportType.id,
       incidentDate: DateTime.now(),
       gpsLocation: gpsLocation,
     );
+
+    var result = await _reportService.submit(report);
 
     setBusy(false);
     return result;

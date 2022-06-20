@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:podd_app/ui/home/home_view_model.dart';
 import 'package:podd_app/ui/report_type/report_type_view.dart';
+import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_hooks/stacked_hooks.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -29,6 +31,7 @@ class HomeView extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              _ReSubmitBlock(),
               Text("Hello ${viewModel.username}"),
               TextButton(
                 onPressed: () {
@@ -41,5 +44,25 @@ class HomeView extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _ReSubmitBlock extends HookViewModelWidget<HomeViewModel> {
+  @override
+  Widget buildViewModelWidget(BuildContext context, HomeViewModel viewModel) {
+    if (viewModel.numberOfReportPendingToSubmit > 0) {
+      return TextButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const ReSubmitView(),
+            ),
+          );
+        },
+        child: Text(
+            "${viewModel.numberOfReportPendingToSubmit} reports still pending to submit tap here to re-submit"),
+      );
+    }
+    return Container();
   }
 }

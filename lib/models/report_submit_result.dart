@@ -11,3 +11,5 @@ class ReportSubmitFailure extends OperationExceptionFailure
     with ReportSubmitResult {
   ReportSubmitFailure(e) : super(e);
 }
+
+class ReportSubmitPending extends ReportSubmitResult {}

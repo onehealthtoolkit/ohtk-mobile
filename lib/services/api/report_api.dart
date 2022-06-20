@@ -1,4 +1,5 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:podd_app/models/entities/report.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
 import 'package:intl/intl.dart';
@@ -6,13 +7,7 @@ import 'package:intl/intl.dart';
 class ReportApi extends GraphQlBaseApi {
   ReportApi(GraphQLClient client) : super(client);
 
-  Future<ReportSubmitResult> submit(
-    String reportId,
-    String reportTypeId,
-    Map<String, dynamic> data,
-    DateTime incidentDate,
-    String? gpsLocation,
-  ) async {
+  Future<ReportSubmitResult> submit(Report report) async {
     const mutation = r'''
       mutation submitIncidentReport(
         $data: GenericScalar!,
@@ -34,11 +29,11 @@ class ReportApi extends GraphQlBaseApi {
         mutation: mutation,
         parseData: (data) => data,
         variables: {
-          "reportId": reportId,
-          "reportTypeId": reportTypeId,
-          "data": data,
-          "incidentDate": formatter.format(incidentDate),
-          "gpsLocation": gpsLocation,
+          "reportId": report.id,
+          "reportTypeId": report.reportTypeId,
+          "data": report.data,
+          "incidentDate": formatter.format(report.incidentDate),
+          "gpsLocation": report.gpsLocation,
         },
       );
 
