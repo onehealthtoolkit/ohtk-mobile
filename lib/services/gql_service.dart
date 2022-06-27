@@ -1,11 +1,17 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/config_service.dart';
 import 'package:podd_app/services/secure_storage_service.dart';
 import "package:gql_dio_link/gql_dio_link.dart";
 import 'package:dio/dio.dart' as http;
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
+
+class InvalidRefreshTokenError extends http.DioError {
+  InvalidRefreshTokenError(requestOptions)
+      : super(requestOptions: requestOptions);
+}
 
 class GqlService {
   final _configService = locator<ConfigService>();
@@ -29,10 +35,21 @@ class GqlService {
         onResponse: (response, handler) async {
           final errors = response.data['errors'];
           if (errors is List && errors.isNotEmpty) {
-            if (_isJWTExpire(errors)) {
-              await _refreshToken();
-              final cloneReq = await _retry(response.requestOptions);
-              return handler.resolve(cloneReq);
+            if (_isInvalidRefreshToken(errors)) {
+              var authService = locator<IAuthService>();
+              await authService.logout();
+
+              return handler.reject(
+                InvalidRefreshTokenError(response.requestOptions),
+              );
+            } else if (_isJWTExpire(errors)) {
+              bool success = await _refreshToken();
+              if (success) {
+                final cloneReq = await _retry(response.requestOptions);
+                return handler.resolve(cloneReq);
+              } else {
+                return handler.next(response);
+              }
             }
           }
           return handler.resolve(response);
@@ -50,7 +67,7 @@ class GqlService {
     _client = GraphQLClient(link: _dioLink, cache: cache);
   }
 
-  Future<void> _refreshToken() async {
+  Future<bool> _refreshToken() async {
     final refreshToken = await _secureStorage.get('refreshToken');
     const mutation = r'''
           mutation RefreshToken($refreshToken: String!) {
@@ -61,16 +78,20 @@ class GqlService {
             }
           }
     ''';
-    final response = await _dio.post(_configService.graphqlEndpoint, data: {
-      'query': mutation,
-      'variables': {'refreshToken': refreshToken}
-    });
 
-    if (response.statusCode == 200) {
+    try {
+      final response = await _dio.post(_configService.graphqlEndpoint, data: {
+        'query': mutation,
+        'variables': {'refreshToken': refreshToken}
+      });
+
       await _secureStorage.set(
         'token',
         response.data['data']['refreshToken']['token'],
       );
+      return true;
+    } on InvalidRefreshTokenError {
+      return false;
     }
   }
 
@@ -89,6 +110,20 @@ class GqlService {
     for (var element in errors) {
       final err = element['message'] as String;
       final m = _jwtExpiredMessages.firstWhere(
+        (element) => err.contains(element),
+        orElse: () => '',
+      );
+      if (m != '') {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  _isInvalidRefreshToken(errors) {
+    for (var element in errors) {
+      final err = element['message'] as String;
+      final m = ["Invalid refresh token"].firstWhere(
         (element) => err.contains(element),
         orElse: () => '',
       );
