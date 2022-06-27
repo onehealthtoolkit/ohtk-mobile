@@ -15,4 +15,6 @@ class ConfigService {
   String get serverHost => "$serverDomain:$serverPort";
 
   String get graphqlEndpoint => "$serverSchema://$serverHost/graphql/";
+
+  String get imageEndpoint => "$serverSchema://$serverHost/";
 }

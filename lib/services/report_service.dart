@@ -1,5 +1,6 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/entities/report.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/services/api/image_api.dart';
@@ -14,7 +15,11 @@ abstract class IReportService with ReactiveServiceMixin {
 
   List<Report> get pendingReports;
 
+  List<IncidentReport> get incidentReports;
+
   Future<void> submitAllPendingReport();
+
+  Future<void> fetchIncidents(bool resetFlag);
 }
 
 class ReportService extends IReportService {
@@ -24,9 +29,14 @@ class ReportService extends IReportService {
   final _dbService = locator<IDbService>();
 
   final ReactiveList<Report> _pendingReports = ReactiveList<Report>();
+  final ReactiveList<IncidentReport> _incidents =
+      ReactiveList<IncidentReport>();
+  bool hasMoreIncidentReports = false;
+  int currentIncidentReportNextOffset = 0;
+  int incidentReportLimit = 20;
 
   ReportService() {
-    listenToReactiveValues([_pendingReports]);
+    listenToReactiveValues([_pendingReports, _incidents]);
     _init();
   }
 
@@ -35,6 +45,22 @@ class ReportService extends IReportService {
     rows.map((row) => Report.fromMap(row)).forEach((report) {
       _pendingReports.add(report);
     });
+    fetchIncidents(true);
+  }
+
+  @override
+  fetchIncidents(bool resetFlag) async {
+    if (resetFlag) {
+      currentIncidentReportNextOffset = 0;
+    }
+    var result = await _reportApi.fetchIncidentReports(
+      offset: currentIncidentReportNextOffset,
+      limit: incidentReportLimit,
+    );
+    _incidents.addAll(result.data);
+    hasMoreIncidentReports = result.hasNextPage;
+    currentIncidentReportNextOffset =
+        currentIncidentReportNextOffset + incidentReportLimit;
   }
 
   @override
@@ -108,4 +134,7 @@ class ReportService extends IReportService {
       submit(report);
     }
   }
+
+  @override
+  List<IncidentReport> get incidentReports => _incidents;
 }

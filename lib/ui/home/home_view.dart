@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/home/home_view_model.dart';
 import 'package:podd_app/ui/report_type/report_type_view.dart';
 import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:intl/intl.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -32,17 +35,53 @@ class HomeView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _ReSubmitBlock(),
-              Text("Hello ${viewModel.username}"),
-              TextButton(
-                onPressed: () {
-                  viewModel.logout();
-                },
-                child: const Text("logout"),
+              Expanded(
+                child: _ReportList(),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ReportList extends HookViewModelWidget<HomeViewModel> {
+  @override
+  Widget buildViewModelWidget(BuildContext context, HomeViewModel viewModel) {
+    return ListView.builder(
+      itemCount: viewModel.incidentReports.length,
+      itemBuilder: (context, index) {
+        var report = viewModel.incidentReports[index];
+        IncidentReportImage? image;
+        if (report.images?.isNotEmpty != false) {
+          image = report.images?.first;
+        }
+        var formatter = DateFormat("dd/MM/yyyy HH:mm");
+        return ListTile(
+          leading: image != null
+              ? CachedNetworkImage(
+                  imageUrl: viewModel.resolveImagePath(image.filePath),
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                )
+              : Container(
+                  color: Colors.grey,
+                  width: 80,
+                ),
+          title: Text(report.reportTypeName),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(formatter.format(report.createdAt), textScaleFactor: .75),
+              Text(
+                report.description,
+                textScaleFactor: .75,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
