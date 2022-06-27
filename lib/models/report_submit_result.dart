@@ -1,10 +1,14 @@
+import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/operation_exception_failure.dart';
 
 abstract class ReportSubmitResult {}
 
 class ReportSubmitSuccess extends ReportSubmitResult {
-  final String id;
-  ReportSubmitSuccess({required this.id});
+  final IncidentReport _incidentReport;
+
+  ReportSubmitSuccess(this._incidentReport);
+
+  IncidentReport get incidentReport => _incidentReport;
 }
 
 class ReportSubmitFailure extends OperationExceptionFailure

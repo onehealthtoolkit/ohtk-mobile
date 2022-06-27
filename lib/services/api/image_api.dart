@@ -1,5 +1,6 @@
 import "package:dio/dio.dart" as dio;
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/entities/report_image.dart';
 import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
@@ -16,6 +17,7 @@ class ImageApi extends GraphQlBaseApi {
       ) {
         submitImage(image: $image, imageId: $imageId, reportId: $reportId) {
           id
+          file
         }
       }
     ''';
@@ -26,17 +28,18 @@ class ImageApi extends GraphQlBaseApi {
     );
 
     try {
-      await runGqlMutation(
+      var result = await runGqlMutation<IncidentReportImage>(
           mutation: mutation,
-          parseData: (data) => data,
+          parseData: (json) => IncidentReportImage.fromJson(json!),
           variables: {
             "image": file,
             "imageId": reportImage.id,
             "reportId": reportImage.reportId
           });
+
+      return ImageSubmitSuccess(result);
     } on OperationException catch (e) {
       return ImageSubmitFailure(e);
     }
-    return ImageSubmitSuccess(id: "test");
   }
 }

@@ -1,7 +1,9 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/entities/report.dart';
+import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/report_api.dart';
@@ -11,6 +13,8 @@ import 'package:podd_app/services/image_service.dart';
 import 'package:stacked/stacked.dart';
 
 abstract class IReportService with ReactiveServiceMixin {
+  final _logger = locator<Logger>();
+
   Future<ReportSubmitResult> submit(Report report);
 
   List<Report> get pendingReports;
@@ -70,12 +74,18 @@ class ReportService extends IReportService {
 
       if (result is ReportSubmitSuccess) {
         await _deleteFromLocalDB(report);
+        result.incidentReport.images = List.of([]);
 
         // submit images
-        var images = await _imageService.findByReportId(report.id);
-        for (var image in images) {
-          _imageApi.submit(image);
+        var localImages = await _imageService.findByReportId(report.id);
+        for (var img in localImages) {
+          var submitImageResult = await _imageApi.submit(img);
+          if (submitImageResult is ImageSubmitSuccess) {
+            result.incidentReport.images!.add(submitImageResult.image);
+          }
         }
+
+        _incidents.insert(0, result.incidentReport);
       }
       return result;
     } on LinkException catch (_e) {
@@ -131,7 +141,11 @@ class ReportService extends IReportService {
   @override
   Future<void> submitAllPendingReport() async {
     for (var report in _pendingReports) {
-      submit(report);
+      try {
+        submit(report);
+      } catch (e) {
+        _logger.e(e);
+      }
     }
   }
 

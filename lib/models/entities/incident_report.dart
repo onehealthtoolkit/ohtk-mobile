@@ -46,9 +46,11 @@ class IncidentReport {
       updatedAt: DateTime.parse(json["updatedAt"]),
       gpsLocation: json["gpsLocation"],
       data: json["data"],
-      images: (json["images"] as List)
-          .map((image) => IncidentReportImage.fromJson(image))
-          .toList(),
+      images: json["images"] != null
+          ? (json["images"] as List)
+              .map((image) => IncidentReportImage.fromJson(image))
+              .toList()
+          : [],
     );
   }
 }

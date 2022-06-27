@@ -1,4 +1,5 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/entities/report.dart';
 import 'package:podd_app/models/incident_report_query_result.dart';
 import 'package:podd_app/models/report_submit_result.dart';
@@ -20,15 +21,29 @@ class ReportApi extends GraphQlBaseApi {
         submitIncidentReport(data: $data, reportId: $reportId, 
           reportTypeId: $reportTypeId, incidentDate: $incidentDate, 
           gpsLocation: $gpsLocation) {
-          id
+          result {
+            id
+            incidentDate
+            gpsLocation
+            rendererData
+            createdAt
+            updatedAt
+            reportType {
+              name
+            }
+            reportedBy {
+              id
+              username        
+            }
+          }
         }
       }
     ''';
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     try {
-      var result = await runGqlMutation(
+      var result = await runGqlMutation<IncidentReport>(
         mutation: mutation,
-        parseData: (data) => data,
+        parseData: (json) => IncidentReport.fromJson(json!["result"]),
         variables: {
           "reportId": report.id,
           "reportTypeId": report.reportTypeId,
@@ -38,7 +53,7 @@ class ReportApi extends GraphQlBaseApi {
         },
       );
 
-      return ReportSubmitSuccess(id: result!["id"]);
+      return ReportSubmitSuccess(result);
     } on OperationException catch (e) {
       return ReportSubmitFailure(e);
     }
