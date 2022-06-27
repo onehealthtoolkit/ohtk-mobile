@@ -4,6 +4,7 @@ import 'package:podd_app/models/login_result.dart';
 import 'package:podd_app/models/user_profile.dart';
 import 'package:podd_app/services/report_type_service.dart';
 import 'package:podd_app/services/secure_storage_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 
 import 'api/auth_api.dart';
@@ -46,8 +47,17 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
   }
 
   init() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('first_run') ?? true) {
+      await secureStorageService.deleteAll();
+
+      prefs.setBool('first_run', false);
+    }
+
     var token = await secureStorageService.get('token');
+    var refreshToken = await secureStorageService.get('refreshToken');
     logger.d("token $token");
+    logger.d("refreshToken $refreshToken");
     if (token != null) {
       _token = token;
       _userProfile = await secureStorageService.getUserProfile();
