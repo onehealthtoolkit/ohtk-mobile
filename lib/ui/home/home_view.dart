@@ -18,6 +18,15 @@ class HomeView extends StatelessWidget {
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title: const Text("Home"),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              tooltip: 'Logout',
+              onPressed: () {
+                viewModel.logout();
+              },
+            )
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {

@@ -9,6 +9,7 @@ class Report {
   String reportTypeId;
   DateTime incidentDate;
   String? gpsLocation;
+  bool? incidentInAuthority;
 
   Report({
     required this.id,
@@ -16,6 +17,7 @@ class Report {
     required this.reportTypeId,
     required this.incidentDate,
     this.gpsLocation,
+    this.incidentInAuthority,
   });
 
   Report.fromMap(Map<String, dynamic> map)
@@ -23,7 +25,8 @@ class Report {
         data = json.decode(map["data"]),
         reportTypeId = map["report_type_id"],
         incidentDate = DateFormat("yyyy-MM-dd").parse(map["incident_date"]),
-        gpsLocation = map["gps_location"];
+        gpsLocation = map["gps_location"],
+        incidentInAuthority = map["incident_in_authority"];
 
   Map<String, dynamic> toMap() {
     return {
@@ -31,7 +34,8 @@ class Report {
       "data": json.encode(data),
       "report_type_id": reportTypeId,
       "incident_date": DateFormat("yyyy-MM-dd").format(incidentDate),
-      "gps_location": gpsLocation
+      "gps_location": gpsLocation,
+      "incident_in_authority": incidentInAuthority,
     };
   }
 

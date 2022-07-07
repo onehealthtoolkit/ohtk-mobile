@@ -28,6 +28,7 @@ class ReportViewModel extends BaseViewModel {
   ReportFormState state = ReportFormState.formInput;
   late String _reportId;
   late FormStore _formStore;
+  bool? _incidentInAuthority;
 
   FormStore get formStore => _formStore;
 
@@ -35,6 +36,13 @@ class ReportViewModel extends BaseViewModel {
     _reportId = _uuid.v4();
     var uiDefinition = _reportType.formUIDefinition;
     _formStore = FormStore(_reportId, uiDefinition);
+  }
+
+  bool? get incidentInAuthority => _incidentInAuthority;
+
+  set incidentInAuthority(bool? value) {
+    _incidentInAuthority = value;
+    notifyListeners();
   }
 
   BackAction back() {
@@ -86,6 +94,7 @@ class ReportViewModel extends BaseViewModel {
       reportTypeId: _reportType.id,
       incidentDate: DateTime.now(),
       gpsLocation: gpsLocation,
+      incidentInAuthority: _incidentInAuthority,
     );
 
     var result = await _reportService.submit(report);

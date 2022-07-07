@@ -119,9 +119,9 @@ class _FormImagesFieldState extends State<FormImagesField> {
               leading: const Icon(Icons.photo_album),
               title: const Text('Pick from Gallery'),
               onTap: () async {
-                var reportType = await _pickImage(ImageSource.gallery);
-                if (reportType != null) {
-                  _addImage(reportType.id);
+                var reportImage = await _pickImage(ImageSource.gallery);
+                if (reportImage != null) {
+                  _addImage(reportImage.id);
                 }
                 Navigator.pop(context);
               },
@@ -130,9 +130,9 @@ class _FormImagesFieldState extends State<FormImagesField> {
               leading: const Icon(Icons.photo_camera),
               title: const Text('Take a Photo'),
               onTap: () async {
-                var reportType = await _pickImage(ImageSource.camera);
-                if (reportType != null) {
-                  _addImage(reportType.id);
+                var reportImage = await _pickImage(ImageSource.camera);
+                if (reportImage != null) {
+                  _addImage(reportImage.id);
                 }
                 Navigator.pop(context);
               },
