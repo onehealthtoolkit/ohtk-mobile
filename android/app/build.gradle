@@ -21,8 +21,6 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-def googleMapApiKey = localProperties.getProperty('google.map.key')
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -46,10 +44,14 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.podd_app"
-        minSdkVersion flutter.minSdkVersion
+        // [:flutter_secure_storage] requires minSdkVersion 18 
+        // [:google_maps_flutter] requires minSdkVersion 20
+        minSdkVersion 20
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        manifestPlaceholders += [googleMapApiKey: localProperties.getProperty('google.map.key')]
     }
 
     buildTypes {
