@@ -6,7 +6,7 @@ class LocationFormValue extends BaseFormValue<String?> {
   double? get latitude {
     if (value != null) {
       var latLongAry = value!.split(',');
-      var latValue = double.parse(latLongAry[0]);
+      var latValue = double.parse(latLongAry[1]);
       return latValue;
     } else {
       return null;
@@ -16,8 +16,8 @@ class LocationFormValue extends BaseFormValue<String?> {
   double? get longitude {
     if (value != null) {
       var latLongAry = value!.split(',');
-      var latValue = double.parse(latLongAry[1]);
-      return latValue;
+      var longValue = double.parse(latLongAry[0]);
+      return longValue;
     } else {
       return null;
     }

@@ -62,7 +62,7 @@ class _FormLocationFieldState extends State<FormLocationField> {
                     var _position = await Geolocator.getCurrentPosition(
                         desiredAccuracy: LocationAccuracy.medium);
                     formValue.value =
-                        "${_position.latitude},${_position.longitude}";
+                        "${_position.longitude},${_position.latitude}";
                   }
                 } else {
                   _logger.e("location is disable");
