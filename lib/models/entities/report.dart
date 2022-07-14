@@ -26,7 +26,7 @@ class Report {
         reportTypeId = map["report_type_id"],
         incidentDate = DateFormat("yyyy-MM-dd").parse(map["incident_date"]),
         gpsLocation = map["gps_location"],
-        incidentInAuthority = map["incident_in_authority"];
+        incidentInAuthority = map["incident_in_authority"] == 1;
 
   Map<String, dynamic> toMap() {
     return {
