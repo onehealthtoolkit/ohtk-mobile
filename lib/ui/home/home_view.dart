@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/home/home_view_model.dart';
+import 'package:podd_app/ui/notification/message_list.dart';
 import 'package:podd_app/ui/report_type/report_type_view.dart';
 import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
@@ -19,6 +20,18 @@ class HomeView extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Home"),
           actions: [
+            IconButton(
+              icon: const Icon(Icons.mail),
+              tooltip: 'Messages',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MessageList(),
+                  ),
+                );
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.logout),
               tooltip: 'Logout',
