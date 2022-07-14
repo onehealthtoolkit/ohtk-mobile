@@ -53,9 +53,9 @@ dependencies:
   mobx:
   decimal: 2.1.0
   google_maps_flutter: ^2.1.4
-  geolocator: ^8.2.1
+  geolocator: ^9.0.1
   cross_file: ^0.3.3
-  image_picker: ^0.8.5
+  image_picker: ^0.8.5+3
   date_field: ^3.0.1
   cached_network_image: ^3.2.0
   shared_preferences: ^2.0.15

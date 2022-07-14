@@ -120,7 +120,7 @@ class _App extends StatelessWidget {
         },
       ),
       builder: (context, viewModel, child) =>
-          viewModel.isLogin == true ? const HomeView() : const LoginView(),
+          viewModel.isLogin == true ? HomeView() : const LoginView(),
     );
   }
 }

@@ -1,0 +1,9 @@
+{
+    "Simulator Target Bundle": "org.poddtoolkit.poddMobile",
+    "aps" : {
+        "alert" : {
+            "title" : "sarunw.com",
+            "body" : "A asdfsadfsadf"
+        }
+    }
+}
