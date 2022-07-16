@@ -1,19 +1,15 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:podd_app/models/notification_message.dart';
 import 'package:podd_app/services/auth_service.dart';
-import 'package:podd_app/services/notification_service.dart';
 import 'package:podd_app/ui/home/home_view.dart';
 import 'package:podd_app/ui/login/login_view.dart';
-import 'package:podd_app/ui/notification/message_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
+import 'firebase_options.dart';
 import 'locator.dart';
 
 void main() async {
@@ -101,26 +97,9 @@ class _App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<_AppViewModel>.reactive(
-      viewModelBuilder: () => _AppViewModel(
-        onInitialMessage: (message) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MessageView(message: message),
-            ),
-          );
-        },
-        onMessageOpenedApp: (message) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MessageView(message: message),
-            ),
-          );
-        },
-      ),
+      viewModelBuilder: () => _AppViewModel(),
       builder: (context, viewModel, child) =>
-          viewModel.isLogin == true ? HomeView() : const LoginView(),
+          viewModel.isLogin == true ? const HomeView() : const LoginView(),
     );
   }
 }
@@ -128,36 +107,6 @@ class _App extends StatelessWidget {
 class _AppViewModel extends ReactiveViewModel {
   final IAuthService authService = locator<IAuthService>();
   bool? get isLogin => authService.isLogin;
-
-  _AppViewModel(
-      {NotificationMessageCallback? onInitialMessage,
-      NotificationMessageCallback? onMessageOpenedApp}) {
-    // app in terminated state has been opened from notification
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage? message) {
-      if (message != null && message.notification != null) {
-        print("Open terminated app via notification message");
-        if (onInitialMessage != null) {
-          onInitialMessage(
-            NotificationMessage.fromRemoteNotification(
-                message.messageId!, message.notification!),
-          );
-        }
-      }
-    });
-
-    // app is in background (unterminated) and has been opened via notification
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        print("Open background app via notification message");
-        if (onMessageOpenedApp != null) {
-          onMessageOpenedApp!(NotificationMessage.fromRemoteNotification(
-              message.messageId!, message.notification!));
-        }
-      }
-    });
-  }
 
   @override
   List<ReactiveServiceMixin> get reactiveServices =>
