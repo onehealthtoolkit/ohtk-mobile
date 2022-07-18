@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/services/api/auth_api.dart';
 import 'package:podd_app/services/api/image_api.dart';
+import 'package:podd_app/services/api/notification_api.dart';
 import 'package:podd_app/services/api/register_api.dart';
 import 'package:podd_app/services/api/report_api.dart';
 import 'package:podd_app/services/api/report_type_api.dart';
@@ -67,12 +68,23 @@ void setupLocator(String environment) {
     return ImageApi(gqlService.client);
   }, dependsOn: [GqlService]);
 
+  locator.registerSingletonAsync<NotificationApi>(() async {
+    var gqlService = locator<GqlService>();
+    return NotificationApi(gqlService.client);
+  }, dependsOn: [GqlService]);
+
   locator.registerSingletonAsync<IReportTypeService>(() async {
     final reportTypeService = ReportTypeService();
     return reportTypeService;
   }, dependsOn: [
     IDbService,
     ReportTypeApi,
+  ]);
+
+  locator.registerSingletonAsync<INotificationService>(() async {
+    return NotificationService();
+  }, dependsOn: [
+    NotificationApi,
   ]);
 
   locator.registerSingletonAsync<IAuthService>(() async {
@@ -101,8 +113,4 @@ void setupLocator(String environment) {
     IImageService,
     IDbService,
   ]);
-
-  locator.registerSingletonAsync<INotificationService>(() async {
-    return NotificationService();
-  });
 }

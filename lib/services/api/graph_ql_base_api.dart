@@ -139,6 +139,7 @@ abstract class GraphQlBaseApi {
         fetchPolicy: FetchPolicy.noCache,
       );
 
+      baseLogger?.v('REQUEST:$actionName - mutation:$mutation');
       final QueryResult response = await client.mutate(options);
       onRawResponse?.call(response);
 

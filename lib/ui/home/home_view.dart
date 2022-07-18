@@ -1,11 +1,10 @@
-import 'dart:io';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/home/home_view_model.dart';
-import 'package:podd_app/ui/notification/message_list.dart';
+import 'package:podd_app/ui/notification/user_message_list.dart';
+import 'package:podd_app/ui/notification/user_message_view.dart';
 import 'package:podd_app/ui/report_type/report_type_view.dart';
 import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
@@ -13,37 +12,46 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:intl/intl.dart';
 
 class HomeView extends StatelessWidget {
-  HomeView({Key? key}) : super(key: key) {
-    initilize(this);
-  }
+  const HomeView({Key? key}) : super(key: key);
 
-  Future initilize(context) async {
-    if (Platform.isIOS) {
-      FirebaseMessaging messaging = FirebaseMessaging.instance;
-      var settings = await messaging.requestPermission(
-        alert: true,
-        announcement: false,
-        badge: true,
-        carPlay: false,
-        criticalAlert: false,
-        provisional: false,
-        sound: true,
-      );
-      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-        print('User granted permission');
-      } else if (settings.authorizationStatus ==
-          AuthorizationStatus.provisional) {
-        print('User granted provisional permission');
-      } else {
-        print('User declined or has not accepted permission');
-      }
-    }
+  _viewUserMessage(BuildContext context, String userMessageId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UserMessageView(id: userMessageId),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.nonReactive(
       viewModelBuilder: () => HomeViewModel(),
+      fireOnModelReadyOnce: true,
+      onModelReady: (viewModel) {
+        viewModel.setupFirebaseMessaging(onBackgroundMessage: (userMessageId) {
+          _viewUserMessage(context, userMessageId);
+        }, onForegroundMessage: (userMessageId) {
+          showSimpleNotification(
+            const Text("You've got a new message"),
+            trailing: Builder(builder: (context) {
+              return TextButton(
+                onPressed: () {
+                  OverlaySupportEntry.of(context)!.dismiss();
+                  _viewUserMessage(context, userMessageId);
+                },
+                child: const Text(
+                  'View message',
+                  style: TextStyle(color: Colors.amber),
+                ),
+              );
+            }),
+            background: Colors.blueAccent.shade700,
+            slideDismissDirection: DismissDirection.horizontal,
+            duration: const Duration(seconds: 3),
+          );
+        });
+      },
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title: const Text("Home"),
@@ -55,7 +63,7 @@ class HomeView extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MessageList(),
+                    builder: (context) => const UserMessageList(),
                   ),
                 );
               },

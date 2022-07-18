@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:logger/logger.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:podd_app/locator.dart';
-import 'package:podd_app/models/notification_message.dart';
+import 'package:podd_app/models/fcm_register_result.dart';
+import 'package:podd_app/models/entities/user_message.dart';
+import 'package:podd_app/services/api/notification_api.dart';
 import 'package:stacked/stacked.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -12,51 +18,160 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
 }
 
-typedef NotificationMessageCallback = void Function(NotificationMessage);
+typedef NotificationMessageCallback = void Function(String userMessageId);
 
 abstract class INotificationService with ReactiveServiceMixin {
   final _logger = locator<Logger>();
 
-  List<NotificationMessage> get messages;
+  List<UserMessage> get userMessages;
+
+  setupFirebaseMessaging(
+    String userId, {
+    NotificationMessageCallback? onInitialMessage,
+    NotificationMessageCallback? onMessageOpenedApp,
+    NotificationMessageCallback? onForegroundMessage,
+  });
+
+  fetchMyMessages(bool resetFlag);
+  Future<UserMessage> getMyMessage(String id);
 }
 
 class NotificationService extends INotificationService {
-  final ReactiveList<NotificationMessage> _messages =
-      ReactiveList<NotificationMessage>();
+  final _notificationApi = locator<NotificationApi>();
+
+  final ReactiveList<UserMessage> _userMessages = ReactiveList<UserMessage>();
+
+  int userMessageLimit = 20;
+  bool hasMoreUserMessages = false;
+  int currentUserMessageNextOffset = 0;
 
   NotificationService() {
-    listenToReactiveValues([_messages]);
-    _init();
+    listenToReactiveValues([_userMessages]);
   }
 
-  _init() async {
-    // TODO register fcm token to server
+  @override
+  List<UserMessage> get userMessages => _userMessages;
+
+  @override
+  setupFirebaseMessaging(
+    String userId, {
+    NotificationMessageCallback? onInitialMessage,
+    NotificationMessageCallback? onMessageOpenedApp,
+    NotificationMessageCallback? onForegroundMessage,
+  }) async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
-    _logger.d("fcm token: " + (fcmToken ?? "???"));
+    _logger.d("register fcm token: " + (fcmToken ?? "???"));
+    if (fcmToken == null) {
+      return;
+    }
 
-    FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
-      // TODO: If necessary send token to application server.
+    _registerFcmToken(userId, fcmToken);
 
-      // Note: This callback is fired at each app startup and whenever a new
-      // token is generated.
-      print("fcm token refresh: " + fcmToken);
-    }).onError((err) {
-      // Error getting token.
-      throw Exception(err);
+    // Note: This callback is fired at each app startup and whenever a new
+    // token is generated.
+    FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) async {
+      _logger.d("fcm token refresh: " + fcmToken);
+      _registerFcmToken(userId, fcmToken);
+    }).onError((e) {
+      _logger.e(e);
+    });
+
+    if (Platform.isIOS) {
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      var settings = await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        print('User granted permission');
+      } else if (settings.authorizationStatus ==
+          AuthorizationStatus.provisional) {
+        print('User granted provisional permission');
+      } else {
+        print('User declined or has not accepted permission');
+      }
+    }
+
+    // app in terminated state has been opened from notification
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage? message) {
+      _logger.v("Open terminated app via notification message");
+
+      if (message != null) {
+        final userMessageId = message.data["user_message_id"];
+        _logger.d("Data: user message id: ${message.data["user_message_id"]}");
+
+        if (userMessageId != null && onInitialMessage != null) {
+          onInitialMessage(userMessageId);
+        }
+      }
+    });
+
+    // app is in background (unterminated) and has been opened via notification
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _logger.v("Open background app via notification message");
+
+      final userMessageId = message.data["user_message_id"];
+      _logger.d("Data: user message id: ${message.data["user_message_id"]}");
+
+      if (userMessageId != null && onMessageOpenedApp != null) {
+        onMessageOpenedApp(userMessageId);
+      }
     });
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
     // app is already in foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      _logger.i("Notification message received whilst in the foreground");
-      if (message.messageId != null && message.notification != null) {
-        _messages.add(NotificationMessage.fromRemoteNotification(
-            message.messageId!, message.notification!));
+      _logger.v("Notification message received whilst in the foreground");
+
+      final userMessageId = message.data["user_message_id"];
+      _logger.d("Data: user message id: ${message.data["user_message_id"]}");
+
+      if (userMessageId != null && onForegroundMessage != null) {
+        // Show overlay notification
+        onForegroundMessage(userMessageId);
+        fetchMyMessages(true);
       }
     });
   }
 
+  _registerFcmToken(String userId, String fcmToken) async {
+    try {
+      final result = await _notificationApi.registerFcmToken(userId, fcmToken);
+      if (result is FcmTokenRegisterFailure) {
+        _logger.e(result.messages);
+      }
+    } on LinkException catch (e) {
+      _logger.e(e);
+    }
+  }
+
   @override
-  List<NotificationMessage> get messages => _messages;
+  fetchMyMessages(bool resetFlag) async {
+    if (resetFlag) {
+      currentUserMessageNextOffset = 0;
+      _userMessages.clear();
+    }
+    final result = await _notificationApi.fetchMyMessages(
+      offset: currentUserMessageNextOffset,
+      limit: userMessageLimit,
+    );
+    _userMessages.addAll(result.data);
+    hasMoreUserMessages = result.hasNextPage;
+    currentUserMessageNextOffset =
+        currentUserMessageNextOffset + userMessageLimit;
+  }
+
+  @override
+  Future<UserMessage> getMyMessage(String id) async {
+    final result = await _notificationApi.getMyMessage(id);
+    return result.data;
+  }
 }
