@@ -102,6 +102,36 @@ class ReportApi extends GraphQlBaseApi {
       typeConverter: (resp) => IncidentReportQueryResult.fromJson(resp),
     );
   }
+
+  Future<IncidentReportGetResult> getIncidentReport(String id) {
+    const query = r'''
+      query incidentReport($id: ID!) {
+        incidentReport(id: $id) {
+          id
+          incidentDate
+          gpsLocation
+          rendererData
+          createdAt
+          updatedAt
+          reportType {
+            name
+          }
+          reportedBy {
+            id
+            username        
+          } 
+          images {
+            id
+            file 
+          }      
+        }
+      }
+    ''';
+    return runGqlQuery(
+        query: query,
+        variables: {"id": id},
+        typeConverter: (resp) => IncidentReportGetResult.fromJson(resp));
+  }
 }
 
 class ReportSubmitInputType {}

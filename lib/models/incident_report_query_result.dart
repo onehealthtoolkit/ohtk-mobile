@@ -15,3 +15,15 @@ class IncidentReportQueryResult {
     );
   }
 }
+
+class IncidentReportGetResult {
+  IncidentReport data;
+
+  IncidentReportGetResult({
+    required this.data,
+  });
+
+  factory IncidentReportGetResult.fromJson(Map<String, dynamic> jsonMap) {
+    return IncidentReportGetResult(data: IncidentReport.fromJson(jsonMap));
+  }
+}

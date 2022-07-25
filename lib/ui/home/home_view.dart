@@ -5,6 +5,7 @@ import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/home/home_view_model.dart';
 import 'package:podd_app/ui/notification/user_message_list.dart';
 import 'package:podd_app/ui/notification/user_message_view.dart';
+import 'package:podd_app/ui/report/incident_report_view.dart';
 import 'package:podd_app/ui/report_type/report_type_view.dart';
 import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
@@ -138,6 +139,13 @@ class _ReportList extends HookViewModelWidget<HomeViewModel> {
               ),
             ],
           ),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => IncidentReportView(id: report.id),
+              ),
+            );
+          },
         );
       },
     );
