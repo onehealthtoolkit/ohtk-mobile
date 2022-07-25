@@ -61,6 +61,8 @@ dependencies:
   shared_preferences: ^2.0.15
   firebase_core: ^1.19.1
   firebase_messaging: ^11.4.4
+  dartz: ^0.10.1
+  
 
 dev_dependencies:
   flutter_test:
