@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:im_stepper/stepper.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/form/form_data/form_data.dart';
 import 'package:podd_app/form/form_store.dart';
@@ -32,6 +33,7 @@ class ReportView extends StatelessWidget {
             ),
             body: Column(
               children: [
+                if (viewModel.state == ReportFormState.formInput) _Stepper(),
                 if (viewModel.state == ReportFormState.confirmation)
                   Expanded(
                     flex: 1,
@@ -190,6 +192,24 @@ class _Footer extends HookViewModelWidget<ReportViewModel> {
             child: const Text("next >"),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _Stepper extends HookViewModelWidget<ReportViewModel> {
+  @override
+  Widget buildViewModelWidget(BuildContext context, ReportViewModel viewModel) {
+    FormStore store = viewModel.formStore;
+    return Observer(
+      builder: (_) => NumberStepper(
+        numbers: List.generate(store.numberOfSections, (index) => index + 1),
+        activeStep: store.currentSectionIdx,
+        activeStepColor: Colors.blue.shade500,
+        stepColor: Colors.grey.shade400,
+        stepRadius: 16,
+        enableStepTapping: false,
+        enableNextPreviousButtons: false,
       ),
     );
   }
