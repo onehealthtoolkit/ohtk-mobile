@@ -62,7 +62,7 @@ dependencies:
   firebase_core: ^1.19.1
   firebase_messaging: ^11.4.4
   dartz: ^0.10.1
-  
+  im_stepper: ^1.0.1+1
 
 dev_dependencies:
   flutter_test:
