@@ -1,7 +1,6 @@
 part of opensurveillance_form;
 
-class IntegerField extends Field {
-  final Observable<int?> _value = Observable(null);
+class IntegerField extends PrimitiveField<int> {
   int? min;
   int? max;
   String? minMessage;
@@ -101,27 +100,6 @@ class IntegerField extends Field {
       }
     }
     return true;
-  }
-
-  @override
-  int? get value => _value.value;
-
-  set value(v) {
-    runInAction(() {
-      _value.value = v;
-    });
-  }
-
-  @override
-  void loadJsonValue(Map<String, dynamic> json) {
-    if (json[name] != null) {
-      value = json[name];
-    }
-  }
-
-  @override
-  void toJsonValue(Map<String, dynamic> aggregateResult) {
-    aggregateResult[name] = value;
   }
 
   @override
