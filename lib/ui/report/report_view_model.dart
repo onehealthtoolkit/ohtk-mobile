@@ -92,6 +92,7 @@ class ReportViewModel extends BaseViewModel {
       id: _reportId,
       data: _formStore.formData.toJson(),
       reportTypeId: _reportType.id,
+      reportTypeName: _reportType.name,
       incidentDate: DateTime.now(),
       gpsLocation: gpsLocation,
       incidentInAuthority: _incidentInAuthority,

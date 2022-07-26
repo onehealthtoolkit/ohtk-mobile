@@ -87,6 +87,11 @@ class ReportService extends IReportService {
 
         _incidents.insert(0, result.incidentReport);
       }
+
+      if (result is ReportSubmitFailure) {
+        _saveToLocalDB(report);
+        return ReportSubmitPending();
+      }
       return result;
     } on LinkException catch (_e) {
       _saveToLocalDB(report);
