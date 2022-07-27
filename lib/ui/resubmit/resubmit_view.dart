@@ -12,7 +12,7 @@ class ReSubmitView extends StatelessWidget {
       viewModelBuilder: () => ReSubmitViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
-          title: const Text("Re Submit"),
+          title: const Text("Outstanding reports"),
         ),
         body: _Body(),
       ),
@@ -28,22 +28,66 @@ class _Body extends HookViewModelWidget<ReSubmitViewModel> {
         ? const CircularProgressIndicator()
         : Column(
             children: [
-              ElevatedButton(
-                onPressed: viewModel.submit,
-                child: const Text("submit"),
-              ),
+              viewModel.isOffline
+                  ? Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 30,
+                      color: Colors.grey.shade400,
+                      child: const Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                            "You are offline, please check your internet connection"),
+                      ),
+                    )
+                  : ElevatedButton(
+                      onPressed: viewModel.submitAllPendingReport,
+                      child: const Text("submit"),
+                    ),
               Expanded(
-                child: ListView.builder(
+                child: ListView.separated(
                   itemCount: viewModel.pendingReports.length,
                   itemBuilder: ((context, index) {
-                    var report = viewModel.pendingReports[index];
-                    return ListTile(
-                      title: Text(report.id),
-                    );
+                    var reportState = viewModel.pendingReports[index];
+                    return _PendingReport(reportState: reportState);
                   }),
+                  separatorBuilder: (context, index) => const Divider(
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ],
           );
+  }
+}
+
+class _PendingReport extends StatelessWidget {
+  final PendingReportState reportState;
+  const _PendingReport({Key? key, required this.reportState}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(reportState.report.reportTypeName ?? ""),
+      trailing: _buildProgressStatus(reportState.state),
+    );
+  }
+
+  Widget? _buildProgressStatus(Progress status) {
+    switch (status) {
+      case Progress.pending:
+        return const CircularProgressIndicator();
+      case Progress.complete:
+        return const Icon(
+          Icons.check_circle,
+          color: Colors.green,
+        );
+      case Progress.fail:
+        return const Icon(
+          Icons.close,
+          color: Colors.red,
+        );
+      default:
+        return null;
+    }
   }
 }

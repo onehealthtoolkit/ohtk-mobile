@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ class Report {
   DateTime incidentDate;
   String? gpsLocation;
   bool? incidentInAuthority;
+  String? reportTypeName;
 
   Report({
     required this.id,
@@ -18,12 +20,14 @@ class Report {
     required this.incidentDate,
     this.gpsLocation,
     this.incidentInAuthority,
+    this.reportTypeName,
   });
 
   Report.fromMap(Map<String, dynamic> map)
       : id = map["id"],
         data = json.decode(map["data"]),
         reportTypeId = map["report_type_id"],
+        reportTypeName = map["report_type_name"],
         incidentDate = DateFormat("yyyy-MM-dd").parse(map["incident_date"]),
         gpsLocation = map["gps_location"],
         incidentInAuthority = map["incident_in_authority"] == 1;
@@ -33,6 +37,7 @@ class Report {
       "id": id,
       "data": json.encode(data),
       "report_type_id": reportTypeId,
+      "report_type_name": reportTypeName,
       "incident_date": DateFormat("yyyy-MM-dd").format(incidentDate),
       "gps_location": gpsLocation,
       "incident_in_authority": incidentInAuthority,
