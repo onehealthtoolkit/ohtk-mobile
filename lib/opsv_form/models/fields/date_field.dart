@@ -1,6 +1,14 @@
 part of opensurveillance_form;
 
-class DateField extends PrimitiveField<DateTime> {
+class DateField extends Field {
+  final Observable<int?> _day = Observable(null);
+  final Observable<int?> _month = Observable(null);
+  final Observable<int?> _year = Observable(null);
+  final Observable<int?> _hour = Observable(null);
+  final Observable<int?> _minute = Observable(null);
+
+  bool withTime = false;
+
   DateField(
     String id,
     String name, {
@@ -9,6 +17,7 @@ class DateField extends PrimitiveField<DateTime> {
     String? suffixLabel,
     bool? required,
     String? requiredMessage,
+    this.withTime = false,
     Condition? condition,
   }) : super(id, name,
             label: label,
@@ -29,8 +38,40 @@ class DateField extends PrimitiveField<DateTime> {
       suffixLabel: json["suffixLabel"],
       required: json["required"],
       requiredMessage: json["requiredMessage"],
+      withTime: json["withTime"] ?? false,
       condition: condition,
     );
+  }
+
+  @override
+  DateTime? get value {
+    if (_year.value == null ||
+        _month.value == null ||
+        _day.value == null ||
+        (withTime && _hour.value == null && _minute.value == null)) {
+      return null;
+    }
+
+    if (withTime) {
+      return DateTime(_year.value!, _month.value!, _day.value!, _hour.value!,
+          _minute.value!);
+    } else {
+      return DateTime(_year.value!, _month.value!, _day.value!);
+    }
+  }
+
+  set value(DateTime? v) {
+    if (v != null) {
+      runInAction(() {
+        _day.value = v.day;
+        _month.value = v.month;
+        _year.value = v.year;
+        if (withTime) {
+          _hour.value = v.hour;
+          _minute.value = v.minute;
+        }
+      });
+    }
   }
 
   @override
@@ -57,7 +98,8 @@ class DateField extends PrimitiveField<DateTime> {
   @override
   void loadJsonValue(Map<String, dynamic> json) {
     if (json[name] != null) {
-      value = DateTime.parse(json[name]);
+      var givenDate = DateTime.parse(json[name]);
+      value = givenDate;
     }
   }
 

@@ -13,7 +13,8 @@ void main() {
       field.value = now;
       Map<String, dynamic> json = {};
       field.toJsonValue(json);
-      expect(json["date"], now.toIso8601String());
+      expect(json["date"],
+          DateTime(now.year, now.month, now.day).toIso8601String());
     });
 
     test("to json without value", () {
@@ -25,7 +26,7 @@ void main() {
     test("load json data", () {
       var now = DateTime.now();
       field.loadJsonValue({"date": now.toIso8601String()});
-      expect(field.value, now);
+      expect(field.value, DateTime(now.year, now.month, now.day));
     });
 
     test("init from json definition", () {
