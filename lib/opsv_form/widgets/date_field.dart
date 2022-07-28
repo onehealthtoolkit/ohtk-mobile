@@ -14,29 +14,101 @@ class _FormDateFieldState extends State<FormDateField> {
   Widget build(BuildContext context) {
     return Observer(
       builder: (BuildContext context) {
-        widget.field.isValid;
-        return DateTimeField(
-          dateFormat:
-              DateFormat.yMMMd(Localizations.localeOf(context).toString()),
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            labelText: widget.field.label,
-            suffixText: widget.field.suffixLabel != null
-                ? widget.field.suffixLabel!
-                : null,
-            helperText: widget.field.description != null
-                ? widget.field.description!
-                : null,
-            errorText:
-                widget.field.isValid ? null : widget.field.invalidMessage,
+        var datetime = widget.field.value;
+        final buttonStyle = ButtonStyle(
+          foregroundColor: MaterialStateProperty.all(
+              datetime != null ? Colors.grey.shade700 : Colors.black54),
+          padding: MaterialStateProperty.all(
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
           ),
-          mode: DateTimeFieldPickerMode.date,
-          selectedDate: widget.field.value,
-          onDateSelected: (DateTime value) {
-            widget.field.value = value;
-          },
+        );
+
+        return ValidationWrapper(
+          widget.field,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (widget.field.label != null && widget.field.label != "")
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    widget.field.label!,
+                    style: TextStyle(color: Colors.grey.shade700),
+                  ),
+                ),
+              DecoratedBox(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(4)),
+                  border: Border.fromBorderSide(
+                    BorderSide(
+                      color: Colors.black45,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    TextButton(
+                      style: buttonStyle,
+                      onPressed: () =>
+                          _showDialog(datetime, CupertinoDatePickerMode.date),
+                      child: Text(
+                        datetime != null
+                            ? '${datetime.day}/${datetime.month}/${datetime.year}'
+                            : 'DD/MM/YYYY',
+                        textScaleFactor: 1.2,
+                      ),
+                    ),
+                    if (widget.field.withTime)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: TextButton(
+                          style: buttonStyle,
+                          onPressed: () => _showDialog(
+                              datetime, CupertinoDatePickerMode.time),
+                          child: Text(
+                            datetime != null
+                                ? '${datetime.hour}:${datetime.minute}'
+                                : 'HH:MM',
+                          ),
+                        ),
+                      )
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
       },
+    );
+  }
+
+  void _showDialog(DateTime? datetime, CupertinoDatePickerMode mode) {
+    final child = CupertinoDatePicker(
+      initialDateTime: datetime,
+      mode: mode,
+      use24hFormat: true,
+      onDateTimeChanged: (DateTime newTime) {
+        widget.field.value = newTime;
+      },
+    );
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => Container(
+        height: 216,
+        padding: const EdgeInsets.only(top: 6.0),
+        // The Bottom margin is provided to align the popup above the system navigation bar.
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        // Provide a background color for the popup.
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        // Use a SafeArea widget to avoid system overlaps.
+        child: SafeArea(
+          top: false,
+          child: child,
+        ),
+      ),
     );
   }
 }
