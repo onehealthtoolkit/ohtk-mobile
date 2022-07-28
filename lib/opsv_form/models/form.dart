@@ -24,8 +24,8 @@ class Form {
     return values;
   }
 
-  factory Form.fromJson(Map<String, dynamic> json) {
-    var form = Form(json["id"]);
+  factory Form.fromJson(Map<String, dynamic> json, [String? id]) {
+    var form = Form(id ?? json["id"]);
     var jsonSections = json["sections"] as List;
     for (var jsonSection in jsonSections) {
       form.sections.add(Section.fromJson(jsonSection));
