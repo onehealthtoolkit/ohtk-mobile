@@ -63,6 +63,7 @@ dependencies:
   firebase_messaging: ^11.4.4
   dartz: ^0.10.1
   im_stepper: ^1.0.1+1
+  connectivity_plus: ^2.3.6
 
 dev_dependencies:
   flutter_test:
