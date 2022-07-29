@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
-import 'package:podd_app/ui/report/report_view.dart';
+import 'package:podd_app/ui/report/report_form_view.dart';
 import 'package:podd_app/ui/report_type/report_type_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -60,7 +60,7 @@ class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ReportView(reportType),
+                          builder: (context) => ReportFormView(reportType),
                         ),
                       ).then((value) => {logger.d("back from from $value")});
                     }
