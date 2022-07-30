@@ -38,7 +38,7 @@ class _FormIntegerFieldState extends State<FormIntegerField> {
           helperText: widget.field.description != null
               ? widget.field.description!
               : null,
-          errorText: widget.field.isValid ? null : widget.field.invalidMessage,
+          errorText: widget.field.invalidMessage,
         ),
         onChanged: (val) {
           try {

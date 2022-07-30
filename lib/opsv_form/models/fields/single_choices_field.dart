@@ -53,6 +53,14 @@ class SingleChoicesField extends PrimitiveField<String> {
 
   String? get text => _text.value;
 
+  String? get invalidTextInputMessage => _invalidTextInputMessage.value;
+
+  set invalidTextInputMessage(value) {
+    runInAction(() {
+      _invalidTextInputMessage.value = value;
+    });
+  }
+
   void clearTextInputError() {
     runInAction(() {
       _invalidTextInputMessage.value = null;
@@ -83,15 +91,14 @@ class SingleChoicesField extends PrimitiveField<String> {
   }
 
   _validateInputText() {
-    var result = _findSelectedOption().map((option) => option.textInput).map(
-        (requiredText) =>
-            requiredText ? (text != null && text!.isNotEmpty) : true);
-
+    var result = _findSelectedOption().filter((option) => option.textInput);
     if (result.isSome()) {
-      return (result as Some).value;
-    } else {
-      return true;
+      if (text == null || (text != null && text!.isEmpty)) {
+        invalidTextInputMessage = "This field is required";
+        return false;
+      }
     }
+    return true;
   }
 
   @override

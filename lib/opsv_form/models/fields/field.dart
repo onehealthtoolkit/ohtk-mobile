@@ -69,16 +69,16 @@ abstract class Field implements ConiditionSource {
   String? get invalidMessage => _invalidMessage.value;
 
   void markError(String message) {
-    Action(() {
+    runInAction(() {
       _invalidMessage.value = message;
-    })();
+    });
   }
 
   void clearError() {
     if (_invalidMessage.value != null) {
-      Action(() {
+      runInAction(() {
         _invalidMessage.value = null;
-      })();
+      });
     }
   }
 

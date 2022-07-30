@@ -109,7 +109,7 @@ class _RadioOption extends StatelessWidget {
                   onChanged: onSetInputValue,
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
-                    errorText: field.invalidMessage,
+                    errorText: field.invalidTextInputMessage,
                   ),
                 )
             ],

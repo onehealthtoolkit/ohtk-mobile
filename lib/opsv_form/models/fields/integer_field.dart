@@ -65,6 +65,9 @@ class IntegerField extends PrimitiveField<int> {
   }
 
   bool _validateMin() {
+    if (value == null) {
+      return false;
+    }
     if (min != null) {
       var valid = value! >= min!;
       if (!valid) {
@@ -84,6 +87,9 @@ class IntegerField extends PrimitiveField<int> {
   }
 
   bool _validateMax() {
+    if (value == null) {
+      return false;
+    }
     if (max != null) {
       var valid = value! <= max!;
       if (!valid) {
