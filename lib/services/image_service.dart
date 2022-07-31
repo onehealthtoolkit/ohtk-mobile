@@ -8,6 +8,10 @@ abstract class IImageService {
   Future<ReportImage> getImage(String id);
 
   Future<List<ReportImage>> findByReportId(String reportId);
+
+  Future<void> removeAll();
+
+  Future<void> remove(String id);
 }
 
 class ImageService extends IImageService {
@@ -47,5 +51,17 @@ class ImageService extends IImageService {
       ],
     );
     return results.map((row) => ReportImage.fromMap(row)).toList();
+  }
+
+  @override
+  Future<void> removeAll() async {
+    var _db = _dbService.db;
+    await _db.delete("report_image");
+  }
+
+  @override
+  Future<void> remove(String id) async {
+    var _db = _dbService.db;
+    await _db.delete("report_image", where: "reportId = ?", whereArgs: [id]);
   }
 }

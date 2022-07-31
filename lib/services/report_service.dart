@@ -24,6 +24,10 @@ abstract class IReportService with ReactiveServiceMixin {
   Future<void> submitAllPendingReport();
 
   Future<void> fetchIncidents(bool resetFlag);
+
+  Future<void> removeAllPendingReports();
+
+  Future<void> removePendingReport(String id);
 }
 
 class ReportService extends IReportService {
@@ -156,4 +160,22 @@ class ReportService extends IReportService {
 
   @override
   List<IncidentReport> get incidentReports => _incidents;
+
+  @override
+  Future<void> removeAllPendingReports() async {
+    var _db = _dbService.db;
+    await _db.delete("report");
+
+    _pendingReports.clear();
+
+    await _imageService.removeAll();
+  }
+
+  @override
+  Future<void> removePendingReport(String id) async {
+    var _db = _dbService.db;
+    await _db.delete("report", where: "id = ?", whereArgs: [id]);
+    await _imageService.remove(id);
+    _pendingReports.removeWhere((r) => r.id == id);
+  }
 }

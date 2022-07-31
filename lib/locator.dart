@@ -87,6 +87,15 @@ void setupLocator(String environment) {
     NotificationApi,
   ]);
 
+  locator.registerSingletonAsync<IReportService>(() async {
+    return ReportService();
+  }, dependsOn: [
+    ReportApi,
+    ImageApi,
+    IImageService,
+    IDbService,
+  ]);
+
   locator.registerSingletonAsync<IAuthService>(() async {
     final authService = AuthService();
     await authService.init();
@@ -95,6 +104,7 @@ void setupLocator(String environment) {
     ISecureStorageService,
     AuthApi,
     IReportTypeService,
+    IReportService,
   ]);
 
   locator.registerSingletonAsync<IRegisterService>(() async {
@@ -103,14 +113,5 @@ void setupLocator(String environment) {
     ISecureStorageService,
     RegisterApi,
     IAuthService,
-  ]);
-
-  locator.registerSingletonAsync<IReportService>(() async {
-    return ReportService();
-  }, dependsOn: [
-    ReportApi,
-    ImageApi,
-    IImageService,
-    IDbService,
   ]);
 }

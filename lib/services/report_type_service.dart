@@ -9,6 +9,7 @@ abstract class IReportTypeService {
   Future<List<ReportType>> fetchAllReportType();
   Future<List<Category>> fetchAllCategory();
   Future<void> sync();
+  Future<void> removeAll();
 }
 
 class ReportTypeService extends IReportTypeService {
@@ -63,5 +64,11 @@ class ReportTypeService extends IReportTypeService {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     }
+  }
+
+  @override
+  Future<void> removeAll() async {
+    var _db = _dbService.db;
+    await _db.delete('report_type');
   }
 }

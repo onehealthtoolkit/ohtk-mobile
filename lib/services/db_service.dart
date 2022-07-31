@@ -94,21 +94,6 @@ class DbService extends IDbService {
     ''');
   }
 
-  _createTableReportV4(Batch batch) {
-    batch.execute("DROP TABLE IF EXISTS report");
-    batch.execute('''
-      CREATE TABLE report (
-        id TEXT PRIMARY KEY,
-        data TEXT,
-        report_type_id TEXT,
-        incident_date TEXT,
-        gps_location TEXT,
-        submitted INT,
-        incident_in_authority BOOLEAN
-      )
-    ''');
-  }
-
   _createTableReportV5(Batch batch) {
     batch.execute("DROP TABLE IF EXISTS report");
     batch.execute('''
