@@ -29,53 +29,70 @@ class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportTypeViewModel viewModel) {
-    double width = MediaQuery.of(context).size.width;
-
     return RefreshIndicator(
       onRefresh: () async {
         await viewModel.syncReportTypes();
       },
-      child: ListView.builder(
-        itemBuilder: (context, categoryIndex) => Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              color: Colors.amber,
-              width: width,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(viewModel.categories[categoryIndex].category.name),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.builder(
+          itemBuilder: (context, categoryIndex) =>
+              viewModel.categories[categoryIndex].reportTypes.isNotEmpty
+                  ? _category(context, viewModel, categoryIndex)
+                  : Container(),
+          itemCount: viewModel.categories.length,
+        ),
+      ),
+    );
+  }
+
+  _category(
+      BuildContext context, ReportTypeViewModel viewModel, int categoryIndex) {
+    double width = MediaQuery.of(context).size.width;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: width,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              viewModel.categories[categoryIndex].category.name,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            ListView.builder(
-              itemBuilder: (context, reportTypeIndex) {
-                var reportType = viewModel
-                    .categories[categoryIndex].reportTypes[reportTypeIndex];
-                return ListTile(
-                  title: Text(reportType.name),
-                  onTap: () async {
-                    var allow = await viewModel.createReport(reportType.id);
-                    if (allow) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ReportFormView(reportType),
-                        ),
-                      ).then((value) => {logger.d("back from from $value")});
-                    }
-                  },
-                  trailing: const Icon(Icons.arrow_right),
-                );
-              },
-              itemCount: viewModel.categories[categoryIndex].reportTypes.length,
-              shrinkWrap: true,
-              physics: const ClampingScrollPhysics(),
-            )
-          ],
+          ),
         ),
-        itemCount: viewModel.categories.length,
-      ),
+        ListView.separated(
+          separatorBuilder: (context, index) => const Divider(),
+          itemBuilder: (context, reportTypeIndex) {
+            var reportType = viewModel
+                .categories[categoryIndex].reportTypes[reportTypeIndex];
+            return ListTile(
+              title: Text(reportType.name),
+              onTap: () async {
+                var allow = await viewModel.createReport(reportType.id);
+                if (allow) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ReportFormView(reportType),
+                    ),
+                  ).then((value) => {logger.d("back from from $value")});
+                }
+              },
+              trailing: const Icon(Icons.arrow_forward_ios),
+            );
+          },
+          itemCount: viewModel.categories[categoryIndex].reportTypes.length,
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
+        )
+      ],
     );
   }
 }

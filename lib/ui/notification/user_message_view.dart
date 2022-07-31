@@ -12,23 +12,57 @@ class UserMessageView extends StatelessWidget {
       viewModelBuilder: () => UserMessageViewViewModel(id),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
-          title: const Text("Message detail"),
+          title: const Text("Message"),
         ),
-        body: Center(
-          child: viewModel.isBusy
-              ? const CircularProgressIndicator()
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        body: viewModel.isBusy
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
                   children: !viewModel.hasError
                       ? [
-                          Text(viewModel.data!.id),
-                          Text(viewModel.data!.message.title),
-                          Text(viewModel.data!.message.body),
+                          _title(viewModel),
+                          const SizedBox(height: 10),
+                          _body(viewModel),
                         ]
                       : [
                           const Text("Message not found"),
                         ],
                 ),
+              ),
+      ),
+    );
+  }
+
+  _title(UserMessageViewViewModel viewModel) {
+    return Container(
+      constraints: const BoxConstraints(
+        minWidth: double.infinity,
+      ),
+      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+      child: Text(
+        viewModel.data!.message.title,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+
+  _body(UserMessageViewViewModel viewModel) {
+    return Container(
+      constraints:
+          const BoxConstraints(minWidth: double.infinity, minHeight: 100),
+      child: Card(
+        shadowColor: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            viewModel.data!.message.body,
+          ),
         ),
       ),
     );

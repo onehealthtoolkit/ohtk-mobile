@@ -108,7 +108,8 @@ class HomeView extends StatelessWidget {
 class _ReportList extends HookViewModelWidget<HomeViewModel> {
   @override
   Widget buildViewModelWidget(BuildContext context, HomeViewModel viewModel) {
-    return ListView.builder(
+    return ListView.separated(
+      separatorBuilder: (context, index) => const Divider(),
       itemCount: viewModel.incidentReports.length,
       itemBuilder: (context, index) {
         var report = viewModel.incidentReports[index];
@@ -129,6 +130,7 @@ class _ReportList extends HookViewModelWidget<HomeViewModel> {
                   width: 80,
                 ),
           title: Text(report.reportTypeName),
+          trailing: const Icon(Icons.arrow_forward_ios_sharp),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

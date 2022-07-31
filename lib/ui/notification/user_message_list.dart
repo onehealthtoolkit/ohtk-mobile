@@ -15,15 +15,9 @@ class UserMessageList extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Messages"),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: _UserMessageList(),
-              ),
-            ],
-          ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _UserMessageList(),
         ),
       ),
     );
@@ -39,23 +33,27 @@ class _UserMessageList extends HookViewModelWidget<UserMessageListViewModel> {
       itemBuilder: (context, index) {
         var userMessage = viewModel.userMessages[index];
 
-        return ListTile(
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => UserMessageView(id: userMessage.id),
+        return Card(
+          shadowColor: Colors.transparent,
+          child: ListTile(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => UserMessageView(id: userMessage.id),
+              ),
             ),
-          ),
-          title: Text(userMessage.message.title,
-              style: TextStyle(
-                  color: userMessage.isSeen
-                      ? Colors.grey.shade600
-                      : Colors.black)),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(userMessage.message.body),
-            ],
+            title: Text(userMessage.message.title,
+                style: TextStyle(
+                    color: userMessage.isSeen
+                        ? Colors.grey.shade600
+                        : Colors.black)),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(userMessage.message.body),
+              ],
+            ),
+            trailing: const Icon(Icons.arrow_forward_ios),
           ),
         );
       },

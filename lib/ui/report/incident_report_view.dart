@@ -45,20 +45,31 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const SizedBox(height: 10),
         Text(incident.reportTypeName,
-            textScaleFactor: 1.25,
+            textScaleFactor: 1.5,
             style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 10),
         Text(
           formatter.format(incident.createdAt),
           textScaleFactor: .75,
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 16),
-          child: Text(incident.description.isEmpty
-              ? "no description"
-              : incident.description),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Container(
+            color: Colors.white,
+            constraints:
+                const BoxConstraints(minHeight: 100, minWidth: double.infinity),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(incident.description.isEmpty
+                  ? "no description"
+                  : incident.description),
+            ),
+          ),
         ),
         _Images(),
+        const SizedBox(height: 8),
         _Map(),
       ],
     );
@@ -72,30 +83,32 @@ class _Images extends HookViewModelWidget<IncidentReportViewModel> {
     final images = viewModel.data!.images;
     var _pageController = usePageController(viewportFraction: .5);
 
-    if (images == null || images.isEmpty) {
-      return Text("No images uploaded");
-    }
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Container(
+      color: Colors.white,
+      constraints:
+          const BoxConstraints(minWidth: double.infinity, minHeight: 150),
+      padding: const EdgeInsets.all(12.0),
       child: SizedBox(
         height: 150,
-        child: PageView.builder(
-          itemCount: images.length,
-          pageSnapping: true,
-          controller: _pageController,
-          itemBuilder: (context, pagePosition) {
-            return Container(
-              margin: EdgeInsets.all(10),
-              child: CachedNetworkImage(
-                imageUrl:
-                    viewModel.resolveImagePath(images[pagePosition].filePath),
-                placeholder: (context, url) => CircularProgressIndicator(),
-                fit: BoxFit.cover,
-              ),
-            );
-          },
-        ),
+        child: (images != null && images.isNotEmpty)
+            ? PageView.builder(
+                itemCount: images.length,
+                pageSnapping: true,
+                controller: _pageController,
+                itemBuilder: (context, pagePosition) {
+                  return Container(
+                    margin: const EdgeInsets.all(10),
+                    child: CachedNetworkImage(
+                      imageUrl: viewModel
+                          .resolveImagePath(images[pagePosition].filePath),
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                },
+              )
+            : const Text("No images uploaded"),
       ),
     );
   }
@@ -106,34 +119,41 @@ class _Map extends HookViewModelWidget<IncidentReportViewModel> {
   Widget buildViewModelWidget(
       BuildContext context, IncidentReportViewModel viewModel) {
     final latlng = viewModel.latlng;
-    if (latlng == null) {
-      return Text("No gps location provided");
-    }
 
     final Completer<GoogleMapController> _controller = Completer();
     var markers = <Marker>{};
-    markers.add(Marker(
-      markerId: const MarkerId('center'),
-      position: LatLng(latlng[0], latlng[1]),
-    ));
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    if (latlng != null) {
+      markers.add(Marker(
+        markerId: const MarkerId('center'),
+        position: LatLng(latlng[0], latlng[1]),
+      ));
+    }
+
+    return Container(
+      color: Colors.white,
+      constraints: const BoxConstraints(
+        minWidth: double.infinity,
+        minHeight: 250,
+      ),
+      padding: const EdgeInsets.all(12.0),
       child: SizedBox(
         height: 250,
         width: MediaQuery.of(context).size.width,
-        child: GoogleMap(
-          mapType: MapType.hybrid,
-          initialCameraPosition:
-              CameraPosition(zoom: 12, target: LatLng(latlng[0], latlng[1])),
-          myLocationEnabled: false,
-          myLocationButtonEnabled: false,
-          scrollGesturesEnabled: true,
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-          },
-          markers: markers,
-        ),
+        child: (latlng != null)
+            ? GoogleMap(
+                mapType: MapType.normal,
+                initialCameraPosition: CameraPosition(
+                    zoom: 12, target: LatLng(latlng[0], latlng[1])),
+                myLocationEnabled: false,
+                myLocationButtonEnabled: false,
+                scrollGesturesEnabled: true,
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                },
+                markers: markers,
+              )
+            : const Text("No gps location provided"),
       ),
     );
   }

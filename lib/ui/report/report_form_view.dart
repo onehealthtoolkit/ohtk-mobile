@@ -213,15 +213,29 @@ class _Stepper extends HookViewModelWidget<ReportFormViewModel> {
   Widget buildViewModelWidget(
       BuildContext context, ReportFormViewModel viewModel) {
     Form store = viewModel.formStore;
+    if (store.numberOfSections == 1) {
+      return Container();
+    }
     return Observer(
-      builder: (_) => NumberStepper(
-        numbers: List.generate(store.numberOfSections, (index) => index + 1),
-        activeStep: store.currentSectionIdx,
-        activeStepColor: Colors.blue.shade500,
-        stepColor: Colors.grey.shade400,
-        stepRadius: 16,
-        enableStepTapping: false,
-        enableNextPreviousButtons: false,
+      builder: (_) => Column(
+        children: [
+          if (store.currentSection.label.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+              child: Text(store.currentSection.label),
+            ),
+          NumberStepper(
+            numbers:
+                List.generate(store.numberOfSections, (index) => index + 1),
+            activeStep: store.currentSectionIdx,
+            activeStepColor: Colors.blue.shade200,
+            stepColor: Colors.grey.shade400,
+            stepRadius: 16,
+            enableStepTapping: false,
+            enableNextPreviousButtons: false,
+          ),
+          const SizedBox(height: 10),
+        ],
       ),
     );
   }

@@ -14,18 +14,25 @@ class FormQuestion extends StatelessWidget {
         }
         return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(question.label),
-              ListView.builder(
-                itemBuilder: (context, index) =>
-                    FormField(field: question.fields[index]),
-                itemCount: question.fields.length,
-                shrinkWrap: true,
-                physics: const ClampingScrollPhysics(),
+          child: Card(
+            shadowColor: Colors.transparent,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(question.label),
+                  const SizedBox(height: 10),
+                  ListView.builder(
+                    itemBuilder: (context, index) =>
+                        FormField(field: question.fields[index]),
+                    itemCount: question.fields.length,
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         );
       },
