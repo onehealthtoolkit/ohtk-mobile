@@ -85,6 +85,15 @@ class ReSubmitViewModel extends ReactiveViewModel {
       notifyListeners();
     }
   }
+
+  Future<void> deletePendingReport(String id) async {
+    await _reportService.removePendingReport(id);
+    notifyListeners();
+  }
+
+  get isEmpty {
+    return _reportService.pendingReports.isEmpty;
+  }
 }
 
 enum Progress {
