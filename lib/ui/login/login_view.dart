@@ -14,8 +14,10 @@ class LoginView extends StatelessWidget {
       viewModelBuilder: () => LoginViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(child: _LoginForm()),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+          child: Center(
+            child: _LoginForm(),
+          ),
         ),
       ),
     );
@@ -31,6 +33,10 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(50, 0, 50, 90),
+          child: Image.asset('images/logo.png'),
+        ),
         TextField(
           controller: username,
           textInputAction: TextInputAction.next,
@@ -40,6 +46,7 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
             errorText: viewModel.error("username"),
           ),
         ),
+        const SizedBox(height: 10),
         TextField(
           controller: password,
           textInputAction: TextInputAction.done,
@@ -54,17 +61,30 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
             viewModel.authenticate();
           },
         ),
+        const SizedBox(height: 10),
         if (viewModel.hasErrorForKey("general"))
-          Text(viewModel.error("general")),
-        ElevatedButton(
-          onPressed: viewModel.isBusy ? null : viewModel.authenticate,
-          child: viewModel.isBusy
-              ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(),
-                )
-              : const Text("Login"),
+          Text(
+            viewModel.error("general"),
+            style: const TextStyle(
+              color: Colors.red,
+            ),
+          ),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size.fromHeight(40),
+            ),
+            onPressed: viewModel.isBusy ? null : viewModel.authenticate,
+            child: viewModel.isBusy
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(),
+                  )
+                : const Text("Login"),
+          ),
         ),
         TextButton(
           onPressed: () {
