@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Form;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:logger/logger.dart';
+import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/report_submit_result.dart';
@@ -20,29 +21,38 @@ class ReportFormView extends StatelessWidget {
     return ViewModelBuilder<ReportFormViewModel>.reactive(
       viewModelBuilder: () => ReportFormViewModel(reportType),
       builder: (context, viewModel, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text("Report"),
-          ),
-          body: Column(
-            children: [
-              if (viewModel.state == ReportFormState.formInput) _Stepper(),
-              if (viewModel.state == ReportFormState.confirmation)
-                Expanded(
-                  flex: 1,
-                  child: _ConfirmSubmit(),
-                ),
-              if (viewModel.state == ReportFormState.formInput)
-                Expanded(
-                  flex: 1,
-                  child: _FormInput(),
-                ),
-              if (viewModel.state == ReportFormState.formInput) _Footer(),
-            ],
+        return WillPopScope(
+          onWillPop: () async {
+            return _onWillpPop(context);
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text("Report"),
+            ),
+            body: Column(
+              children: [
+                if (viewModel.state == ReportFormState.formInput) _Stepper(),
+                if (viewModel.state == ReportFormState.confirmation)
+                  Expanded(
+                    flex: 1,
+                    child: _ConfirmSubmit(),
+                  ),
+                if (viewModel.state == ReportFormState.formInput)
+                  Expanded(
+                    flex: 1,
+                    child: _FormInput(),
+                  ),
+                if (viewModel.state == ReportFormState.formInput) _Footer(),
+              ],
+            ),
           ),
         );
       },
     );
+  }
+
+  Future<bool> _onWillpPop(BuildContext context) async {
+    return confirm(context);
   }
 }
 
@@ -167,10 +177,12 @@ class _Footer extends HookViewModelWidget<ReportFormViewModel> {
       child: Row(
         children: [
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (viewModel.back() == BackAction.navigationPop) {
-                logger.d("back using pop");
-                Navigator.popUntil(context, ModalRoute.withName("/"));
+                if (await confirm(context)) {
+                  logger.d("back using pop");
+                  Navigator.popUntil(context, ModalRoute.withName("/"));
+                }
               } else {
                 logger.d("back but do nothing");
               }
