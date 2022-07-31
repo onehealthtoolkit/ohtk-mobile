@@ -79,7 +79,6 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
     if (loginResult is LoginSuccess) {
       _logger.d("loginResule ${loginResult.token}");
       await saveTokenAndFetchProfile(loginResult);
-      await _reportTypeService.sync();
     }
     return loginResult;
   }
@@ -97,6 +96,7 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
     await _secureStorageService.setLoginSuccess(loginSuccess);
     var profile = await _authApi.getUserProfile();
     await _secureStorageService.setUserProfile(profile);
+    await _reportTypeService.sync();
     _userProfile = profile;
     _token = loginSuccess.token;
     _isLogin.value = true;

@@ -28,6 +28,7 @@ class RegisterViewModel extends BaseViewModel {
     setBusy(true);
     if (invitationCode == null || invitationCode!.isEmpty) {
       setErrorForObject("invitationCode", "Invitation code is required");
+      setBusy(false);
       return;
     }
 
@@ -76,20 +77,31 @@ class RegisterViewModel extends BaseViewModel {
 
   Future<RegisterResult> register() async {
     setBusy(true);
+    var isValidData = true;
     if (username == null || username!.isEmpty) {
       setErrorForObject("username", "Username is required");
+      isValidData = false;
     }
     if (firstName == null || firstName!.isEmpty) {
       setErrorForObject("firstName", "First name is required");
+      isValidData = false;
     }
     if (lastName == null || lastName!.isEmpty) {
       setErrorForObject("lastName", "Last name is required");
+      isValidData = false;
     }
     if (email == null || email!.isEmpty) {
       setErrorForObject("email", "Email is required");
+      isValidData = false;
     }
     if (phone == null || phone!.isEmpty) {
       setErrorForObject("phone", "Phone number is required");
+      isValidData = false;
+    }
+
+    if (!isValidData) {
+      setBusy(false);
+      return RegisterInvalidData();
     }
 
     var result = await registerService.registerUser(

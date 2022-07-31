@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/models/register_result.dart';
 import 'package:podd_app/ui/register/register_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -14,18 +15,27 @@ class RegisterView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<RegisterViewModel>.reactive(
       viewModelBuilder: () => RegisterViewModel(),
-      builder: (context, viewModel, child) => Scaffold(
-        appBar: AppBar(
-          title: const Text("Register"),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: viewModel.state == RegisterState.invitation
-              ? _InvitationCodeForm()
-              : _DetailCodeForm(),
+      builder: (context, viewModel, child) => WillPopScope(
+        onWillPop: () async {
+          return _willPop(context);
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("Register"),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: viewModel.state == RegisterState.invitation
+                ? _InvitationCodeForm()
+                : _DetailCodeForm(),
+          ),
         ),
       ),
     );
+  }
+
+  Future<bool> _willPop(BuildContext context) {
+    return confirm(context);
   }
 }
 
@@ -47,9 +57,22 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
           decoration: InputDecoration(
               labelText: "Code", errorText: viewModel.error('invitationCode')),
         ),
-        TextButton(
-          onPressed: viewModel.checkInvitationCode,
-          child: const Text("Next"),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size.fromHeight(40),
+            ),
+            onPressed: viewModel.checkInvitationCode,
+            child: viewModel.isBusy
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(),
+                  )
+                : const Text("Next"),
+          ),
         ),
       ],
     );
@@ -79,6 +102,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
               errorText: viewModel.error("username"),
             ),
           ),
+          const SizedBox(height: 10),
           TextField(
             controller: firstName,
             textInputAction: TextInputAction.next,
@@ -88,6 +112,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
               errorText: viewModel.error("firstName"),
             ),
           ),
+          const SizedBox(height: 10),
           TextField(
             controller: lastName,
             textInputAction: TextInputAction.next,
@@ -97,6 +122,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
               errorText: viewModel.error("lastName"),
             ),
           ),
+          const SizedBox(height: 10),
           TextField(
             controller: email,
             textInputAction: TextInputAction.next,
@@ -106,6 +132,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
               errorText: viewModel.error("email"),
             ),
           ),
+          const SizedBox(height: 10),
           TextField(
             controller: phone,
             textInputAction: TextInputAction.next,
@@ -115,22 +142,29 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
               errorText: viewModel.error("phone"),
             ),
           ),
-          ElevatedButton(
-            onPressed: viewModel.isBusy
-                ? null
-                : () async {
-                    var result = await viewModel.register();
-                    if (result is RegisterSuccess) {
-                      Navigator.pop(context, true);
-                    }
-                  },
-            child: viewModel.isBusy
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(),
-                  )
-                : const Text("Submit"),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(40),
+              ),
+              onPressed: viewModel.isBusy
+                  ? null
+                  : () async {
+                      var result = await viewModel.register();
+                      if (result is RegisterSuccess) {
+                        Navigator.pop(context, true);
+                      }
+                    },
+              child: viewModel.isBusy
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(),
+                    )
+                  : const Text("Submit"),
+            ),
           ),
         ],
       ),

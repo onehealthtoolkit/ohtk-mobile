@@ -12,3 +12,5 @@ class RegisterSuccess extends RegisterResult {
 class RegisterFailure extends OperationExceptionFailure with RegisterResult {
   RegisterFailure(e) : super(e);
 }
+
+class RegisterInvalidData extends RegisterResult {}
