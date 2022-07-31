@@ -25,25 +25,28 @@ class ReportFormView extends StatelessWidget {
           onWillPop: () async {
             return _onWillpPop(context);
           },
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text("Report"),
-            ),
-            body: Column(
-              children: [
-                if (viewModel.state == ReportFormState.formInput) _Stepper(),
-                if (viewModel.state == ReportFormState.confirmation)
-                  Expanded(
-                    flex: 1,
-                    child: _ConfirmSubmit(),
-                  ),
-                if (viewModel.state == ReportFormState.formInput)
-                  Expanded(
-                    flex: 1,
-                    child: _FormInput(),
-                  ),
-                if (viewModel.state == ReportFormState.formInput) _Footer(),
-              ],
+          child: GestureDetector(
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+            child: Scaffold(
+              resizeToAvoidBottomInset: true,
+              appBar: AppBar(
+                title: const Text("Report"),
+              ),
+              body: Column(
+                children: [
+                  if (viewModel.state == ReportFormState.formInput) _Stepper(),
+                  if (viewModel.state == ReportFormState.confirmation)
+                    Expanded(
+                      flex: 1,
+                      child: _ConfirmSubmit(),
+                    ),
+                  if (viewModel.state == ReportFormState.formInput)
+                    Expanded(
+                      flex: 1,
+                      child: _FormInput(),
+                    ),
+                ],
+              ),
             ),
           ),
         );
@@ -63,10 +66,16 @@ class _FormInput extends HookViewModelWidget<ReportFormViewModel> {
     final form = viewModel.formStore;
     return Observer(
       builder: (_) => ListView.builder(
-        itemBuilder: (context, index) => FormQuestion(
-          question: form.currentSection.questions[index],
-        ),
-        itemCount: form.currentSection.questions.length,
+        itemBuilder: (context, index) {
+          if (index < form.currentSection.questions.length) {
+            return FormQuestion(
+              question: form.currentSection.questions[index],
+            );
+          } else {
+            return _Footer();
+          }
+        },
+        itemCount: form.currentSection.questions.length + 1,
       ),
     );
   }
@@ -169,10 +178,7 @@ class _Footer extends HookViewModelWidget<ReportFormViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportFormViewModel viewModel) {
-    double height = MediaQuery.of(context).size.height * 0.1;
-
     return Container(
-      height: height,
       padding: const EdgeInsets.all(10.0),
       child: Row(
         children: [
