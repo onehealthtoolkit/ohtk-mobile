@@ -97,6 +97,7 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
     var profile = await _authApi.getUserProfile();
     await _secureStorageService.setUserProfile(profile);
     await _reportTypeService.sync();
+    await _reportService.fetchIncidents(true);
     _userProfile = profile;
     _token = loginSuccess.token;
     _isLogin.value = true;

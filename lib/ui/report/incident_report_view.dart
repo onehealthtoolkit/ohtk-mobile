@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/report/incident_report_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -46,9 +47,7 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 10),
-        Text(incident.reportTypeName,
-            textScaleFactor: 1.5,
-            style: const TextStyle(fontWeight: FontWeight.bold)),
+        _title(context, incident),
         const SizedBox(height: 10),
         Text(
           formatter.format(incident.createdAt),
@@ -71,6 +70,33 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
         _Images(),
         const SizedBox(height: 8),
         _Map(),
+      ],
+    );
+  }
+
+  _title(BuildContext context, IncidentReport incident) {
+    return Row(
+      children: [
+        Text(
+          incident.reportTypeName,
+          textScaleFactor: 1.5,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(width: 10),
+        if (incident.caseId != null)
+          Container(
+            color: Colors.red,
+            padding: const EdgeInsets.fromLTRB(4, 2, 4, 2),
+            child: const Text(
+              "Case",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+              textScaleFactor: 0.8,
+            ),
+          ),
       ],
     );
   }

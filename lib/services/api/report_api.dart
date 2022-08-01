@@ -88,7 +88,8 @@ class ReportApi extends GraphQlBaseApi {
             images {
               id
               file 
-            }      
+            }    
+            caseId  
           }          
         }
       }
@@ -124,6 +125,7 @@ class ReportApi extends GraphQlBaseApi {
             id
             file 
           }      
+          caseId
         }
       }
     ''';

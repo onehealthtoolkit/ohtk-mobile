@@ -23,6 +23,7 @@ class IncidentReport {
   DateTime updatedAt;
   String? gpsLocation;
   List<IncidentReportImage>? images;
+  String? caseId;
 
   IncidentReport({
     required this.id,
@@ -34,6 +35,7 @@ class IncidentReport {
     required this.updatedAt,
     this.gpsLocation,
     this.images,
+    this.caseId,
   });
 
   factory IncidentReport.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,7 @@ class IncidentReport {
       updatedAt: DateTime.parse(json["updatedAt"]),
       gpsLocation: json["gpsLocation"],
       data: json["data"],
+      caseId: json["caseId"],
       images: json["images"] != null
           ? (json["images"] as List)
               .map((image) => IncidentReportImage.fromJson(image))

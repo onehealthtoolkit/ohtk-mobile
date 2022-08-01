@@ -48,4 +48,10 @@ class HomeViewModel extends ReactiveViewModel {
       );
     }
   }
+
+  Future<void> refetchIncidentReports() async {
+    setBusy(true);
+    await reportService.fetchIncidents(true);
+    setBusy(false);
+  }
 }
