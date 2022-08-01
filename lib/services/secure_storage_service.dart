@@ -11,7 +11,7 @@ abstract class ISecureStorageService {
 
   Future<void> deleteAll();
 
-  Future<void> setLoginSuccess(LoginSuccess info);
+  Future<void> setLoginSuccess(AuthSuccess info);
 
   Future<void> setUserProfile(UserProfile profile);
 
@@ -37,10 +37,10 @@ class SecureStorageService implements ISecureStorageService {
   }
 
   @override
-  Future<void> setLoginSuccess(LoginSuccess loginResult) async {
-    await set("token", loginResult.token);
-    await set("refreshToken", loginResult.refreshToken);
-    await set("refreshExpiresIn", loginResult.refreshExpiresIn.toString());
+  Future<void> setLoginSuccess(AuthSuccess authResult) async {
+    await set("token", authResult.token);
+    await set("refreshToken", authResult.refreshToken);
+    await set("refreshExpiresIn", authResult.refreshExpiresIn.toString());
   }
 
   @override

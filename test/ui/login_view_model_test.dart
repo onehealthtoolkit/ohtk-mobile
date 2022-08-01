@@ -10,11 +10,11 @@ class AuthServiceMock implements IAuthService {
   String? password;
 
   @override
-  Future<LoginResult> authenticate(String _username, String _password) {
+  Future<AuthResult> authenticate(String _username, String _password) {
     username = _username;
     password = _password;
     return Future.value(
-      LoginSuccess(
+      AuthSuccess(
           token: "token",
           refreshToken: "refreshToken",
           refreshExpiresIn: 123232323232),
@@ -33,13 +33,16 @@ class AuthServiceMock implements IAuthService {
   }
 
   @override
-  String? get token => "";
-
-  @override
   UserProfile? get userProfile => null;
 
   @override
-  Future<void> saveTokenAndFetchProfile(LoginSuccess loginSuccess) {
+  Future<void> saveTokenAndFetchProfile(AuthSuccess loginSuccess) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> requestAccessTokenIfExpired() {
+    // TODO: implement requestAccessTokenIfExpired
     throw UnimplementedError();
   }
 }

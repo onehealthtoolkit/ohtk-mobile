@@ -82,7 +82,7 @@ class RegisterApi extends GraphQlBaseApi {
         "username": username
       },
       parseData: (resp) => RegisterSuccess(
-        loginSuccess: LoginSuccess(
+        loginSuccess: AuthSuccess(
           token: resp?['token'],
           refreshToken: resp?['refreshToken'],
           // save in seconds

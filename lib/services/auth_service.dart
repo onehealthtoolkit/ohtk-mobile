@@ -2,25 +2,28 @@ import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/login_result.dart';
 import 'package:podd_app/models/user_profile.dart';
+import 'package:podd_app/services/jwt.dart';
 import 'package:podd_app/services/report_service.dart';
 import 'package:podd_app/services/report_type_service.dart';
 import 'package:podd_app/services/secure_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
+import 'dart:async';
 
 import 'api/auth_api.dart';
 
 abstract class IAuthService {
   bool? get isLogin;
 
-  String? get token;
   UserProfile? get userProfile;
 
-  Future<LoginResult> authenticate(String username, String password);
+  Future<AuthResult> authenticate(String username, String password);
 
   Future<void> logout();
 
-  Future<void> saveTokenAndFetchProfile(LoginSuccess loginSuccess);
+  Future<void> saveTokenAndFetchProfile(AuthSuccess loginSuccess);
+
+  Future<void> requestAccessTokenIfExpired();
 }
 
 class AuthService with ReactiveServiceMixin implements IAuthService {
@@ -38,8 +41,6 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
   final ReactiveValue<bool?> _isLogin = ReactiveValue<bool?>(null);
 
   String? _token;
-  @override
-  String? get token => _token;
 
   UserProfile? _userProfile;
   @override
@@ -58,9 +59,6 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
     }
 
     var token = await _secureStorageService.get('token');
-    var refreshToken = await _secureStorageService.get('refreshToken');
-    _logger.d("token $token");
-    _logger.d("refreshToken $refreshToken");
     if (token != null) {
       _token = token;
       _userProfile = await _secureStorageService.getUserProfile();
@@ -74,13 +72,13 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
   bool? get isLogin => _isLogin.value;
 
   @override
-  Future<LoginResult> authenticate(String username, String password) async {
-    var loginResult = await _authApi.tokenAuth(username, password);
-    if (loginResult is LoginSuccess) {
-      _logger.d("loginResule ${loginResult.token}");
-      await saveTokenAndFetchProfile(loginResult);
+  Future<AuthResult> authenticate(String username, String password) async {
+    var authResult = await _authApi.tokenAuth(username, password);
+    if (authResult is AuthSuccess) {
+      _logger.d("loginResule ${authResult.token}");
+      await saveTokenAndFetchProfile(authResult);
     }
-    return loginResult;
+    return authResult;
   }
 
   @override
@@ -92,14 +90,36 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
   }
 
   @override
-  Future<void> saveTokenAndFetchProfile(LoginSuccess loginSuccess) async {
-    await _secureStorageService.setLoginSuccess(loginSuccess);
+  Future<void> saveTokenAndFetchProfile(AuthSuccess authSuccess) async {
+    _saveToken(authSuccess);
+    _fetchProfile();
+    _isLogin.value = true;
+  }
+
+  _saveToken(AuthSuccess authSuccess) async {
+    await _secureStorageService.setLoginSuccess(authSuccess);
+    _token = authSuccess.token;
+  }
+
+  _fetchProfile() async {
     var profile = await _authApi.getUserProfile();
+    _userProfile = profile;
+
     await _secureStorageService.setUserProfile(profile);
     await _reportTypeService.sync();
     await _reportService.fetchIncidents(true);
-    _userProfile = profile;
-    _token = loginSuccess.token;
-    _isLogin.value = true;
+  }
+
+  @override
+  Future<void> requestAccessTokenIfExpired() async {
+    if (_token != null) {
+      if (Jwt.isExpired(_token!)) {
+        _logger.d("token expired");
+        var authResult = await _authApi.refreshToken();
+        if (authResult is AuthSuccess) {
+          await _saveToken(authResult);
+        }
+      }
+    }
   }
 }

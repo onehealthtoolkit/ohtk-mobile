@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/services/auth_service.dart';
@@ -7,6 +9,7 @@ import "package:gql_dio_link/gql_dio_link.dart";
 import 'package:dio/dio.dart' as http;
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:path_provider/path_provider.dart';
 
 class InvalidRefreshTokenError extends http.DioError {
   InvalidRefreshTokenError(requestOptions)
@@ -17,19 +20,25 @@ class GqlService {
   final _configService = locator<ConfigService>();
   final _secureStorage = locator<ISecureStorageService>();
   final _dio = http.Dio();
-  final _cookieJar = CookieJar();
 
-  late GraphQLClient _client;
+  PersistCookieJar? _cookieJar;
 
-  GraphQLClient get client => _client;
+  GraphQLClient? _client;
+
+  GraphQLClient get client => _client!;
 
   final _jwtExpiredMessages = [
     'You do not have permission to perform this action',
     'JWTExpired',
   ];
 
-  GqlService() {
-    _dio.interceptors.add(CookieManager(_cookieJar));
+  init() async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String appDocPath = appDocDir.path;
+    _cookieJar =
+        PersistCookieJar(storage: FileStorage(appDocPath + "/.cookies/"));
+
+    _dio.interceptors.add(CookieManager(_cookieJar!));
     _dio.interceptors.add(
       http.InterceptorsWrapper(
         onResponse: (response, handler) async {

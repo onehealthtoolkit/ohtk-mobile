@@ -4,7 +4,7 @@ import 'package:podd_app/models/operation_exception_failure.dart';
 class RegisterResult {}
 
 class RegisterSuccess extends RegisterResult {
-  LoginSuccess loginSuccess;
+  AuthSuccess loginSuccess;
 
   RegisterSuccess({required this.loginSuccess});
 }

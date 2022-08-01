@@ -1,20 +1,20 @@
 import 'package:podd_app/models/operation_exception_failure.dart';
 
-abstract class LoginResult {}
+abstract class AuthResult {}
 
-class LoginSuccess extends LoginResult {
+class AuthSuccess extends AuthResult {
   String token;
   String refreshToken;
   // seconds since epoch
   int refreshExpiresIn;
 
-  LoginSuccess({
+  AuthSuccess({
     required this.token,
     required this.refreshToken,
     required this.refreshExpiresIn,
   });
 }
 
-class LoginFailure extends OperationExceptionFailure with LoginResult {
-  LoginFailure(e) : super(e);
+class AuthFailure extends OperationExceptionFailure with AuthResult {
+  AuthFailure(e) : super(e);
 }

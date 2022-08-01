@@ -28,8 +28,11 @@ void setupLocator(String environment) {
     return SecureStorageService();
   });
 
-  locator.registerSingletonAsync<GqlService>(() async => GqlService(),
-      dependsOn: [ISecureStorageService]);
+  locator.registerSingletonAsync<GqlService>(() async {
+    var service = GqlService();
+    await service.init();
+    return service;
+  }, dependsOn: [ISecureStorageService]);
 
   locator.registerSingletonAsync<IDbService>(() async {
     final dbService = DbService();

@@ -29,9 +29,9 @@ class LoginViewModel extends BaseViewModel {
       return;
     }
     try {
-      var loginResult = await authService.authenticate(username!, password!);
-      if (loginResult is LoginFailure) {
-        setErrorForObject("general", loginResult.messages.join("\n"));
+      var authResult = await authService.authenticate(username!, password!);
+      if (authResult is AuthFailure) {
+        setErrorForObject("general", authResult.messages.join("\n"));
       } else {
         clearErrors();
       }

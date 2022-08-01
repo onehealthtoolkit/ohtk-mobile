@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -107,6 +109,15 @@ class _App extends StatelessWidget {
 class _AppViewModel extends ReactiveViewModel {
   final IAuthService authService = locator<IAuthService>();
   bool? get isLogin => authService.isLogin;
+
+  late Timer timer;
+
+  _AppViewModel() : super() {
+    authService.requestAccessTokenIfExpired();
+    timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      authService.requestAccessTokenIfExpired();
+    });
+  }
 
   @override
   List<ReactiveServiceMixin> get reactiveServices =>

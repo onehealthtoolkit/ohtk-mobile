@@ -6,7 +6,7 @@ import 'package:podd_app/services/api/graph_ql_base_api.dart';
 class AuthApi extends GraphQlBaseApi {
   AuthApi(GraphQLClient client) : super(client);
 
-  Future<LoginResult> tokenAuth(String username, String password) async {
+  Future<AuthResult> tokenAuth(String username, String password) async {
     const mutation = r'''
           mutation Login($username: String!, $password: String!) {
             tokenAuth(username: $username, password: $password ) {
@@ -20,7 +20,7 @@ class AuthApi extends GraphQlBaseApi {
       final result = await runGqlMutation(
         mutation: mutation,
         variables: {'username': username, 'password': password},
-        parseData: (resp) => LoginSuccess(
+        parseData: (resp) => AuthSuccess(
           token: resp?['token'],
           refreshToken: resp?['refreshToken'],
           refreshExpiresIn: resp?['refreshExpiresIn'],
@@ -28,7 +28,32 @@ class AuthApi extends GraphQlBaseApi {
       );
       return result;
     } on OperationException catch (e) {
-      return LoginFailure(e);
+      return AuthFailure(e);
+    }
+  }
+
+  Future<AuthResult> refreshToken() async {
+    const mutation = r'''
+          mutation RefreshToken {
+            refreshToken {
+              token,
+              refreshExpiresIn,
+              refreshToken
+            }
+          }
+    ''';
+    try {
+      final result = await runGqlMutation(
+        mutation: mutation,
+        parseData: (resp) => AuthSuccess(
+          token: resp?['token'],
+          refreshToken: resp?['refreshToken'],
+          refreshExpiresIn: resp?['refreshExpiresIn'],
+        ),
+      );
+      return result;
+    } on OperationException catch (e) {
+      return AuthFailure(e);
     }
   }
 
