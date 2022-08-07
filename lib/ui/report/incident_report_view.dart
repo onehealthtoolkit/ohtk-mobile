@@ -126,7 +126,7 @@ class _Images extends HookViewModelWidget<IncidentReportViewModel> {
                     margin: const EdgeInsets.all(10),
                     child: CachedNetworkImage(
                       imageUrl: viewModel
-                          .resolveImagePath(images[pagePosition].filePath),
+                          .resolveImagePath(images[pagePosition].thumbnailPath),
                       placeholder: (context, url) =>
                           const CircularProgressIndicator(),
                       fit: BoxFit.cover,

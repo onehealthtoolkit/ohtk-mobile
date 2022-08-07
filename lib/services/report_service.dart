@@ -65,6 +65,9 @@ class ReportService extends IReportService {
       offset: currentIncidentReportNextOffset,
       limit: incidentReportLimit,
     );
+    if (resetFlag) {
+      _incidents.clear();
+    }
     _incidents.addAll(result.data);
     hasMoreIncidentReports = result.hasNextPage;
     currentIncidentReportNextOffset =

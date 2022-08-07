@@ -3,14 +3,16 @@ import 'package:intl/intl.dart';
 class IncidentReportImage {
   String id;
   String filePath;
+  String thumbnailPath;
 
-  IncidentReportImage({required this.id, required this.filePath});
+  IncidentReportImage(
+      {required this.id, required this.filePath, required this.thumbnailPath});
 
   factory IncidentReportImage.fromJson(Map<String, dynamic> json) =>
       IncidentReportImage(
-        id: json["id"],
-        filePath: json["file"],
-      );
+          id: json["id"],
+          filePath: json["file"],
+          thumbnailPath: json["thumbnail"]);
 }
 
 class IncidentReport {

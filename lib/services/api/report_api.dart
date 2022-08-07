@@ -88,6 +88,7 @@ class ReportApi extends GraphQlBaseApi {
             images {
               id
               file 
+              thumbnail
             }    
             caseId  
           }          
@@ -100,6 +101,7 @@ class ReportApi extends GraphQlBaseApi {
         "limit": limit,
         "offset": offset,
       },
+      fetchPolicy: FetchPolicy.cacheAndNetwork,
       typeConverter: (resp) => IncidentReportQueryResult.fromJson(resp),
     );
   }
@@ -124,6 +126,7 @@ class ReportApi extends GraphQlBaseApi {
           images {
             id
             file 
+            thumbnail
           }      
           caseId
         }

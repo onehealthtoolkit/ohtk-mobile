@@ -125,7 +125,7 @@ class _ReportList extends HookViewModelWidget<HomeViewModel> {
           return ListTile(
             leading: image != null
                 ? CachedNetworkImage(
-                    imageUrl: viewModel.resolveImagePath(image.filePath),
+                    imageUrl: viewModel.resolveImagePath(image.thumbnailPath),
                     placeholder: (context, url) =>
                         const CircularProgressIndicator(),
                   )
