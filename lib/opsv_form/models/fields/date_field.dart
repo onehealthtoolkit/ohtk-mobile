@@ -7,7 +7,8 @@ class DateField extends Field {
   final Observable<int?> _hour = Observable(null);
   final Observable<int?> _minute = Observable(null);
 
-  bool withTime = false;
+  bool withTime;
+  bool separatedFields;
 
   DateField(
     String id,
@@ -18,6 +19,7 @@ class DateField extends Field {
     bool? required,
     String? requiredMessage,
     this.withTime = false,
+    this.separatedFields = false,
     Condition? condition,
   }) : super(id, name,
             label: label,
@@ -39,8 +41,54 @@ class DateField extends Field {
       required: json["required"],
       requiredMessage: json["requiredMessage"],
       withTime: json["withTime"] ?? false,
+      separatedFields: json["separatedFields"] ?? false,
       condition: condition,
     );
+  }
+
+  int? get day => _day.value;
+
+  set day(value) {
+    runInAction(() {
+      _day.value = value;
+      if (!isValid) clearError();
+    });
+  }
+
+  int? get month => _month.value;
+
+  set month(value) {
+    runInAction(() {
+      _month.value = value;
+      if (!isValid) clearError();
+    });
+  }
+
+  int? get year => _year.value;
+
+  set year(value) {
+    runInAction(() {
+      _year.value = value;
+      if (!isValid) clearError();
+    });
+  }
+
+  int? get hour => _hour.value;
+
+  set hour(value) {
+    runInAction(() {
+      _hour.value = value;
+      if (!isValid) clearError();
+    });
+  }
+
+  int? get minute => _minute.value;
+
+  set minute(value) {
+    runInAction(() {
+      _minute.value = value;
+      if (!isValid) clearError();
+    });
   }
 
   @override

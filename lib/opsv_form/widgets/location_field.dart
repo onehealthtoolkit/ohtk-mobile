@@ -72,6 +72,11 @@ class _FormLocationFieldState extends State<FormLocationField> {
                   myLocationEnabled: false,
                   myLocationButtonEnabled: false,
                   scrollGesturesEnabled: true,
+                  gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                    Factory<OneSequenceGestureRecognizer>(
+                      () => EagerGestureRecognizer(),
+                    ),
+                  },
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
                   },
