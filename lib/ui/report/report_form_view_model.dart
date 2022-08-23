@@ -85,10 +85,12 @@ class ReportFormViewModel extends BaseViewModel {
       incidentInAuthority: _incidentInAuthority,
     );
 
-    var result = await _reportService.submit(report);
+    // var result = await _reportService.submit(report);
+    print(report.data);
 
     setBusy(false);
-    return result;
+    // return result;
+    return ReportSubmitFailure(Exception('xx'));
   }
 
   String? _findFirstLocationValue(Form form) {

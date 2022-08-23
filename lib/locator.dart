@@ -1,12 +1,14 @@
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/services/api/auth_api.dart';
+import 'package:podd_app/services/api/comment_api.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/notification_api.dart';
 import 'package:podd_app/services/api/register_api.dart';
 import 'package:podd_app/services/api/report_api.dart';
 import 'package:podd_app/services/api/report_type_api.dart';
 import 'package:podd_app/services/auth_service.dart';
+import 'package:podd_app/services/comment_service.dart';
 import 'package:podd_app/services/config_service.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:podd_app/services/gql_service.dart';
@@ -82,6 +84,17 @@ void setupLocator(String environment) {
   }, dependsOn: [
     IDbService,
     ReportTypeApi,
+  ]);
+
+  locator.registerSingletonAsync<CommentApi>(() async {
+    var gqlService = locator<GqlService>();
+    return CommentApi(gqlService.client);
+  }, dependsOn: [GqlService]);
+
+  locator.registerSingletonAsync<ICommentService>(() async {
+    return CommentService();
+  }, dependsOn: [
+    CommentApi,
   ]);
 
   locator.registerSingletonAsync<INotificationService>(() async {
