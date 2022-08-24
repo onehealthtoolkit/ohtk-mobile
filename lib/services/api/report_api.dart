@@ -129,6 +129,7 @@ class ReportApi extends GraphQlBaseApi {
             thumbnail
           }      
           caseId
+          threadId
         }
       }
     ''';

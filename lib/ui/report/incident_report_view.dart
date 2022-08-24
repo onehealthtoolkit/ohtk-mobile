@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/report/incident_report_view_model.dart';
+import 'package:podd_app/ui/report/report_comment_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:intl/intl.dart';
@@ -21,6 +22,22 @@ class IncidentReportView extends StatelessWidget {
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title: const Text("Report detail"),
+          actions: [
+            if (viewModel.data != null && viewModel.data?.threadId != null)
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ReportCommentView(viewModel.data!.threadId!),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.comment),
+                tooltip: 'Commments',
+              )
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(8),
