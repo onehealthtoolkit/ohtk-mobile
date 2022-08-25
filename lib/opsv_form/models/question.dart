@@ -13,7 +13,15 @@ class Question implements ConiditionSource {
   Question(this.label, {this.name, this.description, this.condition});
 
   factory Question.fromJson(Map<String, dynamic> json) {
-    var question = Question(json["label"], name: json["name"]);
+    Condition? condition;
+    if (json['condition'] != null) {
+      condition = SimpleCondition.fromJson(json["condition"]);
+    }
+    var question = Question(
+      json["label"],
+      name: json["name"],
+      condition: condition,
+    );
     var jsonFields = json["fields"] as List;
     for (var jsonField in jsonFields) {
       question.fields.add(Field.fromJson(jsonField));
