@@ -8,19 +8,19 @@ class Values {
 
   List<String> get keys => values.keys.toList();
 
-  ValueDelegate? getDelegate(String name) {
-    var names = name.split(".");
+  ValueDelegate? getDelegate(String id) {
+    var names = id.split(".");
 
     return values[names[0]]
         ?.fold((l) => l.getDelegate(names.sublist(1).join('.')), (r) => r);
   }
 
-  setValues(String name, Values values) {
-    this.values[name] = Left(values);
+  setValues(String id, Values values) {
+    this.values[id] = Left(values);
   }
 
-  setValueDelegate(String name, ValueDelegate delegate) {
-    values[name] = Right(delegate);
+  setValueDelegate(String id, ValueDelegate delegate) {
+    values[id] = Right(delegate);
   }
 }
 

@@ -51,7 +51,7 @@ abstract class Field implements ConiditionSource {
   void _registerValues(Values values, Form form) {
     this.form = form;
     var delegate = ValueDelegate(() => this);
-    values.setValueDelegate(name, delegate);
+    values.setValueDelegate(id, delegate);
   }
 
   Computed<bool>? _displayComputed;

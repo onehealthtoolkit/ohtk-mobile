@@ -26,7 +26,7 @@ void main() {
     test("text field", () {
       var jsonField = {
         "type": "text",
-        "id": "id1",
+        "id": "firstName",
         "name": "firstName",
         "required": true,
         "requiredMessage": "First Name is required",
@@ -63,7 +63,7 @@ void main() {
                 "question 1",
                 [
                   TextField(
-                    "id1",
+                    "name",
                     "name",
                     label: "First Name",
                     required: true,
@@ -74,7 +74,7 @@ void main() {
                     ),
                   ),
                   TextField(
-                    "id2",
+                    "surname",
                     "surname",
                     label: "Last Name",
                     required: true,
@@ -129,6 +129,112 @@ void main() {
     });
   });
 
+  test(
+    "multiple field with the same name but different condition",
+    () {
+      simpleForm = Form.withSection(
+        "form1",
+        [
+          Section.withQuestions(
+            "section1",
+            [
+              Question.withFields(
+                "animal category",
+                [
+                  SingleChoicesField(
+                    "category",
+                    "category",
+                    [
+                      ChoiceOption(label: "poutry", value: "poutry"),
+                      ChoiceOption(label: "cattle", value: "cattle"),
+                    ],
+                  ),
+                ],
+              ),
+              Question.withFields(
+                "animal type",
+                [
+                  SingleChoicesField(
+                    "at1",
+                    "animalType",
+                    [
+                      ChoiceOption(label: "chicken", value: "chicken"),
+                      ChoiceOption(label: "duck", value: "duck"),
+                    ],
+                    condition: SimpleCondition(
+                      "category",
+                      ConditionOperator.equal,
+                      "poutry",
+                    ),
+                  ),
+                  SingleChoicesField(
+                    "at2",
+                    "animalType",
+                    [
+                      ChoiceOption(label: "cow", value: "cow"),
+                      ChoiceOption(label: "goat", value: "goat"),
+                    ],
+                    condition: SimpleCondition(
+                      "category",
+                      ConditionOperator.equal,
+                      "cattle",
+                    ),
+                  ),
+                ],
+              ),
+              Question.withFields(
+                "disease",
+                [
+                  SingleChoicesField(
+                    "dt1",
+                    "disease",
+                    [
+                      ChoiceOption(label: "disease A", value: "disease A"),
+                      ChoiceOption(label: "disease B", value: "disease B"),
+                    ],
+                    condition: SimpleCondition(
+                      "at1",
+                      ConditionOperator.equal,
+                      "chicken",
+                    ),
+                  ),
+                  SingleChoicesField(
+                    "dt2",
+                    "disease",
+                    [
+                      ChoiceOption(label: "disease C", value: "disease C"),
+                      ChoiceOption(label: "disease D", value: "disease D"),
+                    ],
+                    condition: SimpleCondition(
+                      "at2",
+                      ConditionOperator.equal,
+                      "cow",
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          )
+        ],
+      );
+      var categoryField =
+          (simpleForm.getField("category") as SingleChoicesField);
+      categoryField.value = "poutry";
+      var at1 = (simpleForm.getField("at1") as SingleChoicesField);
+      expect(at1.display, true);
+      categoryField.value = "cattle";
+      var at2 = (simpleForm.getField("at2") as SingleChoicesField);
+      expect(at2.display, true);
+
+      at2.value = "cow";
+
+      var dt1 = (simpleForm.getField("dt1") as SingleChoicesField);
+      var dt2 = (simpleForm.getField("dt2") as SingleChoicesField);
+      expect(dt1.display, false);
+      expect(dt2.display, true);
+    },
+  );
+
   group("form with simple fields", () {
     setUp(() {
       simpleForm = Form.withSection(
@@ -140,8 +246,9 @@ void main() {
               Question.withFields(
                 "question 1",
                 [
-                  TextField("id1", "name", label: "First Name", required: true),
-                  TextField("id2", "surname",
+                  TextField("name", "name",
+                      label: "First Name", required: true),
+                  TextField("surname", "surname",
                       label: "Last Name", required: true),
                 ],
               ),
@@ -220,8 +327,9 @@ void main() {
               Question.withFields(
                 "question 1",
                 [
-                  TextField("id1", "name", label: "First Name", required: true),
-                  TextField("id2", "surname",
+                  TextField("name", "name",
+                      label: "First Name", required: true),
+                  TextField("surname", "surname",
                       label: "Last Name", required: true),
                 ],
                 name: 'info',
