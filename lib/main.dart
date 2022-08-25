@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:podd_app/services/auth_service.dart';
+import 'package:podd_app/services/httpclient.dart';
 import 'package:podd_app/ui/home/home_view.dart';
 import 'package:podd_app/ui/login/login_view.dart';
 import 'package:stacked/stacked.dart';
@@ -16,6 +18,8 @@ import 'locator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  HttpOverrides.global = MyHttpOverrides();
+
   await initHiveForFlutter();
 
   await Firebase.initializeApp(

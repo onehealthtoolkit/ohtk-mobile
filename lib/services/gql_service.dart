@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/adapter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/services/auth_service.dart';
@@ -32,7 +33,19 @@ class GqlService {
     'JWTExpired',
   ];
 
+  overrideDioSelfSignCertificateHandling() {
+    DefaultHttpClientAdapter httpClient =
+        _dio.httpClientAdapter as DefaultHttpClientAdapter;
+    httpClient.onHttpClientCreate = (HttpClient client) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) {
+        return true;
+      };
+    };
+  }
+
   init() async {
+    overrideDioSelfSignCertificateHandling();
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String appDocPath = appDocDir.path;
     _cookieJar =
