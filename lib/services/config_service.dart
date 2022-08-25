@@ -6,15 +6,18 @@ class ConfigService {
 
   String get serverPort => const String.fromEnvironment(
         'SERVER_PORT',
-        defaultValue: "8000",
+        defaultValue: "80",
       );
 
   String get serverSchema =>
-      const String.fromEnvironment('SERVER_SCHEMA', defaultValue: "http");
+      const String.fromEnvironment('SERVER_SCHEMA', defaultValue: "https");
 
-  String get serverHost => "$serverDomain:$serverPort";
+  String get serverHost {
+    if (serverPort != "80") {
+      return "$serverDomain:$serverPort";
+    }
+    return serverDomain;
+  }
 
   String get graphqlEndpoint => "$serverSchema://$serverHost/graphql/";
-
-  String get imageEndpoint => "$serverSchema://$serverHost/";
 }

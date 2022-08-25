@@ -19,7 +19,7 @@ class IncidentReportViewModel extends FutureViewModel<IncidentReport> {
   }
 
   resolveImagePath(String path) {
-    return configService.imageEndpoint + path;
+    return path;
   }
 
   List<double>? get latlng {

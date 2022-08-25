@@ -27,7 +27,7 @@ class ReportCommentViewModel extends ReactiveViewModel {
   List<Comment> get comments => commentService.comments;
 
   resolveImagePath(String path) {
-    return configService.imageEndpoint + path;
+    return path;
   }
 
   setBody(String value) {

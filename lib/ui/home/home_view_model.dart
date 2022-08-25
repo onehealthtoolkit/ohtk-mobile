@@ -32,7 +32,7 @@ class HomeViewModel extends ReactiveViewModel {
   List<ReactiveServiceMixin> get reactiveServices => [reportService];
 
   resolveImagePath(String path) {
-    return configService.imageEndpoint + path;
+    return path;
   }
 
   setupFirebaseMessaging({
