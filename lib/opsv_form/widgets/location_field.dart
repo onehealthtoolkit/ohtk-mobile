@@ -18,14 +18,7 @@ class _FormLocationFieldState extends State<FormLocationField> {
     return Observer(builder: (BuildContext context) {
       var latitude = widget.field.latitude;
       var longitude = widget.field.longitude;
-
       var markers = <Marker>{};
-      if (latitude != null && longitude != null) {
-        markers.add(Marker(
-          markerId: const MarkerId('center'),
-          position: LatLng(latitude, longitude),
-        ));
-      }
 
       return ValidationWrapper(
         widget.field,
@@ -65,22 +58,51 @@ class _FormLocationFieldState extends State<FormLocationField> {
               SizedBox(
                 height: 300,
                 width: MediaQuery.of(context).size.width,
-                child: GoogleMap(
-                  mapType: MapType.hybrid,
-                  initialCameraPosition: CameraPosition(
-                      zoom: 12, target: LatLng(latitude, longitude)),
-                  myLocationEnabled: false,
-                  myLocationButtonEnabled: false,
-                  scrollGesturesEnabled: true,
-                  gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                    Factory<OneSequenceGestureRecognizer>(
-                      () => EagerGestureRecognizer(),
+                child: Stack(
+                  children: [
+                    GoogleMap(
+                      mapType: MapType.hybrid,
+                      initialCameraPosition: CameraPosition(
+                          zoom: 12, target: LatLng(latitude, longitude)),
+                      myLocationEnabled: false,
+                      myLocationButtonEnabled: false,
+                      scrollGesturesEnabled: true,
+                      gestureRecognizers: <
+                          Factory<OneSequenceGestureRecognizer>>{
+                        Factory<OneSequenceGestureRecognizer>(
+                          () => EagerGestureRecognizer(),
+                        ),
+                      },
+                      onCameraMove: (CameraPosition position) {
+                        widget.field.value =
+                            "${position.target.longitude},${position.target.latitude}";
+                      },
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller.complete(controller);
+                        Future.delayed(const Duration(seconds: 1), () {
+                          controller.animateCamera(
+                            CameraUpdate.newCameraPosition(
+                              CameraPosition(
+                                target: LatLng(latitude, longitude),
+                                zoom: 17.0,
+                              ),
+                            ),
+                          );
+                        });
+                      },
+                      markers: markers,
                     ),
-                  },
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
-                  markers: markers,
+                    Transform.translate(
+                      offset: const Offset(0, -20),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          "images/map_pin_icon.png",
+                          height: 40,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
           ],
