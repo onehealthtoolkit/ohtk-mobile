@@ -14,7 +14,7 @@ class DbService extends IDbService {
     // follow this migration pattern https://github.com/tekartik/sqflite/blob/master/sqflite/doc/migration_example.md
     _db = await openDatabase(
       'podd.db',
-      version: 5,
+      version: 6,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onDowngrade: onDatabaseDowngradeDelete,
@@ -45,6 +45,9 @@ class DbService extends IDbService {
     if (oldVersion == 4) {
       await _alterTableReportV5(batch);
     }
+    if (oldVersion == 5) {
+      await _alterTableReportTypeV6(batch);
+    }
     await batch.commit();
   }
 
@@ -53,10 +56,11 @@ class DbService extends IDbService {
     batch.execute('''CREATE TABLE report_type (
       id TEXT PRIMARY KEY,
       name TEXT,
-      categoryId INT,
+      category_id INT,
       definition TEXT,
+      followup_definition TEXT,
       ordering INT,
-      updatedAt TEXT
+      updated_at TEXT
     )''');
   }
 
@@ -112,6 +116,34 @@ class DbService extends IDbService {
 
   _alterTableReportTypeV3(Batch batch) {
     batch.execute("ALTER TABLE report_type add column submitted int");
+  }
+
+  _alterTableReportTypeV6(Batch batch) {
+    batch
+        .execute("ALTER TABLE report_type add column followup_definition TEXT");
+
+    /// Old way to rename columns: categoryId, updatedAt
+    /// Sqlite 3.25 supports 'Rename Column' query
+    /// https://developer.android.com/reference/android/database/sqlite/package-summary
+    batch.execute('''CREATE TABLE temp_report_type (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      category_id INT,
+      definition TEXT,
+      followup_definition TEXT,
+      ordering INT,
+      updated_at TEXT
+    )''');
+
+    batch.execute('''INSERT INTO temp_report_type(
+      id, name, category_id, definition, followup_definition, ordering, updated_at
+      ) 
+      SELECT id, name, categoryId, definition, followup_definition, ordering, updatedAt
+      FROM report_type;
+
+    ''');
+    batch.execute("DROP TABLE report_type");
+    batch.execute("ALTER TABLE temp_report_type RENAME TO report_type");
   }
 
   _alterTableReportV4(Batch batch) {

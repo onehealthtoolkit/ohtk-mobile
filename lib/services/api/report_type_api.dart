@@ -16,6 +16,7 @@ class ReportTypeApi extends GraphQlBaseApi {
             id
             name
             definition
+            followupDefinition
             updatedAt
             ordering
             category {

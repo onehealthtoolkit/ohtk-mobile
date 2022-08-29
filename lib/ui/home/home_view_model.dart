@@ -8,7 +8,7 @@ import 'package:podd_app/services/notification_service.dart';
 import 'package:podd_app/services/report_service.dart';
 import 'package:stacked/stacked.dart';
 
-class HomeViewModel extends ReactiveViewModel {
+class HomeViewModel extends IndexTrackingViewModel {
   final INotificationService notificationService =
       locator<INotificationService>();
   IAuthService authService = locator<IAuthService>();
@@ -20,8 +20,6 @@ class HomeViewModel extends ReactiveViewModel {
 
   List<Report> get pendingReports => reportService.pendingReports;
 
-  List<IncidentReport> get incidentReports => reportService.incidentReports;
-
   logout() {
     authService.logout();
   }
@@ -30,10 +28,6 @@ class HomeViewModel extends ReactiveViewModel {
 
   @override
   List<ReactiveServiceMixin> get reactiveServices => [reportService];
-
-  resolveImagePath(String path) {
-    return path;
-  }
 
   setupFirebaseMessaging({
     NotificationMessageCallback? onBackgroundMessage,
@@ -47,11 +41,5 @@ class HomeViewModel extends ReactiveViewModel {
         onForegroundMessage: onForegroundMessage,
       );
     }
-  }
-
-  Future<void> refetchIncidentReports() async {
-    setBusy(true);
-    await reportService.fetchIncidents(true);
-    setBusy(false);
   }
 }

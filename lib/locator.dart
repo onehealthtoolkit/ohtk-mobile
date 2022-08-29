@@ -18,6 +18,8 @@ import 'package:podd_app/services/register_service.dart';
 import 'package:podd_app/services/report_service.dart';
 import 'package:podd_app/services/report_type_service.dart';
 import 'package:podd_app/services/secure_storage_service.dart';
+import 'package:podd_app/ui/home/all_reports_view_model.dart';
+import 'package:podd_app/ui/home/my_reports_view_model.dart';
 
 final locator = GetIt.instance;
 
@@ -129,5 +131,18 @@ void setupLocator(String environment) {
     ISecureStorageService,
     RegisterApi,
     IAuthService,
+  ]);
+
+  locator.registerSingletonAsync<AllReportsViewModel>(() async {
+    return AllReportsViewModel();
+  }, dependsOn: [
+    IReportService,
+  ]);
+
+  locator.registerSingletonAsync<MyReportsViewModel>(() async {
+    return MyReportsViewModel();
+  }, dependsOn: [
+    IReportService,
+    IReportTypeService,
   ]);
 }

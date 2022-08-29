@@ -19,6 +19,7 @@ class IncidentReport {
   String id;
   Map<String, dynamic>? data;
   String description;
+  String reportTypeId;
   String reportTypeName;
   DateTime incidentDate;
   DateTime createdAt;
@@ -32,6 +33,7 @@ class IncidentReport {
     required this.id,
     this.data,
     required this.description,
+    required this.reportTypeId,
     required this.reportTypeName,
     required this.incidentDate,
     required this.createdAt,
@@ -46,6 +48,7 @@ class IncidentReport {
     return IncidentReport(
       id: json["id"],
       description: json["rendererData"],
+      reportTypeId: (json["reportType"] as Map)["id"],
       reportTypeName: (json["reportType"] as Map)["name"],
       incidentDate: DateFormat("yyyy-MM-dd").parse(json["incidentDate"]),
       createdAt: DateTime.parse(json["createdAt"]),
