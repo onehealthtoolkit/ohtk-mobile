@@ -21,9 +21,13 @@ abstract class IReportService with ReactiveServiceMixin {
 
   List<IncidentReport> get incidentReports;
 
+  List<IncidentReport> get myIncidentReports;
+
   Future<void> submitAllPendingReport();
 
   Future<void> fetchIncidents(bool resetFlag);
+
+  Future<void> fetchMyIncidents(bool resetFlag);
 
   Future<void> removeAllPendingReports();
 
@@ -39,9 +43,16 @@ class ReportService extends IReportService {
   final ReactiveList<Report> _pendingReports = ReactiveList<Report>();
   final ReactiveList<IncidentReport> _incidents =
       ReactiveList<IncidentReport>();
+  final ReactiveList<IncidentReport> _myIncidents =
+      ReactiveList<IncidentReport>();
+
   bool hasMoreIncidentReports = false;
   int currentIncidentReportNextOffset = 0;
   int incidentReportLimit = 20;
+
+  bool hasMoreMyIncidentReports = false;
+  int currentMyIncidentReportNextOffset = 0;
+  int myIncidentReportLimit = 20;
 
   ReportService() {
     listenToReactiveValues([_pendingReports, _incidents]);
@@ -54,6 +65,7 @@ class ReportService extends IReportService {
       _pendingReports.add(report);
     });
     fetchIncidents(true);
+    fetchMyIncidents(true);
   }
 
   @override
@@ -72,6 +84,24 @@ class ReportService extends IReportService {
     hasMoreIncidentReports = result.hasNextPage;
     currentIncidentReportNextOffset =
         currentIncidentReportNextOffset + incidentReportLimit;
+  }
+
+  @override
+  fetchMyIncidents(bool resetFlag) async {
+    if (resetFlag) {
+      currentMyIncidentReportNextOffset = 0;
+    }
+    var result = await _reportApi.fetchMyIncidentReports(
+      offset: currentMyIncidentReportNextOffset,
+      limit: myIncidentReportLimit,
+    );
+    if (resetFlag) {
+      _myIncidents.clear();
+    }
+    _myIncidents.addAll(result.data);
+    hasMoreMyIncidentReports = result.hasNextPage;
+    currentMyIncidentReportNextOffset =
+        currentMyIncidentReportNextOffset + myIncidentReportLimit;
   }
 
   @override
@@ -163,6 +193,9 @@ class ReportService extends IReportService {
 
   @override
   List<IncidentReport> get incidentReports => _incidents;
+
+  @override
+  List<IncidentReport> get myIncidentReports => _myIncidents;
 
   @override
   Future<void> removeAllPendingReports() async {

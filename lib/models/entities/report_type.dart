@@ -7,6 +7,7 @@ class ReportType {
   String name;
   int categoryId;
   String definition;
+  String? followupDefinition;
   int ordering;
   String updatedAt;
 
@@ -17,6 +18,7 @@ class ReportType {
     required this.definition,
     required this.ordering,
     required this.updatedAt,
+    this.followupDefinition,
   });
 
   ReportType.fromJson(Map<String, dynamic> jsonMap)
@@ -24,25 +26,28 @@ class ReportType {
         name = jsonMap['name'],
         categoryId = cvInt(jsonMap, (m) => m['category']['id']),
         definition = json.encode(jsonMap['definition']),
+        followupDefinition = json.encode(jsonMap['followupDefinition']),
         ordering = cvInt(jsonMap, (m) => m['ordering']),
         updatedAt = jsonMap['updatedAt'];
 
   ReportType.fromMap(Map<String, dynamic> map)
       : id = map['id'],
         name = map['name'],
-        categoryId = map['categoryId'],
+        categoryId = map['category_id'],
         definition = map['definition'],
+        followupDefinition = map['followup_definition'],
         ordering = map['ordering'],
-        updatedAt = map['updatedAt'];
+        updatedAt = map['updated_at'];
 
   Map<String, Object?> toMap() {
     var map = <String, Object?>{
       "id": id,
       "name": name,
-      "categoryid": categoryId,
+      "category_id": categoryId,
       "definition": definition,
+      "followup_definition": followupDefinition,
       "ordering": ordering,
-      "updatedAt": updatedAt
+      "updated_at": updatedAt
     };
     return map;
   }

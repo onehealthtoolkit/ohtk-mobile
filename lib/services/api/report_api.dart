@@ -30,6 +30,7 @@ class ReportApi extends GraphQlBaseApi {
             createdAt
             updatedAt
             reportType {
+              id
               name
             }
             reportedBy {
@@ -79,6 +80,7 @@ class ReportApi extends GraphQlBaseApi {
             createdAt
             updatedAt
             reportType {
+              id
               name
             }
             reportedBy {
@@ -117,6 +119,7 @@ class ReportApi extends GraphQlBaseApi {
           createdAt
           updatedAt
           reportType {
+            id
             name
           }
           reportedBy {
@@ -137,6 +140,52 @@ class ReportApi extends GraphQlBaseApi {
         query: query,
         variables: {"id": id},
         typeConverter: (resp) => IncidentReportGetResult.fromJson(resp));
+  }
+
+  Future<IncidentReportQueryResult> fetchMyIncidentReports({
+    limit = 20,
+    offset = 0,
+  }) async {
+    const query = r'''
+      query myIncidentReports($limit: Int, $offset: Int) {
+        incidentReports(limit: $limit, offset: $offset) {
+          pageInfo {
+            hasNextPage
+          }
+          results {
+            id
+            incidentDate
+            gpsLocation
+            rendererData
+            createdAt
+            updatedAt
+            reportType {
+              id
+              name
+            }
+            reportedBy {
+              id
+              username        
+            } 
+            images {
+              id
+              file 
+              thumbnail
+            }    
+            caseId  
+          }          
+        }
+      }
+    ''';
+    return runGqlQuery<IncidentReportQueryResult>(
+      query: query,
+      variables: {
+        "limit": limit,
+        "offset": offset,
+      },
+      fetchPolicy: FetchPolicy.cacheAndNetwork,
+      typeConverter: (resp) => IncidentReportQueryResult.fromJson(resp),
+    );
   }
 }
 
