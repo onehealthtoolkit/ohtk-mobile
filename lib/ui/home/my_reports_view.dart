@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/home/my_reports_view_model.dart';
+import 'package:podd_app/ui/report/followup_report_form_view.dart';
 import 'package:podd_app/ui/report/incident_report_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -24,6 +26,8 @@ class MyReportsView extends StatelessWidget {
 }
 
 class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
+  final _logger = locator<Logger>();
+
   @override
   Widget buildViewModelWidget(
       BuildContext context, MyReportsViewModel viewModel) {
@@ -55,7 +59,20 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
                   ),
             title: _title(context, report),
             trailing: viewModel.canFollow(report.reportTypeId)
-                ? ElevatedButton(onPressed: () {}, child: const Text("Follow"))
+                ? ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FollowupReportFormView(
+                            incidentId: report.id,
+                            reportType:
+                                viewModel.getReportType(report.reportTypeId)!,
+                          ),
+                        ),
+                      ).then((value) => {_logger.d("back from from $value")});
+                    },
+                    child: const Text("Follow"))
                 : null,
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

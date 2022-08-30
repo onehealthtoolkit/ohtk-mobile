@@ -1,6 +1,8 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/entities/report.dart';
+import 'package:podd_app/models/followup_submit_result.dart';
 import 'package:podd_app/models/incident_report_query_result.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
@@ -186,6 +188,54 @@ class ReportApi extends GraphQlBaseApi {
       fetchPolicy: FetchPolicy.cacheAndNetwork,
       typeConverter: (resp) => IncidentReportQueryResult.fromJson(resp),
     );
+  }
+
+  Future<FollowupSubmitResult> submitFollowup(
+    String incidentId,
+    String? followupId,
+    Map<String, dynamic>? data,
+  ) async {
+    const mutation = r'''
+      mutation submitFollowupReport(
+        $data: GenericScalar!,
+        $followupId: UUID = null,
+        $incidentId: UUID!
+      ){
+        submitFollowupReport(
+          data: $data, 
+          followupId: $followupId, 
+          incidentId: $incidentId
+        ) {
+          result {
+            id
+            rendererData
+            testFlag
+            reportType {
+              id
+              name
+            }
+            incident {
+              id
+            }
+          }
+        }
+      }
+    ''';
+    try {
+      var result = await runGqlMutation<FollowupReport>(
+        mutation: mutation,
+        parseData: (json) => FollowupReport.fromJson(json!["result"]),
+        variables: {
+          "data": data,
+          "followupId": followupId,
+          "incidentId": incidentId,
+        },
+      );
+
+      return FollowupSubmitSuccess(result);
+    } on OperationException catch (e) {
+      return FollowupSubmitFailure(e);
+    }
   }
 }
 
