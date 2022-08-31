@@ -1,8 +1,10 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/entities/report.dart';
+import 'package:podd_app/models/followup_submit_result.dart';
 import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/services/api/image_api.dart';
@@ -17,11 +19,16 @@ abstract class IReportService with ReactiveServiceMixin {
 
   Future<ReportSubmitResult> submit(Report report);
 
+  Future<FollowupSubmitResult> submitFollowup(
+      String incidentId, String? followupId, Map<String, dynamic>? data);
+
   List<Report> get pendingReports;
 
   List<IncidentReport> get incidentReports;
 
   List<IncidentReport> get myIncidentReports;
+
+  List<FollowupReport> get followupReports;
 
   Future<void> submitAllPendingReport();
 
@@ -45,6 +52,8 @@ class ReportService extends IReportService {
       ReactiveList<IncidentReport>();
   final ReactiveList<IncidentReport> _myIncidents =
       ReactiveList<IncidentReport>();
+  final ReactiveList<FollowupReport> _followups =
+      ReactiveList<FollowupReport>();
 
   bool hasMoreIncidentReports = false;
   int currentIncidentReportNextOffset = 0;
@@ -123,6 +132,7 @@ class ReportService extends IReportService {
         }
 
         _incidents.insert(0, result.incidentReport);
+        _myIncidents.insert(0, result.incidentReport);
       }
 
       if (result is ReportSubmitFailure) {
@@ -133,6 +143,38 @@ class ReportService extends IReportService {
     } on LinkException catch (_e) {
       _saveToLocalDB(report);
       return ReportSubmitPending();
+    }
+  }
+
+  @override
+  submitFollowup(
+    String incidentId,
+    String? followupId,
+    Map<String, dynamic>? data,
+  ) async {
+    try {
+      var result =
+          await _reportApi.submitFollowup(incidentId, followupId, data);
+
+      if (result is FollowupSubmitSuccess) {
+        result.followupReport.images = List.of([]);
+
+        // submit images
+        var localImages =
+            await _imageService.findByReportId(result.followupReport.id);
+        for (var img in localImages) {
+          var submitImageResult = await _imageApi.submit(img);
+          if (submitImageResult is ImageSubmitSuccess) {
+            result.followupReport.images!.add(submitImageResult.image);
+          }
+        }
+
+        _followups.insert(0, result.followupReport);
+      }
+
+      return result;
+    } on LinkException catch (_e) {
+      return FollowupSubmitFailure(_e);
     }
   }
 
@@ -196,6 +238,9 @@ class ReportService extends IReportService {
 
   @override
   List<IncidentReport> get myIncidentReports => _myIncidents;
+
+  @override
+  List<FollowupReport> get followupReports => _followups;
 
   @override
   Future<void> removeAllPendingReports() async {

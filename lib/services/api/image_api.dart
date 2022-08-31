@@ -18,6 +18,7 @@ class ImageApi extends GraphQlBaseApi {
         submitImage(image: $image, imageId: $imageId, reportId: $reportId) {
           id
           file
+          thumbnail
         }
       }
     ''';
