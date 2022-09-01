@@ -17,16 +17,21 @@ class MyReportsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<MyReportsViewModel>.nonReactive(
-        viewModelBuilder: () => viewModel,
-        disposeViewModel: false,
-        initialiseSpecialViewModelsOnce: true,
-        builder: (context, viewModel, child) => _ReportList());
+    return ViewModelBuilder<MyReportsViewModel>.reactive(
+      viewModelBuilder: () => viewModel,
+      disposeViewModel: false,
+      initialiseSpecialViewModelsOnce: true,
+      onModelReady: (viewModel) => viewModel.init(),
+      builder: (context, viewModel, child) => viewModel.isReady
+          ? _ReportList()
+          : const Center(child: CircularProgressIndicator()),
+    );
   }
 }
 
 class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
   final _logger = locator<Logger>();
+  final formatter = DateFormat("dd/MM/yyyy HH:mm");
 
   @override
   Widget buildViewModelWidget(
@@ -45,7 +50,7 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
           if (report.images?.isNotEmpty != false) {
             image = report.images?.first;
           }
-          var formatter = DateFormat("dd/MM/yyyy HH:mm");
+
           return ListTile(
             leading: image != null
                 ? CachedNetworkImage(
@@ -59,20 +64,7 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
                   ),
             title: _title(context, report),
             trailing: viewModel.canFollow(report.reportTypeId)
-                ? ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FollowupReportFormView(
-                            incidentId: report.id,
-                            reportType:
-                                viewModel.getReportType(report.reportTypeId)!,
-                          ),
-                        ),
-                      ).then((value) => {_logger.d("back from from $value")});
-                    },
-                    child: const Text("Follow"))
+                ? _followLink(context, report, viewModel)
                 : null,
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,6 +85,39 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
             },
           );
         },
+      ),
+    );
+  }
+
+  Widget _followLink(BuildContext context, IncidentReport report,
+      MyReportsViewModel viewModel) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FollowupReportFormView(
+              incidentId: report.id,
+              reportType: viewModel.getReportType(report.reportTypeId)!,
+            ),
+          ),
+        ).then((value) => {_logger.d("back from from $value")});
+      },
+      child: Ink(
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
+          child: Text(
+            "Follow",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+            textScaleFactor: 0.8,
+          ),
+        ),
       ),
     );
   }

@@ -10,15 +10,16 @@ class MyReportsViewModel extends ReactiveViewModel {
   IReportService reportService = locator<IReportService>();
 
   final List<ReportType> _reportTypes = [];
+  bool _isReady = false;
 
-  MyReportsViewModel() {
-    init();
-  }
-
-  init() async {
+  Future<void> init() async {
     final items = await reportTypeService.fetchAllReportType();
     _reportTypes.addAll(items);
+    _isReady = true;
+    notifyListeners();
   }
+
+  bool get isReady => _isReady;
 
   List<IncidentReport> get incidentReports => reportService.myIncidentReports;
 
