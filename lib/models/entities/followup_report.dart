@@ -8,6 +8,7 @@ class FollowupReport {
   String reportTypeId;
   String reportTypeName;
   String incidentId;
+  DateTime createdAt;
   Map<String, dynamic>? data;
   String? gpsLocation;
   List<IncidentReportImage>? images;
@@ -20,6 +21,7 @@ class FollowupReport {
     required this.reportTypeId,
     required this.reportTypeName,
     required this.incidentId,
+    required this.createdAt,
     this.data,
     this.gpsLocation,
     this.images,
@@ -34,6 +36,7 @@ class FollowupReport {
       reportTypeId: (json["reportType"] as Map)["id"],
       reportTypeName: (json["reportType"] as Map)["name"],
       incidentId: (json["incident"] as Map)["id"],
+      createdAt: DateTime.parse(json["createdAt"]),
       data: json["data"],
       gpsLocation: json["gpsLocation"],
       images: json["images"] != null

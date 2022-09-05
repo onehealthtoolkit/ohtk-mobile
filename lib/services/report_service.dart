@@ -1,6 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/comment_result.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/entities/report.dart';
@@ -36,6 +37,8 @@ abstract class IReportService with ReactiveServiceMixin {
 
   Future<void> fetchMyIncidents(bool resetFlag);
 
+  Future<void> fetchFollowups(String incidentId);
+
   Future<void> removeAllPendingReports();
 
   Future<void> removePendingReport(String id);
@@ -62,6 +65,10 @@ class ReportService extends IReportService {
   bool hasMoreMyIncidentReports = false;
   int currentMyIncidentReportNextOffset = 0;
   int myIncidentReportLimit = 20;
+
+  bool hasMoreFollowupReports = false;
+  int currentFollowupReportNextOffset = 0;
+  int followupReportLimit = 20;
 
   ReportService() {
     listenToReactiveValues([_pendingReports, _incidents]);
@@ -111,6 +118,13 @@ class ReportService extends IReportService {
     hasMoreMyIncidentReports = result.hasNextPage;
     currentMyIncidentReportNextOffset =
         currentMyIncidentReportNextOffset + myIncidentReportLimit;
+  }
+
+  @override
+  Future<void> fetchFollowups(String incidentId) async {
+    _followups.clear();
+    var result = await _reportApi.fetchFollowupReports(incidentId);
+    _followups.addAll(result.data);
   }
 
   @override
