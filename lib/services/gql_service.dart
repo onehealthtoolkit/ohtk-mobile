@@ -89,6 +89,10 @@ class GqlService {
     _client = GraphQLClient(link: _dioLink, cache: cache);
   }
 
+  Future<void> clearCookies() async {
+    _cookieJar?.deleteAll();
+  }
+
   Future<bool> _refreshToken() async {
     final refreshToken = await _secureStorage.get('refreshToken');
     const mutation = r'''

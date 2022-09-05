@@ -2,6 +2,7 @@ import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/login_result.dart';
 import 'package:podd_app/models/user_profile.dart';
+import 'package:podd_app/services/gql_service.dart';
 import 'package:podd_app/services/jwt.dart';
 import 'package:podd_app/services/report_service.dart';
 import 'package:podd_app/services/report_type_service.dart';
@@ -37,6 +38,8 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
   final _reportTypeService = locator<IReportTypeService>();
 
   final _reportService = locator<IReportService>();
+
+  final _gqlService = locator<GqlService>();
 
   final ReactiveValue<bool?> _isLogin = ReactiveValue<bool?>(null);
 
@@ -87,6 +90,7 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
     await _secureStorageService.deleteAll();
     await _reportService.removeAllPendingReports();
     await _reportTypeService.removeAll();
+    await _gqlService.clearCookies();
   }
 
   @override
