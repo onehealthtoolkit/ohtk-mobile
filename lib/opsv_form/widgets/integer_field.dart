@@ -18,6 +18,10 @@ class _FormIntegerFieldState extends State<FormIntegerField> {
     return Observer(builder: (BuildContext context) {
       var value = widget.field.value?.toString() ?? '';
 
+      if (!widget.field.display) {
+        return Container();
+      }
+
       if (value != _controller.text) {
         _controller.value = TextEditingValue(
             text: value,

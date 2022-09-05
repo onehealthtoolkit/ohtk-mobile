@@ -20,6 +20,10 @@ class _FormSingleChoicesFieldState extends State<FormSingleChoicesField> {
       widget.field
           .isValid; // make sure that this field is registered in mobx listener
 
+      if (!widget.field.display) {
+        return Container();
+      }
+
       var currentText = widget.field.text ?? '';
       if (currentText != _controller.text) {
         _controller.value = TextEditingValue(

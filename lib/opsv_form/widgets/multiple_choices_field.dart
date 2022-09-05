@@ -16,6 +16,11 @@ class _FormMultipleChoicesFieldState extends State<FormMultipleChoicesField> {
     return Observer(
       builder: (BuildContext context) {
         widget.field.isValid;
+
+        if (!widget.field.display) {
+          return Container();
+        }
+
         return ValidationWrapper(
           widget.field,
           child: Column(

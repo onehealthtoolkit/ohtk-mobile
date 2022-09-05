@@ -232,6 +232,10 @@ class _DateTimePicker extends StatelessWidget {
     return Observer(builder: (BuildContext context) {
       var datetime = field.value;
 
+      if (!field.display) {
+        return Container();
+      }
+
       final buttonStyle = ButtonStyle(
         foregroundColor: MaterialStateProperty.all(
             datetime != null ? Colors.grey.shade700 : Colors.black54),
