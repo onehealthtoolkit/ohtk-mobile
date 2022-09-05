@@ -293,6 +293,7 @@ class ReportApi extends GraphQlBaseApi {
             id
             rendererData
             testFlag
+            createdAt
             reportType {
               id
               name
