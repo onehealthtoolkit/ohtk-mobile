@@ -2,6 +2,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/entities/report.dart';
+import 'package:podd_app/models/followup_result.dart';
 import 'package:podd_app/models/followup_submit_result.dart';
 import 'package:podd_app/models/incident_report_query_result.dart';
 import 'package:podd_app/models/report_submit_result.dart';
@@ -190,6 +191,88 @@ class ReportApi extends GraphQlBaseApi {
     );
   }
 
+  Future<FollowupQueryResult> fetchFollowupReports(String incidentId) async {
+    const query = r'''
+      query QueryFollowups($incidentId: ID!) {
+        followups(incidentId: $incidentId) {
+          id
+          data
+          rendererData
+          testFlag
+          reportType{
+            id
+            name
+          }
+          incident{
+            id
+          }
+          images{
+            id
+						file
+            thumbnail
+          }
+          reportedBy {
+            id
+            username
+            firstName
+            lastName
+            avatarUrl
+          }
+          createdAt
+        }
+      }
+    ''';
+    final result = await runGqlListQuery(
+      query: query,
+      variables: {"incidentId": incidentId},
+      fetchPolicy: FetchPolicy.networkOnly,
+      typeConverter: (resp) => FollowupReport.fromJson(resp),
+    );
+
+    return FollowupQueryResult(result);
+  }
+
+  Future<FollowupReportGetResult> getFollowupReport(String id) {
+    const query = r'''
+      query followupReport($id: ID!) {
+        followupReport(id: $id) {
+          id
+          data
+          testFlag
+          rendererData
+          createdAt
+          incident{
+            id
+          }
+          reportType {
+            id
+            name
+          }
+          reportedBy {
+            id
+            username        
+          } 
+          images {
+            id
+            file 
+            thumbnail
+          }   
+          reportedBy {
+            id
+            username
+            firstName
+            lastName
+            avatarUrl
+          }   
+        }
+      }
+    ''';
+    return runGqlQuery(
+        query: query,
+        variables: {"id": id},
+        typeConverter: (resp) => FollowupReportGetResult.fromJson(resp));
+  }
+
   Future<FollowupSubmitResult> submitFollowup(
     String incidentId,
     String? followupId,
@@ -210,6 +293,7 @@ class ReportApi extends GraphQlBaseApi {
             id
             rendererData
             testFlag
+            createdAt
             reportType {
               id
               name

@@ -5,46 +5,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
+import 'package:podd_app/ui/report/followup_list_view.dart';
 import 'package:podd_app/ui/report/incident_report_view_model.dart';
 import 'package:podd_app/ui/report/report_comment_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:intl/intl.dart';
 
-class IncidentReportView extends StatelessWidget {
+class IncidentReportView extends HookWidget {
   final String id;
   const IncidentReportView({Key? key, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    TabController _tabController = useTabController(initialLength: 3);
+
     return ViewModelBuilder<IncidentReportViewModel>.reactive(
       viewModelBuilder: () => IncidentReportViewModel(id),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: const [
+              Tab(child: Text('Detail')),
+              Tab(child: Text('Comment')),
+              Tab(child: Text('Follow Up')),
+            ],
+          ),
           title: const Text("Report detail"),
-          actions: [
-            if (viewModel.data != null && viewModel.data?.threadId != null)
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ReportCommentView(viewModel.data!.threadId!),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.comment),
-                tooltip: 'Commments',
-              )
-          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(8),
           child: viewModel.isBusy
               ? const CircularProgressIndicator()
               : !viewModel.hasError
-                  ? _IncidentDetail()
+                  ? TabBarView(controller: _tabController, children: [
+                      _IncidentDetail(),
+                      ReportCommentView(viewModel.data!.threadId!),
+                      FollowupListView(viewModel.data!.id!)
+                    ])
                   : const Text("Incident report not found"),
         ),
       ),
