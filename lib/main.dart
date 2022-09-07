@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return OverlaySupport.global(
             child: MaterialApp(
-              title: 'PODD App',
+              title: 'OHTK Mobile',
               localizationsDelegates: const [
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
