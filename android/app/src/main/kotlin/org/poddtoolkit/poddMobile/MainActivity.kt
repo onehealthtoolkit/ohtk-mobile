@@ -1,4 +1,4 @@
-package com.example.podd_app
+package org.poddtoolkit.poddMobile
 
 import io.flutter.embedding.android.FlutterActivity
 

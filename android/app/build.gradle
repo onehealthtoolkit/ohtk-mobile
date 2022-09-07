@@ -46,10 +46,10 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.podd_app"
+        applicationId "org.poddtoolkit.poddMobile"
         // [:flutter_secure_storage] requires minSdkVersion 18 
         // [:google_maps_flutter] requires minSdkVersion 20
-        minSdkVersion 20
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
