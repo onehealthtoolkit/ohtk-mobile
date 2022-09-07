@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCsEeq80_r_dbNz4dMYl5oIahX5wOTGdJg',
-    appId: '1:264236047317:android:ae5890af7ce38249a03b5c',
+    appId: '1:264236047317:android:359f55402077d117a03b5c',
     messagingSenderId: '264236047317',
     projectId: 'open-surveillance',
     storageBucket: 'open-surveillance.appspot.com',
@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAXN1G9Rw9NLnbWDgMsm86jfKraqk_u_es',
-    appId: '1:264236047317:ios:54a431376b0ef44ba03b5c',
+    appId: '1:264236047317:ios:8468a8f4fc6bed34a03b5c',
     messagingSenderId: '264236047317',
     projectId: 'open-surveillance',
     storageBucket: 'open-surveillance.appspot.com',
-    iosClientId: '264236047317-aq75refr9npgmq3cook1rmgvr8elq3ph.apps.googleusercontent.com',
-    iosBundleId: 'com.example.poddApp',
+    iosClientId: '264236047317-p9jmbe1uaur309ca26gtr214nnlgm377.apps.googleusercontent.com',
+    iosBundleId: 'org.poddtoolkit.poddMobile',
   );
 }

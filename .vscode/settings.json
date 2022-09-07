@@ -2,5 +2,5 @@
   "yaml.schemas": {
     "https://json.schemastore.org/dart-build.json": ["build.yaml"]
   },
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "automatic"
 }

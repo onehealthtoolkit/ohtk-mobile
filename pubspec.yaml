@@ -59,12 +59,17 @@ dependencies:
   date_field: ^3.0.1
   cached_network_image: ^3.2.0
   shared_preferences: ^2.0.15
-  firebase_core: ^1.19.1
-  firebase_messaging: ^11.4.4
+  firebase_core: ^1.21.1
+  firebase_messaging: ^13.0.0
   dartz: ^0.10.1
   im_stepper: ^1.0.1+1
   connectivity_plus: ^2.3.6
   scrollable_positioned_list: ^0.3.2
+
+# Fix build release issue: Error unsupported class file major version 59
+# https://stackoverflow.com/questions/72506950/flutter-error-could-not-resolve-all-artifacts-for-configuration-image-picker
+dependency_overrides:
+  image_picker_android: 0.8.4+13
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +83,13 @@ dev_dependencies:
   flutter_lints: ^1.0.0
   build_runner: ^2.1.10
   mobx_codegen:
+  flutter_launcher_icons: "^0.10.0"
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "images/app_icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

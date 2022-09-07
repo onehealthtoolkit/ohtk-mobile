@@ -32,7 +32,7 @@ flutter pub run build_runner build --delete-conflicting-outputs
 > adb reverse --list
 
 # Reverse port from localhost server port 8000
-> adb reverse tcp:8000 tcp:8000
+> adb reverse tcp:80 tcp:8000
 
 ```
 
