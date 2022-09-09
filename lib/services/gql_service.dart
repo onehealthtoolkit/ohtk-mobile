@@ -11,6 +11,8 @@ import 'package:dio/dio.dart' as http;
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stacked/stacked_annotations.dart';
 
 class InvalidRefreshTokenError extends http.DioError {
   InvalidRefreshTokenError(requestOptions)
@@ -18,9 +20,12 @@ class InvalidRefreshTokenError extends http.DioError {
 }
 
 class GqlService {
+  final backendUrlKey = "backendUrl";
+
   final _configService = locator<ConfigService>();
   final _secureStorage = locator<ISecureStorageService>();
   final _dio = http.Dio();
+  final _cache = GraphQLCache(store: HiveStore());
 
   PersistCookieJar? _cookieJar;
 
@@ -81,12 +86,7 @@ class GqlService {
         },
       ),
     );
-    final Link _dioLink = DioLink(
-      _configService.graphqlEndpoint,
-      client: _dio,
-    );
-    final cache = GraphQLCache(store: HiveStore());
-    _client = GraphQLClient(link: _dioLink, cache: cache);
+    await _renewClient();
   }
 
   Future<void> clearCookies() async {
@@ -158,5 +158,35 @@ class GqlService {
       }
     }
     return false;
+  }
+
+  setBackendSubDomain(String subDomain) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (subDomain == "") {
+      prefs.remove(backendUrlKey);
+    } else {
+      prefs.setString(backendUrlKey, subDomain);
+    }
+
+    // const String environment = String.fromEnvironment(
+    //   'ENVIRONMENT',
+    //   defaultValue: Environment.dev,
+    // );
+    // setupLocator(environment);
+  }
+
+  Future<void> _renewClient() async {
+    final prefs = await SharedPreferences.getInstance();
+    final subDomain = prefs.getString(backendUrlKey);
+    String? endpoint;
+    if (subDomain != null) {
+      endpoint = "https://$subDomain/graphql/";
+    }
+
+    final Link _dioLink = DioLink(
+      endpoint ?? _configService.graphqlEndpoint,
+      client: _dio,
+    );
+    _client = GraphQLClient(link: _dioLink, cache: _cache);
   }
 }

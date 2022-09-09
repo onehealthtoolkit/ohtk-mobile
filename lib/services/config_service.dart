@@ -20,4 +20,6 @@ class ConfigService {
   }
 
   String get graphqlEndpoint => "$serverSchema://$serverHost/graphql/";
+
+  String get tenantApiEndpoint => "$serverSchema://$serverHost/api/servers/";
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:podd_app/main.dart';
 import 'package:podd_app/ui/login/login_view_model.dart';
 import 'package:podd_app/ui/register/register_view.dart';
 import 'package:stacked/stacked.dart';
@@ -62,6 +63,8 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
           },
         ),
         const SizedBox(height: 10),
+        _tenantDropdown(viewModel, context),
+        const SizedBox(height: 10),
         if (viewModel.hasErrorForKey("general"))
           Text(
             viewModel.error("general"),
@@ -95,6 +98,31 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
             );
           },
           child: const Text("Register"),
+        ),
+      ],
+    );
+  }
+
+  Widget _tenantDropdown(LoginViewModel viewModel, BuildContext context) {
+    return Row(
+      children: [
+        const Text("Choose server"),
+        const SizedBox(width: 20),
+        Expanded(
+          child: DropdownButton<String>(
+            hint: const Text("Server"),
+            value: viewModel.subDomain,
+            onChanged: (String? value) async {
+              await viewModel.changeServer(value ?? "");
+              RestartWidget.restartApp(context);
+            },
+            items: viewModel.serverOptions
+                .map<DropdownMenuItem<String>>((option) => DropdownMenuItem(
+                      child: Text(option['label'] ?? ""),
+                      value: option["domain"],
+                    ))
+                .toList(),
+          ),
         ),
       ],
     );

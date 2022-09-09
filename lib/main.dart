@@ -31,7 +31,11 @@ void main() async {
     defaultValue: Environment.dev,
   );
   setupLocator(environment);
-  runApp(const MyApp());
+  runApp(
+    const RestartWidget(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -126,4 +130,40 @@ class _AppViewModel extends ReactiveViewModel {
   @override
   List<ReactiveServiceMixin> get reactiveServices =>
       [authService as AuthService];
+}
+
+class RestartWidget extends StatefulWidget {
+  final Widget child;
+
+  const RestartWidget({required this.child, Key? key}) : super(key: key);
+
+  static void restartApp(BuildContext context) {
+    context.findAncestorStateOfType<_RestartWidgetState>()?.restartApp();
+  }
+
+  @override
+  _RestartWidgetState createState() => _RestartWidgetState();
+}
+
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+
+  void restartApp() {
+    const String environment = String.fromEnvironment(
+      'ENVIRONMENT',
+      defaultValue: Environment.dev,
+    );
+    setupLocator(environment);
+    setState(() {
+      key = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: key,
+      child: widget.child,
+    );
+  }
 }

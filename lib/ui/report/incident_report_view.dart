@@ -42,7 +42,7 @@ class IncidentReportView extends HookWidget {
                   ? TabBarView(controller: _tabController, children: [
                       _IncidentDetail(),
                       ReportCommentView(viewModel.data!.threadId!),
-                      FollowupListView(viewModel.data!.id!)
+                      FollowupListView(viewModel.data!.id)
                     ])
                   : const Text("Incident report not found"),
         ),
