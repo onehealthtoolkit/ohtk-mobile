@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -6,9 +5,10 @@ import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/home/my_reports_view_model.dart';
 import 'package:podd_app/ui/report/followup_report_form_view.dart';
-import 'package:podd_app/ui/report/incident_report_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+
+import 'report_list_view.dart';
 
 class MyReportsView extends StatelessWidget {
   final viewModel = locator<MyReportsViewModel>();
@@ -40,49 +40,18 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
       onRefresh: () async {
         await viewModel.refetchIncidentReports();
       },
-      child: ListView.separated(
+      child: ReportListView(
+        viewModel: viewModel,
         key: const PageStorageKey('my-reports-storage-key'),
-        separatorBuilder: (context, index) => const Divider(),
-        itemCount: viewModel.incidentReports.length,
-        itemBuilder: (context, index) {
-          var report = viewModel.incidentReports[index];
-          IncidentReportImage? image;
-          if (report.images?.isNotEmpty != false) {
-            image = report.images?.first;
+        trailingFn: (report) {
+          var children = <Widget>[const Icon(Icons.arrow_forward_ios_sharp)];
+          if (viewModel.canFollow(report.reportTypeId)) {
+            children.insert(0, _followLink(context, report, viewModel));
           }
-
-          return ListTile(
-            leading: image != null
-                ? CachedNetworkImage(
-                    imageUrl: viewModel.resolveImagePath(image.thumbnailPath),
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                  )
-                : Container(
-                    color: Colors.grey,
-                    width: 80,
-                  ),
-            title: _title(context, report),
-            trailing: viewModel.canFollow(report.reportTypeId)
-                ? _followLink(context, report, viewModel)
-                : null,
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(formatter.format(report.createdAt), textScaleFactor: .75),
-                Text(
-                  report.description,
-                  textScaleFactor: .75,
-                ),
-              ],
-            ),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => IncidentReportView(id: report.id),
-                ),
-              );
-            },
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: children,
           );
         },
       ),
@@ -119,27 +88,6 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
           ),
         ),
       ),
-    );
-  }
-
-  _title(BuildContext context, IncidentReport report) {
-    return Row(
-      children: [
-        Text(report.reportTypeName),
-        const SizedBox(width: 10),
-        if (report.caseId != null)
-          Container(
-            color: Colors.red,
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-            child: const Text(
-              "Case",
-              style: TextStyle(
-                color: Colors.white,
-              ),
-              textScaleFactor: 0.8,
-            ),
-          ),
-      ],
     );
   }
 }

@@ -26,7 +26,9 @@ class ReportType {
         name = jsonMap['name'],
         categoryId = cvInt(jsonMap, (m) => m['category']['id']),
         definition = json.encode(jsonMap['definition']),
-        followupDefinition = json.encode(jsonMap['followupDefinition']),
+        followupDefinition = jsonMap['followupDefinition'] != null
+            ? json.encode(jsonMap['followupDefinition'])
+            : null,
         ordering = cvInt(jsonMap, (m) => m['ordering']),
         updatedAt = jsonMap['updatedAt'];
 
@@ -51,4 +53,9 @@ class ReportType {
     };
     return map;
   }
+
+  bool get followupEnable => !(followupDefinition == null ||
+      followupDefinition == "null" ||
+      (followupDefinition != null &&
+          !followupDefinition!.contains("question")));
 }

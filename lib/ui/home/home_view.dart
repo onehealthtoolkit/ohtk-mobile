@@ -63,7 +63,7 @@ class HomeView extends HookWidget {
               Tab(child: Text('My Reports')),
             ],
           ),
-          title: const Text("Home"),
+          title: const Text("OHTK Mobile"),
           actions: [
             IconButton(
               icon: const Icon(Icons.mail),

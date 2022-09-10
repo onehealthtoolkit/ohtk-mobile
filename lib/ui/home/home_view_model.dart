@@ -1,5 +1,4 @@
 import 'package:podd_app/locator.dart';
-import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/entities/report.dart';
 import 'package:podd_app/models/user_profile.dart';
 import 'package:podd_app/services/auth_service.dart';

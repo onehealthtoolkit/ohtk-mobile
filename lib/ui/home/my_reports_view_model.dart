@@ -5,7 +5,10 @@ import 'package:podd_app/services/report_service.dart';
 import 'package:podd_app/services/report_type_service.dart';
 import 'package:stacked/stacked.dart';
 
-class MyReportsViewModel extends ReactiveViewModel {
+import 'all_reports_view_model.dart';
+
+class MyReportsViewModel extends ReactiveViewModel
+    implements BaseReportViewModel {
   IReportTypeService reportTypeService = locator<IReportTypeService>();
   IReportService reportService = locator<IReportService>();
 
@@ -21,11 +24,13 @@ class MyReportsViewModel extends ReactiveViewModel {
 
   bool get isReady => _isReady;
 
+  @override
   List<IncidentReport> get incidentReports => reportService.myIncidentReports;
 
   @override
   List<ReactiveServiceMixin> get reactiveServices => [reportService];
 
+  @override
   resolveImagePath(String path) {
     return path;
   }
@@ -38,7 +43,7 @@ class MyReportsViewModel extends ReactiveViewModel {
 
   bool canFollow(String reportTypeId) {
     final reportType = getReportType(reportTypeId);
-    return reportType != null && reportType.followupDefinition != null;
+    return reportType != null && reportType.followupEnable;
   }
 
   ReportType? getReportType(String id) {
