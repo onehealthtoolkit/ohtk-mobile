@@ -123,7 +123,7 @@ class _CommentList extends HookViewModelWidget<ReportCommentViewModel> {
           Align(
             alignment: Alignment.topRight,
             child: Text(
-              formatter.format(comment.createdAt),
+              formatter.format(comment.createdAt.toLocal()),
               style: TextStyle(color: Colors.grey[500]),
               textScaleFactor: .75,
             ),

@@ -97,7 +97,8 @@ class _PendingReport extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(reportState.report.reportTypeName ?? ""),
-      subtitle: Text(formatter.format(reportState.report.incidentDate)),
+      subtitle:
+          Text(formatter.format(reportState.report.incidentDate.toLocal())),
       trailing: _buildProgressStatus(reportState.state),
     );
   }

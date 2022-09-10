@@ -8,6 +8,8 @@ import 'all_reports_view_model.dart';
 
 typedef TrailingFunction = Widget Function(IncidentReport report);
 
+var formatter = DateFormat("dd/MM/yyyy HH:mm");
+
 class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
   final T viewModel;
   final TrailingFunction trailingFn;
@@ -30,7 +32,6 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
         if (report.images?.isNotEmpty != false) {
           image = report.images?.first;
         }
-        var formatter = DateFormat("dd/MM/yyyy HH:mm");
         var leading = image != null
             ? CachedNetworkImage(
                 imageUrl: viewModel.resolveImagePath(image.thumbnailPath),
@@ -60,7 +61,8 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(formatter.format(report.createdAt), textScaleFactor: .75),
+              Text(formatter.format(report.createdAt.toLocal()),
+                  textScaleFactor: .75),
               Text(
                 report.description,
                 textScaleFactor: .75,

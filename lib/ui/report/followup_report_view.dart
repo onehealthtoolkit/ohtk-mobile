@@ -46,7 +46,7 @@ class _FollowupReportView extends HookViewModelWidget<FollowupReportViewModel> {
               _title(context, followup),
               const SizedBox(height: 10),
               Text(
-                formatter.format(followup.createdAt),
+                formatter.format(followup.createdAt.toLocal()),
                 textScaleFactor: .75,
               ),
               Padding(
