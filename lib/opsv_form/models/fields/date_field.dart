@@ -27,7 +27,16 @@ class DateField extends Field {
             suffixLabel: suffixLabel,
             required: required,
             requiredMessage: requiredMessage,
-            condition: condition);
+            condition: condition) {
+    var now = DateTime.now();
+    _day.value = now.day;
+    _month.value = now.month;
+    _year.value = now.year;
+    if (withTime) {
+      _hour.value = now.hour;
+      _minute.value = now.minute;
+    }
+  }
 
   factory DateField.fromJson(Map<String, dynamic> json) {
     var condition = parseConditionFromJson(json);
