@@ -104,27 +104,23 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
   }
 
   Widget _tenantDropdown(LoginViewModel viewModel, BuildContext context) {
-    return Row(
-      children: [
-        const Text("Choose server"),
-        const SizedBox(width: 20),
-        Expanded(
-          child: DropdownButton<String>(
-            hint: const Text("Server"),
-            value: viewModel.subDomain,
-            onChanged: (String? value) async {
-              await viewModel.changeServer(value ?? "");
-              RestartWidget.restartApp(context);
-            },
-            items: viewModel.serverOptions
-                .map<DropdownMenuItem<String>>((option) => DropdownMenuItem(
-                      child: Text(option['label'] ?? ""),
-                      value: option["domain"],
-                    ))
-                .toList(),
-          ),
-        ),
-      ],
+    return DropdownButtonFormField<String>(
+      isExpanded: true,
+      decoration: const InputDecoration(
+        labelText: "Server",
+      ),
+      hint: const Text("Server"),
+      value: viewModel.subDomain,
+      onChanged: (String? value) async {
+        await viewModel.changeServer(value ?? "");
+        RestartWidget.restartApp(context);
+      },
+      items: viewModel.serverOptions
+          .map<DropdownMenuItem<String>>((option) => DropdownMenuItem(
+                child: Text(option['label'] ?? ""),
+                value: option["domain"],
+              ))
+          .toList(),
     );
   }
 }
