@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/ui/report/report_form_view.dart';
@@ -17,7 +18,62 @@ class ReportTypeView extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Report type"),
         ),
-        body: _Listing(),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await viewModel.syncReportTypes();
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 8),
+              _ZeroReport(),
+              Expanded(child: _Listing()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
+  final formatter = DateFormat('dd/MM/yyyy HH:mm');
+
+  _ZeroReport({Key? key}) : super(key: key);
+
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context, ReportTypeViewModel viewModel) {
+    return InkWell(
+      onTap: () {
+        viewModel.submitZeroReport();
+      },
+      child: Ink(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.grey.shade300,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Column(
+          children: [
+            const Text("Tap here to report normal incident"),
+            const SizedBox(height: 4),
+            FutureBuilder<DateTime?>(
+              future: viewModel.getLatestZeroReport(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return snapshot.data != null
+                      ? Text(
+                          "Last reported at ${formatter.format(snapshot.data!.toLocal())}",
+                          textScaleFactor: 0.8,
+                        )
+                      : const SizedBox.shrink();
+                }
+                return const CircularProgressIndicator();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -29,19 +85,14 @@ class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportTypeViewModel viewModel) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        await viewModel.syncReportTypes();
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
-          itemBuilder: (context, categoryIndex) =>
-              viewModel.categories[categoryIndex].reportTypes.isNotEmpty
-                  ? _category(context, viewModel, categoryIndex)
-                  : Container(),
-          itemCount: viewModel.categories.length,
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.builder(
+        itemBuilder: (context, categoryIndex) =>
+            viewModel.categories[categoryIndex].reportTypes.isNotEmpty
+                ? _category(context, viewModel, categoryIndex)
+                : Container(),
+        itemCount: viewModel.categories.length,
       ),
     );
   }

@@ -17,3 +17,15 @@ class ReportSubmitFailure extends OperationExceptionFailure
 }
 
 class ReportSubmitPending extends ReportSubmitResult {}
+
+class ZeroReportSubmitSuccess extends ReportSubmitResult {
+  final String _id;
+
+  ZeroReportSubmitSuccess(this._id);
+
+  String get id => _id;
+}
+
+class ZeroReportSubmitFailure extends ReportSubmitFailure {
+  ZeroReportSubmitFailure(e) : super(e);
+}
