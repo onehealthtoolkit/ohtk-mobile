@@ -21,5 +21,6 @@ class ConfigService {
 
   String get graphqlEndpoint => "$serverSchema://$serverHost/graphql/";
 
-  String get tenantApiEndpoint => "$serverSchema://$serverHost/api/servers/";
+  String get tenantApiEndpoint => String.fromEnvironment('TENANT_API_ENDPOINT',
+      defaultValue: "$serverSchema://$serverHost/api/servers/");
 }
