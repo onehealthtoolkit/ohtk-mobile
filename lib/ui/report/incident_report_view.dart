@@ -66,7 +66,7 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
         _title(context, incident),
         const SizedBox(height: 10),
         Text(
-          formatter.format(incident.createdAt),
+          formatter.format(incident.createdAt.toLocal()),
           textScaleFactor: .75,
         ),
         Padding(

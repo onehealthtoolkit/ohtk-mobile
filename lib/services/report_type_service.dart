@@ -53,9 +53,11 @@ class ReportTypeService extends IReportTypeService {
     }
 
     // delete
-    await _db.delete('report_type',
-        where: 'id in (?)',
-        whereArgs: result.removedList.map((e) => e.id).toList());
+    if (result.removedList.isNotEmpty) {
+      await _db.delete('report_type',
+          where: 'id in (?)',
+          whereArgs: result.removedList.map((e) => e.id).toList());
+    }
 
     for (var reportType in result.updatedList) {
       await _db.insert(

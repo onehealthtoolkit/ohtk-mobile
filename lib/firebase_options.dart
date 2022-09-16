@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -48,6 +45,15 @@ class DefaultFirebaseOptions {
         );
     }
   }
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBDmMuymdwW51VJPeRl3AbweiFXprjzl0c',
+    appId: '1:264236047317:web:9b0908be48bc3efaa03b5c',
+    messagingSenderId: '264236047317',
+    projectId: 'open-surveillance',
+    authDomain: 'open-surveillance.firebaseapp.com',
+    storageBucket: 'open-surveillance.appspot.com',
+  );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCsEeq80_r_dbNz4dMYl5oIahX5wOTGdJg',

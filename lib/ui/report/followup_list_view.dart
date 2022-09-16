@@ -58,7 +58,7 @@ class _FollowupList extends HookViewModelWidget<FollowupListViewModel> {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(formatter.format(followup.createdAt),
+                Text(formatter.format(followup.createdAt.toLocal()),
                     textScaleFactor: .75),
                 Text(
                   followup.description,
