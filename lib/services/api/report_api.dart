@@ -65,6 +65,27 @@ class ReportApi extends GraphQlBaseApi {
     }
   }
 
+  Future<ReportSubmitResult> submitZeroReport() async {
+    const mutation = r'''
+      mutation submitZeroReport {
+        submitZeroReport {
+          id
+        }
+      }
+    ''';
+    try {
+      var result = await runGqlMutation<String>(
+        mutation: mutation,
+        parseData: (json) => json!["id"],
+        variables: {},
+      );
+
+      return ZeroReportSubmitSuccess(result);
+    } on OperationException catch (e) {
+      return ZeroReportSubmitFailure(e);
+    }
+  }
+
   Future<IncidentReportQueryResult> fetchIncidentReports({
     limit = 20,
     offset = 0,

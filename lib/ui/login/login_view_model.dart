@@ -1,14 +1,54 @@
+import 'package:dio/dio.dart';
 import 'package:gql_dio_link/gql_dio_link.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/login_result.dart';
 import 'package:podd_app/services/auth_service.dart';
+import 'package:podd_app/services/config_service.dart';
+import 'package:podd_app/services/gql_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 
 class LoginViewModel extends BaseViewModel {
   IAuthService authService = locator<IAuthService>();
+  ConfigService configService = locator<ConfigService>();
+  GqlService gqlService = locator<GqlService>();
 
+  final _dio = Dio();
+  List<Map<String, String>> serverOptions = [
+    {"label": "-- Default --", "domain": ""}
+  ];
+
+  String subDomain = "";
   String? username;
   String? password;
+
+  LoginViewModel() {
+    fetchTenant();
+  }
+
+  fetchTenant() async {
+    final prefs = await SharedPreferences.getInstance();
+    final backendUrl = prefs.getString(gqlService.backendUrlKey);
+    if (backendUrl != null) {
+      subDomain = backendUrl;
+    }
+    try {
+      final resp = await _dio.get(configService.tenantApiEndpoint);
+      final tenants =
+          (resp.data['tenants'] as List).map<Map<String, String>>((it) {
+        return {"label": it['label'], "domain": it['domain']};
+      });
+      serverOptions.addAll(tenants);
+      notifyListeners();
+    } catch (e) {
+      setErrorForObject("general", "Cannot get tenants data ");
+    }
+  }
+
+  changeServer(String value) async {
+    subDomain = value;
+    await gqlService.setBackendSubDomain(value);
+  }
 
   authenticate() async {
     setBusy(true);
