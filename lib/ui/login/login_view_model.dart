@@ -27,21 +27,28 @@ class LoginViewModel extends BaseViewModel {
   }
 
   fetchTenant() async {
+    setBusyForObject("tenants", true);
+
     final prefs = await SharedPreferences.getInstance();
-    final backendUrl = prefs.getString(gqlService.backendUrlKey);
-    if (backendUrl != null) {
-      subDomain = backendUrl;
-    }
+
     try {
       final resp = await _dio.get(configService.tenantApiEndpoint);
       final tenants =
           (resp.data['tenants'] as List).map<Map<String, String>>((it) {
         return {"label": it['label'], "domain": it['domain']};
       });
+      final backendUrl = prefs.getString(gqlService.backendUrlKey);
+      if (backendUrl != null) {
+        if (tenants.any((it) => it['domain'] == backendUrl)) {
+          subDomain = backendUrl;
+        }
+      }
       serverOptions.addAll(tenants);
       notifyListeners();
     } catch (e) {
       setErrorForObject("general", "Cannot get tenants data ");
+    } finally {
+      setBusyForObject("tenants", false);
     }
   }
 

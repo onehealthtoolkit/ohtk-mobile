@@ -104,6 +104,14 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
   }
 
   Widget _tenantDropdown(LoginViewModel viewModel, BuildContext context) {
+    if (viewModel.busy("tenants")) {
+      return const SizedBox(
+        height: 20,
+        width: 20,
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return DropdownButtonFormField<String>(
       isExpanded: true,
       decoration: const InputDecoration(
