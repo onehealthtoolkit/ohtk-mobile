@@ -14,10 +14,16 @@ class LoginView extends StatelessWidget {
     return ViewModelBuilder<LoginViewModel>.nonReactive(
       viewModelBuilder: () => LoginViewModel(),
       builder: (context, viewModel, child) => Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-          child: Center(
-            child: _LoginForm(),
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(
+          child: GestureDetector(
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: Center(
+                child: _LoginForm(),
+              ),
+            ),
           ),
         ),
       ),
