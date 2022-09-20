@@ -93,6 +93,10 @@ class GqlService {
     _cookieJar?.deleteAll();
   }
 
+  Future<void> clearGraphqlCache() async {
+    _client?.cache.store.reset();
+  }
+
   Future<bool> _refreshToken() async {
     final refreshToken = await _secureStorage.get('refreshToken');
     const mutation = r'''

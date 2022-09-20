@@ -15,10 +15,16 @@ class LoginView extends StatelessWidget {
     return ViewModelBuilder<LoginViewModel>.nonReactive(
       viewModelBuilder: () => LoginViewModel(),
       builder: (context, viewModel, child) => Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-          child: Center(
-            child: _LoginForm(),
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(
+          child: GestureDetector(
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: Center(
+                child: _LoginForm(),
+              ),
+            ),
           ),
         ),
       ),
@@ -115,6 +121,14 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
   }
 
   Widget _tenantDropdown(LoginViewModel viewModel, BuildContext context) {
+    if (viewModel.busy("tenants")) {
+      return const SizedBox(
+        height: 20,
+        width: 20,
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return DropdownButtonFormField<String>(
       isExpanded: true,
       decoration: const InputDecoration(

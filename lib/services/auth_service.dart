@@ -91,6 +91,7 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
     await _reportService.removeAllPendingReports();
     await _reportTypeService.removeAll();
     await _gqlService.clearCookies();
+    await _gqlService.clearGraphqlCache();
   }
 
   @override

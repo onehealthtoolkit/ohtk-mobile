@@ -32,20 +32,23 @@ class ReportFormView extends StatelessWidget {
               appBar: AppBar(
                 title: const Text("Report"),
               ),
-              body: Column(
-                children: [
-                  if (viewModel.state == ReportFormState.formInput) _Stepper(),
-                  if (viewModel.state == ReportFormState.confirmation)
-                    Expanded(
-                      flex: 1,
-                      child: _ConfirmSubmit(),
-                    ),
-                  if (viewModel.state == ReportFormState.formInput)
-                    Expanded(
-                      flex: 1,
-                      child: _FormInput(),
-                    ),
-                ],
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    if (viewModel.state == ReportFormState.formInput)
+                      _Stepper(),
+                    if (viewModel.state == ReportFormState.confirmation)
+                      Expanded(
+                        flex: 1,
+                        child: _ConfirmSubmit(),
+                      ),
+                    if (viewModel.state == ReportFormState.formInput)
+                      Expanded(
+                        flex: 1,
+                        child: _FormInput(),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
