@@ -94,10 +94,6 @@ class RegisterViewModel extends BaseViewModel {
       setErrorForObject("email", "Email is required");
       isValidData = false;
     }
-    if (phone == null || phone!.isEmpty) {
-      setErrorForObject("phone", "Phone number is required");
-      isValidData = false;
-    }
 
     if (!isValidData) {
       setBusy(false);
