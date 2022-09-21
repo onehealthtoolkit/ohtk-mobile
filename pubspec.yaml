@@ -65,6 +65,7 @@ dependencies:
   im_stepper: ^1.0.1+1
   connectivity_plus: ^2.3.6+1
   scrollable_positioned_list: ^0.3.2
+  flutter_native_timezone: ^2.0.0
 
 # Fix build release issue: Error unsupported class file major version 59
 # https://stackoverflow.com/questions/72506950/flutter-error-could-not-resolve-all-artifacts-for-configuration-image-picker

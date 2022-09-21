@@ -1,10 +1,22 @@
 import 'package:intl/intl.dart';
 
-/// Extension for DateFormat instance
-/// Format date object into string using pattern with ISO date with timezone
+/// Extension for DateFormat
+/// Format date object into string using ISO pattern plus timezone offset
 /// ie. 2001-02-03T04:05:06.000+07:00
+///
+/// Example usage:
+///
+/// var dateStr = "2020-06-14T18:55:21.000+07:00";
+/// var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
+///       .parse("2020-06-14T18:55:21.000+07:00", false)
+///       .toLocal();
+///
+/// var isoStr = DateFormatWithTimeZone.toISOString(dateValue);
+///
+/// assert(dateStr == isoStr);
+///
 extension DateFormatWithTimeZone on DateFormat {
-  String formatWithTimeZone(DateTime dateTime) {
+  static String toISOString(DateTime dateTime) {
     var result = StringBuffer();
     result.write(
         DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(dateTime.toLocal()));
