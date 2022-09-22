@@ -277,33 +277,65 @@ class _DateTimePicker extends StatelessWidget {
     });
   }
 
-  void _showDialog(
-      BuildContext context, DateTime? datetime, CupertinoDatePickerMode mode) {
-    final child = CupertinoDatePicker(
-      initialDateTime: datetime,
-      mode: mode,
-      use24hFormat: true,
-      onDateTimeChanged: (DateTime newTime) {
-        field.value = newTime;
-      },
-    );
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => Container(
-        height: 216,
-        padding: const EdgeInsets.only(top: 6.0),
-        // The Bottom margin is provided to align the popup above the system navigation bar.
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
+  Future<void> _showDialog(BuildContext context, DateTime? datetime,
+      CupertinoDatePickerMode mode) async {
+    if (Platform.isIOS) {
+      final child = CupertinoDatePicker(
+        initialDateTime: datetime,
+        mode: mode,
+        use24hFormat: true,
+        onDateTimeChanged: (DateTime newTime) {
+          field.value = newTime;
+        },
+      );
+      showCupertinoModalPopup<void>(
+        context: context,
+        builder: (BuildContext context) => Container(
+          height: 216,
+          padding: const EdgeInsets.only(top: 6.0),
+          // The Bottom margin is provided to align the popup above the system navigation bar.
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          // Provide a background color for the popup.
+          color: CupertinoColors.systemBackground.resolveFrom(context),
+          // Use a SafeArea widget to avoid system overlaps.
+          child: SafeArea(
+            top: false,
+            child: child,
+          ),
         ),
-        // Provide a background color for the popup.
-        color: CupertinoColors.systemBackground.resolveFrom(context),
-        // Use a SafeArea widget to avoid system overlaps.
-        child: SafeArea(
-          top: false,
-          child: child,
-        ),
-      ),
-    );
+      );
+    } else {
+      final DateTime now = DateTime.now();
+      if (mode == CupertinoDatePickerMode.date) {
+        final DateTime? picked = await showDatePicker(
+          context: context,
+          firstDate: DateTime(now.year - 5),
+          lastDate: DateTime(now.year + 50),
+          initialDate: datetime ?? now,
+        );
+        if (picked != null) field.value = picked;
+      } else {
+        final TimeOfDay? picked = await showTimePicker(
+          context: context,
+          initialTime: (datetime != null)
+              ? TimeOfDay(
+                  hour: datetime.hour,
+                  minute: datetime.minute,
+                )
+              : TimeOfDay.now(),
+        );
+        if (picked != null) {
+          if (datetime != null) {
+            field.value = DateTime(datetime.year, datetime.month, datetime.day,
+                picked.hour, picked.minute);
+          } else {
+            field.value = DateTime(
+                now.year, now.month, now.day, picked.hour, picked.minute);
+          }
+        }
+      }
+    }
   }
 }
