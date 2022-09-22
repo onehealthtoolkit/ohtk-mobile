@@ -30,6 +30,9 @@ class FollowupReportFormView extends StatelessWidget {
         reportType: reportType,
       ),
       builder: (context, viewModel, child) {
+        if (!viewModel.isReady) {
+          return const Center(child: CircularProgressIndicator());
+        }
         return WillPopScope(
           onWillPop: () async {
             return _onWillpPop(context);
