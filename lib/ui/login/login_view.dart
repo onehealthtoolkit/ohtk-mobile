@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podd_app/main.dart';
+import 'package:podd_app/ui/forgot_password/reset_password_request_view.dart';
 import 'package:podd_app/ui/login/login_view_model.dart';
 import 'package:podd_app/ui/register/register_view.dart';
 import 'package:stacked/stacked.dart';
@@ -104,6 +105,16 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
             );
           },
           child: const Text("Register"),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const ResetPasswordRequestView(),
+              ),
+            );
+          },
+          child: const Text("Forgot Password"),
         ),
       ],
     );

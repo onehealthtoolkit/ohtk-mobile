@@ -8,6 +8,7 @@ class Form {
   final String id;
   List<Section> sections = List.empty(growable: true);
   final Values values = Values();
+  String _timezone = "";
 
   final Observable<int> _currentSectionIdx = Observable(0);
 
@@ -24,9 +25,13 @@ class Form {
     return values;
   }
 
+  setTimezone(String timezone) {
+    _timezone = timezone;
+  }
+
   factory Form.fromJson(Map<String, dynamic> json, [String? id]) {
     var form = Form(id ?? json["id"]);
-    var jsonSections = json["sections"] as List;
+    var jsonSections = (json["sections"] ?? []) as List;
     for (var jsonSection in jsonSections) {
       form.sections.add(Section.fromJson(jsonSection));
     }
@@ -52,6 +57,7 @@ class Form {
     for (var section in sections) {
       section.toJsonValue(result);
     }
+    result["tz"] = _timezone;
     return result;
   }
 

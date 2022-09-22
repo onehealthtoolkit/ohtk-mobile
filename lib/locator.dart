@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/services/api/auth_api.dart';
 import 'package:podd_app/services/api/comment_api.dart';
+import 'package:podd_app/services/api/forgot_password_api.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/notification_api.dart';
 import 'package:podd_app/services/api/register_api.dart';
@@ -11,6 +12,7 @@ import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/comment_service.dart';
 import 'package:podd_app/services/config_service.dart';
 import 'package:podd_app/services/db_service.dart';
+import 'package:podd_app/services/forgot_password_service.dart';
 import 'package:podd_app/services/gql_service.dart';
 import 'package:podd_app/services/image_service.dart';
 import 'package:podd_app/services/notification_service.dart';
@@ -136,6 +138,15 @@ void setupLocator(String environment) {
     IAuthService,
   ]);
 
+  if (locator.isRegistered<IForgotPasswordService>()) {
+    locator.unregister<IForgotPasswordService>();
+  }
+  locator.registerSingletonAsync<IForgotPasswordService>(() async {
+    return ForgotPasswordService();
+  }, dependsOn: [
+    ForgotPasswordApi,
+  ]);
+
   if (locator.isRegistered<AllReportsViewModel>()) {
     locator.unregister<AllReportsViewModel>();
   }
@@ -171,6 +182,14 @@ registerApiLocators() {
   locator.registerSingletonAsync<RegisterApi>(() async {
     var gqlService = locator<GqlService>();
     return RegisterApi(gqlService.client);
+  }, dependsOn: [GqlService]);
+
+  if (locator.isRegistered<ForgotPasswordApi>()) {
+    locator.unregister<ForgotPasswordApi>();
+  }
+  locator.registerSingletonAsync<ForgotPasswordApi>(() async {
+    var gqlService = locator<GqlService>();
+    return ForgotPasswordApi(gqlService.client);
   }, dependsOn: [GqlService]);
 
   if (locator.isRegistered<ReportTypeApi>()) {

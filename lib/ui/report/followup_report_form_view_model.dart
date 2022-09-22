@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/followup_submit_result.dart';
@@ -25,8 +26,9 @@ class FollowupReportFormViewModel extends BaseViewModel {
 
   final ReportType reportType;
   final String incidentId;
-  late String _reportId;
-  late Form _formStore;
+  bool isReady = false;
+  String _reportId = "";
+  Form _formStore = Form.fromJson({}, "");
   ReportFormState state = ReportFormState.formInput;
 
   Form get formStore => _formStore;
@@ -35,12 +37,20 @@ class FollowupReportFormViewModel extends BaseViewModel {
     required this.incidentId,
     required this.reportType,
   }) {
+    init();
+  }
+
+  init() async {
+    final String _timezone = await FlutterNativeTimezone.getLocalTimezone();
     _reportId = _uuid.v4();
     final definition = reportType.followupDefinition != null
         ? json.decode(reportType.followupDefinition!)
         : {"sections": []};
 
     _formStore = Form.fromJson(definition, _reportId);
+    _formStore.setTimezone(_timezone);
+    isReady = true;
+    notifyListeners();
   }
 
   BackAction back() {
