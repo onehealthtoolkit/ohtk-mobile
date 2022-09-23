@@ -5,15 +5,20 @@ class UserProfile {
   String lastName;
   String authorityName;
   int authorityId;
+  String? email;
+  String? telephone;
+  String? role;
 
-  UserProfile({
-    required this.id,
-    required this.username,
-    required this.firstName,
-    required this.lastName,
-    required this.authorityName,
-    required this.authorityId,
-  });
+  UserProfile(
+      {required this.id,
+      required this.username,
+      required this.firstName,
+      required this.lastName,
+      required this.authorityName,
+      required this.authorityId,
+      this.email,
+      this.telephone,
+      this.role});
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
         id: json['id'] as int,
@@ -22,6 +27,9 @@ class UserProfile {
         lastName: json['lastName'].toString(),
         authorityName: json['authorityName'].toString(),
         authorityId: json['authorityId'] as int,
+        email: json['email']?.toString(),
+        telephone: json['telephone']?.toString(),
+        role: json['role']?.toString(),
       );
 
   Map<String, dynamic> toJson() {
@@ -32,6 +40,9 @@ class UserProfile {
       'lastName': lastName,
       'authorityId': authorityId,
       'authorityName': authorityName,
+      'email': email,
+      'telephone': telephone,
+      'role': role,
     };
   }
 }
