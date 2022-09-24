@@ -24,6 +24,8 @@ abstract class IAuthService {
 
   Future<void> saveTokenAndFetchProfile(AuthSuccess loginSuccess);
 
+  Future<void> fetchProfile();
+
   Future<void> requestAccessTokenIfExpired();
 }
 
@@ -126,5 +128,10 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
         }
       }
     }
+  }
+
+  @override
+  Future<void> fetchProfile() async {
+    _fetchProfile();
   }
 }

@@ -45,6 +45,8 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
           padding: const EdgeInsets.fromLTRB(50, 0, 50, 90),
           child: Image.asset('images/logo.png'),
         ),
+        _tenantDropdown(viewModel, context),
+        const SizedBox(height: 10),
         TextField(
           controller: username,
           textInputAction: TextInputAction.next,
@@ -69,8 +71,6 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
             viewModel.authenticate();
           },
         ),
-        const SizedBox(height: 10),
-        _tenantDropdown(viewModel, context),
         const SizedBox(height: 10),
         if (viewModel.hasErrorForKey("general"))
           Text(

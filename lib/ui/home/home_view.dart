@@ -11,6 +11,8 @@ import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
+import '../profile/profile_view.dart';
+
 class HomeView extends HookWidget {
   const HomeView({Key? key}) : super(key: key);
 
@@ -78,12 +80,24 @@ class HomeView extends HookWidget {
               },
             ),
             IconButton(
-              icon: const Icon(Icons.logout),
-              tooltip: 'Logout',
+              icon: const Icon(Icons.manage_accounts),
+              tooltip: 'Profile',
               onPressed: () {
-                viewModel.logout();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileView(),
+                  ),
+                );
               },
-            )
+            ),
+            // IconButton(
+            //   icon: const Icon(Icons.logout),
+            //   tooltip: 'Logout',
+            //   onPressed: () {
+            //     viewModel.logout();
+            //   },
+            // )
           ],
         ),
         floatingActionButton: FloatingActionButton(
