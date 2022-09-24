@@ -1,12 +1,32 @@
-# podd_mobile
+# OHTK Mobile
 
-Podd mobile application for reporting.
+OHTK mobile application for community and official reporting.
 
-## command
+### What you'll need
 
-```
-flutter pub run build_runner build --delete-conflicting-outputs
-```
+- [flutter](https://docs.flutter.dev/get-started/install)
+- [android studio](https://developer.android.com/studio) or [xcode](https://docs.flutter.dev/get-started/install/macos#ios-setup)
+
+If necessary, add the Android emulator to your path
+```export PATH=$PATH:~/Library/Android/sdk/emulator/```
+
+### Install
+
+Get latest version of ohtk-mobile from github:
+
+```git clone https://github.com/onehealthtoolkit/ohtk-mobile.git```
+
+```cd ~/ohtk-mobile```
+
+Run flutter build command
+
+```flutter pub run build_runner build --delete-conflicting-outputs```
+
+#### Change server to test server
+
+Change settings to 
+
+```opensur.test```
 
 #### Config Android emulator to use localhost custom url endpoint
 
@@ -19,7 +39,7 @@ flutter pub run build_runner build --delete-conflicting-outputs
 > emulator  -writable-system -netdelay none -netspeed full -avd [AVD_NAME]
 
 # Wait until emulator is completely started
-# Login as root (emulator must be created with GOOGLE_API to be able to login as root)
+# Login as root
 > adb root
 
 # Remount emulator path /system to writable
@@ -36,6 +56,14 @@ flutter pub run build_runner build --delete-conflicting-outputs
 
 ```
 
+### Run Mobile App
+
+Now you're ready to actually test the app. Open your IDE and run the flutter program:
+
+- ex. Visual Studio Code: Run > Run without Debugging
+
+Try logging in with one of the users created via the [OHTK Management System](https://github.com/onehealthtoolkit/ohtk-ms)
+
 #### hosts file sample
 
 ```
@@ -45,20 +73,4 @@ flutter pub run build_runner build --delete-conflicting-outputs
 ::1 ip6-localhost
 ```
 
-#### Google map api key
 
-##### iOS
-
-create file 'Config.xcconfig' in ios/Flutter
-
-```
-GOOGLE_MAP_API_KEY=YOUR_API_KEY
-```
-
-##### Andriod
-
-edit file android/local.properties
-
-```
-google.map.key=YOUR_API_KEY
-```
