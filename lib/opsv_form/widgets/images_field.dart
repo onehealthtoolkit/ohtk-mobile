@@ -134,7 +134,8 @@ class _FormImagesFieldState extends State<FormImagesField> {
   Future<ReportImage?> _pickImage(ImageSource source) async {
     var picker = ImagePicker();
     try {
-      XFile? imageFile = await picker.pickImage(source: source);
+      XFile? imageFile = await picker.pickImage(
+          source: source, maxWidth: 2048, maxHeight: 2048, imageQuality: 85);
       if (imageFile != null) {
         var bytes = await imageFile.readAsBytes();
         var reportImage = ReportImage(_uuid.v4(), widget.field.form.id, bytes);

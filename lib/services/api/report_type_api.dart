@@ -37,6 +37,7 @@ class ReportTypeApi extends GraphQlBaseApi {
     ''';
     final result = await runGqlQuery<ReportTypeSyncOutputType>(
       query: query,
+      fetchPolicy: FetchPolicy.noCache,
       variables: {
         'data': data
             .map((e) => {
