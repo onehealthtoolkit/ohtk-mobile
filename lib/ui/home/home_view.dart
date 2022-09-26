@@ -58,6 +58,7 @@ class HomeView extends HookWidget {
       },
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           bottom: TabBar(
             controller: _tabController,
             tabs: const [
@@ -68,7 +69,7 @@ class HomeView extends HookWidget {
           title: const Text("OHTK Mobile"),
           actions: [
             IconButton(
-              icon: const Icon(Icons.mail),
+              icon: const Icon(Icons.notifications),
               tooltip: 'Messages',
               onPressed: () {
                 Navigator.push(
@@ -80,7 +81,7 @@ class HomeView extends HookWidget {
               },
             ),
             IconButton(
-              icon: const Icon(Icons.manage_accounts),
+              icon: const Icon(Icons.account_circle),
               tooltip: 'Profile',
               onPressed: () {
                 Navigator.push(

@@ -32,7 +32,7 @@ class _ReportList extends HookViewModelWidget<AllReportsViewModel> {
         viewModel: viewModel,
         key: const PageStorageKey('all-reports-storage-key'),
         trailingFn: (report) {
-          return const Icon(Icons.arrow_forward_ios_sharp);
+          return null;
         },
       ),
     );

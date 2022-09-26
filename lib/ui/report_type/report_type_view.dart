@@ -25,7 +25,7 @@ class ReportTypeView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
               _ZeroReport(),
               Expanded(child: _Listing()),
             ],
@@ -50,13 +50,13 @@ class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
       },
       child: Ink(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: Colors.grey.shade300,
+          borderRadius: BorderRadius.circular(32),
+          color: Colors.green.shade400,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 10.0),
         child: Column(
           children: [
-            const Text("Tap here to report normal incident"),
+            const Text("Zero report", style: TextStyle(color: Colors.white)),
             const SizedBox(height: 4),
             FutureBuilder<DateTime?>(
               future: viewModel.getLatestZeroReport(),

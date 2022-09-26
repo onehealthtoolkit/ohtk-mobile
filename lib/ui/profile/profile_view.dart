@@ -13,35 +13,42 @@ class ProfileView extends StatelessWidget {
     return ViewModelBuilder<ProfileViewModel>.nonReactive(
       viewModelBuilder: () => ProfileViewModel(),
       builder: (context, viewModel, child) => Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text("Profile"),
         ),
-        body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                _ProfileForm(),
-                const SizedBox(height: 20),
-                _ChangePasswordForm(),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(40),
+        body: SafeArea(
+          child: GestureDetector(
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    _ProfileForm(),
+                    const SizedBox(height: 20),
+                    _ChangePasswordForm(),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(40),
+                            primary: Colors.red[600],
+                          ),
+                          onPressed: () async {
+                            await viewModel.logout();
+                            Navigator.pop(
+                              context,
+                            );
+                          },
+                          child: const Text("Logout"),
+                        ),
                       ),
-                      onPressed: () async {
-                        await viewModel.logout();
-                        Navigator.pop(
-                          context,
-                        );
-                      },
-                      child: const Text("Logout"),
                     ),
-                  ),
-                ),
-              ],
-            )),
+                  ],
+                )),
+          ),
+        ),
       ),
     );
   }
@@ -58,71 +65,77 @@ class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
     var telephone = useTextEditingController();
     telephone.text = viewModel.telephone ?? "";
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        const Text("Edit profile"),
-        TextField(
-          textInputAction: TextInputAction.next,
-          onChanged: viewModel.setFirstName,
-          controller: firstName,
-          decoration: InputDecoration(
-            labelText: "First name",
-            errorText: viewModel.error("firstName"),
-          ),
-        ),
-        const SizedBox(height: 10),
-        TextField(
-          textInputAction: TextInputAction.next,
-          onChanged: viewModel.setLastName,
-          controller: lastName,
-          decoration: InputDecoration(
-            labelText: "Last name",
-            errorText: viewModel.error("lastName"),
-          ),
-        ),
-        const SizedBox(height: 10),
-        TextField(
-          textInputAction: TextInputAction.next,
-          onChanged: viewModel.setTelephone,
-          controller: telephone,
-          decoration: InputDecoration(
-            labelText: "Telephone",
-            errorText: viewModel.error("telephone"),
-          ),
-        ),
-        const SizedBox(height: 10),
-        if (viewModel.hasErrorForKey("general"))
-          Text(
-            viewModel.error("general"),
-            style: const TextStyle(
-              color: Colors.red,
+    return Card(
+      margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const Text("Edit profile"),
+            TextField(
+              textInputAction: TextInputAction.next,
+              onChanged: viewModel.setFirstName,
+              controller: firstName,
+              decoration: InputDecoration(
+                labelText: "First name",
+                errorText: viewModel.error("firstName"),
+              ),
             ),
-          ),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(40),
+            const SizedBox(height: 10),
+            TextField(
+              textInputAction: TextInputAction.next,
+              onChanged: viewModel.setLastName,
+              controller: lastName,
+              decoration: InputDecoration(
+                labelText: "Last name",
+                errorText: viewModel.error("lastName"),
+              ),
             ),
-            onPressed: viewModel.isBusy
-                ? null
-                : () async {
-                    var result = await viewModel.updateProfile();
-                    if (result is ProfileSuccess && result.success) {
-                      Navigator.pop(context, true);
-                    }
-                  },
-            child: viewModel.isBusy
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(),
-                  )
-                : const Text("Update Profile"),
-          ),
+            const SizedBox(height: 10),
+            TextField(
+              textInputAction: TextInputAction.next,
+              onChanged: viewModel.setTelephone,
+              controller: telephone,
+              decoration: InputDecoration(
+                labelText: "Telephone",
+                errorText: viewModel.error("telephone"),
+              ),
+            ),
+            const SizedBox(height: 10),
+            if (viewModel.hasErrorForKey("general"))
+              Text(
+                viewModel.error("general"),
+                style: const TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(40),
+                ),
+                onPressed: viewModel.isBusy
+                    ? null
+                    : () async {
+                        var result = await viewModel.updateProfile();
+                        if (result is ProfileSuccess && result.success) {
+                          Navigator.pop(context, true);
+                        }
+                      },
+                child: viewModel.isBusy
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(),
+                      )
+                    : const Text("Update Profile"),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -131,61 +144,67 @@ class _ChangePasswordForm extends HookViewModelWidget<ProfileViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, ProfileViewModel viewModel) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        const Text("Change Password"),
-        TextField(
-          textInputAction: TextInputAction.next,
-          obscureText: true,
-          onChanged: viewModel.setPassword,
-          decoration: InputDecoration(
-            labelText: "Password",
-            errorText: viewModel.error("password"),
-          ),
-        ),
-        const SizedBox(height: 10),
-        TextField(
-          textInputAction: TextInputAction.next,
-          obscureText: true,
-          onChanged: viewModel.setConfirmPassword,
-          decoration: InputDecoration(
-            labelText: "Confirm password",
-            errorText: viewModel.error("confirmPassword"),
-          ),
-        ),
-        const SizedBox(height: 10),
-        if (viewModel.hasErrorForKey("generalChangePassword"))
-          Text(
-            viewModel.error("generalChangePassword"),
-            style: const TextStyle(
-              color: Colors.red,
+    return Card(
+      margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const Text("Change Password"),
+            TextField(
+              textInputAction: TextInputAction.next,
+              obscureText: true,
+              onChanged: viewModel.setPassword,
+              decoration: InputDecoration(
+                labelText: "Password",
+                errorText: viewModel.error("password"),
+              ),
             ),
-          ),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(40),
+            const SizedBox(height: 10),
+            TextField(
+              textInputAction: TextInputAction.next,
+              obscureText: true,
+              onChanged: viewModel.setConfirmPassword,
+              decoration: InputDecoration(
+                labelText: "Confirm password",
+                errorText: viewModel.error("confirmPassword"),
+              ),
             ),
-            onPressed: viewModel.isBusy
-                ? null
-                : () async {
-                    var result = await viewModel.changePassword();
-                    if (result is ProfileSuccess && result.success) {
-                      Navigator.pop(context, true);
-                    }
-                  },
-            child: viewModel.isBusy
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(),
-                  )
-                : const Text("Change Password"),
-          ),
+            const SizedBox(height: 10),
+            if (viewModel.hasErrorForKey("generalChangePassword"))
+              Text(
+                viewModel.error("generalChangePassword"),
+                style: const TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(40),
+                ),
+                onPressed: viewModel.isBusy
+                    ? null
+                    : () async {
+                        var result = await viewModel.changePassword();
+                        if (result is ProfileSuccess && result.success) {
+                          Navigator.pop(context, true);
+                        }
+                      },
+                child: viewModel.isBusy
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(),
+                      )
+                    : const Text("Change Password"),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

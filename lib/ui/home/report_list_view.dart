@@ -6,7 +6,7 @@ import 'package:podd_app/ui/report/incident_report_view.dart';
 
 import 'all_reports_view_model.dart';
 
-typedef TrailingFunction = Widget Function(IncidentReport report);
+typedef TrailingFunction = Widget? Function(IncidentReport report);
 
 var formatter = DateFormat("dd/MM/yyyy HH:mm");
 
@@ -40,7 +40,7 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
                 fit: BoxFit.fill,
               )
             : Container(
-                color: Colors.grey,
+                color: Colors.grey.shade300,
                 width: 80,
               );
         var trailing = trailingFn(report);
