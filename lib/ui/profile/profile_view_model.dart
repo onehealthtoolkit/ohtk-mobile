@@ -20,9 +20,6 @@ class ProfileViewModel extends BaseViewModel {
   }
 
   initValue() async {
-    if (authService.userProfile?.email == null) {
-      await authService.fetchProfile();
-    }
     final userProfile = authService.userProfile;
     if (userProfile != null) {
       firstName = userProfile.firstName;
@@ -75,29 +72,20 @@ class ProfileViewModel extends BaseViewModel {
       isValidData = false;
     }
 
-    final userProfile = authService.userProfile;
-    if (userProfile?.email == null) {
-      setErrorForObject("general", "Email not found. some problem occurred!!!");
-      isValidData = false;
-    }
     if (!isValidData) {
       setBusy(false);
       return ProfileInvalidData();
     }
 
     var result = await profileService.updateProfile(
-        id: userProfile!.id.toString(),
-        authorityId: userProfile.authorityId,
-        email: userProfile.email!,
-        username: userProfile.username,
-        firstName: firstName!,
-        lastName: lastName!,
-        telephone: telephone,
-        role: userProfile.role);
+      firstName: firstName!,
+      lastName: lastName!,
+      telephone: telephone,
+    );
 
     if (result is ProfileSuccess) {
       if (!result.success) {
-        setErrorForObject("general", result.message);
+        setErrorForObject("general", "Update profile not success!!!");
       }
     } else if (result is ProfileFailure) {
       setErrorForObject("general", result.messages.join(','));
