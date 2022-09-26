@@ -19,12 +19,16 @@ class ProfileViewModel extends BaseViewModel {
     initValue();
   }
 
-  initValue() {
+  initValue() async {
+    if (authService.userProfile?.email == null) {
+      await authService.fetchProfile();
+    }
     final userProfile = authService.userProfile;
     if (userProfile != null) {
       firstName = userProfile.firstName;
       lastName = userProfile.lastName;
       telephone = userProfile.telephone;
+      notifyListeners();
     }
   }
 
@@ -71,12 +75,16 @@ class ProfileViewModel extends BaseViewModel {
       isValidData = false;
     }
 
+    final userProfile = authService.userProfile;
+    if (userProfile?.email == null) {
+      setErrorForObject("general", "Email not found. some problem occurred!!!");
+      isValidData = false;
+    }
     if (!isValidData) {
       setBusy(false);
       return ProfileInvalidData();
     }
 
-    final userProfile = authService.userProfile;
     var result = await profileService.updateProfile(
         id: userProfile!.id.toString(),
         authorityId: userProfile.authorityId,
