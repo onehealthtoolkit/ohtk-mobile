@@ -9,6 +9,8 @@ class DateField extends Field {
 
   bool withTime;
   bool separatedFields;
+  int? backwardDaysOffset;
+  int? forwardDaysOffset;
 
   DateField(
     String id,
@@ -20,6 +22,8 @@ class DateField extends Field {
     String? requiredMessage,
     this.withTime = false,
     this.separatedFields = false,
+    this.backwardDaysOffset,
+    this.forwardDaysOffset,
     Condition? condition,
   }) : super(id, name,
             label: label,
@@ -51,6 +55,8 @@ class DateField extends Field {
       requiredMessage: json["requiredMessage"],
       withTime: json["withTime"] ?? false,
       separatedFields: json["separatedFields"] ?? false,
+      backwardDaysOffset: json["backwardDaysOffset"],
+      forwardDaysOffset: json["forwardDaysOffset"],
       condition: condition,
     );
   }
@@ -135,9 +141,83 @@ class DateField extends Field {
   bool _validate() {
     return runInAction(() {
       clearError();
-      var validateFns = ilist([_validateRequired]);
+      var validateFns = ilist([
+        _validateRequired,
+        _validateMin,
+        _validateMax,
+      ]);
       return validateFns.all((fn) => fn());
     });
+  }
+
+  bool _validateMin() {
+    if (value == null && required == true) {
+      return false;
+    }
+    if (backwardDaysOffset != null) {
+      if (value != null) {
+        DateTime minDate;
+        var now = DateTime.now();
+
+        if (withTime) {
+          minDate = now;
+        } else {
+          minDate = DateTime(now.year, now.month, now.day);
+        }
+        minDate = minDate.subtract(Duration(days: backwardDaysOffset!));
+
+        var valid =
+            value!.millisecondsSinceEpoch >= minDate.millisecondsSinceEpoch;
+        if (!valid) {
+          markError(
+            formatWithMap(
+              "{name} must be equal or more than {min}",
+              {
+                "name": name,
+                "min": minDate.toIso8601String(),
+              },
+            ),
+          );
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  bool _validateMax() {
+    if (value == null && required == true) {
+      return false;
+    }
+    if (forwardDaysOffset != null) {
+      if (value != null) {
+        DateTime maxDate;
+        var now = DateTime.now();
+
+        if (withTime) {
+          maxDate = now;
+        } else {
+          maxDate = DateTime(now.year, now.month, now.day);
+        }
+        maxDate = maxDate.add(Duration(days: forwardDaysOffset!));
+
+        var valid =
+            value!.millisecondsSinceEpoch <= maxDate.millisecondsSinceEpoch;
+        if (!valid) {
+          markError(
+            formatWithMap(
+              "{name} must be equal or less than {max}",
+              {
+                "name": name,
+                "max": maxDate.toIso8601String(),
+              },
+            ),
+          );
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   @override
