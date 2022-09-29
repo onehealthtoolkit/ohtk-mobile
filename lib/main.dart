@@ -10,11 +10,14 @@ import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/httpclient.dart';
 import 'package:podd_app/ui/home/home_view.dart';
 import 'package:podd_app/ui/login/login_view.dart';
+import 'package:podd_app/ui/login/login_view_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
 
 import 'firebase_options.dart';
 import 'locator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,12 +48,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: locator.allReady(),
+        future: Future.wait([
+          locator.allReady(),
+          _fetchLocale(),
+        ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (!snapshot.hasData) {
+            return const MaterialApp(home: _WaitingScreen());
+          }
           return OverlaySupport.global(
             child: MaterialApp(
               title: 'OHTK Mobile',
               localizationsDelegates: const [
+                AppLocalizations.delegate,
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
@@ -63,6 +73,10 @@ class MyApp extends StatelessWidget {
                 Locale('hi', ''), // India
               ],
               localeResolutionCallback: (deviceLocale, supportedLocales) {
+                String? languageCode = snapshot.data[1];
+                if (languageCode != null) {
+                  return Locale(languageCode, '');
+                }
                 if (supportedLocales
                     .map((e) => e.languageCode)
                     .contains(deviceLocale?.languageCode)) {
@@ -87,6 +101,14 @@ class MyApp extends StatelessWidget {
             ),
           );
         });
+  }
+
+/*
+  To get local from SharedPreferences if exists
+   */
+  Future<String?> _fetchLocale() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getString(languageKey) ?? "en";
   }
 }
 

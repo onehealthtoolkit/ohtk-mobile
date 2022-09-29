@@ -11,6 +11,7 @@ import 'package:podd_app/opsv_form/widgets/widgets.dart';
 import 'package:podd_app/ui/report/report_form_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportFormView extends StatelessWidget {
   final ReportType reportType;
@@ -33,7 +34,7 @@ class ReportFormView extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
-                title: const Text("Report"),
+                title: Text(AppLocalizations.of(context)!.reportTitle),
               ),
               body: SafeArea(
                 child: Column(

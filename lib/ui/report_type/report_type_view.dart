@@ -6,6 +6,7 @@ import 'package:podd_app/ui/report/report_form_view.dart';
 import 'package:podd_app/ui/report_type/report_type_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportTypeView extends StatelessWidget {
   const ReportTypeView({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class ReportTypeView extends StatelessWidget {
       viewModelBuilder: () => ReportTypeViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
-          title: const Text("Report type"),
+          title: Text(AppLocalizations.of(context)!.reportTypeTitle),
         ),
         body: RefreshIndicator(
           onRefresh: () async {

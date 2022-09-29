@@ -8,6 +8,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportCommentView extends StatelessWidget {
   final int threadId;
@@ -183,7 +184,7 @@ class _CommentForm extends HookViewModelWidget<ReportCommentViewModel> {
             ),
           ),
           const SizedBox(width: 5),
-          _sendButton(viewModel),
+          _sendButton(context, viewModel),
         ],
       ),
     );
@@ -270,7 +271,7 @@ class _CommentForm extends HookViewModelWidget<ReportCommentViewModel> {
         : const SizedBox.shrink();
   }
 
-  Widget _sendButton(ReportCommentViewModel viewModel) {
+  Widget _sendButton(BuildContext context, ReportCommentViewModel viewModel) {
     return ElevatedButton(
       onPressed: () async {
         await viewModel.saveComment();
@@ -282,7 +283,7 @@ class _CommentForm extends HookViewModelWidget<ReportCommentViewModel> {
               width: 20,
               child: CircularProgressIndicator(),
             )
-          : const Text("Send"),
+          : Text(AppLocalizations.of(context)!.sendButton),
     );
   }
 

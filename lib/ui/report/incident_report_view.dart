@@ -11,6 +11,7 @@ import 'package:podd_app/ui/report/report_comment_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class IncidentReportView extends HookWidget {
   final String id;
@@ -26,13 +27,13 @@ class IncidentReportView extends HookWidget {
         appBar: AppBar(
           bottom: TabBar(
             controller: _tabController,
-            tabs: const [
-              Tab(child: Text('Detail')),
-              Tab(child: Text('Comment')),
-              Tab(child: Text('Follow Up')),
+            tabs: [
+              Tab(child: Text(AppLocalizations.of(context)!.detailTabLabel)),
+              Tab(child: Text(AppLocalizations.of(context)!.commentTabLabel)),
+              Tab(child: Text(AppLocalizations.of(context)!.followupTabLabel)),
             ],
           ),
-          title: const Text("Report detail"),
+          title: Text(AppLocalizations.of(context)!.reportDetailTitle),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8),

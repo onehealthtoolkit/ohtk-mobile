@@ -11,6 +11,7 @@ import 'package:podd_app/opsv_form/widgets/widgets.dart';
 import 'package:podd_app/ui/report/followup_report_form_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FollowupReportFormView extends StatelessWidget {
   final String incidentId;
@@ -42,7 +43,7 @@ class FollowupReportFormView extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
-                title: const Text("Followup Report"),
+                title: Text(AppLocalizations.of(context)!.followupTitle),
               ),
               body: Column(
                 children: [
@@ -120,7 +121,7 @@ class _ConfirmSubmit extends HookViewModelWidget<FollowupReportFormViewModel> {
                   Navigator.pop(context);
                 }
               },
-              child: const Text("Submit"),
+              child: Text(AppLocalizations.of(context)!.submitButton),
             ),
             const SizedBox(
               height: 8,
@@ -132,7 +133,7 @@ class _ConfirmSubmit extends HookViewModelWidget<FollowupReportFormViewModel> {
               onPressed: () {
                 viewModel.back();
               },
-              child: const Text("Back"),
+              child: Text(AppLocalizations.of(context)!.backButton),
             ),
             const SizedBox(
               height: 60,
@@ -164,14 +165,14 @@ class _Footer extends HookViewModelWidget<FollowupReportFormViewModel> {
                 logger.d("back but do nothing");
               }
             },
-            child: const Text("< back"),
+            child: Text(AppLocalizations.of(context)!.formBackButton),
           ),
           const Spacer(flex: 1),
           ElevatedButton(
             onPressed: () {
               viewModel.next();
             },
-            child: const Text("next >"),
+            child: Text(AppLocalizations.of(context)!.formNextButton),
           ),
         ],
       ),
