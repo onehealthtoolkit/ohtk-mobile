@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podd_app/main.dart';
 import 'package:podd_app/ui/forgot_password/reset_password_request_view.dart';
 import 'package:podd_app/ui/login/login_view_model.dart';
+import 'package:podd_app/ui/login/qr_login_view.dart';
 import 'package:podd_app/ui/register/register_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -42,9 +43,10 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(50, 0, 50, 90),
+          padding: const EdgeInsets.fromLTRB(50, 0, 50, 50),
           child: Image.asset('images/logo.png'),
         ),
+        _qrcodeLogin(context),
         _tenantDropdown(viewModel, context),
         const SizedBox(height: 10),
         TextField(
@@ -117,6 +119,59 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
           child: const Text("Forgot Password"),
         ),
       ],
+    );
+  }
+
+  Widget _qrcodeLogin(BuildContext context) {
+    return InkWell(
+      onTap: () async {
+        var error = await Navigator.push<String>(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const QrLoginView(),
+          ),
+        );
+        if (error != null) {
+          showAlert(context, error);
+        }
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(
+            Icons.qr_code_scanner,
+            size: 36,
+          ),
+          SizedBox(width: 4),
+          Text(
+            'QRCode\n LOGIN',
+            maxLines: 2,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+    );
+  }
+
+  showAlert(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (_) => WillPopScope(
+        child: AlertDialog(
+          title: const Text("Scan Error"),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+        onWillPop: () async {
+          Navigator.pop(context);
+          return true;
+        },
+      ),
     );
   }
 

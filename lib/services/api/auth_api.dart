@@ -78,4 +78,41 @@ class AuthApi extends GraphQlBaseApi {
       typeConverter: (resp) => UserProfile.fromJson(resp),
     );
   }
+
+  Future<AuthResult> verifyLoginQrToken(String token) async {
+    const mutation = r'''
+      mutation VerifyLoginQrToken($token: String!) {
+        verifyLoginQrToken(token: $token) {
+          me {
+            id
+            username
+            firstName
+            lastName
+            authorityId
+            authorityName
+            role
+          }
+          token,
+          refreshToken
+        }
+      }
+    ''';
+    try {
+      final result = await runGqlMutation(
+        mutation: mutation,
+        variables: {"token": token},
+        parseData: (resp) => AuthSuccess(
+          token: resp?['token'],
+          refreshToken: resp?['refreshToken'],
+          // save in seconds
+          refreshExpiresIn:
+              (DateTime.now().millisecondsSinceEpoch / 1000).round() +
+                  (14 * 24 * 60 * 60),
+        ),
+      );
+      return result;
+    } on OperationException catch (e) {
+      return AuthFailure(e);
+    }
+  }
 }

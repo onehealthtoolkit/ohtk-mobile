@@ -28,6 +28,8 @@
 	<string>${GOOGLE_MAP_API_KEY}</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>PODD needs access to the camera.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
