@@ -5,6 +5,7 @@ import 'package:podd_app/models/forgot_password_result.dart';
 import 'package:podd_app/ui/forgot_password/reset_password_request_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ResetPasswordRequestView extends StatelessWidget {
   static const String route = '/register';
@@ -21,7 +22,7 @@ class ResetPasswordRequestView extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text("ResetPasswordRequest"),
+            title: Text(AppLocalizations.of(context)!.forgotPasswordTitle),
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -53,7 +54,7 @@ class _DetailCodeForm
             textInputAction: TextInputAction.next,
             onChanged: viewModel.setEmail,
             decoration: InputDecoration(
-              labelText: "Email",
+              labelText: AppLocalizations.of(context)!.emailLabel,
               errorText: viewModel.error("email"),
             ),
           ),
@@ -86,7 +87,7 @@ class _DetailCodeForm
                       width: 20,
                       child: CircularProgressIndicator(),
                     )
-                  : const Text("Submit"),
+                  : Text(AppLocalizations.of(context)!.submitButton),
             ),
           ),
         ],

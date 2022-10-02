@@ -7,6 +7,7 @@ import 'package:podd_app/ui/login/qr_login_view.dart';
 import 'package:podd_app/ui/register/register_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -16,14 +17,16 @@ class LoginView extends StatelessWidget {
     return ViewModelBuilder<LoginViewModel>.nonReactive(
       viewModelBuilder: () => LoginViewModel(),
       builder: (context, viewModel, child) => Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-              child: Center(
-                child: _LoginForm(),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                child: Center(
+                  child: _LoginForm(),
+                ),
               ),
             ),
           ),
@@ -47,6 +50,9 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
           child: Image.asset('images/logo.png'),
         ),
         _qrcodeLogin(context),
+        const SizedBox(height: 10),
+        _languageDropdown(viewModel, context),
+        const SizedBox(height: 10),
         _tenantDropdown(viewModel, context),
         const SizedBox(height: 10),
         TextField(
@@ -54,7 +60,7 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
           textInputAction: TextInputAction.next,
           onChanged: viewModel.setUsername,
           decoration: InputDecoration(
-            labelText: "username",
+            labelText: AppLocalizations.of(context)!.usernameLabel,
             errorText: viewModel.error("username"),
           ),
         ),
@@ -64,7 +70,7 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
           textInputAction: TextInputAction.done,
           obscureText: true,
           decoration: InputDecoration(
-            labelText: "password",
+            labelText: AppLocalizations.of(context)!.passwordLabel,
             errorText: viewModel.error("password"),
           ),
           onChanged: viewModel.setPassword,
@@ -95,7 +101,7 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
                     width: 20,
                     child: CircularProgressIndicator(),
                   )
-                : const Text("Login"),
+                : Text(AppLocalizations.of(context)!.loginButton),
           ),
         ),
         TextButton(
@@ -106,7 +112,7 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
               ),
             );
           },
-          child: const Text("Register"),
+          child: Text(AppLocalizations.of(context)!.registerButton),
         ),
         TextButton(
           onPressed: () {
@@ -116,7 +122,7 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
               ),
             );
           },
-          child: const Text("Forgot Password"),
+          child: Text(AppLocalizations.of(context)!.forgotPasswordButton),
         ),
       ],
     );
@@ -186,8 +192,8 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
 
     return DropdownButtonFormField<String>(
       isExpanded: true,
-      decoration: const InputDecoration(
-        labelText: "Server",
+      decoration: InputDecoration(
+        labelText: AppLocalizations.of(context)!.serverLabel,
       ),
       hint: const Text("Server"),
       value: viewModel.subDomain,
@@ -202,5 +208,30 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
               ))
           .toList(),
     );
+  }
+
+  Widget _languageDropdown(LoginViewModel viewModel, BuildContext context) {
+    if (viewModel.busy("tenants")) {
+      return const SizedBox(
+        height: 20,
+        width: 20,
+        child: CircularProgressIndicator(),
+      );
+    }
+    return DropdownButtonFormField<String>(
+        isExpanded: true,
+        decoration: InputDecoration(
+          labelText: AppLocalizations.of(context)!.laguageLabel,
+        ),
+        hint: const Text("Language"),
+        value: viewModel.language,
+        onChanged: (String? value) async {
+          await viewModel.changeLanguage(value ?? "en");
+          RestartWidget.restartApp(context);
+        },
+        items: const [
+          DropdownMenuItem(child: Text("English"), value: "en"),
+          DropdownMenuItem(child: Text("ภาษาไทย"), value: "th"),
+        ]);
   }
 }

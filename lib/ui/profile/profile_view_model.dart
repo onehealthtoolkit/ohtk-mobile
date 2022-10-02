@@ -19,12 +19,13 @@ class ProfileViewModel extends BaseViewModel {
     initValue();
   }
 
-  initValue() {
+  initValue() async {
     final userProfile = authService.userProfile;
     if (userProfile != null) {
       firstName = userProfile.firstName;
       lastName = userProfile.lastName;
       telephone = userProfile.telephone;
+      notifyListeners();
     }
   }
 
@@ -76,20 +77,15 @@ class ProfileViewModel extends BaseViewModel {
       return ProfileInvalidData();
     }
 
-    final userProfile = authService.userProfile;
     var result = await profileService.updateProfile(
-        id: userProfile!.id.toString(),
-        authorityId: userProfile.authorityId,
-        email: userProfile.email!,
-        username: userProfile.username,
-        firstName: firstName!,
-        lastName: lastName!,
-        telephone: telephone,
-        role: userProfile.role);
+      firstName: firstName!,
+      lastName: lastName!,
+      telephone: telephone,
+    );
 
     if (result is ProfileSuccess) {
       if (!result.success) {
-        setErrorForObject("general", result.message);
+        setErrorForObject("general", "Update profile not success!!!");
       }
     } else if (result is ProfileFailure) {
       setErrorForObject("general", result.messages.join(','));
