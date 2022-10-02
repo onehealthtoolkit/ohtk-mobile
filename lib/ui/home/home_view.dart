@@ -10,6 +10,7 @@ import 'package:podd_app/ui/report_type/report_type_view.dart';
 import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../profile/profile_view.dart';
 
@@ -61,12 +62,12 @@ class HomeView extends HookWidget {
           centerTitle: true,
           bottom: TabBar(
             controller: _tabController,
-            tabs: const [
-              Tab(child: Text('All Reports')),
-              Tab(child: Text('My Reports')),
+            tabs: [
+              Tab(child: Text(AppLocalizations.of(context)!.allReportTabLabel)),
+              Tab(child: Text(AppLocalizations.of(context)!.myReportTabLabel)),
             ],
           ),
-          title: const Text("OHTK Mobile"),
+          title: Text(AppLocalizations.of(context)!.appName),
           actions: [
             IconButton(
               icon: const Icon(Icons.notifications),

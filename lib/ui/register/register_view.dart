@@ -5,6 +5,7 @@ import 'package:podd_app/models/register_result.dart';
 import 'package:podd_app/ui/register/register_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterView extends StatelessWidget {
   static const String route = '/register';
@@ -21,7 +22,7 @@ class RegisterView extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text("Register"),
+            title: Text(AppLocalizations.of(context)!.signupTitle),
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -55,7 +56,8 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
             viewModel.checkInvitationCode();
           },
           decoration: InputDecoration(
-              labelText: "Code", errorText: viewModel.error('invitationCode')),
+              labelText: AppLocalizations.of(context)!.invitationCodeLabel,
+              errorText: viewModel.error('invitationCode')),
         ),
         const SizedBox(height: 10),
         SizedBox(
@@ -71,7 +73,7 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
                     width: 20,
                     child: CircularProgressIndicator(),
                   )
-                : const Text("Next"),
+                : Text(AppLocalizations.of(context)!.nextButton),
           ),
         ),
       ],
@@ -98,7 +100,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
             textInputAction: TextInputAction.next,
             onChanged: viewModel.setUsername,
             decoration: InputDecoration(
-              labelText: "username",
+              labelText: AppLocalizations.of(context)!.usernameLabel,
               errorText: viewModel.error("username"),
             ),
           ),
@@ -108,7 +110,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
             textInputAction: TextInputAction.next,
             onChanged: viewModel.setFirstName,
             decoration: InputDecoration(
-              labelText: "First name",
+              labelText: AppLocalizations.of(context)!.firstNameLabel,
               errorText: viewModel.error("firstName"),
             ),
           ),
@@ -118,7 +120,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
             textInputAction: TextInputAction.next,
             onChanged: viewModel.setLastName,
             decoration: InputDecoration(
-              labelText: "Last name",
+              labelText: AppLocalizations.of(context)!.lastNameLabel,
               errorText: viewModel.error("lastName"),
             ),
           ),
@@ -128,7 +130,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
             textInputAction: TextInputAction.next,
             onChanged: viewModel.setEmail,
             decoration: InputDecoration(
-              labelText: "Email",
+              labelText: AppLocalizations.of(context)!.emailLabel,
               errorText: viewModel.error("email"),
             ),
           ),
@@ -138,7 +140,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
             textInputAction: TextInputAction.next,
             onChanged: viewModel.setPhone,
             decoration: InputDecoration(
-              labelText: "Phone",
+              labelText: AppLocalizations.of(context)!.telephoneLabel,
               errorText: viewModel.error("phone"),
             ),
           ),
@@ -163,7 +165,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
                       width: 20,
                       child: CircularProgressIndicator(),
                     )
-                  : const Text("Submit"),
+                  : Text(AppLocalizations.of(context)!.submitButton),
             ),
           ),
         ],

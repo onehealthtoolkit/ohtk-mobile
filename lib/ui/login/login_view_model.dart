@@ -8,6 +8,8 @@ import 'package:podd_app/services/gql_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 
+const languageKey = "language";
+
 class LoginViewModel extends BaseViewModel {
   IAuthService authService = locator<IAuthService>();
   ConfigService configService = locator<ConfigService>();
@@ -19,14 +21,15 @@ class LoginViewModel extends BaseViewModel {
   ];
 
   String subDomain = "";
+  String language = "";
   String? username;
   String? password;
 
   LoginViewModel() {
-    fetchTenant();
+    fetchTenantAndLanguage();
   }
 
-  fetchTenant() async {
+  fetchTenantAndLanguage() async {
     setBusyForObject("tenants", true);
 
     final prefs = await SharedPreferences.getInstance();
@@ -44,6 +47,7 @@ class LoginViewModel extends BaseViewModel {
         }
       }
       serverOptions.addAll(tenants);
+      language = prefs.getString(languageKey) ?? "en";
       notifyListeners();
     } catch (e) {
       setErrorForObject("general", "Cannot get tenants data ");
@@ -55,6 +59,11 @@ class LoginViewModel extends BaseViewModel {
   changeServer(String value) async {
     subDomain = value;
     await gqlService.setBackendSubDomain(value);
+  }
+
+  changeLanguage(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(languageKey, value);
   }
 
   authenticate() async {

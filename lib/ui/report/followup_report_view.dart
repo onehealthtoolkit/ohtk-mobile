@@ -6,6 +6,7 @@ import 'package:podd_app/ui/report/followup_report_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // View that creates and provides the viewmodel
 class FollowupReportView extends StatelessWidget {
@@ -36,7 +37,7 @@ class _FollowupReportView extends HookViewModelWidget<FollowupReportViewModel> {
 
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Followup detail"),
+          title: Text(AppLocalizations.of(context)!.followupDetailTitle),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8),
