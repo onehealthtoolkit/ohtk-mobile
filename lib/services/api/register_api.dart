@@ -5,7 +5,7 @@ import 'package:podd_app/models/register_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
 
 class RegisterApi extends GraphQlBaseApi {
-  RegisterApi(GraphQLClient client) : super(client);
+  RegisterApi(ResolveGraphqlClient client) : super(client);
 
   Future<InvitationCodeResult> checkInvitationCode(String code) async {
     const query = r'''

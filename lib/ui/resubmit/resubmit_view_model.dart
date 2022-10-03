@@ -6,7 +6,6 @@ import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report.dart';
 import 'package:podd_app/models/report_submit_result.dart';
-import 'package:podd_app/services/config_service.dart';
 import 'package:podd_app/services/report_service.dart';
 import 'package:stacked/stacked.dart';
 
@@ -15,7 +14,6 @@ class ReSubmitViewModel extends ReactiveViewModel {
 
   final _logger = locator<Logger>();
   final IReportService _reportService = locator<IReportService>();
-  final _configService = locator<ConfigService>();
   final reportStates = <String, Progress>{};
 
   bool isOffline = true;
@@ -28,15 +26,13 @@ class ReSubmitViewModel extends ReactiveViewModel {
   void connectionChanged(ConnectivityResult result) async {
     if (result != ConnectivityResult.none) {
       try {
-        final result =
-            await InternetAddress.lookup(_configService.serverDomain);
+        final result = await InternetAddress.lookup("ohtk.org");
         if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
           _logger.i('connected');
           isOffline = false;
         }
       } on SocketException catch (_) {
-        _logger
-            .w('not connected: lookup ${_configService.serverDomain} failed');
+        _logger.w('not connected: lookup ohtk.org failed');
         isOffline = true;
       }
     } else {

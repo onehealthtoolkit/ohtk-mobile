@@ -3,7 +3,7 @@ import 'package:podd_app/models/forgot_password_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
 
 class ForgotPasswordApi extends GraphQlBaseApi {
-  ForgotPasswordApi(GraphQLClient client) : super(client);
+  ForgotPasswordApi(ResolveGraphqlClient client) : super(client);
 
   Future<ForgotPasswordResult> resetPasswordRequest(
     String email,

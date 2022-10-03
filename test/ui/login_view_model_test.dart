@@ -45,6 +45,18 @@ class AuthServiceMock implements IAuthService {
     // TODO: implement requestAccessTokenIfExpired
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> fetchProfile() {
+    // TODO: implement fetchProfile
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<AuthResult> verifyQrToken(String token) {
+    // TODO: implement verifyQrToken
+    throw UnimplementedError();
+  }
 }
 
 void main() {

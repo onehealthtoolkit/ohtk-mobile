@@ -5,7 +5,7 @@ import 'package:podd_app/models/entities/report_type.dart';
 import 'graph_ql_base_api.dart';
 
 class ReportTypeApi extends GraphQlBaseApi {
-  ReportTypeApi(GraphQLClient client) : super(client);
+  ReportTypeApi(ResolveGraphqlClient client) : super(client);
 
   Future<ReportTypeSyncOutputType> syncReportTypes(
       List<ReportTypeSyncInputType> data) async {

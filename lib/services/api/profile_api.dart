@@ -3,7 +3,7 @@ import 'package:podd_app/models/profile_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
 
 class ProfileApi extends GraphQlBaseApi {
-  ProfileApi(GraphQLClient client) : super(client);
+  ProfileApi(ResolveGraphqlClient client) : super(client);
 
   Future<ProfileResult> updateProfile({
     required String firstName,

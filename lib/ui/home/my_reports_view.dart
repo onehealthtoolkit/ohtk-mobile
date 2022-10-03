@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
@@ -36,6 +37,13 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, MyReportsViewModel viewModel) {
+    final isMounted = useIsMounted();
+    useEffect(() {
+      if (isMounted()) {
+        viewModel.refetchIncidentReports();
+      }
+      return null;
+    }, []);
     return RefreshIndicator(
       onRefresh: () async {
         await viewModel.refetchIncidentReports();

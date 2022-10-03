@@ -1,0 +1,29 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "podd_app",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+			  "--dart-define", "GRAPHQL_ENDPOINT=https://backend.ohtk.org/graphql/",
+        "--dart-define", "TENANT_API_ENDPOINT=https://admin.ohtk.org/api/servers/",
+		  ]
+    },
+    {
+      "name": "podd_app (profile mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "podd_app (release mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    }
+  ]
+}

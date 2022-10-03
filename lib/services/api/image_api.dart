@@ -6,7 +6,7 @@ import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
 
 class ImageApi extends GraphQlBaseApi {
-  ImageApi(GraphQLClient client) : super(client);
+  ImageApi(ResolveGraphqlClient client) : super(client);
 
   Future<ImageSubmitResult> submit(ReportImage reportImage) async {
     const mutation = r'''

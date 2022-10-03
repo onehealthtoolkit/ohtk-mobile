@@ -4,7 +4,7 @@ import 'package:podd_app/models/user_profile.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
 
 class AuthApi extends GraphQlBaseApi {
-  AuthApi(GraphQLClient client) : super(client);
+  AuthApi(ResolveGraphqlClient client) : super(client);
 
   Future<AuthResult> tokenAuth(String username, String password) async {
     const mutation = r'''

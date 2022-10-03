@@ -1,4 +1,3 @@
-import 'package:podd_app/models/entities/message.dart';
 import 'package:podd_app/models/entities/user_message.dart';
 
 class UserMessageQueryResult {

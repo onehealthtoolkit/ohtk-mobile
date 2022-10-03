@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-/**
- * credit to https://github.com/gtgalone/confirm_dialog
- */
+/// credit to https://github.com/gtgalone/confirm_dialog
 Future<bool> confirm(
   BuildContext context, {
   Widget? title,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/adapter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/services/api/graph_ql_base_api.dart';
 import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/config_service.dart';
 import 'package:podd_app/services/secure_storage_service.dart';
@@ -12,7 +13,6 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stacked/stacked_annotations.dart';
 
 class InvalidRefreshTokenError extends http.DioError {
   InvalidRefreshTokenError(requestOptions)
@@ -31,11 +31,10 @@ class GqlService {
 
   GraphQLClient? _client;
 
-  GraphQLClient get client => _client!;
+  ResolveGraphqlClient get resolveClientFunction => () => _client!;
 
   final _jwtExpiredMessages = [
-    'You do not have permission to perform this action',
-    'JWTExpired',
+    'Signature has expired',
   ];
 
   overrideDioSelfSignCertificateHandling() {
@@ -46,6 +45,7 @@ class GqlService {
           (X509Certificate cert, String host, int port) {
         return true;
       };
+      return null;
     };
   }
 
@@ -86,7 +86,7 @@ class GqlService {
         },
       ),
     );
-    await _renewClient();
+    await renewClient();
   }
 
   Future<void> clearCookies() async {
@@ -110,7 +110,7 @@ class GqlService {
     ''';
 
     try {
-      final response = await _dio.post(_configService.graphqlEndpoint, data: {
+      final response = await _dio.post(_endpoint(), data: {
         'query': mutation,
         'variables': {'refreshToken': refreshToken}
       });
@@ -153,7 +153,7 @@ class GqlService {
   _isInvalidRefreshToken(errors) {
     for (var element in errors) {
       final err = element['message'] as String;
-      final m = ["Invalid refresh token"].firstWhere(
+      final m = ["Refresh has expired"].firstWhere(
         (element) => err.contains(element),
         orElse: () => '',
       );
@@ -179,18 +179,20 @@ class GqlService {
     // setupLocator(environment);
   }
 
-  Future<void> _renewClient() async {
-    final prefs = await SharedPreferences.getInstance();
-    final subDomain = prefs.getString(backendUrlKey);
-    String? endpoint;
-    if (subDomain != null) {
-      endpoint = "https://$subDomain/graphql/";
-    }
-
+  Future<void> renewClient() async {
     final Link _dioLink = DioLink(
-      endpoint ?? _configService.graphqlEndpoint,
+      await _endpoint(),
       client: _dio,
     );
     _client = GraphQLClient(link: _dioLink, cache: _cache);
+  }
+
+  _endpoint() async {
+    final prefs = await SharedPreferences.getInstance();
+    final subDomain = prefs.getString(backendUrlKey);
+    if (subDomain != null && subDomain != "") {
+      return "https://$subDomain/graphql/";
+    }
+    return _configService.graphqlEndpoint;
   }
 }

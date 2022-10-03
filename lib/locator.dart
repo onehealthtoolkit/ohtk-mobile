@@ -185,7 +185,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<AuthApi>(() async {
     var gqlService = locator<GqlService>();
-    return AuthApi(gqlService.client);
+    return AuthApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
   if (locator.isRegistered<RegisterApi>()) {
@@ -193,7 +193,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<RegisterApi>(() async {
     var gqlService = locator<GqlService>();
-    return RegisterApi(gqlService.client);
+    return RegisterApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
   if (locator.isRegistered<ForgotPasswordApi>()) {
@@ -201,7 +201,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<ForgotPasswordApi>(() async {
     var gqlService = locator<GqlService>();
-    return ForgotPasswordApi(gqlService.client);
+    return ForgotPasswordApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
   if (locator.isRegistered<ProfileApi>()) {
@@ -209,7 +209,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<ProfileApi>(() async {
     var gqlService = locator<GqlService>();
-    return ProfileApi(gqlService.client);
+    return ProfileApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
   if (locator.isRegistered<ReportTypeApi>()) {
@@ -217,7 +217,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<ReportTypeApi>(() async {
     var gqlService = locator<GqlService>();
-    return ReportTypeApi(gqlService.client);
+    return ReportTypeApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
   if (locator.isRegistered<ReportApi>()) {
@@ -225,7 +225,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<ReportApi>(() async {
     var gqlService = locator<GqlService>();
-    return ReportApi(gqlService.client);
+    return ReportApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
   if (locator.isRegistered<ImageApi>()) {
@@ -233,7 +233,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<ImageApi>(() async {
     var gqlService = locator<GqlService>();
-    return ImageApi(gqlService.client);
+    return ImageApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
   if (locator.isRegistered<NotificationApi>()) {
@@ -241,7 +241,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<NotificationApi>(() async {
     var gqlService = locator<GqlService>();
-    return NotificationApi(gqlService.client);
+    return NotificationApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
   if (locator.isRegistered<CommentApi>()) {
@@ -249,6 +249,6 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<CommentApi>(() async {
     var gqlService = locator<GqlService>();
-    return CommentApi(gqlService.client);
+    return CommentApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 }

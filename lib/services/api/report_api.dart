@@ -10,7 +10,7 @@ import 'package:podd_app/services/api/graph_ql_base_api.dart';
 import 'package:intl/intl.dart';
 
 class ReportApi extends GraphQlBaseApi {
-  ReportApi(GraphQLClient client) : super(client);
+  ReportApi(ResolveGraphqlClient client) : super(client);
 
   Future<ReportSubmitResult> submit(Report report) async {
     const mutation = r'''
@@ -172,7 +172,7 @@ class ReportApi extends GraphQlBaseApi {
   }) async {
     const query = r'''
       query myIncidentReports($limit: Int, $offset: Int) {
-        incidentReports(limit: $limit, offset: $offset) {
+        myIncidentReports(limit: $limit, offset: $offset) {
           pageInfo {
             hasNextPage
           }

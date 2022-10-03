@@ -4,7 +4,7 @@ import 'package:podd_app/models/user_message_query_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
 
 class NotificationApi extends GraphQlBaseApi {
-  NotificationApi(GraphQLClient client) : super(client);
+  NotificationApi(ResolveGraphqlClient client) : super(client);
 
   Future<FcmTokenRegisterResult> registerFcmToken(
       String userId, String token) async {

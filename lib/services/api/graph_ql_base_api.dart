@@ -4,8 +4,10 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 
+typedef ResolveGraphqlClient = GraphQLClient Function();
+
 abstract class GraphQlBaseApi {
-  GraphQLClient client;
+  ResolveGraphqlClient resolveClient;
   Logger? baseLogger = locator<Logger>();
   late GraphQLResponseParser responseParser;
 
@@ -13,7 +15,8 @@ abstract class GraphQlBaseApi {
     return Future.value(true);
   }
 
-  GraphQlBaseApi(this.client) : responseParser = const GraphQLResponseParser();
+  GraphQlBaseApi(this.resolveClient)
+      : responseParser = const GraphQLResponseParser();
 
   /// Runs a GqlQuery and parses the response with the assumption of it being a single
   /// result and NOT a collection. For fetching and parsing a collection use [runGqlListQuery]
@@ -78,7 +81,7 @@ abstract class GraphQlBaseApi {
     final functionIdentity = actionName ?? query;
     if (await (ensureAuthCookieIsSet())) {
       baseLogger?.v('REQUEST:$actionName - query:$query');
-      var response = await client.query(
+      var response = await resolveClient().query(
         QueryOptions(
           document: gql(query),
           variables: variables,
@@ -140,7 +143,7 @@ abstract class GraphQlBaseApi {
       );
 
       baseLogger?.v('REQUEST:$actionName - mutation:$mutation');
-      final QueryResult response = await client.mutate(options);
+      final QueryResult response = await resolveClient().mutate(options);
       onRawResponse?.call(response);
 
       baseLogger?.v(

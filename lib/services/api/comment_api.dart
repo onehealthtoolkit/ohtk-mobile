@@ -10,7 +10,7 @@ import 'package:uuid/uuid.dart';
 const _uuid = Uuid();
 
 class CommentApi extends GraphQlBaseApi {
-  CommentApi(GraphQLClient client) : super(client);
+  CommentApi(ResolveGraphqlClient client) : super(client);
 
   Future<CommentQueryResult> fetchComments(int threadId) async {
     const query = r'''

@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:logger/logger.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/fcm_register_result.dart';
 import 'package:podd_app/models/entities/user_message.dart';
@@ -15,7 +14,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
-  print("Handling a background message: ${message.messageId}");
 }
 
 typedef NotificationMessageCallback = void Function(String userMessageId);
@@ -88,12 +86,12 @@ class NotificationService extends INotificationService {
         sound: true,
       );
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-        print('User granted permission');
+        _logger.d('User granted permission');
       } else if (settings.authorizationStatus ==
           AuthorizationStatus.provisional) {
-        print('User granted provisional permission');
+        _logger.d('User granted provisional permission');
       } else {
-        print('User declined or has not accepted permission');
+        _logger.d('User declined or has not accepted permission');
       }
     }
 

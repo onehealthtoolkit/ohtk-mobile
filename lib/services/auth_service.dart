@@ -116,7 +116,6 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
 
     await _secureStorageService.setUserProfile(profile);
     await _reportTypeService.sync();
-    await _reportService.fetchIncidents(true);
   }
 
   @override

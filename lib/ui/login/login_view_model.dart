@@ -21,7 +21,7 @@ class LoginViewModel extends BaseViewModel {
   ];
 
   String subDomain = "";
-  String language = "";
+  String language = "en";
   String? username;
   String? password;
 

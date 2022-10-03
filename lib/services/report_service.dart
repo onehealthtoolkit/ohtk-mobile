@@ -79,8 +79,6 @@ class ReportService extends IReportService {
     rows.map((row) => Report.fromMap(row)).forEach((report) {
       _pendingReports.add(report);
     });
-    fetchIncidents(true);
-    fetchMyIncidents(true);
   }
 
   @override
@@ -154,6 +152,7 @@ class ReportService extends IReportService {
       }
       return result;
     } on LinkException catch (_e) {
+      _logger.e(_e);
       _saveToLocalDB(report);
       return ReportSubmitPending();
     }
