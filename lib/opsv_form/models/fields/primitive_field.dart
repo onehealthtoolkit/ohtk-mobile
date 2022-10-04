@@ -12,13 +12,15 @@ abstract class PrimitiveField<T> extends Field {
     bool? required,
     String? requiredMessage,
     Condition? condition,
+    String? tags,
   }) : super(id, name,
             label: label,
             description: description,
             suffixLabel: suffixLabel,
             required: required,
             requiredMessage: requiredMessage,
-            condition: condition);
+            condition: condition,
+            tags: tags);
 
   @override
   T? get value => _value.value;

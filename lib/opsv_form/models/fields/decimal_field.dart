@@ -10,13 +10,15 @@ class DecimalField extends PrimitiveField<Decimal> {
     bool? required,
     String? requiredMessage,
     Condition? condition,
+    String? tags,
   }) : super(id, name,
             label: label,
             description: description,
             suffixLabel: suffixLabel,
             required: required,
             requiredMessage: requiredMessage,
-            condition: condition);
+            condition: condition,
+            tags: tags);
 
   factory DecimalField.fromJson(Map<String, dynamic> json) {
     var condition = parseConditionFromJson(json);
@@ -30,6 +32,7 @@ class DecimalField extends PrimitiveField<Decimal> {
       required: json["required"],
       requiredMessage: json["requiredMessage"],
       condition: condition,
+      tags: json["tags"],
     );
   }
 

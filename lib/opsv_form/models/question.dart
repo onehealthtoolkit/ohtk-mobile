@@ -98,4 +98,8 @@ class Question implements ConiditionSource {
 
     return IList.flattenOption(fieldConditions.plus(questionCondition));
   }
+
+  IList<Field> allFields() {
+    return ilist(fields);
+  }
 }

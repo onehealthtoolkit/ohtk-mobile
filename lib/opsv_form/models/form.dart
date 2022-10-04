@@ -69,6 +69,19 @@ class Form {
     return ilist(sections).flatMap((section) => section.allConiditions());
   }
 
+  IList<Field> allFields() {
+    return ilist(sections).flatMap((section) => section.allFields());
+  }
+
+  Field? findField(bool Function(Field) predicate) {
+    var fields = allFields().toList();
+    try {
+      return fields.firstWhere(predicate);
+    } catch (_) {
+      return null;
+    }
+  }
+
   Computed<Section>? _currentSectionComputed;
   Section get currentSection => (_currentSectionComputed ??= Computed<Section>(
           () => sections[_currentSectionIdx.value],

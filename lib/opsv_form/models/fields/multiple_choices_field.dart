@@ -35,6 +35,7 @@ class MultipleChoicesField extends Field {
     bool? required,
     String? requiredMessage,
     Condition? condition,
+    String? tags,
   }) : super(
           id,
           name,
@@ -43,6 +44,7 @@ class MultipleChoicesField extends Field {
           required: required,
           requiredMessage: requiredMessage,
           condition: condition,
+          tags: tags,
         ) {
     for (var option in options) {
       _selected[option.value] = Observable(false);
@@ -67,6 +69,7 @@ class MultipleChoicesField extends Field {
       required: json["required"],
       requiredMessage: json["requiredMessage"],
       condition: condition,
+      tags: json["tags"],
     );
   }
 

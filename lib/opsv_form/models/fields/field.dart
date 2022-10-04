@@ -10,6 +10,7 @@ abstract class Field implements ConiditionSource {
   bool? required;
   String? requiredMessage;
   Condition? condition;
+  String? tags;
 
   final _invalidMessage = Observable<String?>(null);
 
@@ -22,6 +23,7 @@ abstract class Field implements ConiditionSource {
     this.required = false,
     this.requiredMessage,
     this.condition,
+    this.tags,
   });
 
   factory Field.fromJson(Map<String, dynamic> json) {

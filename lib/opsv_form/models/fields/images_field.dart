@@ -20,13 +20,15 @@ class ImagesField extends Field {
     this.minMessage,
     this.maxMessage,
     Condition? condition,
+    String? tags,
   }) : super(id, name,
             label: label,
             description: description,
             suffixLabel: suffixLabel,
             required: required,
             requiredMessage: requiredMessage,
-            condition: condition);
+            condition: condition,
+            tags: tags);
 
   factory ImagesField.fromJson(Map<String, dynamic> json) {
     var condition = parseConditionFromJson(json);
@@ -44,6 +46,7 @@ class ImagesField extends Field {
       minMessage: json["minMessage"],
       maxMessage: json["maxMessage"],
       condition: condition,
+      tags: json["tags"],
     );
   }
 
