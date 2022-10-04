@@ -84,13 +84,14 @@ class ReportFormViewModel extends BaseViewModel {
   Future<ReportSubmitResult> submit() async {
     setBusy(true);
     String? gpsLocation = _findFirstLocationValue(_formStore);
+    DateTime? incidentDate = _findFirstIncidentDateValue(_formStore);
 
     var report = Report(
       id: _reportId,
       data: _formStore.toJsonValue(),
       reportTypeId: _reportType.id,
       reportTypeName: _reportType.name,
-      incidentDate: DateTime.now(),
+      incidentDate: incidentDate ?? DateTime.now(),
       gpsLocation: gpsLocation,
       incidentInAuthority: _incidentInAuthority,
     );
@@ -103,17 +104,25 @@ class ReportFormViewModel extends BaseViewModel {
 
   String? _findFirstLocationValue(Form form) {
     String? result;
-    for (var section in form.sections) {
-      for (var question in section.questions) {
-        for (var field in question.fields) {
-          if (field is LocationField) {
-            if (field.longitude != null && field.latitude != null) {
-              result ??=
-                  "${field.longitude.toString()},${field.latitude.toString()}";
-            }
-          }
-        }
-      }
+    var field = form.findField(((field) =>
+        (field is LocationField) &&
+        (field.longitude != null && field.latitude != null)));
+
+    if (field != null && field is LocationField) {
+      result = "${field.longitude.toString()},${field.latitude.toString()}";
+    }
+    return result;
+  }
+
+  DateTime? _findFirstIncidentDateValue(Form form) {
+    DateTime? result;
+    var field = form.findField((field) =>
+        field is DateField &&
+        field.tags != null &&
+        field.tags!.contains("incident_date"));
+
+    if (field != null && field is DateField) {
+      result = field.value;
     }
     return result;
   }

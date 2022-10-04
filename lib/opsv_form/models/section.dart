@@ -56,4 +56,8 @@ class Section {
   IList<Condition> allConiditions() {
     return ilist(questions).flatMap((question) => question.allConditions());
   }
+
+  IList<Field> allFields() {
+    return ilist(questions).flatMap((question) => question.allFields());
+  }
 }

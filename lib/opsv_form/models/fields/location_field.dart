@@ -13,13 +13,15 @@ class LocationField extends PrimitiveField<String> {
     bool? required,
     String? requiredMessage,
     Condition? condition,
+    String? tags,
   }) : super(id, name,
             label: label,
             description: description,
             suffixLabel: suffixLabel,
             required: required,
             requiredMessage: requiredMessage,
-            condition: condition);
+            condition: condition,
+            tags: tags);
 
   factory LocationField.fromJson(Map<String, dynamic> json) {
     var condition = parseConditionFromJson(json);
@@ -33,6 +35,7 @@ class LocationField extends PrimitiveField<String> {
       required: json["required"],
       requiredMessage: json["requiredMessage"],
       condition: condition,
+      tags: json["tags"],
     );
   }
 

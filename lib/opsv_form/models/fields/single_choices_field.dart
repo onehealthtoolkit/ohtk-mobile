@@ -19,6 +19,7 @@ class SingleChoicesField extends PrimitiveField<String> {
     bool? required,
     String? requiredMessage,
     Condition? condition,
+    String? tags,
   }) : super(
           id,
           name,
@@ -27,6 +28,7 @@ class SingleChoicesField extends PrimitiveField<String> {
           required: required,
           requiredMessage: requiredMessage,
           condition: condition,
+          tags: tags,
         );
 
   factory SingleChoicesField.fromJson(Map<String, dynamic> json) {
@@ -41,6 +43,7 @@ class SingleChoicesField extends PrimitiveField<String> {
       required: json["required"],
       requiredMessage: json["requiredMessage"],
       condition: condition,
+      tags: json["tags"],
     );
   }
 

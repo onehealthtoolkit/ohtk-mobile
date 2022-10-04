@@ -19,6 +19,7 @@ class IntegerField extends PrimitiveField<int> {
     this.maxMessage,
     this.max,
     Condition? condition,
+    String? tags,
   }) : super(
           id,
           name,
@@ -28,6 +29,7 @@ class IntegerField extends PrimitiveField<int> {
           required: required,
           requiredMessage: requiredMessage,
           condition: condition,
+          tags: tags,
         );
 
   factory IntegerField.fromJson(Map<String, dynamic> json) {
@@ -48,6 +50,7 @@ class IntegerField extends PrimitiveField<int> {
       minMessage: json["minMessage"],
       maxMessage: json["maxMessage"],
       condition: condition,
+      tags: json["tags"],
     );
   }
 

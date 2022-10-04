@@ -25,13 +25,15 @@ class DateField extends Field {
     this.backwardDaysOffset,
     this.forwardDaysOffset,
     Condition? condition,
+    String? tags,
   }) : super(id, name,
             label: label,
             description: description,
             suffixLabel: suffixLabel,
             required: required,
             requiredMessage: requiredMessage,
-            condition: condition) {
+            condition: condition,
+            tags: tags) {
     var now = DateTime.now();
     _day.value = now.day;
     _month.value = now.month;
@@ -58,6 +60,7 @@ class DateField extends Field {
       backwardDaysOffset: json["backwardDaysOffset"],
       forwardDaysOffset: json["forwardDaysOffset"],
       condition: condition,
+      tags: json["tags"],
     );
   }
 

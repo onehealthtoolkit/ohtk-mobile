@@ -19,13 +19,15 @@ class TextField extends PrimitiveField<String> {
     this.maxLength,
     this.maxLengthMessage,
     Condition? condition,
+    String? tags,
   }) : super(id, name,
             label: label,
             description: description,
             suffixLabel: suffixLabel,
             required: required,
             requiredMessage: requiredMessage,
-            condition: condition);
+            condition: condition,
+            tags: tags);
 
   factory TextField.fromJson(Map<String, dynamic> json) {
     Condition? condition;
@@ -45,6 +47,7 @@ class TextField extends PrimitiveField<String> {
       minLengthMessage: json["minLengthMessage"],
       maxLengthMessage: json["maxLengthMessage"],
       condition: condition,
+      tags: json['tags'],
     );
   }
 
