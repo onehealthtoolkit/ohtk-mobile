@@ -147,5 +147,9 @@ class ImagesField extends Field {
   @override
   void toJsonValue(Map<String, dynamic> aggregateResult) {
     aggregateResult[name] = value.toList();
+    aggregateResult["${name}__value"] = renderedValue;
   }
+
+  @override
+  String get renderedValue => value.join(",");
 }

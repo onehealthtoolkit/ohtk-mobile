@@ -7,7 +7,7 @@ void main() {
     setUp(() {
       field = MultipleChoicesField("id", "symptom", [
         ChoiceOption(label: "sore throat", value: "sore_throat"),
-        ChoiceOption(label: "headache", value: "headache"),
+        ChoiceOption(label: "headache", value: "headache", textInput: true),
         ChoiceOption(label: "fever", value: "fever"),
       ]);
     });
@@ -32,6 +32,7 @@ void main() {
       expect(json["symptom"]["headache"], isFalse);
       expect(json["symptom"]["fever"], isFalse);
       expect(json["symptom"]["value"], "");
+      expect(json["symptom__value"], isEmpty);
     });
 
     test("toJson with value", () {
@@ -44,6 +45,21 @@ void main() {
       expect(json["symptom"]["headache"], isFalse);
       expect(json["symptom"]["fever"], isTrue);
       expect(json["symptom"]["value"], "sore_throat,fever");
+      expect(json["symptom__value"], "sore_throat,fever");
+    });
+
+    test("toJson with value and text", () {
+      field.setSelectedFor("sore_throat", true);
+      field.setSelectedFor("headache", true);
+      field.setTextValueFor("headache", "migraine");
+      Map<String, dynamic> json = {};
+      field.toJsonValue(json);
+      expect(json["symptom"], isNotNull);
+      expect(json["symptom"]["sore_throat"], isTrue);
+      expect(json["symptom"]["headache"], isTrue);
+      expect(json["symptom"]["fever"], isFalse);
+      expect(json["symptom"]["value"], "sore_throat,headache");
+      expect(json["symptom__value"], "sore_throat,headache - migraine");
     });
 
     test("load jsonValue", () {

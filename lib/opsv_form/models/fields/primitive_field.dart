@@ -44,5 +44,6 @@ abstract class PrimitiveField<T> extends Field {
   @override
   void toJsonValue(Map<String, dynamic> aggregateResult) {
     aggregateResult[name] = value;
+    aggregateResult["${name}__value"] = renderedValue;
   }
 }

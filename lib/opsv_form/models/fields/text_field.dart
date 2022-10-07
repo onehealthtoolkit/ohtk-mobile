@@ -118,4 +118,7 @@ class TextField extends PrimitiveField<String> {
         return false;
     }
   }
+
+  @override
+  String get renderedValue => value ?? "";
 }

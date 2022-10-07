@@ -15,12 +15,14 @@ void main() {
       Map<String, dynamic> json = {};
       field.toJsonValue(json);
       expect(json["salary"], salary.toStringAsFixed(2));
+      expect(json["salary__value"], salary.toStringAsFixed(2));
     });
 
     test("to json without value", () {
       Map<String, dynamic> json = {};
       field.toJsonValue(json);
       expect(json["salary"], isNull);
+      expect(json["salary__value"], isEmpty);
     });
 
     test("load json data", () {

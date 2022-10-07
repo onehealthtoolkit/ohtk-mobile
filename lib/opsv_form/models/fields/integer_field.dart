@@ -115,4 +115,7 @@ class IntegerField extends PrimitiveField<int> {
   bool evaluate(ConditionOperator operator, String targetValue) {
     throw UnimplementedError();
   }
+
+  @override
+  String get renderedValue => value != null ? value.toString() : "";
 }

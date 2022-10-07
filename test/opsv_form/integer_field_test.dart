@@ -12,12 +12,14 @@ void main() {
       Map<String, dynamic> json = {};
       field.toJsonValue(json);
       expect(json["age"], 12);
+      expect(json["age__value"], "12");
     });
 
     test("toJson without value", () {
       Map<String, dynamic> json = {};
       field.toJsonValue(json);
       expect(json["age"], isNull);
+      expect(json["age__value"], isEmpty);
     });
 
     test("load json data", () {

@@ -67,5 +67,9 @@ class DecimalField extends PrimitiveField<Decimal> {
   @override
   void toJsonValue(Map<String, dynamic> aggregateResult) {
     aggregateResult[name] = value?.toStringAsFixed(2);
+    aggregateResult["${name}__value"] = renderedValue;
   }
+
+  @override
+  String get renderedValue => value != null ? value!.toStringAsFixed(2) : "";
 }

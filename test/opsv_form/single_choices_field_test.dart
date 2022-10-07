@@ -35,6 +35,7 @@ void main() {
       Map<String, dynamic> json = {};
       field.toJsonValue(json);
       expect(json["disease"], isNull);
+      expect(json["disease__value"], isEmpty);
     });
 
     test("toJson with value", () {
@@ -42,6 +43,16 @@ void main() {
       Map<String, dynamic> json = {};
       field.toJsonValue(json);
       expect(json["disease"], "mers");
+      expect(json["disease__value"], "mers");
+    });
+
+    test("toJson with value and text", () {
+      field.value = "other";
+      field.text = "covid19";
+      Map<String, dynamic> json = {};
+      field.toJsonValue(json);
+      expect(json["disease"], "other");
+      expect(json["disease__value"], "other - covid19");
     });
 
     test("load json value", () {

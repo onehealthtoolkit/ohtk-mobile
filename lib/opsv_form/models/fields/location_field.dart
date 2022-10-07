@@ -91,4 +91,7 @@ class LocationField extends PrimitiveField<String> {
         return false;
     }
   }
+
+  @override
+  String get renderedValue => value != null ? "$value (Lng,Lat)" : '';
 }
