@@ -137,6 +137,14 @@ class DateField extends Field {
           _minute.value = v.minute;
         }
       });
+    } else {
+      runInAction(() {
+        _day.value = null;
+        _month.value = null;
+        _year.value = null;
+        _hour.value = null;
+        _minute.value = null;
+      });
     }
   }
 
@@ -246,5 +254,15 @@ class DateField extends Field {
   @override
   void toJsonValue(Map<String, dynamic> aggregateResult) {
     aggregateResult[name] = value?.toIso8601String();
+    aggregateResult["${name}__value"] = renderedValue;
+  }
+
+  @override
+  String get renderedValue {
+    return value != null
+        ? (withTime
+            ? DateFormat("yyyy-MM-dd HH:mm").format(value!)
+            : DateFormat("yyyy-MM-dd").format(value!))
+        : "";
   }
 }

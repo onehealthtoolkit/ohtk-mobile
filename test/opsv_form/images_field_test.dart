@@ -14,12 +14,14 @@ void main() {
       Map<String, dynamic> json = {};
       field.toJsonValue(json);
       expect(json["images"], ary);
+      expect(json["images__value"], ary.join(","));
     });
 
     test("to json without value", () {
       Map<String, dynamic> json = {};
       field.toJsonValue(json);
       expect(json["images"], []);
+      expect(json["images__value"], isEmpty);
     });
 
     test("load json data", () {

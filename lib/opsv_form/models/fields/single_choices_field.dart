@@ -120,6 +120,7 @@ class SingleChoicesField extends PrimitiveField<String> {
   void toJsonValue(Map<String, dynamic> aggregateResult) {
     super.toJsonValue(aggregateResult);
     aggregateResult["${name}_text"] = text;
+    aggregateResult["${name}__value"] = renderedValue;
   }
 
   @override
@@ -129,5 +130,10 @@ class SingleChoicesField extends PrimitiveField<String> {
     if (json[key] != null) {
       text = json[key];
     }
+  }
+
+  @override
+  String get renderedValue {
+    return (value ?? "") + (text != null ? " - $text" : '');
   }
 }

@@ -50,6 +50,8 @@ abstract class Field implements ConiditionSource {
 
   get value;
 
+  String get renderedValue;
+
   void _registerValues(Values values, Form form) {
     this.form = form;
     var delegate = ValueDelegate(() => this);

@@ -164,6 +164,7 @@ class MultipleChoicesField extends Field {
         .toList()
         .join(',');
     aggregateResult[name] = json;
+    aggregateResult["${name}__value"] = renderedValue;
   }
 
   @override
@@ -177,5 +178,15 @@ class MultipleChoicesField extends Field {
       default:
         return false;
     }
+  }
+
+  @override
+  String get renderedValue {
+    return IList.flattenOption(ilist(options).map(
+      (o) => valueFor(o.value)
+          ? some(o.value +
+              (_text[o.value] != null ? " - ${_text[o.value]!.value}" : ""))
+          : none(),
+    )).toList().join(',');
   }
 }

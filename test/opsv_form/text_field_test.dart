@@ -9,6 +9,7 @@ void main() {
       Map<String, dynamic> json = {};
       textField.toJsonValue(json);
       expect(json["firstName"], "polawat");
+      expect(json["firstName__value"], "polawat");
     });
 
     test("toJson without value", () {
@@ -16,6 +17,7 @@ void main() {
       Map<String, dynamic> json = {};
       textField.toJsonValue(json);
       expect(json["firstName"], isNull);
+      expect(json["firstName__value"], isEmpty);
     });
 
     test("load json data", () {

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 
 void main() {
@@ -15,12 +16,18 @@ void main() {
       field.toJsonValue(json);
       expect(json["date"],
           DateTime(now.year, now.month, now.day).toIso8601String());
+      expect(
+        json["date__value"],
+        DateFormat("yyyy-MM-dd").format(DateTime(now.year, now.month, now.day)),
+      );
     });
 
     test("to json without value", () {
       Map<String, dynamic> json = {};
+      field.value = null;
       field.toJsonValue(json);
       expect(json["date"], isNull);
+      expect(json["date__value"], isEmpty);
     });
 
     test("load json data", () {
@@ -42,6 +49,7 @@ void main() {
       field = DateField("id", "date");
       expect(field.validate(), isTrue);
       field = DateField("id", "date", required: true);
+      field.value = null;
       expect(field.validate(), isFalse);
       field.value = DateTime.now();
       expect(field.validate(), isTrue);

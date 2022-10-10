@@ -14,12 +14,14 @@ void main() {
       Map<String, dynamic> json = {};
       field.toJsonValue(json);
       expect(json["location"], location);
+      expect(json["location__value"], "$location (Lng,Lat)");
     });
 
     test("to json without value", () {
       Map<String, dynamic> json = {};
       field.toJsonValue(json);
       expect(json["location"], isNull);
+      expect(json["location__value"], isEmpty);
     });
 
     test("load json data", () {
