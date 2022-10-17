@@ -8,6 +8,8 @@ class ProfileViewModel extends BaseViewModel {
   IAuthService authService = locator<IAuthService>();
   IProfileService profileService = locator<IProfileService>();
 
+  String? username;
+  String? authorityName;
   String? firstName;
   String? lastName;
   String? telephone;
@@ -25,6 +27,8 @@ class ProfileViewModel extends BaseViewModel {
       firstName = userProfile.firstName;
       lastName = userProfile.lastName;
       telephone = userProfile.telephone;
+      username = userProfile.username;
+      authorityName = userProfile.authorityName;
       notifyListeners();
     }
   }

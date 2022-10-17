@@ -7,7 +7,13 @@ class UserMessageListViewModel extends ReactiveViewModel {
   INotificationService notificationService = locator<INotificationService>();
 
   UserMessageListViewModel() {
-    notificationService.fetchMyMessages(true);
+    fetch();
+  }
+
+  fetch() async {
+    setBusy(true);
+    await notificationService.fetchMyMessages(true);
+    setBusy(false);
   }
 
   @override

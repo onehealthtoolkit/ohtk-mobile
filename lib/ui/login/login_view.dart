@@ -21,12 +21,10 @@ class LoginView extends StatelessWidget {
         body: SafeArea(
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                child: Center(
-                  child: _LoginForm(),
-                ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: Center(
+                child: _LoginForm(),
               ),
             ),
           ),
@@ -42,89 +40,91 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
     var username = useTextEditingController();
     var password = useTextEditingController();
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(50, 0, 50, 50),
-          child: Image.asset('images/logo.png'),
-        ),
-        _qrcodeLogin(context),
-        const SizedBox(height: 10),
-        _languageDropdown(viewModel, context),
-        const SizedBox(height: 10),
-        _tenantDropdown(viewModel, context),
-        const SizedBox(height: 10),
-        TextField(
-          controller: username,
-          textInputAction: TextInputAction.next,
-          onChanged: viewModel.setUsername,
-          decoration: InputDecoration(
-            labelText: AppLocalizations.of(context)!.usernameLabel,
-            errorText: viewModel.error("username"),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(50, 0, 50, 50),
+            child: Image.asset('images/logo.png'),
           ),
-        ),
-        const SizedBox(height: 10),
-        TextField(
-          controller: password,
-          textInputAction: TextInputAction.done,
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: AppLocalizations.of(context)!.passwordLabel,
-            errorText: viewModel.error("password"),
-          ),
-          onChanged: viewModel.setPassword,
-          onSubmitted: (_value) {
-            viewModel.setPassword(_value);
-            viewModel.authenticate();
-          },
-        ),
-        const SizedBox(height: 10),
-        if (viewModel.hasErrorForKey("general"))
-          Text(
-            viewModel.error("general"),
-            style: const TextStyle(
-              color: Colors.red,
+          _qrcodeLogin(context),
+          const SizedBox(height: 10),
+          _languageDropdown(viewModel, context),
+          const SizedBox(height: 10),
+          _tenantDropdown(viewModel, context),
+          const SizedBox(height: 10),
+          TextField(
+            controller: username,
+            textInputAction: TextInputAction.next,
+            onChanged: viewModel.setUsername,
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.usernameLabel,
+              errorText: viewModel.error("username"),
             ),
           ),
-        const SizedBox(height: 10),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(40),
+          const SizedBox(height: 10),
+          TextField(
+            controller: password,
+            textInputAction: TextInputAction.done,
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.passwordLabel,
+              errorText: viewModel.error("password"),
             ),
-            onPressed: viewModel.isBusy ? null : viewModel.authenticate,
-            child: viewModel.isBusy
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(),
-                  )
-                : Text(AppLocalizations.of(context)!.loginButton),
+            onChanged: viewModel.setPassword,
+            onSubmitted: (_value) {
+              viewModel.setPassword(_value);
+              viewModel.authenticate();
+            },
           ),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const RegisterView(),
+          const SizedBox(height: 10),
+          if (viewModel.hasErrorForKey("general"))
+            Text(
+              viewModel.error("general"),
+              style: const TextStyle(
+                color: Colors.red,
               ),
-            );
-          },
-          child: Text(AppLocalizations.of(context)!.registerButton),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const ResetPasswordRequestView(),
+            ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(40),
               ),
-            );
-          },
-          child: Text(AppLocalizations.of(context)!.forgotPasswordButton),
-        ),
-      ],
+              onPressed: viewModel.isBusy ? null : viewModel.authenticate,
+              child: viewModel.isBusy
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(),
+                    )
+                  : Text(AppLocalizations.of(context)!.loginButton),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const RegisterView(),
+                ),
+              );
+            },
+            child: Text(AppLocalizations.of(context)!.registerButton),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const ResetPasswordRequestView(),
+                ),
+              );
+            },
+            child: Text(AppLocalizations.of(context)!.forgotPasswordButton),
+          ),
+        ],
+      ),
     );
   }
 

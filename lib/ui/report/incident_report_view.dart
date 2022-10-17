@@ -66,9 +66,12 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
         const SizedBox(height: 10),
         _title(context, incident),
         const SizedBox(height: 10),
-        Text(
-          formatter.format(incident.createdAt.toLocal()),
-          textScaleFactor: .75,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+          child: Text(
+            formatter.format(incident.createdAt.toLocal()),
+            textScaleFactor: .75,
+          ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -92,29 +95,32 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
   }
 
   _title(BuildContext context, IncidentReport incident) {
-    return Row(
-      children: [
-        Text(
-          incident.reportTypeName,
-          textScaleFactor: 1.5,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(width: 10),
-        if (incident.caseId != null)
-          Container(
-            color: Colors.red,
-            padding: const EdgeInsets.fromLTRB(4, 2, 4, 2),
-            child: const Text(
-              "Case",
-              style: TextStyle(
-                color: Colors.white,
-              ),
-              textScaleFactor: 0.8,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+      child: Row(
+        children: [
+          Text(
+            incident.reportTypeName,
+            textScaleFactor: 1.5,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
             ),
           ),
-      ],
+          const SizedBox(width: 10),
+          if (incident.caseId != null)
+            Container(
+              color: Colors.red,
+              padding: const EdgeInsets.fromLTRB(4, 2, 4, 2),
+              child: const Text(
+                "Case",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+                textScaleFactor: 0.8,
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
@@ -132,15 +138,16 @@ class _Images extends HookViewModelWidget<IncidentReportViewModel> {
           const BoxConstraints(minWidth: double.infinity, minHeight: 150),
       padding: const EdgeInsets.all(12.0),
       child: SizedBox(
-        height: 150,
+        height: 200,
         child: (images != null && images.isNotEmpty)
             ? PageView.builder(
                 itemCount: images.length,
+                padEnds: false,
                 pageSnapping: true,
                 controller: _pageController,
                 itemBuilder: (context, pagePosition) {
                   return Container(
-                    margin: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(0),
                     child: CachedNetworkImage(
                       imageUrl: viewModel
                           .resolveImagePath(images[pagePosition].thumbnailPath),

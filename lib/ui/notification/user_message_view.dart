@@ -41,7 +41,7 @@ class UserMessageView extends StatelessWidget {
       constraints: const BoxConstraints(
         minWidth: double.infinity,
       ),
-      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       child: Text(
         viewModel.data!.message.title,
         style: const TextStyle(
@@ -54,6 +54,7 @@ class UserMessageView extends StatelessWidget {
 
   _body(UserMessageViewViewModel viewModel) {
     return Container(
+      padding: const EdgeInsets.fromLTRB(6, 8, 6, 10),
       constraints:
           const BoxConstraints(minWidth: double.infinity, minHeight: 100),
       child: Card(

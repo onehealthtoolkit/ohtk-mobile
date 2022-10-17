@@ -33,27 +33,49 @@ class _FormLocationFieldState extends State<FormLocationField> {
                   style: TextStyle(color: Colors.grey.shade700),
                 ),
               ),
-            ElevatedButton(
-              onPressed: () async {
-                bool serviceEnabled =
-                    await Geolocator.isLocationServiceEnabled();
-                if (serviceEnabled) {
-                  LocationPermission permission =
-                      await Geolocator.requestPermission();
-                  if (permission == LocationPermission.denied) {
-                    _logger.e("permission denied");
-                  } else {
-                    var _position = await Geolocator.getCurrentPosition(
-                        desiredAccuracy: LocationAccuracy.medium);
-                    widget.field.value =
-                        "${_position.longitude},${_position.latitude}";
-                  }
-                } else {
-                  _logger.e("location is disable");
-                }
-              },
-              child: const Text("current location"),
-            ),
+            if (latitude == null || longitude == null)
+              Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.grey.shade100),
+                child: SizedBox(
+                  height: 300,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(AppLocalizations.of(context)!
+                            .fieldUndefinedLocation),
+                        ElevatedButton(
+                          onPressed: () async {
+                            bool serviceEnabled =
+                                await Geolocator.isLocationServiceEnabled();
+                            if (serviceEnabled) {
+                              LocationPermission permission =
+                                  await Geolocator.requestPermission();
+                              if (permission == LocationPermission.denied) {
+                                _logger.e("permission denied");
+                              } else {
+                                var _position =
+                                    await Geolocator.getCurrentPosition(
+                                        desiredAccuracy:
+                                            LocationAccuracy.medium);
+                                widget.field.value =
+                                    "${_position.longitude},${_position.latitude}";
+                              }
+                            } else {
+                              _logger.e("location is disable");
+                            }
+                          },
+                          child: Text(AppLocalizations.of(context)!
+                              .fieldUseCurrentLocation),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             if (latitude != null && longitude != null)
               SizedBox(
                 height: 300,

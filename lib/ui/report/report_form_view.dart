@@ -40,7 +40,8 @@ class ReportFormView extends StatelessWidget {
                 child: Column(
                   children: [
                     if (viewModel.state == ReportFormState.formInput)
-                      _Stepper(),
+                      // _Stepper(),
+                      _DotStepper(),
                     if (viewModel.state == ReportFormState.confirmation)
                       Expanded(
                         flex: 1,
@@ -73,6 +74,7 @@ class _FormInput extends HookViewModelWidget<ReportFormViewModel> {
     final form = viewModel.formStore;
     return Observer(
       builder: (_) => ListView.builder(
+        key: ObjectKey(form.currentSectionIdx),
         itemBuilder: (context, index) {
           if (index < form.currentSection.questions.length) {
             return FormQuestion(
@@ -210,6 +212,48 @@ class _Footer extends HookViewModelWidget<ReportFormViewModel> {
             child: const Text("next >"),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DotStepper extends HookViewModelWidget<ReportFormViewModel> {
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context, ReportFormViewModel viewModel) {
+    Form store = viewModel.formStore;
+    return Observer(
+      builder: (_) => Padding(
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Text(store.currentSection.label),
+                      DotStepper(
+                        dotCount: store.numberOfSections,
+                        spacing: 10,
+                        dotRadius: 12,
+                        activeStep: store.currentSectionIdx,
+                        tappingEnabled: false,
+                        indicatorDecoration:
+                            const IndicatorDecoration(color: Colors.blue),
+                        shape: Shape.pipe,
+                        indicator: Indicator.jump,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

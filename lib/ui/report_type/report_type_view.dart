@@ -46,28 +46,38 @@ class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
   Widget buildViewModelWidget(
       BuildContext context, ReportTypeViewModel viewModel) {
     return InkWell(
-      onTap: () {
-        viewModel.submitZeroReport();
+      onTap: () async {
+        await viewModel.submitZeroReport();
+        var showSuccessMessage = SnackBar(
+          content: Text(AppLocalizations.of(context)?.zeroReportSubmitSuccess ??
+              'Zero report submit success'),
+          backgroundColor: Colors.green,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(showSuccessMessage);
       },
       child: Ink(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(8),
           color: Colors.green.shade400,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 10.0),
         child: Column(
           children: [
-            const Text("Zero report", style: TextStyle(color: Colors.white)),
+            Text(AppLocalizations.of(context)?.zeroReportLabel ?? "Zero report",
+                style: const TextStyle(color: Colors.white)),
             const SizedBox(height: 4),
             FutureBuilder<DateTime?>(
               future: viewModel.getLatestZeroReport(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
+                  var dateTimeString =
+                      formatter.format(snapshot.data!.toLocal());
                   return snapshot.data != null
                       ? Text(
-                          "Last reported at ${formatter.format(snapshot.data!.toLocal())}",
+                          AppLocalizations.of(context)!
+                              .zeroReportLastReportedMessage(dateTimeString),
                           textScaleFactor: 0.8,
-                        )
+                          style: const TextStyle(color: Colors.white))
                       : const SizedBox.shrink();
                 }
                 return const CircularProgressIndicator();

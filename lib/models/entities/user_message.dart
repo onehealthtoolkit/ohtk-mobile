@@ -6,15 +6,18 @@ class UserMessage {
   Message message;
   User? user;
   bool isSeen = false;
+  DateTime createdAt;
 
   UserMessage({
     required this.id,
     required this.message,
+    required this.createdAt,
   });
 
   UserMessage.fromJson(Map<String, dynamic> jsonMap)
       : id = jsonMap['id'],
         message = Message.fromJson(jsonMap['message']),
         user = jsonMap['user'] != null ? User.fromJson(jsonMap['user']) : null,
-        isSeen = jsonMap['isSeen'];
+        isSeen = jsonMap['isSeen'],
+        createdAt = DateTime.parse(jsonMap['createdAt']);
 }

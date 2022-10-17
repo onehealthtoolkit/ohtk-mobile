@@ -31,5 +31,10 @@
   "myReportTabLabel": "My Reports",
   "detailTabLabel": "Detail",
   "commentTabLabel": "Comment",
-  "followupTabLabel": "Followup"
+  "followupTabLabel": "Followup",
+  "zeroReportLabel": "รายงานไม่พบเหตุผิดปกติ",
+  "zeroReportLastReportedMessage": "รายงานครั้งสุดท้ายเมื่อวันที่ {datetime}",
+  "zeroReportSubmitSuccess": "ส่งรายงานไม่พบเหตุผิดปกติสำเร็จ",
+  "fieldUndefinedLocation": "ยังไม่ระบุพิกัด",
+  "fieldUseCurrentLocation": "ใช้ตำแหน่งปัจจุบัน"
 }

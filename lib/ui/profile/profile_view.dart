@@ -17,6 +17,7 @@ class ProfileView extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Profile"),
         ),
+        backgroundColor: Colors.white,
         body: SafeArea(
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -24,30 +25,67 @@ class ProfileView extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
+                    _Info(),
+                    const SizedBox(height: 20),
                     _ProfileForm(),
                     const SizedBox(height: 20),
                     _ChangePasswordForm(),
                     Expanded(
                       child: Align(
                         alignment: Alignment.bottomCenter,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(40),
-                            primary: Colors.red[600],
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(40),
+                              primary: Colors.red[600],
+                            ),
+                            onPressed: () async {
+                              await viewModel.logout();
+                              Navigator.pop(
+                                context,
+                              );
+                            },
+                            child: const Text("Logout"),
                           ),
-                          onPressed: () async {
-                            await viewModel.logout();
-                            Navigator.pop(
-                              context,
-                            );
-                          },
-                          child: const Text("Logout"),
                         ),
                       ),
                     ),
                   ],
                 )),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Info extends HookViewModelWidget<ProfileViewModel> {
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context, ProfileViewModel viewModel) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: useTextEditingController(text: viewModel.username),
+              readOnly: true,
+              decoration: const InputDecoration(
+                labelText: "Username",
+              ),
+            ),
+            TextField(
+              controller:
+                  useTextEditingController(text: viewModel.authorityName),
+              readOnly: true,
+              decoration: const InputDecoration(
+                labelText: "Authroity Name",
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -65,14 +103,13 @@ class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
     var telephone = useTextEditingController();
     telephone.text = viewModel.telephone ?? "";
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const Text("Edit profile"),
             TextField(
               textInputAction: TextInputAction.next,
               onChanged: viewModel.setFirstName,
@@ -144,14 +181,13 @@ class _ChangePasswordForm extends HookViewModelWidget<ProfileViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, ProfileViewModel viewModel) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            const Text("Change Password"),
             TextField(
               textInputAction: TextInputAction.next,
               obscureText: true,

@@ -46,7 +46,7 @@ class NotificationApi extends GraphQlBaseApi {
               id
               title
               body
-              image
+              image              
             }
             user {
               id
@@ -55,6 +55,7 @@ class NotificationApi extends GraphQlBaseApi {
               lastName
             }
             isSeen
+            createdAt
           }                
         }
       }
@@ -81,6 +82,7 @@ class NotificationApi extends GraphQlBaseApi {
             image
           }
           isSeen
+          createdAt
         }                
       }
     ''';

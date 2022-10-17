@@ -31,5 +31,18 @@
   "myReportTabLabel": "My Reports",
   "detailTabLabel": "Detail",
   "commentTabLabel": "Comment",
-  "followupTabLabel": "Followup"
+  "followupTabLabel": "Followup",
+  "zeroReportLabel": "Zero report",  
+  "zeroReportLastReportedMessage": "Last reported at {datetime}",
+  "@zeroReportLastReportedMessage": {
+    "placeholders": {
+      "datetime": {
+        "type": "String",
+        "example": "17/10/2022 10:37"
+      }
+    }
+  },
+  "zeroReportSubmitSuccess": "Zero report submitted",
+  "fieldUndefinedLocation": "No location selected",
+  "fieldUseCurrentLocation": "Use current location"
 }
