@@ -6,7 +6,7 @@
   "changePasswordTitle": "Change password",
   "reportTitle": "Report",
   "reportTypeTitle": "Report type",
-  "reportDetailTitle": "Report Detail",
+  "reportDetailTitle": "Report detail",
   "followupTitle": "Followup",
   "followupDetailTitle": "Followup detail",
   "profileTitle": "Profile",
@@ -50,5 +50,7 @@
   },
   "zeroReportSubmitSuccess": "Zero report submitted",
   "fieldUndefinedLocation": "No location selected",
-  "fieldUseCurrentLocation": "Use current location"
+  "fieldUseCurrentLocation": "Use current location",
+  "authorityLabel": "Authority",
+  "incidentDate": "Incident Date"
 }

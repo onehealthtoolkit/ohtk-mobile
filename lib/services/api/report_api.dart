@@ -114,6 +114,7 @@ class ReportApi extends GraphQlBaseApi {
             images {
               id
               file 
+              imageUrl
               thumbnail
             }    
             caseId  
@@ -142,6 +143,9 @@ class ReportApi extends GraphQlBaseApi {
           rendererData
           createdAt
           updatedAt
+          authorities {
+            name
+          }
           reportType {
             id
             name
@@ -152,7 +156,8 @@ class ReportApi extends GraphQlBaseApi {
           } 
           images {
             id
-            file 
+            file
+            imageUrl 
             thumbnail
           }      
           caseId
@@ -194,6 +199,7 @@ class ReportApi extends GraphQlBaseApi {
             images {
               id
               file 
+              imageUrl
               thumbnail
             }    
             caseId  

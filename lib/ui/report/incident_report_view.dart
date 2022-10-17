@@ -6,12 +6,17 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/report/followup_list_view.dart';
+import 'package:podd_app/ui/report/full_screen_view.dart';
 import 'package:podd_app/ui/report/incident_report_view_model.dart';
 import 'package:podd_app/ui/report/report_comment_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
+var formatter = DateFormat("dd/MM/yyyy HH:mm");
+var noTimeFormatter = DateFormat("dd/MM/yyyy");
 
 class IncidentReportView extends HookWidget {
   final String id;
@@ -57,40 +62,42 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
   Widget buildViewModelWidget(
       BuildContext context, IncidentReportViewModel viewModel) {
     final incident = viewModel.data!;
-    var formatter = DateFormat("dd/MM/yyyy HH:mm");
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 10),
-        _title(context, incident),
-        const SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-          child: Text(
-            formatter.format(incident.createdAt.toLocal()),
-            textScaleFactor: .75,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Container(
-            color: Colors.white,
-            constraints:
-                const BoxConstraints(minHeight: 100, minWidth: double.infinity),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text(incident.description.isEmpty
-                  ? "no description"
-                  : incident.description),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10),
+          _title(context, incident),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+            child: Text(
+              formatter.format(incident.createdAt.toLocal()),
+              textScaleFactor: .75,
             ),
           ),
-        ),
-        _Images(),
-        const SizedBox(height: 8),
-        _Map(),
-      ],
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Container(
+              color: Colors.white,
+              constraints: const BoxConstraints(
+                  minHeight: 80, minWidth: double.infinity),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(incident.description.isEmpty
+                    ? "no description"
+                    : incident.description),
+              ),
+            ),
+          ),
+          _Data(),
+          _Images(),
+          const SizedBox(height: 8),
+          _Map(),
+        ],
+      ),
     );
   }
 
@@ -125,12 +132,89 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
   }
 }
 
+class _Data extends HookViewModelWidget<IncidentReportViewModel> {
+  @override
+  Widget buildViewModelWidget(
+    BuildContext context,
+    IncidentReportViewModel viewModel,
+  ) {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(8.0),
+      child: Table(
+        border: TableBorder.all(
+          color: Colors.grey.shade400,
+          width: 1,
+        ),
+        columnWidths: const <int, TableColumnWidth>{
+          0: FlexColumnWidth(1),
+          1: FlexColumnWidth(1),
+        },
+        children: [
+          TableRow(children: [
+            TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(AppLocalizations.of(context)?.authorityLabel ??
+                      "Authority"),
+                )),
+            TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(viewModel.data!.authorityName ?? "-"),
+                )),
+          ]),
+          TableRow(children: [
+            TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(AppLocalizations.of(context)?.incidentDate ??
+                      "Incident Date"),
+                )),
+            TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(noTimeFormatter
+                      .format(viewModel.data!.incidentDate.toLocal())),
+                )),
+          ]),
+        ],
+      ),
+    );
+  }
+}
+
 class _Images extends HookViewModelWidget<IncidentReportViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, IncidentReportViewModel viewModel) {
     final images = viewModel.data!.images;
-    var _pageController = usePageController(viewportFraction: .5);
+
+    var imageWidgets = images?.map((image) => Container(
+          margin: const EdgeInsets.all(0),
+          child: FullScreenWidget(
+            fullscreenChild: CachedNetworkImage(
+              imageUrl: image.imageUrl,
+              fit: BoxFit.contain,
+              placeholder: (context, url) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
+            child: CachedNetworkImage(
+              imageUrl: image.thumbnailPath,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
+          ),
+        ));
 
     return Container(
       color: Colors.white,
@@ -140,23 +224,17 @@ class _Images extends HookViewModelWidget<IncidentReportViewModel> {
       child: SizedBox(
         height: 200,
         child: (images != null && images.isNotEmpty)
-            ? PageView.builder(
-                itemCount: images.length,
-                padEnds: false,
-                pageSnapping: true,
-                controller: _pageController,
-                itemBuilder: (context, pagePosition) {
-                  return Container(
-                    margin: const EdgeInsets.all(0),
-                    child: CachedNetworkImage(
-                      imageUrl: viewModel
-                          .resolveImagePath(images[pagePosition].thumbnailPath),
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      fit: BoxFit.cover,
-                    ),
-                  );
-                },
+            ? CarouselSlider(
+                items: imageWidgets?.toList() ?? [],
+                options: CarouselOptions(
+                  height: 200,
+                  enlargeCenterPage: true,
+                  aspectRatio: 1,
+                  viewportFraction: 0.8,
+                  autoPlay: true,
+                  disableCenter: true,
+                  enableInfiniteScroll: false,
+                ),
               )
             : const Text("No images uploaded"),
       ),

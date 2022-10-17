@@ -42,5 +42,7 @@
   "zeroReportLastReportedMessage": "รายงานครั้งสุดท้ายเมื่อวันที่ {datetime}",
   "zeroReportSubmitSuccess": "ส่งรายงานไม่พบเหตุผิดปกติสำเร็จ",
   "fieldUndefinedLocation": "ยังไม่ระบุพิกัด",
-  "fieldUseCurrentLocation": "ใช้ตำแหน่งปัจจุบัน"
+  "fieldUseCurrentLocation": "ใช้ตำแหน่งปัจจุบัน",
+  "authorityLabel": "หน่วยงาน",
+  "incidentDate": "วันที่เกิดเหตุ"
 }

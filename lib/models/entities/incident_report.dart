@@ -4,15 +4,20 @@ class IncidentReportImage {
   String id;
   String filePath;
   String thumbnailPath;
+  String imageUrl;
 
   IncidentReportImage(
-      {required this.id, required this.filePath, required this.thumbnailPath});
+      {required this.id,
+      required this.filePath,
+      required this.thumbnailPath,
+      required this.imageUrl});
 
   factory IncidentReportImage.fromJson(Map<String, dynamic> json) =>
       IncidentReportImage(
           id: json["id"],
           filePath: json["file"],
-          thumbnailPath: json["thumbnail"]);
+          thumbnailPath: json["thumbnail"],
+          imageUrl: json["imageUrl"]);
 }
 
 class IncidentReport {
@@ -28,6 +33,7 @@ class IncidentReport {
   List<IncidentReportImage>? images;
   String? caseId;
   int? threadId;
+  String? authorityName;
 
   IncidentReport({
     required this.id,
@@ -42,6 +48,7 @@ class IncidentReport {
     this.images,
     this.caseId,
     this.threadId,
+    this.authorityName,
   });
 
   factory IncidentReport.fromJson(Map<String, dynamic> json) {
@@ -62,6 +69,11 @@ class IncidentReport {
               .map((image) => IncidentReportImage.fromJson(image))
               .toList()
           : [],
+      authorityName: json["authorities"] != null
+          ? (json["authorities"] as List)
+              .map((authority) => authority["name"])
+              .join(",")
+          : "",
     );
   }
 }
