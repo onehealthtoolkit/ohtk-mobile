@@ -4,6 +4,7 @@ import 'package:podd_app/models/profile_result.dart';
 import 'package:podd_app/ui/profile/profile_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class ProfileView extends StatelessWidget {
       builder: (context, viewModel, child) => Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text("Profile"),
+          title: Text(AppLocalizations.of(context)!.profileTitle),
         ),
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -25,29 +26,34 @@ class ProfileView extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    _Info(),
-                    const SizedBox(height: 20),
-                    _ProfileForm(),
-                    const SizedBox(height: 20),
-                    _ChangePasswordForm(),
                     Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size.fromHeight(40),
-                              primary: Colors.red[600],
-                            ),
-                            onPressed: () async {
-                              await viewModel.logout();
-                              Navigator.pop(
-                                context,
-                              );
-                            },
-                            child: const Text("Logout"),
+                      child: ListView(
+                        children: [
+                          _Info(),
+                          const SizedBox(height: 20),
+                          _ProfileForm(),
+                          const SizedBox(height: 20),
+                          _ChangePasswordForm(),
+                        ],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(40),
+                            primary: Colors.red[600],
                           ),
+                          onPressed: () async {
+                            await viewModel.logout();
+                            Navigator.pop(
+                              context,
+                            );
+                          },
+                          child:
+                              Text(AppLocalizations.of(context)!.logoutButton),
                         ),
                       ),
                     ),
@@ -73,16 +79,16 @@ class _Info extends HookViewModelWidget<ProfileViewModel> {
             TextField(
               controller: useTextEditingController(text: viewModel.username),
               readOnly: true,
-              decoration: const InputDecoration(
-                labelText: "Username",
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.usernameLabel,
               ),
             ),
             TextField(
               controller:
                   useTextEditingController(text: viewModel.authorityName),
               readOnly: true,
-              decoration: const InputDecoration(
-                labelText: "Authroity Name",
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.authorityNameLabel,
               ),
             ),
           ],
@@ -115,7 +121,7 @@ class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
               onChanged: viewModel.setFirstName,
               controller: firstName,
               decoration: InputDecoration(
-                labelText: "First name",
+                labelText: AppLocalizations.of(context)!.firstNameLabel,
                 errorText: viewModel.error("firstName"),
               ),
             ),
@@ -125,7 +131,7 @@ class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
               onChanged: viewModel.setLastName,
               controller: lastName,
               decoration: InputDecoration(
-                labelText: "Last name",
+                labelText: AppLocalizations.of(context)!.lastNameLabel,
                 errorText: viewModel.error("lastName"),
               ),
             ),
@@ -135,7 +141,7 @@ class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
               onChanged: viewModel.setTelephone,
               controller: telephone,
               decoration: InputDecoration(
-                labelText: "Telephone",
+                labelText: AppLocalizations.of(context)!.telephoneLabel,
                 errorText: viewModel.error("telephone"),
               ),
             ),
@@ -167,7 +173,7 @@ class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
                         width: 20,
                         child: CircularProgressIndicator(),
                       )
-                    : const Text("Update Profile"),
+                    : Text(AppLocalizations.of(context)!.updateProfileButton),
               ),
             ),
           ],
@@ -193,7 +199,7 @@ class _ChangePasswordForm extends HookViewModelWidget<ProfileViewModel> {
               obscureText: true,
               onChanged: viewModel.setPassword,
               decoration: InputDecoration(
-                labelText: "Password",
+                labelText: AppLocalizations.of(context)!.passwordLabel,
                 errorText: viewModel.error("password"),
               ),
             ),
@@ -203,7 +209,7 @@ class _ChangePasswordForm extends HookViewModelWidget<ProfileViewModel> {
               obscureText: true,
               onChanged: viewModel.setConfirmPassword,
               decoration: InputDecoration(
-                labelText: "Confirm password",
+                labelText: AppLocalizations.of(context)!.confirmPasswordLabel,
                 errorText: viewModel.error("confirmPassword"),
               ),
             ),
@@ -235,7 +241,7 @@ class _ChangePasswordForm extends HookViewModelWidget<ProfileViewModel> {
                         width: 20,
                         child: CircularProgressIndicator(),
                       )
-                    : const Text("Change Password"),
+                    : Text(AppLocalizations.of(context)!.changePasswordButton),
               ),
             ),
           ],
