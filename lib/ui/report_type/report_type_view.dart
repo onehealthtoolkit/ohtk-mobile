@@ -70,15 +70,18 @@ class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
               future: viewModel.getLatestZeroReport(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  var dateTimeString =
-                      formatter.format(snapshot.data!.toLocal());
-                  return snapshot.data != null
-                      ? Text(
-                          AppLocalizations.of(context)!
-                              .zeroReportLastReportedMessage(dateTimeString),
-                          textScaleFactor: 0.8,
-                          style: const TextStyle(color: Colors.white))
-                      : const SizedBox.shrink();
+                  if (snapshot.hasData) {
+                    var dateTimeString =
+                        formatter.format(snapshot.data!.toLocal());
+                    return Text(
+                      AppLocalizations.of(context)!
+                          .zeroReportLastReportedMessage(dateTimeString),
+                      textScaleFactor: 0.8,
+                      style: const TextStyle(color: Colors.white),
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
                 }
                 return const CircularProgressIndicator();
               },

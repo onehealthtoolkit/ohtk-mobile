@@ -9,8 +9,9 @@ import 'package:podd_app/services/report_type_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 
+const zeroReportDateTimeKey = "latest_zero_report_datetime";
+
 class ReportTypeViewModel extends BaseViewModel {
-  static const zeroReportDateTimeKey = "latest_zero_report_datetime";
   final IReportTypeService _reportTypeService = locator<IReportTypeService>();
   final ReportApi _reportApi = locator<ReportApi>();
   final Logger _logger = locator<Logger>();

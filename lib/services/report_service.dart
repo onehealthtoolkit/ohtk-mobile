@@ -11,6 +11,8 @@ import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/report_api.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:podd_app/services/image_service.dart';
+import 'package:podd_app/ui/report_type/report_type_view_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -260,6 +262,10 @@ class ReportService extends IReportService {
     await _db.delete("report");
 
     _pendingReports.clear();
+
+    // clear zero report in user preferences
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(zeroReportDateTimeKey);
 
     await _imageService.removeAll();
   }
