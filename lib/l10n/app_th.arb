@@ -37,7 +37,7 @@
   "detailTabLabel": "Detail",
   "commentTabLabel": "Comment",
   "followupTabLabel": "Followup",
-  "authroityNameLabel": "หน่วยงาน",
+  "authorityNameLabel": "หน่วยงาน",
   "zeroReportLabel": "รายงานไม่พบเหตุผิดปกติ",
   "zeroReportLastReportedMessage": "รายงานครั้งสุดท้ายเมื่อวันที่ {datetime}",
   "zeroReportSubmitSuccess": "ส่งรายงานไม่พบเหตุผิดปกติสำเร็จ",

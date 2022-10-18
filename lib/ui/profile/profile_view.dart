@@ -88,7 +88,7 @@ class _Info extends HookViewModelWidget<ProfileViewModel> {
                   useTextEditingController(text: viewModel.authorityName),
               readOnly: true,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.authroityNameLabel,
+                labelText: AppLocalizations.of(context)!.authorityNameLabel,
               ),
             ),
           ],

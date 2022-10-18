@@ -37,7 +37,7 @@
   "detailTabLabel": "Detail",
   "commentTabLabel": "Comment",
   "followupTabLabel": "Followup",
-  "authroityNameLabel": "Authroity Name",
+  "authorityNameLabel": "Authority Name",
   "zeroReportLabel": "Zero report",
   "zeroReportLastReportedMessage": "Last reported at {datetime}",
   "@zeroReportLastReportedMessage": {
