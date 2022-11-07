@@ -237,6 +237,7 @@ class ReportApi extends GraphQlBaseApi {
             id
 						file
             thumbnail
+            imageUrl
           }
           reportedBy {
             id
@@ -283,6 +284,7 @@ class ReportApi extends GraphQlBaseApi {
             id
             file 
             thumbnail
+            imageUrl
           }   
           reportedBy {
             id
