@@ -135,7 +135,7 @@ class MultipleChoicesField extends Field {
         selected.add(option.value);
       }
     }
-    return selected.join(",");
+    return selected.join(", ");
   }
 
   @override
@@ -162,7 +162,7 @@ class MultipleChoicesField extends Field {
     json["value"] = IList.flattenOption(ilist(options)
             .map((o) => valueFor(o.value) ? some(o.value) : none()))
         .toList()
-        .join(',');
+        .join(', ');
     aggregateResult[name] = json;
     aggregateResult["${name}__value"] = renderedValue;
   }
@@ -187,6 +187,6 @@ class MultipleChoicesField extends Field {
           ? some(o.value +
               (_text[o.value] != null ? " - ${_text[o.value]!.value}" : ""))
           : none(),
-    )).toList().join(',');
+    )).toList().join(', ');
   }
 }
