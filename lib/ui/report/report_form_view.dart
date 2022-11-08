@@ -34,7 +34,8 @@ class ReportFormView extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.reportTitle),
+                title: Text(AppLocalizations.of(context)!.reportTitle +
+                    " ${reportType.name}"),
               ),
               body: SafeArea(
                 child: Column(
