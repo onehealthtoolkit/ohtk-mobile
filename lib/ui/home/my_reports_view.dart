@@ -19,14 +19,10 @@ class MyReportsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<MyReportsViewModel>.reactive(
-      viewModelBuilder: () => viewModel,
-      disposeViewModel: false,
-      initialiseSpecialViewModelsOnce: true,
-      onModelReady: (viewModel) => viewModel.init(),
-      builder: (context, viewModel, child) => viewModel.isReady
-          ? _ReportList()
-          : const Center(child: CircularProgressIndicator()),
-    );
+        viewModelBuilder: () => viewModel,
+        disposeViewModel: false,
+        initialiseSpecialViewModelsOnce: true,
+        builder: (context, viewModel, child) => _ReportList());
   }
 }
 
@@ -48,21 +44,23 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
       onRefresh: () async {
         await viewModel.refetchIncidentReports();
       },
-      child: ReportListView(
-        viewModel: viewModel,
-        key: const PageStorageKey('my-reports-storage-key'),
-        trailingFn: (report) {
-          var children = <Widget>[];
-          if (viewModel.canFollow(report.reportTypeId)) {
-            children.insert(0, _followLink(context, report, viewModel));
-          }
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: children,
-          );
-        },
-      ),
+      child: !viewModel.isBusy
+          ? ReportListView(
+              viewModel: viewModel,
+              key: const PageStorageKey('my-reports-storage-key'),
+              trailingFn: (report) {
+                var children = <Widget>[];
+                if (viewModel.canFollow(report.reportTypeId)) {
+                  children.insert(0, _followLink(context, report, viewModel));
+                }
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: children,
+                );
+              },
+            )
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 
