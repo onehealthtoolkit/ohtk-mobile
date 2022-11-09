@@ -72,7 +72,12 @@ class ReportService extends IReportService {
   int followupReportLimit = 20;
 
   ReportService() {
-    listenToReactiveValues([_pendingReports, _incidents]);
+    listenToReactiveValues([
+      _pendingReports,
+      _incidents,
+      _myIncidents,
+      _followups,
+    ]);
     _init();
   }
 
