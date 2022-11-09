@@ -7,6 +7,8 @@ abstract class IImageService {
 
   Future<ReportImage> getImage(String id);
 
+  Future<void> removeImage(String id);
+
   Future<List<ReportImage>> findByReportId(String reportId);
 
   Future<void> removeAll();
@@ -38,6 +40,12 @@ class ImageService extends IImageService {
     }
 
     throw "import not found";
+  }
+
+  @override
+  Future<void> removeImage(String id) async {
+    var _db = _dbService.db;
+    await _db.delete("report_image", where: "id = ?", whereArgs: [id]);
   }
 
   @override
