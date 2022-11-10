@@ -93,7 +93,7 @@ class _FormImagesFieldState extends State<FormImagesField> {
 
   _removeImage(String id) {
     widget.field.remove(id);
-    // @TODO call reportService.remove()
+    _imageService.removeImage(id);
   }
 
   _showAddImageModal() {

@@ -34,7 +34,8 @@ class ReportFormView extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.reportTitle),
+                title: Text(AppLocalizations.of(context)!.reportTitle +
+                    " ${reportType.name}"),
               ),
               body: SafeArea(
                 child: Column(
@@ -236,17 +237,18 @@ class _DotStepper extends HookViewModelWidget<ReportFormViewModel> {
                   child: Column(
                     children: [
                       Text(store.currentSection.label),
-                      DotStepper(
-                        dotCount: store.numberOfSections,
-                        spacing: 10,
-                        dotRadius: 12,
-                        activeStep: store.currentSectionIdx,
-                        tappingEnabled: false,
-                        indicatorDecoration:
-                            const IndicatorDecoration(color: Colors.blue),
-                        shape: Shape.pipe,
-                        indicator: Indicator.jump,
-                      ),
+                      if (store.numberOfSections > 1)
+                        DotStepper(
+                          dotCount: store.numberOfSections,
+                          spacing: 10,
+                          dotRadius: 12,
+                          activeStep: store.currentSectionIdx,
+                          tappingEnabled: false,
+                          indicatorDecoration:
+                              const IndicatorDecoration(color: Colors.blue),
+                          shape: Shape.pipe,
+                          indicator: Indicator.jump,
+                        ),
                     ],
                   ),
                 ),

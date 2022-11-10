@@ -19,6 +19,7 @@ class ImageApi extends GraphQlBaseApi {
           id
           file
           thumbnail
+          imageUrl
         }
       }
     ''';

@@ -151,5 +151,5 @@ class ImagesField extends Field {
   }
 
   @override
-  String get renderedValue => value.join(",");
+  String get renderedValue => value.join(", ");
 }
