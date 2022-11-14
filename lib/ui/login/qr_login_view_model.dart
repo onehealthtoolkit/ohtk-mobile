@@ -27,9 +27,6 @@ class QrLoginViewModel extends BaseViewModel {
         _logger.i(authResult.messages.join(','));
         error = "Invalid QR code";
       }
-      if (authResult is AuthSuccess) {
-        await _authService.saveTokenAndFetchProfile(authResult);
-      }
     } on DioLinkServerException {
       error = "Server Error";
     } on DioLinkUnkownException {

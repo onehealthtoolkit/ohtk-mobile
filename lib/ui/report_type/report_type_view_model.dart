@@ -22,6 +22,7 @@ class ReportTypeViewModel extends BaseViewModel {
 
   ReportTypeViewModel() {
     setBusy(true);
+    _reportTypeService.resetReportTypeSynced();
     fetch();
     setBusy(false);
   }
