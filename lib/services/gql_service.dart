@@ -99,6 +99,10 @@ class GqlService {
 
   Future<bool> _refreshToken() async {
     final refreshToken = await _secureStorage.get('refreshToken');
+    if (refreshToken == null) {
+      return false;
+    }
+
     const mutation = r'''
           mutation RefreshToken($refreshToken: String!) {
             refreshToken(refreshToken: $refreshToken) {
@@ -110,7 +114,8 @@ class GqlService {
     ''';
 
     try {
-      final response = await _dio.post(_endpoint(), data: {
+      final endpoint = await _endpoint();
+      final response = await _dio.post(endpoint, data: {
         'query': mutation,
         'variables': {'refreshToken': refreshToken}
       });

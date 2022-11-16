@@ -4,18 +4,37 @@ import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/services/api/report_type_api.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:stacked/stacked.dart';
 
-abstract class IReportTypeService {
+abstract class IReportTypeService with ReactiveServiceMixin {
   Future<List<ReportType>> fetchAllReportType();
   Future<List<Category>> fetchAllCategory();
   Future<void> sync();
   Future<void> removeAll();
+  bool get isReportTypeSynced;
+  resetReportTypeSynced();
 }
 
 class ReportTypeService extends IReportTypeService {
   final _dbService = locator<IDbService>();
 
   final _reportTypeApi = locator<ReportTypeApi>();
+
+  final ReactiveValue<bool> _isReportTypeSynced = ReactiveValue(false);
+
+  ReportTypeService() {
+    listenToReactiveValues([
+      _isReportTypeSynced,
+    ]);
+  }
+
+  @override
+  bool get isReportTypeSynced => _isReportTypeSynced.value;
+
+  @override
+  resetReportTypeSynced() {
+    _isReportTypeSynced.value = false;
+  }
 
   @override
   Future<List<ReportType>> fetchAllReportType() async {
@@ -66,6 +85,8 @@ class ReportTypeService extends IReportTypeService {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     }
+
+    _isReportTypeSynced.value = true;
   }
 
   @override

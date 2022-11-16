@@ -20,6 +20,14 @@ class MyReportsViewModel extends ReactiveViewModel
   @override
   List<ReactiveServiceMixin> get reactiveServices => [reportService];
 
+  MyReportsViewModel() {
+    reportTypeService.addListener(() {
+      if (reportTypeService.isReportTypeSynced) {
+        refetchReportTypes();
+      }
+    });
+  }
+
   @override
   resolveImagePath(String path) {
     return path;
@@ -27,11 +35,16 @@ class MyReportsViewModel extends ReactiveViewModel
 
   Future<void> refetchIncidentReports() async {
     setBusy(true);
+    await reportTypeService.sync();
+    await refetchReportTypes();
+    await reportService.fetchMyIncidents(true);
+    setBusy(false);
+  }
+
+  Future<void> refetchReportTypes() async {
     final items = await reportTypeService.fetchAllReportType();
     _reportTypes.clear();
     _reportTypes.addAll(items);
-    await reportService.fetchMyIncidents(true);
-    setBusy(false);
   }
 
   bool canFollow(String reportTypeId) {
