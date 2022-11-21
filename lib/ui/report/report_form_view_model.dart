@@ -30,7 +30,7 @@ class ReportFormViewModel extends BaseViewModel {
   String _reportId = "";
   Form _formStore = Form.fromJson({}, "");
   ReportFormState state = ReportFormState.formInput;
-  bool? _incidentInAuthority;
+  bool? _incidentInAuthority = true;
 
   Form get formStore => _formStore;
 
