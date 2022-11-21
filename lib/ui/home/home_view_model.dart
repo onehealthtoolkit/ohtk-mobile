@@ -25,6 +25,8 @@ class HomeViewModel extends IndexTrackingViewModel {
 
   String? get username => userProfile?.username;
 
+  bool get isConsent => userProfile?.consent ?? false;
+
   @override
   List<ReactiveServiceMixin> get reactiveServices => [reportService];
 

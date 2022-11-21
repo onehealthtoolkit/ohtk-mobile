@@ -8,6 +8,7 @@ class UserProfile {
   String? email;
   String? telephone;
   String? role;
+  bool? consent;
 
   UserProfile(
       {required this.id,
@@ -18,7 +19,8 @@ class UserProfile {
       required this.authorityId,
       this.email,
       this.telephone,
-      this.role});
+      this.role,
+      this.consent});
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
         id: json['id'] as int,
@@ -30,6 +32,7 @@ class UserProfile {
         email: json['email']?.toString(),
         telephone: json['telephone']?.toString(),
         role: json['role']?.toString(),
+        consent: json['consent'] ?? false,
       );
 
   Map<String, dynamic> toJson() {
@@ -43,6 +46,7 @@ class UserProfile {
       'email': email,
       'telephone': telephone,
       'role': role,
+      'consent': consent,
     };
   }
 }

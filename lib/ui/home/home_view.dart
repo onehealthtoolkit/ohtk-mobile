@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:podd_app/ui/home/all_reports_view.dart';
+import 'package:podd_app/ui/home/consent_view.dart';
 import 'package:podd_app/ui/home/home_view_model.dart';
 import 'package:podd_app/ui/home/my_reports_view.dart';
 import 'package:podd_app/ui/notification/user_message_list.dart';
@@ -10,7 +14,6 @@ import 'package:podd_app/ui/report_type/report_type_view.dart';
 import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../profile/profile_view.dart';
 
@@ -55,6 +58,39 @@ class HomeView extends HookWidget {
             slideDismissDirection: DismissDirection.horizontal,
             duration: const Duration(seconds: 3),
           );
+        });
+
+        Timer.run(() {
+          if (!viewModel.isConsent) {
+            showGeneralDialog(
+                context: context,
+                barrierDismissible: false,
+                barrierLabel:
+                    MaterialLocalizations.of(context).modalBarrierDismissLabel,
+                barrierColor: Colors.black45,
+                transitionDuration: const Duration(milliseconds: 500),
+                pageBuilder: (BuildContext buildContext,
+                    Animation<double> animation, Animation secondaryAnimation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, -1),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: Center(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.95,
+                          height: MediaQuery.of(context).size.height * 0.95,
+                          padding: const EdgeInsets.all(20),
+                          color: Colors.white,
+                          child: const ConsentView(),
+                        ),
+                      ),
+                    ),
+                  );
+                });
+          }
         });
       },
       builder: (context, viewModel, child) => Scaffold(

@@ -100,8 +100,8 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
 
   @override
   Future<void> saveTokenAndFetchProfile(AuthSuccess authSuccess) async {
-    _saveToken(authSuccess);
-    _fetchProfile();
+    await _saveToken(authSuccess);
+    await _fetchProfile();
     _isLogin.value = true;
   }
 
