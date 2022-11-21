@@ -22,62 +22,65 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      key: key,
-      separatorBuilder: (context, index) => const Divider(),
-      itemCount: viewModel.incidentReports.length,
-      itemBuilder: (context, index) {
-        var report = viewModel.incidentReports[index];
-        IncidentReportImage? image;
-        if (report.images?.isNotEmpty != false) {
-          image = report.images?.first;
-        }
-        var leading = image != null
-            ? CachedNetworkImage(
-                imageUrl: viewModel.resolveImagePath(image.thumbnailPath),
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
-                fit: BoxFit.fill,
-              )
-            : Container(
-                color: Colors.grey.shade300,
-                width: 80,
-              );
-        var trailing = trailingFn(report);
-        return ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(4.0),
-            child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  minWidth: 70,
-                  maxWidth: 70,
-                  minHeight: 52,
-                  maxHeight: 52,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.separated(
+        key: key,
+        separatorBuilder: (context, index) => const Divider(),
+        itemCount: viewModel.incidentReports.length,
+        itemBuilder: (context, index) {
+          var report = viewModel.incidentReports[index];
+          IncidentReportImage? image;
+          if (report.images?.isNotEmpty != false) {
+            image = report.images?.first;
+          }
+          var leading = image != null
+              ? CachedNetworkImage(
+                  imageUrl: viewModel.resolveImagePath(image.thumbnailPath),
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  fit: BoxFit.fill,
+                )
+              : Container(
+                  color: Colors.grey.shade300,
+                  width: 80,
+                );
+          var trailing = trailingFn(report);
+          return ListTile(
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(4.0),
+              child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minWidth: 70,
+                    maxWidth: 70,
+                    minHeight: 52,
+                    maxHeight: 52,
+                  ),
+                  child: leading),
+            ),
+            title: _title(context, report),
+            trailing: trailing,
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(formatter.format(report.createdAt.toLocal()),
+                    textScaleFactor: .75),
+                Text(
+                  report.description,
+                  textScaleFactor: .75,
                 ),
-                child: leading),
-          ),
-          title: _title(context, report),
-          trailing: trailing,
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(formatter.format(report.createdAt.toLocal()),
-                  textScaleFactor: .75),
-              Text(
-                report.description,
-                textScaleFactor: .75,
-              ),
-            ],
-          ),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => IncidentReportView(id: report.id),
-              ),
-            );
-          },
-        );
-      },
+              ],
+            ),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => IncidentReportView(id: report.id),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 

@@ -31,11 +31,11 @@
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>PODD needs access to the camera.</string>
+	<string>Onehealttoolkit needs access to the camera.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location when open.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>PODD needs permission for the photo library.</string>
+	<string>Onehealttoolkit needs permission for the photo library.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
