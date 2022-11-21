@@ -57,6 +57,12 @@ class AuthServiceMock implements IAuthService {
     // TODO: implement verifyQrToken
     throw UnimplementedError();
   }
+
+  @override
+  updateConfirmedConsent() {
+    // TODO: implement updateConfirmedConsent
+    throw UnimplementedError();
+  }
 }
 
 void main() {

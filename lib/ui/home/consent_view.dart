@@ -14,7 +14,7 @@ class ConsentView extends HookWidget {
       builder: (context, viewModel, child) => Padding(
         padding: const EdgeInsets.all(8),
         child: viewModel.isBusy
-            ? Center(child: const CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : !viewModel.hasError
                 ? _ConsentDetail()
                 : const Text("Consent not found"),
@@ -27,8 +27,6 @@ class _ConsentDetail extends HookViewModelWidget<ConsentViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, ConsentViewModel viewModel) {
-    final detail = viewModel.data!;
-
     return WillPopScope(
       onWillPop: () async {
         return false;
@@ -48,7 +46,7 @@ class _ConsentDetail extends HookViewModelWidget<ConsentViewModel> {
                       minHeight: 80, minWidth: double.infinity),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Text(detail),
+                    child: Text(viewModel.consentContent),
                   ),
                 ),
               ),
@@ -58,13 +56,26 @@ class _ConsentDetail extends HookViewModelWidget<ConsentViewModel> {
                     onChanged: (value) {
                       viewModel.setConsent(value);
                     }),
-                Expanded(child: Text('I hereby consent to everything in here')),
+                const Expanded(
+                    child: Text('I hereby consent to everything in here')),
               ]),
+              if (viewModel.hasErrorForKey(consentErrorKey))
+                Center(
+                  child: Text(
+                    viewModel.error(consentErrorKey),
+                    style: const TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
               Center(
                 child: ElevatedButton(
                   onPressed: viewModel.isConsent
-                      ? () {
-                          Navigator.of(context).pop();
+                      ? () async {
+                          var success = await viewModel.confirmConsent();
+                          if (success) {
+                            Navigator.of(context).pop();
+                          }
                         }
                       : null,
                   child: const Text(

@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/services/api/auth_api.dart';
 import 'package:podd_app/services/api/comment_api.dart';
+import 'package:podd_app/services/api/configuration_api.dart';
 import 'package:podd_app/services/api/forgot_password_api.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/notification_api.dart';
@@ -250,5 +251,13 @@ registerApiLocators() {
   locator.registerSingletonAsync<CommentApi>(() async {
     var gqlService = locator<GqlService>();
     return CommentApi(gqlService.resolveClientFunction);
+  }, dependsOn: [GqlService]);
+
+  if (locator.isRegistered<ConfigurationApi>()) {
+    locator.unregister<ConfigurationApi>();
+  }
+  locator.registerSingletonAsync<ConfigurationApi>(() async {
+    var gqlService = locator<GqlService>();
+    return ConfigurationApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 }
