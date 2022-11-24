@@ -29,6 +29,8 @@ abstract class IAuthService {
   Future<void> requestAccessTokenIfExpired();
 
   Future<AuthResult> verifyQrToken(String token);
+
+  updateConfirmedConsent();
 }
 
 class AuthService with ReactiveServiceMixin implements IAuthService {
@@ -100,8 +102,8 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
 
   @override
   Future<void> saveTokenAndFetchProfile(AuthSuccess authSuccess) async {
-    _saveToken(authSuccess);
-    _fetchProfile();
+    await _saveToken(authSuccess);
+    await _fetchProfile();
     _isLogin.value = true;
   }
 
@@ -144,5 +146,13 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
       await saveTokenAndFetchProfile(authResult);
     }
     return authResult;
+  }
+
+  @override
+  updateConfirmedConsent() {
+    if (_userProfile != null) {
+      _userProfile!.consent = true;
+      _secureStorageService.setUserProfile(_userProfile!);
+    }
   }
 }

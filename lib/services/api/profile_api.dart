@@ -1,4 +1,5 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:podd_app/models/consent_result.dart';
 import 'package:podd_app/models/profile_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
 
@@ -65,6 +66,29 @@ class ProfileApi extends GraphQlBaseApi {
       return result;
     } on OperationException catch (e) {
       return ProfileFailure(e);
+    }
+  }
+
+  Future<ConsentSubmitResult> confirmConsent() async {
+    const mutation = r'''
+      mutation ConfirmConsent {
+        confirmConsent {
+          ok
+        }
+      }
+    ''';
+
+    try {
+      var result = await runGqlMutation<ConsentSubmitResult>(
+        mutation: mutation,
+        variables: {},
+        parseData: (json) {
+          return ConsentSubmitSuccess();
+        },
+      );
+      return result;
+    } on OperationException catch (e) {
+      return ConsentSubmitFailure(e);
     }
   }
 }

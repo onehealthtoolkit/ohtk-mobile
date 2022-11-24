@@ -1,4 +1,5 @@
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/consent_result.dart';
 import 'package:podd_app/models/profile_result.dart';
 import 'package:podd_app/services/api/profile_api.dart';
 import 'package:podd_app/services/auth_service.dart';
@@ -10,10 +11,11 @@ abstract class IProfileService {
     String? telephone,
   });
   Future<ProfileResult> changePassword(String newPassword);
+  Future<bool> confirmConsent();
 }
 
 class ProfileService extends IProfileService {
-  final ProfileApi _profiledApi = locator<ProfileApi>();
+  final ProfileApi _profileApi = locator<ProfileApi>();
   final IAuthService _authService = locator<IAuthService>();
 
   @override
@@ -22,7 +24,7 @@ class ProfileService extends IProfileService {
     required String lastName,
     String? telephone,
   }) async {
-    var result = await _profiledApi.updateProfile(
+    var result = await _profileApi.updateProfile(
       firstName: firstName,
       lastName: lastName,
       telephone: telephone,
@@ -36,8 +38,18 @@ class ProfileService extends IProfileService {
 
   @override
   Future<ProfileResult> changePassword(String newPassword) async {
-    var result = await _profiledApi.changePassword(newPassword);
+    var result = await _profileApi.changePassword(newPassword);
 
     return result;
+  }
+
+  @override
+  Future<bool> confirmConsent() async {
+    var result = await _profileApi.confirmConsent();
+    if (result is ConsentSubmitSuccess) {
+      _authService.updateConfirmedConsent();
+      return true;
+    }
+    return false;
   }
 }
