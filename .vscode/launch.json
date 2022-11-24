@@ -5,22 +5,30 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "podd_app",
+      "name": "ohtk_mobile [localhost]",
+      "request": "launch",
+      "type": "dart",
+      "args": []
+    },
+    {
+      "name": "ohtk_mobile [ohtk.org]",
       "request": "launch",
       "type": "dart",
       "args": [
-			  "--dart-define", "GRAPHQL_ENDPOINT=https://backend.ohtk.org/graphql/",
-        "--dart-define", "TENANT_API_ENDPOINT=https://admin.ohtk.org/api/servers/",
-		  ]
+        "--dart-define",
+        "GRAPHQL_ENDPOINT=https://backend.ohtk.org/graphql/",
+        "--dart-define",
+        "TENANT_API_ENDPOINT=https://admin.ohtk.org/api/servers/",
+      ]
     },
     {
-      "name": "podd_app (profile mode)",
+      "name": "ohtk_mobile (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "podd_app (release mode)",
+      "name": "ohtk_mobile (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

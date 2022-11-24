@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podd_app/ui/home/consent_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ConsentView extends HookWidget {
   const ConsentView({Key? key}) : super(key: key);
@@ -11,14 +14,36 @@ class ConsentView extends HookWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<ConsentViewModel>.reactive(
       viewModelBuilder: () => ConsentViewModel(),
-      builder: (context, viewModel, child) => Padding(
-        padding: const EdgeInsets.all(8),
-        child: viewModel.isBusy
-            ? const Center(child: CircularProgressIndicator())
-            : !viewModel.hasError
-                ? _ConsentDetail()
-                : const Text("Consent not found"),
-      ),
+      builder: (context, viewModel, child) {
+        if (viewModel.isBusy) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        if (viewModel.hasError || viewModel.consentNotFound) {
+          var duration = const Duration(seconds: 1);
+          Timer(duration, () {
+            Navigator.pop(context);
+          });
+
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        return Padding(
+          padding: const EdgeInsets.all(8),
+          child: viewModel.isBusy
+              ? const Center(child: CircularProgressIndicator())
+              : !viewModel.hasError
+                  ? _ConsentDetail()
+                  : const Text("Consent not found"),
+        );
+      },
     );
   }
 }
@@ -32,6 +57,7 @@ class _ConsentDetail extends HookViewModelWidget<ConsentViewModel> {
         return false;
       },
       child: Material(
+        color: Colors.white,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -41,7 +67,11 @@ class _ConsentDetail extends HookViewModelWidget<ConsentViewModel> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Container(
-                  color: Colors.white,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.black26),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   constraints: const BoxConstraints(
                       minHeight: 80, minWidth: double.infinity),
                   child: Padding(
@@ -50,15 +80,13 @@ class _ConsentDetail extends HookViewModelWidget<ConsentViewModel> {
                   ),
                 ),
               ),
-              Row(children: [
-                Checkbox(
-                    value: viewModel.isConsent,
-                    onChanged: (value) {
-                      viewModel.setConsent(value);
-                    }),
-                const Expanded(
-                    child: Text('I hereby consent to everything in here')),
-              ]),
+              CheckboxListTile(
+                  value: viewModel.isConsent,
+                  title: Text(viewModel.consentAcceptText),
+                  controlAffinity: ListTileControlAffinity.leading,
+                  onChanged: (value) {
+                    viewModel.setConsent(value);
+                  }),
               if (viewModel.hasErrorForKey(consentErrorKey))
                 Center(
                   child: Text(
@@ -72,15 +100,13 @@ class _ConsentDetail extends HookViewModelWidget<ConsentViewModel> {
                 child: ElevatedButton(
                   onPressed: viewModel.isConsent
                       ? () async {
-                          var success = await viewModel.confirmConsent();
-                          if (success) {
-                            Navigator.of(context).pop();
-                          }
+                          await viewModel.confirmConsent();
+                          Navigator.of(context).pop();
                         }
                       : null,
-                  child: const Text(
-                    "OK",
-                    style: TextStyle(color: Colors.white),
+                  child: Text(
+                    AppLocalizations.of(context)!.consentButton,
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               )

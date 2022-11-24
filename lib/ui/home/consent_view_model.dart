@@ -14,7 +14,9 @@ class ConsentViewModel extends BaseViewModel {
   IProfileService profileService = locator<IProfileService>();
 
   bool isConsent = false;
+  bool consentNotFound = false;
   String consentContent = "";
+  String consentAcceptText = "";
 
   ConsentViewModel() {
     setBusy(true);
@@ -22,18 +24,20 @@ class ConsentViewModel extends BaseViewModel {
   }
 
   getConsentConfiguration() async {
-    String content = "Default consent datail";
-
     final result = await configurationApi.getConfigurations();
     try {
       final config = result.data.firstWhere(
           (element) => element.key == configService.consentConfigurationKey);
-      content = config.value;
+      consentContent = config.value;
+
+      final acceptText = result.data.firstWhere(
+          (element) => element.key == configService.consentAcceptTextKey);
+      consentAcceptText = acceptText.value;
     } catch (_) {
+      consentNotFound = true;
       logger.w(
           "${configService.consentConfigurationKey} not found in configurations");
     }
-    consentContent = content;
     setBusy(false);
   }
 

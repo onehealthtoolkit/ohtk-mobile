@@ -52,5 +52,6 @@
   "fieldUndefinedLocation": "No location selected",
   "fieldUseCurrentLocation": "Use current location",
   "authorityLabel": "Authority",
-  "incidentDate": "Incident Date"
+  "incidentDate": "Incident Date",
+  "consentButton": "I agree"
 }

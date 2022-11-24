@@ -18,7 +18,7 @@ class ConfigurationApi extends GraphQlBaseApi {
     final result = await runGqlListQuery<Configuration>(
       query: query,
       variables: {},
-      fetchPolicy: FetchPolicy.cacheAndNetwork,
+      fetchPolicy: FetchPolicy.networkOnly,
       typeConverter: (resp) => Configuration.fromJson(resp),
     );
 

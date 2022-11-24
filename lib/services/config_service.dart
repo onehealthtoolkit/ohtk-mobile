@@ -8,5 +8,9 @@ class ConfigService {
 
   String get consentConfigurationKey =>
       const String.fromEnvironment('CONSENT_CONFIGURATION_KEY',
-          defaultValue: "mobile.consent");
+          defaultValue: "mobile.consent.msg");
+
+  String get consentAcceptTextKey =>
+      const String.fromEnvironment('CONSENT_ACCEPT_TEXT_KEY',
+          defaultValue: "mobile.consent.accept.msg");
 }

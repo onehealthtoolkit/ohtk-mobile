@@ -80,10 +80,13 @@ class HomeView extends HookWidget {
                       ).animate(animation),
                       child: Center(
                         child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                          ),
                           width: MediaQuery.of(context).size.width * 0.95,
                           height: MediaQuery.of(context).size.height * 0.95,
                           padding: const EdgeInsets.all(20),
-                          color: Colors.white,
                           child: const ConsentView(),
                         ),
                       ),
