@@ -21,6 +21,7 @@
   "submitButton": "Submit",
   "sendButton": "Send",
   "updateProfileButton": "แก้ไขโปรไฟล์",
+  "profileUpdateSuccess": "แก้ไขโปรไฟล์สำเร็จ",
   "changePasswordButton": "แก้ไขรหัสผ่าน",
   "laguageLabel": "ภาษา",
   "serverLabel": "เซิร์ฟเวอร์",
