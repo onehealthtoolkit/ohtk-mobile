@@ -4,16 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:podd_app/ui/home/all_reports_view.dart';
 import 'package:podd_app/ui/home/consent_view.dart';
 import 'package:podd_app/ui/home/home_view_model.dart';
-import 'package:podd_app/ui/home/my_reports_view.dart';
+import 'package:podd_app/ui/home/report_home_view.dart';
 import 'package:podd_app/ui/notification/user_message_list.dart';
 import 'package:podd_app/ui/notification/user_message_view.dart';
-import 'package:podd_app/ui/report_type/report_type_view.dart';
-import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
 
 import '../profile/profile_view.dart';
 
@@ -31,9 +27,7 @@ class HomeView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    TabController _tabController = useTabController(initialLength: 2);
-
-    return ViewModelBuilder<HomeViewModel>.nonReactive(
+    return ViewModelBuilder<HomeViewModel>.reactive(
       viewModelBuilder: () => HomeViewModel(),
       fireOnModelReadyOnce: true,
       onModelReady: (viewModel) {
@@ -98,15 +92,13 @@ class HomeView extends HookWidget {
       },
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
+          elevation: 1,
           centerTitle: true,
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(child: Text(AppLocalizations.of(context)!.allReportTabLabel)),
-              Tab(child: Text(AppLocalizations.of(context)!.myReportTabLabel)),
-            ],
-          ),
-          title: Text(AppLocalizations.of(context)!.appName),
+          title: viewModel.currentIndex == 0
+              ? Text(AppLocalizations.of(context)!.appName)
+              : viewModel.currentIndex == 1
+                  ? Text(AppLocalizations.of(context)!.profileTitle)
+                  : null,
           actions: [
             IconButton(
               icon: const Icon(Icons.notifications),
@@ -120,73 +112,38 @@ class HomeView extends HookWidget {
                 );
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.account_circle),
-              tooltip: 'Profile',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProfileView(),
-                  ),
-                );
-              },
-            ),
-            // IconButton(
-            //   icon: const Icon(Icons.logout),
-            //   tooltip: 'Logout',
-            //   onPressed: () {
-            //     viewModel.logout();
-            //   },
-            // )
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ReportTypeView(),
-              ),
-            );
-          },
-          child: const Icon(Icons.add),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.grey[300],
+          selectedItemColor: Colors.blue[700],
+          currentIndex: viewModel.currentIndex,
+          onTap: viewModel.setIndex,
+          items: const [
+            BottomNavigationBarItem(
+              label: 'Incident',
+              icon: Icon(Icons.art_track),
+            ),
+            BottomNavigationBarItem(
+              label: 'Profile',
+              icon: Icon(Icons.account_circle),
+            ),
+          ],
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _ReSubmitBlock(),
-              Expanded(
-                child: TabBarView(controller: _tabController, children: [
-                  AllReportsView(),
-                  MyReportsView(),
-                ]),
-              ),
-            ],
-          ),
-        ),
+        body: getViewForIndex(viewModel.currentIndex),
       ),
     );
   }
-}
 
-class _ReSubmitBlock extends HookViewModelWidget<HomeViewModel> {
-  @override
-  Widget buildViewModelWidget(BuildContext context, HomeViewModel viewModel) {
-    if (viewModel.numberOfReportPendingToSubmit > 0) {
-      return TextButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const ReSubmitView(),
-            ),
-          );
-        },
-        child: Text(
-            "${viewModel.numberOfReportPendingToSubmit} reports still pending to submit tap here to re-submit"),
-      );
+  Widget getViewForIndex(int index) {
+    switch (index) {
+      case 0:
+        return const ReportHomeView();
+      case 1:
+        return const ProfileView();
+      default:
+        return const ReportHomeView();
     }
-    return Container();
   }
 }

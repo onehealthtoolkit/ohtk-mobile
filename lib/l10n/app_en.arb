@@ -21,6 +21,7 @@
   "submitButton": "Submit",
   "sendButton": "Send",
   "updateProfileButton": "Update Profile",
+  "profileUpdateSuccess": "Profile Updated",
   "changePasswordButton": "Change Password",
   "laguageLabel": "Language",
   "serverLabel": "Server",

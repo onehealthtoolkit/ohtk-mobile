@@ -15,9 +15,6 @@ class ProfileView extends StatelessWidget {
       viewModelBuilder: () => ProfileViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.profileTitle),
-        ),
         backgroundColor: Colors.white,
         body: SafeArea(
           child: GestureDetector(
@@ -164,7 +161,14 @@ class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
                     : () async {
                         var result = await viewModel.updateProfile();
                         if (result is ProfileSuccess && result.success) {
-                          Navigator.pop(context, true);
+                          var showSuccessMessage = SnackBar(
+                            content: Text(AppLocalizations.of(context)
+                                    ?.profileUpdateSuccess ??
+                                'Profile update success'),
+                            backgroundColor: Colors.green,
+                          );
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(showSuccessMessage);
                         }
                       },
                 child: viewModel.isBusy
