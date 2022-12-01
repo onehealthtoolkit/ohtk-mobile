@@ -94,11 +94,7 @@ class HomeView extends HookWidget {
         appBar: AppBar(
           elevation: 1,
           centerTitle: true,
-          title: viewModel.currentIndex == 0
-              ? Text(AppLocalizations.of(context)!.appName)
-              : viewModel.currentIndex == 1
-                  ? Text(AppLocalizations.of(context)!.profileTitle)
-                  : null,
+          title: Text(AppLocalizations.of(context)!.appName),
           actions: [
             IconButton(
               icon: const Icon(Icons.notifications),
@@ -116,13 +112,13 @@ class HomeView extends HookWidget {
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.grey[300],
+          backgroundColor: Colors.white,
           selectedItemColor: Colors.blue[700],
           currentIndex: viewModel.currentIndex,
           onTap: viewModel.setIndex,
           items: const [
             BottomNavigationBarItem(
-              label: 'Incident',
+              label: 'Incidents',
               icon: Icon(Icons.art_track),
             ),
             BottomNavigationBarItem(
