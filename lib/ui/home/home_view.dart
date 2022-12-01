@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:podd_app/ui/home/consent_view.dart';
 import 'package:podd_app/ui/home/home_view_model.dart';
+import 'package:podd_app/ui/home/observation/observation_home_view.dart';
 import 'package:podd_app/ui/home/report_home_view.dart';
 import 'package:podd_app/ui/notification/user_message_list.dart';
 import 'package:podd_app/ui/notification/user_message_view.dart';
@@ -122,6 +123,10 @@ class HomeView extends HookWidget {
               icon: Icon(Icons.art_track),
             ),
             BottomNavigationBarItem(
+              label: 'Observation',
+              icon: Icon(Icons.search),
+            ),
+            BottomNavigationBarItem(
               label: 'Profile',
               icon: Icon(Icons.account_circle),
             ),
@@ -137,6 +142,8 @@ class HomeView extends HookWidget {
       case 0:
         return const ReportHomeView();
       case 1:
+        return const ObservationHomeView();
+      case 2:
         return const ProfileView();
       default:
         return const ReportHomeView();

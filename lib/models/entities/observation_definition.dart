@@ -1,0 +1,44 @@
+class ObservationDefinition {
+  String id;
+  String name;
+  String registerFormDefinition;
+  String? registerFormMapping;
+  String? titleTemplate;
+  String? descriptionTemplate;
+  String? identityTemplate;
+
+  ObservationDefinition({
+    required this.id,
+    required this.name,
+    required this.registerFormDefinition,
+    required this.registerFormMapping,
+    required this.titleTemplate,
+    required this.descriptionTemplate,
+    required this.identityTemplate,
+  });
+
+  // TODO Use in sync result from api
+  // ObservationDefinition.fromJson(Map<String, dynamic> jsonMap):
+
+  ObservationDefinition.fromMap(Map<String, dynamic> map)
+      : id = map['id'],
+        name = map['name'],
+        registerFormDefinition = map['register_form_definition'],
+        registerFormMapping = map['register_form_mapping'],
+        titleTemplate = map['title_template'],
+        descriptionTemplate = map['description_template'],
+        identityTemplate = map['identity_template'];
+
+  Map<String, Object?> toMap() {
+    var map = <String, Object?>{
+      "id": id,
+      "name": name,
+      "register_form_definition": registerFormDefinition,
+      "register_form_mapping": registerFormMapping,
+      "title_template": titleTemplate,
+      "description_template": descriptionTemplate,
+      "identity_template": identityTemplate,
+    };
+    return map;
+  }
+}

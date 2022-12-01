@@ -18,6 +18,7 @@ import 'package:podd_app/services/forgot_password_service.dart';
 import 'package:podd_app/services/gql_service.dart';
 import 'package:podd_app/services/image_service.dart';
 import 'package:podd_app/services/notification_service.dart';
+import 'package:podd_app/services/observation_service.dart';
 import 'package:podd_app/services/profile_service.dart';
 import 'package:podd_app/services/register_service.dart';
 import 'package:podd_app/services/report_service.dart';
@@ -160,6 +161,21 @@ void setupLocator(String environment) {
     IAuthService,
   ]);
 
+  if (locator.isRegistered<IObservationService>()) {
+    locator.unregister<IObservationService>();
+  }
+  locator.registerSingletonAsync<IObservationService>(() async {
+    return ObservationService();
+  }, dependsOn: [
+    IDbService,
+  ]);
+
+  registerViewModelLocators();
+}
+
+/// Some viewmodels need to persist their own states across app lifecycle,
+/// so register them as singleton works well
+registerViewModelLocators() {
   if (locator.isRegistered<AllReportsViewModel>()) {
     locator.unregister<AllReportsViewModel>();
   }
