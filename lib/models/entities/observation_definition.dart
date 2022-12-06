@@ -11,10 +11,10 @@ class ObservationDefinition {
     required this.id,
     required this.name,
     required this.registerFormDefinition,
-    required this.registerFormMapping,
-    required this.titleTemplate,
-    required this.descriptionTemplate,
-    required this.identityTemplate,
+    this.registerFormMapping,
+    this.titleTemplate,
+    this.descriptionTemplate,
+    this.identityTemplate,
   });
 
   // TODO Use in sync result from api

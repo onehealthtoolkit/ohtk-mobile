@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:podd_app/ui/home/observation/observation_home_view_model.dart';
+import 'package:podd_app/ui/observation/observation_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
@@ -41,6 +42,14 @@ class _Listing extends HookViewModelWidget<ObservationHomeViewModel> {
                     width: 80,
                   ),
                   title: Text(observationDefinition.name),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ObservationView(observationDefinition),
+                      ),
+                    );
+                  },
                 );
               }),
             ),
