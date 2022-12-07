@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
+import 'package:podd_app/ui/observation/form/subject_form_view.dart';
 import 'package:podd_app/ui/observation/observation_subject_monitoring_view.dart';
 import 'package:podd_app/ui/observation/observation_subject_report_view.dart';
 import 'package:podd_app/ui/observation/observation_subject_view_model.dart';
@@ -8,15 +10,21 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ObservationSubjectView extends HookWidget {
-  final String id;
-  const ObservationSubjectView({Key? key, required this.id}) : super(key: key);
+  final ObservationDefinition definition;
+  final ObservationSubject subject;
+
+  const ObservationSubjectView({
+    Key? key,
+    required this.definition,
+    required this.subject,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     TabController _tabController = useTabController(initialLength: 2);
 
     return ViewModelBuilder<ObservationSubjectViewModel>.reactive(
-      viewModelBuilder: () => ObservationSubjectViewModel(id),
+      viewModelBuilder: () => ObservationSubjectViewModel(definition, subject),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title: const Text("Subject view"),
@@ -54,8 +62,8 @@ class ObservationSubjectView extends HookWidget {
       child: TabBarView(
         controller: _tabController,
         children: [
-          ObservationSubjectMonitoringView(subjectId: id),
-          ObservationSubjectReportView(subjectId: id),
+          ObservationSubjectMonitoringView(subjectId: subject.id),
+          ObservationSubjectReportView(subjectId: subject.id),
         ],
       ),
     );
@@ -124,6 +132,21 @@ class _SubjectDetail extends HookViewModelWidget<ObservationSubjectViewModel> {
               ? subject.identity!
               : "no identity"),
           const SizedBox(height: 24),
+          GestureDetector(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ObservationSubjectFormView(
+                  definition: viewModel.definition,
+                  subject: subject,
+                ),
+              ),
+            ),
+            child: const Align(
+              alignment: Alignment.centerRight,
+              child: Icon(Icons.edit_note),
+            ),
+          ),
           _data(subject),
         ],
       ),

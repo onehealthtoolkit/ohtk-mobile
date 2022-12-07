@@ -1,22 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/ui/observation/observation_subject_list_view_model.dart';
 import 'package:podd_app/ui/observation/observation_subject_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ObservationSubjectListView extends StatelessWidget {
-  final String definitionId;
+  final ObservationDefinition definition;
 
   const ObservationSubjectListView({
     Key? key,
-    required this.definitionId,
+    required this.definition,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder.nonReactive(
-      viewModelBuilder: () => ObservationSubjectListViewModel(definitionId),
+      viewModelBuilder: () => ObservationSubjectListViewModel(definition),
       builder: (context, model, child) => _SubjectListing(),
     );
   }
@@ -64,8 +65,10 @@ class _SubjectListing
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) =>
-                          ObservationSubjectView(id: subject.id),
+                      builder: (context) => ObservationSubjectView(
+                        definition: viewModel.definition,
+                        subject: subject,
+                      ),
                     ),
                   );
                 });

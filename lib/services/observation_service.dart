@@ -153,11 +153,7 @@ class ObservationService extends IObservationService {
 ///
 /// mock data
 ///
-List<Map<String, dynamic>> getMockObservationDefinitions() => [
-      {
-        "id": "ob1",
-        "name": "ข้อมูลต้นไม้",
-        "register_form_definition": '''
+var definition1 = '''
 {
   "sections": [
     {
@@ -238,7 +234,96 @@ List<Map<String, dynamic>> getMockObservationDefinitions() => [
     }
   ]
 }
-''',
+''';
+
+var definition2 = '''
+{
+  "sections": [
+    {
+      "label": "ทั่วไป ",
+      "questions": [
+        {
+          "label": "general info",
+          "description": "",
+          "fields": [
+            {
+              "id": "style",
+              "label": "style",
+              "name": "style",
+              "type": "text",
+              "required": true,
+              "tags": "name"
+            },
+            {
+              "id": "material",
+              "label": "material",
+              "name": "material",
+              "type": "text",
+              "required": false
+            },
+            {
+              "id": "condition",
+              "label": "condition",
+              "name": "condition",
+              "type": "singlechoices",
+              "required": false,
+              "options": [
+                {
+                  "label": "good",
+                  "value": "good"
+                },
+                {
+                  "label": "bad",
+                  "value": "bad"
+                },
+                {
+                  "label": "ok",
+                  "value": "ok"
+                }
+              ]
+            },
+            {
+              "id": "surrounding",
+              "label": "surrounding",
+              "name": "surrounding",
+              "type": "multiplechoices",
+              "required": false,
+              "options": [
+                {
+                  "label": "car",
+                  "value": "car"
+                },
+                {
+                  "label": "home",
+                  "value": "home"
+                },
+                {
+                  "label": "store",
+                  "value": "store"
+                },
+                {
+                  "label": "children",
+                  "value": "children"
+                },
+                {
+                  "label": "dog",
+                  "value": "dog"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+''';
+
+List<Map<String, dynamic>> getMockObservationDefinitions() => [
+      {
+        "id": "ob1",
+        "name": "ข้อมูลต้นไม้",
+        "register_form_definition": definition1,
         "register_form_mapping": null,
         "title_template": null,
         "description_template": null,
@@ -246,89 +331,8 @@ List<Map<String, dynamic>> getMockObservationDefinitions() => [
       },
       {
         "id": "ob2",
-        "name": "ข้อมูลบ้านs",
-        "register_form_definition": '''
-{
-  "sections": [
-    {
-      "label": "ทั่วไป ",
-      "questions": [
-        {
-          "label": "general info",
-          "description": "",
-          "fields": [
-            {
-              "id": "common",
-              "label": "common",
-              "name": "common",
-              "type": "text",
-              "required": true,
-              "tags": "name"
-            },
-            {
-              "id": "species",
-              "label": "species",
-              "name": "species",
-              "type": "text",
-              "required": false
-            },
-            {
-              "id": "state",
-              "label": "state",
-              "name": "state",
-              "type": "singlechoices",
-              "required": false,
-              "options": [
-                {
-                  "label": "good",
-                  "value": "good"
-                },
-                {
-                  "label": "bad",
-                  "value": "bad"
-                },
-                {
-                  "label": "ok",
-                  "value": "ok"
-                }
-              ]
-            },
-            {
-              "id": "surrounding",
-              "label": "surrounding",
-              "name": "surrounding",
-              "type": "multiplechoices",
-              "required": false,
-              "options": [
-                {
-                  "label": "car",
-                  "value": "car"
-                },
-                {
-                  "label": "home",
-                  "value": "home"
-                },
-                {
-                  "label": "store",
-                  "value": "store"
-                },
-                {
-                  "label": "children",
-                  "value": "children"
-                },
-                {
-                  "label": "dog",
-                  "value": "dog"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-''',
+        "name": "ข้อมูลบ้าน",
+        "register_form_definition": definition2,
         "register_form_mapping": null,
         "title_template": null,
         "description_template": null,
@@ -347,7 +351,8 @@ ObservationSubjectQueryResult getMockObservationSubjects() =>
           "state": "good",
           "species": "larvee",
         },
-        "title": "ต้นไม้จามจุรี"
+        "title": "ต้นไม้จามจุรี",
+        "formDefinition": definition1,
       })
     ], false);
 

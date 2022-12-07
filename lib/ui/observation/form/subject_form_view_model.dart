@@ -4,6 +4,7 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_report_subject.dart';
+import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/services/observation_service.dart';
@@ -27,6 +28,7 @@ class ObservationSubjectFormViewModel extends BaseViewModel {
       locator<IObservationService>();
 
   final ObservationDefinition _definition;
+  final ObservationSubject? _subject;
   bool isReady = false;
   String _subjectId = "";
   Form _formStore = Form.fromJson({}, "");
@@ -34,16 +36,21 @@ class ObservationSubjectFormViewModel extends BaseViewModel {
 
   Form get formStore => _formStore;
 
-  ObservationSubjectFormViewModel(this._definition) {
+  ObservationSubjectFormViewModel(this._definition, [this._subject]) {
     init();
   }
 
   init() async {
-    final String _timezone = await FlutterNativeTimezone.getLocalTimezone();
-    _subjectId = _uuid.v4();
+    _subjectId = _subject != null ? _subject!.id : _uuid.v4();
     _formStore = Form.fromJson(
         json.decode(_definition.registerFormDefinition), _subjectId);
+
+    final String _timezone = await FlutterNativeTimezone.getLocalTimezone();
     _formStore.setTimezone(_timezone);
+
+    if (_subject != null) {
+      _formStore.loadJsonValue(_subject!.formData ?? {});
+    }
     isReady = true;
     notifyListeners();
   }

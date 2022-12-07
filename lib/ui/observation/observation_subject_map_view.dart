@@ -4,22 +4,23 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/ui/observation/observation_subject_list_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ObservationSubjectMapView extends StatelessWidget {
-  final String definitionId;
+  final ObservationDefinition definition;
 
   const ObservationSubjectMapView({
     Key? key,
-    required this.definitionId,
+    required this.definition,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder.nonReactive(
-      viewModelBuilder: () => ObservationSubjectListViewModel(definitionId),
+      viewModelBuilder: () => ObservationSubjectListViewModel(definition),
       builder: (context, model, child) => _SubjectMap(),
     );
   }

@@ -34,8 +34,8 @@ class ObservationView extends HookWidget {
             : TabBarView(
                 controller: _tabController,
                 children: [
-                  ObservationSubjectListView(definitionId: definition.id),
-                  ObservationSubjectMapView(definitionId: definition.id),
+                  ObservationSubjectListView(definition: definition),
+                  ObservationSubjectMapView(definition: definition),
                 ],
               ),
         floatingActionButton: FloatingActionButton(
@@ -43,7 +43,9 @@ class ObservationView extends HookWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ObservationSubjectFormView(definition),
+                builder: (context) => ObservationSubjectFormView(
+                  definition: definition,
+                ),
               ),
             );
           },

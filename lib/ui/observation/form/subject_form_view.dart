@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
+import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
@@ -15,13 +16,19 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ObservationSubjectFormView extends StatelessWidget {
   final ObservationDefinition definition;
-  const ObservationSubjectFormView(this.definition, {Key? key})
-      : super(key: key);
+  final ObservationSubject? subject;
+
+  const ObservationSubjectFormView({
+    Key? key,
+    required this.definition,
+    this.subject,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ObservationSubjectFormViewModel>.reactive(
-      viewModelBuilder: () => ObservationSubjectFormViewModel(definition),
+      viewModelBuilder: () =>
+          ObservationSubjectFormViewModel(definition, subject),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
           return const Center(child: CircularProgressIndicator());
@@ -161,7 +168,7 @@ class _Footer extends HookViewModelWidget<ObservationSubjectFormViewModel> {
               if (viewModel.back() == BackAction.navigationPop) {
                 if (await confirm(context)) {
                   logger.d("back using pop");
-                  Navigator.popUntil(context, ModalRoute.withName("/"));
+                  Navigator.pop(context);
                 }
               } else {
                 logger.d("back but do nothing");
