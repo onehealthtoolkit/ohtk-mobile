@@ -1,41 +1,40 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:podd_app/ui/observation/observation_subject_list_view_model.dart';
+import 'package:podd_app/ui/observation/observation_subject_Report_view_model.dart';
 import 'package:podd_app/ui/observation/observation_subject_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
-class ObservationSubjectListView extends StatelessWidget {
-  final String definitionId;
+class ObservationSubjectReportView extends StatelessWidget {
+  final String subjectId;
 
-  const ObservationSubjectListView({
+  const ObservationSubjectReportView({
     Key? key,
-    required this.definitionId,
+    required this.subjectId,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder.nonReactive(
-      viewModelBuilder: () => ObservationSubjectListViewModel(definitionId),
-      builder: (context, model, child) => _SubjectListing(),
+      viewModelBuilder: () => ObservationSubjectReportViewModel(subjectId),
+      builder: (context, model, child) => _ReportListing(),
     );
   }
 }
 
-class _SubjectListing
-    extends HookViewModelWidget<ObservationSubjectListViewModel> {
+class _ReportListing
+    extends HookViewModelWidget<ObservationSubjectReportViewModel> {
   @override
   Widget buildViewModelWidget(
-      BuildContext context, ObservationSubjectListViewModel viewModel) {
+      BuildContext context, ObservationSubjectReportViewModel viewModel) {
     return RefreshIndicator(
-      onRefresh: () async => viewModel.refetchSubjects,
+      onRefresh: () async => viewModel.fetchSubjectReports(),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView.separated(
           itemBuilder: (context, index) {
-            var subject = viewModel.observationSubjects[index];
-
-            var leading = subject.imageUrl == null
+            var report = viewModel.observationSubjectReports[index];
+            var leading = report.imageUrl == null
                 ? CachedNetworkImage(
                     imageUrl: "https://picsum.photos/200/300",
                     placeholder: (context, url) =>
@@ -52,26 +51,26 @@ class _SubjectListing
                   borderRadius: BorderRadius.circular(4.0),
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(
-                      minWidth: 70,
-                      maxWidth: 70,
-                      minHeight: 52,
-                      maxHeight: 52,
+                      minWidth: 50,
+                      maxWidth: 50,
                     ),
                     child: leading,
                   ),
                 ),
-                title: Text(subject.title ?? ""),
+                title: Text(report.reportTypeName ?? ""),
+                dense: true,
+                visualDensity: const VisualDensity(vertical: -3),
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ObservationSubjectView(id: subject.id),
-                    ),
-                  );
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) =>
+                  //         ObservationSubjectView(id: Report.id),
+                  //   ),
+                  // );
                 });
           },
           separatorBuilder: (context, index) => const Divider(),
-          itemCount: viewModel.observationSubjects.length,
+          itemCount: viewModel.observationSubjectReports.length,
         ),
       ),
     );

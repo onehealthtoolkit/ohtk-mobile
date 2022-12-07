@@ -3,8 +3,10 @@ import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
+import 'package:podd_app/models/entities/observation_subject_report.dart';
 import 'package:podd_app/models/observation_subject_monitoring_query_result.dart';
 import 'package:podd_app/models/observation_subject_query_result.dart';
+import 'package:podd_app/models/observation_subject_report_query_result.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:stacked/stacked.dart';
 
@@ -12,6 +14,8 @@ abstract class IObservationService with ReactiveServiceMixin {
   List<ObservationSubject> get observationSubjects;
 
   List<ObservationSubjectMonitoring> get observationSubjectMonitorings;
+
+  List<ObservationSubjectReport> get observationSubjectReports;
 
   Future<List<ObservationDefinition>> fetchAllObservationDefinitions();
 
@@ -23,6 +27,8 @@ abstract class IObservationService with ReactiveServiceMixin {
   Future<ObservationSubject> getObservationSubject(String id);
 
   Future<void> fetchAllObservationSubjectMonitorings(String subjectId);
+
+  Future<void> fetchAllObservationSubjectReports(String subjectId);
 }
 
 class ObservationService extends IObservationService {
@@ -35,6 +41,9 @@ class ObservationService extends IObservationService {
       _observationSubjectMonitorings =
       ReactiveList<ObservationSubjectMonitoring>();
 
+  final ReactiveList<ObservationSubjectReport> _observationSubjectReports =
+      ReactiveList<ObservationSubjectReport>();
+
   bool hasMoreObservationSubjects = false;
   int currentObservationSubjectNextOffset = 0;
   int observationSubjectLimit = 20;
@@ -43,6 +52,7 @@ class ObservationService extends IObservationService {
     listenToReactiveValues([
       _observationSubjects,
       _observationSubjectMonitorings,
+      _observationSubjectReports,
     ]);
   }
 
@@ -52,6 +62,10 @@ class ObservationService extends IObservationService {
   @override
   List<ObservationSubjectMonitoring> get observationSubjectMonitorings =>
       _observationSubjectMonitorings;
+
+  @override
+  List<ObservationSubjectReport> get observationSubjectReports =>
+      _observationSubjectReports;
 
   @override
   Future<List<ObservationDefinition>> fetchAllObservationDefinitions() async {
@@ -110,6 +124,16 @@ class ObservationService extends IObservationService {
 
     _observationSubjectMonitorings.clear();
     _observationSubjectMonitorings.addAll(result.data);
+  }
+
+  @override
+  Future<void> fetchAllObservationSubjectReports(String subjectId) async {
+    // TODO call fetchSubjectReports api
+    var result = getMockObservationSubjectReports();
+    await Future.delayed(Duration(seconds: 1));
+
+    _observationSubjectReports.clear();
+    _observationSubjectReports.addAll(result.data);
   }
 }
 
@@ -342,6 +366,24 @@ ObservationSubjectMonitoringQueryResult
             "title": "monitor ต้นไม้จามจุรี2"
           })
         ]);
+
+ObservationSubjectReportQueryResult getMockObservationSubjectReports() =>
+    ObservationSubjectReportQueryResult([
+      ObservationSubjectReport.fromJson({
+        "id": "osubrep1",
+        "subjectId": "osub1",
+        "reportId": "rep-01-now",
+        "reportTypeId": "5",
+        "reportTypeName": "ต้นไม้ในกทม",
+        "incidentDate": "2022-11-11",
+        "formData": {
+          "common": "ต้นจามจุรี",
+          "state": "โอเค good",
+          "species": "larvee",
+        },
+        "description": "report ต้นไม้จามจุรี"
+      }),
+    ]);
 
 List<Map<String, dynamic>> getMockObservationMonitoringDefinitions() => [
       {

@@ -6,6 +6,7 @@ class ObservationSubjectMonitoring {
   Map<String, dynamic>? formData;
   String? title;
   String? description;
+  String? imageUrl;
 
   ObservationSubjectMonitoring({
     required this.id,
@@ -15,6 +16,7 @@ class ObservationSubjectMonitoring {
     this.formData,
     this.title,
     this.description,
+    this.imageUrl,
   });
 
   ObservationSubjectMonitoring.fromJson(Map<String, dynamic> json)
@@ -24,5 +26,6 @@ class ObservationSubjectMonitoring {
         monitoringId = json['monitoringId'],
         formData = json['formData'],
         title = json['title'],
-        description = json['description'];
+        description = json['description'],
+        imageUrl = json['imageUrl'];
 }

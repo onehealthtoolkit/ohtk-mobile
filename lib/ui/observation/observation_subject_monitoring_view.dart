@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:podd_app/ui/observation/observation_subject_monitoring_view_model.dart';
 import 'package:podd_app/ui/observation/observation_subject_view.dart';
@@ -32,23 +33,40 @@ class _MonitoringListing
         padding: const EdgeInsets.all(8.0),
         child: ListView.separated(
           itemBuilder: (context, index) {
-            var subject = viewModel.observationSubjectMonitorings[index];
+            var monitoring = viewModel.observationSubjectMonitorings[index];
+            var leading = monitoring.imageUrl == null
+                ? CachedNetworkImage(
+                    imageUrl: "https://picsum.photos/200/300",
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    fit: BoxFit.fill,
+                  )
+                : Container(
+                    color: Colors.grey.shade300,
+                    width: 80,
+                  );
 
             return ListTile(
-                leading: Container(
-                  color: Colors.grey,
-                  width: 40,
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(4.0),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minWidth: 50,
+                      maxWidth: 50,
+                    ),
+                    child: leading,
+                  ),
                 ),
-                title: Text(subject.title ?? ""),
+                title: Text(monitoring.title ?? ""),
                 dense: true,
                 visualDensity: const VisualDensity(vertical: -3),
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ObservationSubjectView(id: subject.id),
-                    ),
-                  );
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) =>
+                  //         ObservationSubjectView(id: monitoring.id),
+                  //   ),
+                  // );
                 });
           },
           separatorBuilder: (context, index) => const Divider(),

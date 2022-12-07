@@ -6,6 +6,7 @@ class ObservationDefinition {
   String? titleTemplate;
   String? descriptionTemplate;
   String? identityTemplate;
+  String? imageUrl;
 
   ObservationDefinition({
     required this.id,
@@ -15,6 +16,7 @@ class ObservationDefinition {
     this.titleTemplate,
     this.descriptionTemplate,
     this.identityTemplate,
+    this.imageUrl,
   });
 
   // TODO Use in sync result from api
@@ -27,7 +29,8 @@ class ObservationDefinition {
         registerFormMapping = map['register_form_mapping'],
         titleTemplate = map['title_template'],
         descriptionTemplate = map['description_template'],
-        identityTemplate = map['identity_template'];
+        identityTemplate = map['identity_template'],
+        imageUrl = map['image_url'];
 
   Map<String, Object?> toMap() {
     var map = <String, Object?>{
@@ -38,6 +41,7 @@ class ObservationDefinition {
       "title_template": titleTemplate,
       "description_template": descriptionTemplate,
       "identity_template": identityTemplate,
+      "image_url": imageUrl,
     };
     return map;
   }

@@ -6,6 +6,7 @@ class ObservationSubject {
   String? title;
   String? description;
   String? identity;
+  String? imageUrl;
 
   ObservationSubject({
     required this.id,
@@ -15,6 +16,7 @@ class ObservationSubject {
     this.title,
     this.description,
     this.identity,
+    this.imageUrl,
   });
 
   ObservationSubject.fromJson(Map<String, dynamic> json)
@@ -24,5 +26,6 @@ class ObservationSubject {
         formData = json['formData'],
         title = json['title'],
         description = json['description'],
-        identity = json['identity'];
+        identity = json['identity'],
+        imageUrl = json['imageUrl'];
 }
