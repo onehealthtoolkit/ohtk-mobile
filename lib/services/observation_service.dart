@@ -1,12 +1,14 @@
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
+import 'package:podd_app/models/entities/observation_report_subject.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/models/entities/observation_subject_report.dart';
 import 'package:podd_app/models/observation_subject_monitoring_query_result.dart';
 import 'package:podd_app/models/observation_subject_query_result.dart';
 import 'package:podd_app/models/observation_subject_report_query_result.dart';
+import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:stacked/stacked.dart';
 
@@ -29,6 +31,9 @@ abstract class IObservationService with ReactiveServiceMixin {
   Future<void> fetchAllObservationSubjectMonitorings(String subjectId);
 
   Future<void> fetchAllObservationSubjectReports(String subjectId);
+
+  Future<ObservationSubjectSubmitResult> submit(
+      ObservationReportSubject report);
 }
 
 class ObservationService extends IObservationService {
@@ -134,6 +139,14 @@ class ObservationService extends IObservationService {
 
     _observationSubjectReports.clear();
     _observationSubjectReports.addAll(result.data);
+  }
+
+  @override
+  Future<ObservationSubjectSubmitResult> submit(
+      ObservationReportSubject report) async {
+    // TODO call submit api
+    var result = ObservationSubjectSubmitSuccess(report);
+    return result;
   }
 }
 

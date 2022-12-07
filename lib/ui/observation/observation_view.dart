@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
+import 'package:podd_app/ui/observation/form/subject_form_view.dart';
 import 'package:podd_app/ui/observation/observation_subject_list_view.dart';
 import 'package:podd_app/ui/observation/observation_subject_map_view.dart';
 import 'package:podd_app/ui/observation/observation_view_model.dart';
@@ -37,6 +38,17 @@ class ObservationView extends HookWidget {
                   ObservationSubjectMapView(definitionId: definition.id),
                 ],
               ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ObservationSubjectFormView(definition),
+              ),
+            );
+          },
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }
