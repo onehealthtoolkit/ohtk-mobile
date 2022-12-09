@@ -6,6 +6,7 @@ import 'package:podd_app/services/api/configuration_api.dart';
 import 'package:podd_app/services/api/forgot_password_api.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/notification_api.dart';
+import 'package:podd_app/services/api/observation_api.dart';
 import 'package:podd_app/services/api/profile_api.dart';
 import 'package:podd_app/services/api/register_api.dart';
 import 'package:podd_app/services/api/report_api.dart';
@@ -275,5 +276,13 @@ registerApiLocators() {
   locator.registerSingletonAsync<ConfigurationApi>(() async {
     var gqlService = locator<GqlService>();
     return ConfigurationApi(gqlService.resolveClientFunction);
+  }, dependsOn: [GqlService]);
+
+  if (locator.isRegistered<ObservationApi>()) {
+    locator.unregister<ObservationApi>();
+  }
+  locator.registerSingletonAsync<ObservationApi>(() async {
+    var gqlService = locator<GqlService>();
+    return ObservationApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 }

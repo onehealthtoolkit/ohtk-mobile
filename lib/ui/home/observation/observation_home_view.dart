@@ -14,7 +14,14 @@ class ObservationHomeView extends StatelessWidget {
       viewModelBuilder: () => ObservationHomeViewModel(),
       builder: (context, viewModel, child) => RefreshIndicator(
         onRefresh: () => viewModel.fetch(),
-        child: _Listing(),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Flex(direction: Axis.vertical, children: [
+            Expanded(
+              child: _Listing(),
+            ),
+          ]),
+        ),
       ),
     );
   }
@@ -24,57 +31,54 @@ class _Listing extends HookViewModelWidget<ObservationHomeViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, ObservationHomeViewModel viewModel) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: viewModel.isBusy
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : ListView.separated(
-              separatorBuilder: (context, index) => const Divider(),
-              shrinkWrap: true,
-              itemCount: viewModel.observationDefinitions.length,
-              itemBuilder: ((context, index) {
-                final observationDefinition =
-                    viewModel.observationDefinitions[index];
+    return viewModel.isBusy
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : ListView.separated(
+            separatorBuilder: (context, index) => const Divider(),
+            shrinkWrap: true,
+            itemCount: viewModel.observationDefinitions.length,
+            itemBuilder: ((context, index) {
+              final observationDefinition =
+                  viewModel.observationDefinitions[index];
 
-                var leading = observationDefinition.imageUrl == null
-                    ? CachedNetworkImage(
-                        imageUrl: "https://picsum.photos/200/300",
-                        placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                        fit: BoxFit.fill,
-                      )
-                    : Container(
-                        color: Colors.grey.shade300,
-                        width: 80,
-                      );
-
-                return ListTile(
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(4.0),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        minWidth: 70,
-                        maxWidth: 70,
-                        minHeight: 52,
-                        maxHeight: 52,
-                      ),
-                      child: leading,
-                    ),
-                  ),
-                  title: Text(observationDefinition.name),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ObservationView(observationDefinition),
-                      ),
+              var leading = observationDefinition.imageUrl != null
+                  ? CachedNetworkImage(
+                      imageUrl: observationDefinition.imageUrl!,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      fit: BoxFit.fill,
+                    )
+                  : Container(
+                      color: Colors.grey.shade300,
+                      width: 80,
                     );
-                  },
-                );
-              }),
-            ),
-    );
+
+              return ListTile(
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(4.0),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minWidth: 70,
+                      maxWidth: 70,
+                      minHeight: 52,
+                      maxHeight: 52,
+                    ),
+                    child: leading,
+                  ),
+                ),
+                title: Text(observationDefinition.name),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ObservationView(observationDefinition),
+                    ),
+                  );
+                },
+              );
+            }),
+          );
   }
 }

@@ -1,39 +1,30 @@
+import 'package:podd_app/models/entities/utils.dart';
+
 class ObservationMonitoringDefinition {
-  String id;
-  String definitionId;
+  int id;
   String name;
   String formDefinition;
+  bool isActive;
+  String? description;
   String? titleTemplate;
   String? descriptionTemplate;
 
   ObservationMonitoringDefinition({
     required this.id,
-    required this.definitionId,
     required this.name,
     required this.formDefinition,
+    required this.isActive,
+    this.description,
     this.titleTemplate,
     this.descriptionTemplate,
   });
 
-  // TODO Use in sync result from api
-  // ObservationMonitoringDefinition.fromJson(Map<String, dynamic> jsonMap):
-
-  ObservationMonitoringDefinition.fromMap(Map<String, dynamic> map)
-      : id = map['id'],
-        definitionId = map['definition_id'],
-        name = map['name'],
-        formDefinition = map['form_definition'],
-        titleTemplate = map['title_template'];
-
-  Map<String, Object?> toMap() {
-    var map = <String, Object?>{
-      "id": id,
-      "name": name,
-      "definitionId": definitionId,
-      "form_definition": formDefinition,
-      "title_template": titleTemplate,
-      "description_template": descriptionTemplate,
-    };
-    return map;
-  }
+  ObservationMonitoringDefinition.fromJson(Map<String, dynamic> jsonMap)
+      : id = cvInt(jsonMap, (m) => m['id']),
+        name = jsonMap['name'],
+        isActive = jsonMap['isActive'],
+        description = jsonMap['description'],
+        formDefinition = jsonMap['formDefinition'],
+        titleTemplate = jsonMap['titleTemplate'],
+        descriptionTemplate = jsonMap['descriptionTemplate'];
 }

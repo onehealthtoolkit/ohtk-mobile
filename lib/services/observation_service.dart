@@ -1,6 +1,5 @@
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
-import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
 import 'package:podd_app/models/entities/observation_report_subject.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
@@ -9,6 +8,7 @@ import 'package:podd_app/models/observation_subject_monitoring_query_result.dart
 import 'package:podd_app/models/observation_subject_query_result.dart';
 import 'package:podd_app/models/observation_subject_report_query_result.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
+import 'package:podd_app/services/api/observation_api.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:stacked/stacked.dart';
 
@@ -21,10 +21,7 @@ abstract class IObservationService with ReactiveServiceMixin {
 
   Future<List<ObservationDefinition>> fetchAllObservationDefinitions();
 
-  Future<List<ObservationMonitoringDefinition>>
-      fetchAllObservationMonitoringDefinitions();
-
-  Future<void> fetchAllObservationSubjects(bool resetFlag, String definitionId);
+  Future<void> fetchAllObservationSubjects(bool resetFlag, int definitionId);
 
   Future<ObservationSubject> getObservationSubject(String id);
 
@@ -38,6 +35,7 @@ abstract class IObservationService with ReactiveServiceMixin {
 
 class ObservationService extends IObservationService {
   final _dbService = locator<IDbService>();
+  final _observationApi = locator<ObservationApi>();
 
   final ReactiveList<ObservationSubject> _observationSubjects =
       ReactiveList<ObservationSubject>();
@@ -74,28 +72,13 @@ class ObservationService extends IObservationService {
 
   @override
   Future<List<ObservationDefinition>> fetchAllObservationDefinitions() async {
-    // TODO Query from db
-    // var _db = _dbService.db;
-    var result = await Future.value(getMockObservationDefinitions());
-    await Future.delayed(Duration(seconds: 1));
-    return result.map((item) => ObservationDefinition.fromMap(item)).toList();
-  }
-
-  @override
-  Future<List<ObservationMonitoringDefinition>>
-      fetchAllObservationMonitoringDefinitions() async {
-    // TODO Query from db
-    // var _db = _dbService.db;
-    var result = await Future.value(getMockObservationMonitoringDefinitions());
-    await Future.delayed(Duration(seconds: 1));
-    return result
-        .map((item) => ObservationMonitoringDefinition.fromMap(item))
-        .toList();
+    var result = await _observationApi.fetchObservationDefinitions();
+    return result.data;
   }
 
   @override
   Future<void> fetchAllObservationSubjects(
-      bool resetFlag, String definitionId) async {
+      bool resetFlag, int definitionId) async {
     if (resetFlag) {
       currentObservationSubjectNextOffset = 0;
     }

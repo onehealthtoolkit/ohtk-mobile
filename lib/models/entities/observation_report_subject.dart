@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 class ObservationReportSubject {
   String id;
   Map<String, dynamic> data;
-  String definitionId;
+  int definitionId;
   DateTime incidentDate;
   String? gpsLocation;
 
