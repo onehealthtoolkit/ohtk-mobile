@@ -5,7 +5,7 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ObservationSubjectMonitoringView extends StatelessWidget {
-  final String subjectId;
+  final int subjectId;
 
   const ObservationSubjectMonitoringView({
     Key? key,

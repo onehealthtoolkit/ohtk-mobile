@@ -23,11 +23,11 @@ abstract class IObservationService with ReactiveServiceMixin {
 
   Future<void> fetchAllObservationSubjects(bool resetFlag, int definitionId);
 
-  Future<ObservationSubject> getObservationSubject(String id);
+  Future<ObservationSubject> getObservationSubject(int id);
 
-  Future<void> fetchAllObservationSubjectMonitorings(String subjectId);
+  Future<void> fetchAllObservationSubjectMonitorings(int subjectId);
 
-  Future<void> fetchAllObservationSubjectReports(String subjectId);
+  Future<void> fetchAllObservationSubjectReports(int subjectId);
 
   Future<ObservationSubjectSubmitResult> submit(
       ObservationReportSubject report);
@@ -82,9 +82,7 @@ class ObservationService extends IObservationService {
     if (resetFlag) {
       currentObservationSubjectNextOffset = 0;
     }
-    // TODO Fetch api
-    var result = await Future.value(getMockObservationSubjects());
-    await Future.delayed(Duration(seconds: 1));
+    var result = await _observationApi.fetchObservationSubjects(definitionId);
 
     if (resetFlag) {
       _observationSubjects.clear();
@@ -97,7 +95,7 @@ class ObservationService extends IObservationService {
   }
 
   @override
-  Future<ObservationSubject> getObservationSubject(String id) async {
+  Future<ObservationSubject> getObservationSubject(int id) async {
     // TODO call getSubject api
     var result = getMockObservationSubjects();
     await Future.delayed(Duration(seconds: 1));
@@ -105,7 +103,7 @@ class ObservationService extends IObservationService {
   }
 
   @override
-  Future<void> fetchAllObservationSubjectMonitorings(String subjectId) async {
+  Future<void> fetchAllObservationSubjectMonitorings(int subjectId) async {
     // TODO call fetchSubjectMonitorings api
     var result = getMockObservationSubjectMonitorings();
     await Future.delayed(Duration(seconds: 1));
@@ -115,7 +113,7 @@ class ObservationService extends IObservationService {
   }
 
   @override
-  Future<void> fetchAllObservationSubjectReports(String subjectId) async {
+  Future<void> fetchAllObservationSubjectReports(int subjectId) async {
     // TODO call fetchSubjectReports api
     var result = getMockObservationSubjectReports();
     await Future.delayed(Duration(seconds: 1));

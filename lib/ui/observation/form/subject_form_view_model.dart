@@ -41,7 +41,7 @@ class ObservationSubjectFormViewModel extends BaseViewModel {
   }
 
   init() async {
-    _subjectId = _subject != null ? _subject!.id : _uuid.v4();
+    _subjectId = _uuid.v4();
     _formStore = Form.fromJson(
         json.decode(_definition.registerFormDefinition), _subjectId);
 
@@ -85,13 +85,11 @@ class ObservationSubjectFormViewModel extends BaseViewModel {
   Future<ObservationSubjectSubmitResult> submit() async {
     setBusy(true);
     String? gpsLocation = _findFirstLocationValue(_formStore);
-    DateTime? incidentDate = _findFirstIncidentDateValue(_formStore);
 
     var report = ObservationReportSubject(
       id: _subjectId,
       data: _formStore.toJsonValue(),
       definitionId: _definition.id,
-      incidentDate: incidentDate ?? DateTime.now(),
       gpsLocation: gpsLocation,
     );
 
@@ -109,19 +107,6 @@ class ObservationSubjectFormViewModel extends BaseViewModel {
 
     if (field != null && field is LocationField) {
       result = "${field.longitude.toString()},${field.latitude.toString()}";
-    }
-    return result;
-  }
-
-  DateTime? _findFirstIncidentDateValue(Form form) {
-    DateTime? result;
-    var field = form.findField((field) =>
-        field is DateField &&
-        field.tags != null &&
-        field.tags!.contains("incident_date"));
-
-    if (field != null && field is DateField) {
-      result = field.value;
     }
     return result;
   }

@@ -36,9 +36,9 @@ class _SubjectListing
           itemBuilder: (context, index) {
             var subject = viewModel.observationSubjects[index];
 
-            var leading = subject.imageUrl == null
+            var leading = subject.imageUrl != null
                 ? CachedNetworkImage(
-                    imageUrl: "https://picsum.photos/200/300",
+                    imageUrl: subject.imageUrl!,
                     placeholder: (context, url) =>
                         const CircularProgressIndicator(),
                     fit: BoxFit.fill,

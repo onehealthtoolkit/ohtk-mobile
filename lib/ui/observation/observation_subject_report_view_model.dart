@@ -6,7 +6,7 @@ import 'package:stacked/stacked.dart';
 class ObservationSubjectReportViewModel extends ReactiveViewModel {
   IObservationService observationService = locator<IObservationService>();
 
-  String subjectId;
+  int subjectId;
 
   ObservationSubjectReportViewModel(this.subjectId) {
     fetchSubjectReports();

@@ -112,7 +112,7 @@ class _SubjectDetail extends HookViewModelWidget<ObservationSubjectViewModel> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 10),
-          Text(subject.id),
+          Text(subject.id.toString()),
           const SizedBox(height: 10),
           Text(
             subject.title != null && subject.title!.isNotEmpty

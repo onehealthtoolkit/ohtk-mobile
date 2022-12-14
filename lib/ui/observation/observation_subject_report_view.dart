@@ -1,12 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:podd_app/ui/observation/observation_subject_Report_view_model.dart';
-import 'package:podd_app/ui/observation/observation_subject_view.dart';
+import 'package:podd_app/ui/observation/observation_subject_report_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ObservationSubjectReportView extends StatelessWidget {
-  final String subjectId;
+  final int subjectId;
 
   const ObservationSubjectReportView({
     Key? key,

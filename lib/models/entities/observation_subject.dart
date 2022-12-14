@@ -1,27 +1,32 @@
+import 'package:podd_app/models/entities/utils.dart';
+
 class ObservationSubject {
-  String id;
-  String definitionId;
-  int authorityId;
+  int id;
+  int definitionId;
+  int? authorityId;
   Map<String, dynamic>? formData;
-  String? title;
-  String? description;
-  String? identity;
+  String title;
+  String description;
+  String identity;
   String? imageUrl;
+  bool isActive;
 
   ObservationSubject({
     required this.id,
     required this.definitionId,
-    required this.authorityId,
+    required this.isActive,
+    required this.title,
+    required this.description,
+    required this.identity,
+    this.authorityId,
     this.formData,
-    this.title,
-    this.description,
-    this.identity,
     this.imageUrl,
   });
 
   ObservationSubject.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        definitionId = json['definitionId'],
+      : id = cvInt(json, (m) => m['id']),
+        definitionId = cvInt(json, (m) => m['definitionId']),
+        isActive = json['isActive'],
         authorityId = json['authorityId'],
         formData = json['formData'],
         title = json['title'],
