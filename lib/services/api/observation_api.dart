@@ -85,4 +85,30 @@ class ObservationApi extends GraphQlBaseApi {
       typeConverter: (resp) => ObservationSubjectQueryResult.fromJson(resp),
     );
   }
+
+  Future<ObservationSubjectGetResult> getObservationSubject(int id) {
+    const query = r'''
+      query observationSubject($id: ID!) {
+        observationSubject(id: $id) {
+          id
+          definitionId
+          title
+          description
+          definitionId
+          identity
+          isActive
+          formData
+          monitoringRecords {
+            id
+            title
+            description
+          }
+        }
+      }
+    ''';
+    return runGqlQuery(
+        query: query,
+        variables: {"id": id},
+        typeConverter: (resp) => ObservationSubjectGetResult.fromJson(resp));
+  }
 }

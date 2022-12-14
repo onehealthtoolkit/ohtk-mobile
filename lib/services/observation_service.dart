@@ -96,10 +96,8 @@ class ObservationService extends IObservationService {
 
   @override
   Future<ObservationSubject> getObservationSubject(int id) async {
-    // TODO call getSubject api
-    var result = getMockObservationSubjects();
-    await Future.delayed(Duration(seconds: 1));
-    return result.data[0];
+    var result = await _observationApi.getObservationSubject(id);
+    return result.data;
   }
 
   @override

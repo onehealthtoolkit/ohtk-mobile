@@ -28,7 +28,7 @@ class ObservationSubject {
         definitionId = cvInt(json, (m) => m['definitionId']),
         isActive = json['isActive'],
         authorityId = json['authorityId'],
-        formData = json['formData'],
+        formData = Map<String, dynamic>.from(json['formData']),
         title = json['title'],
         description = json['description'],
         identity = json['identity'],
