@@ -62,7 +62,8 @@ class ObservationSubjectView extends HookWidget {
       child: TabBarView(
         controller: _tabController,
         children: [
-          ObservationSubjectMonitoringView(subjectId: subject.id),
+          ObservationSubjectMonitoringView(
+              definition: definition, subject: subject),
           ObservationSubjectReportView(subjectId: subject.id),
         ],
       ),

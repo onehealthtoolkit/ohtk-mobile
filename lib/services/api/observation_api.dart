@@ -69,6 +69,10 @@ class ObservationApi extends GraphQlBaseApi {
               id
               title
               description
+              monitoringDefinitionId
+              subjectId
+              isActive
+              formData
             }
           }
           pageInfo {
@@ -105,6 +109,10 @@ class ObservationApi extends GraphQlBaseApi {
             id
             title
             description
+            monitoringDefinitionId
+            subjectId
+            isActive
+            formData
           }
         }
       }
