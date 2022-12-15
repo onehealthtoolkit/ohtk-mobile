@@ -115,22 +115,18 @@ class _SubjectDetail extends HookViewModelWidget<ObservationSubjectViewModel> {
           Text(subject.id.toString()),
           const SizedBox(height: 10),
           Text(
-            subject.title != null && subject.title!.isNotEmpty
-                ? subject.title!
-                : "no title",
+            subject.title.isNotEmpty ? subject.title : "no title",
             textScaleFactor: 1.5,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 10),
-          Text(subject.description != null && subject.description!.isNotEmpty
-              ? subject.description!
+          Text(subject.description.isNotEmpty
+              ? subject.description
               : "no description"),
           const SizedBox(height: 10),
-          Text(subject.identity != null && subject.identity!.isNotEmpty
-              ? subject.identity!
-              : "no identity"),
+          Text(subject.identity.isNotEmpty ? subject.identity : "no identity"),
           const SizedBox(height: 24),
           GestureDetector(
             onTap: () => Navigator.push(
@@ -176,7 +172,7 @@ class _SubjectDetail extends HookViewModelWidget<ObservationSubjectViewModel> {
                   verticalAlignment: TableCellVerticalAlignment.middle,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(entry.value ?? "-"),
+                    child: Text(entry.value.toString()),
                   )),
             ],
           );
