@@ -1,3 +1,5 @@
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_report_subject.dart';
@@ -13,6 +15,8 @@ import 'package:podd_app/services/db_service.dart';
 import 'package:stacked/stacked.dart';
 
 abstract class IObservationService with ReactiveServiceMixin {
+  final _logger = locator<Logger>();
+
   List<ObservationSubject> get observationSubjects;
 
   List<ObservationSubjectMonitoring> get observationSubjectMonitorings;
@@ -123,9 +127,25 @@ class ObservationService extends IObservationService {
   @override
   Future<ObservationSubjectSubmitResult> submit(
       ObservationReportSubject report) async {
-    // TODO call submit api
-    var result = ObservationSubjectSubmitSuccess(report);
-    return result;
+    try {
+      var result = await _observationApi.submit(report);
+
+      if (result is ObservationSubjectSubmitSuccess) {
+        // TODO submit images
+        // TODO delete from local db
+        _observationSubjects.insert(0, result.subject);
+      }
+
+      if (result is ObservationSubjectSubmitFailure) {
+        // TODO save to local db
+        return ObservationSubjectSubmitPending();
+      }
+      return result;
+    } on LinkException catch (_e) {
+      _logger.e(_e);
+      // TODO save to local db
+      return ObservationSubjectSubmitPending();
+    }
   }
 }
 
