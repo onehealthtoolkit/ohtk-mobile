@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:podd_app/ui/home/consent_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -76,7 +77,7 @@ class _ConsentDetail extends HookViewModelWidget<ConsentViewModel> {
                       minHeight: 80, minWidth: double.infinity),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Text(viewModel.consentContent),
+                    child: Html(data: viewModel.consentContent),
                   ),
                 ),
               ),
