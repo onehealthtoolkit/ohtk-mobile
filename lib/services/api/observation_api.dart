@@ -1,7 +1,10 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:podd_app/models/entities/observation_report_monitoring_record.dart';
 import 'package:podd_app/models/entities/observation_report_subject.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
+import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/models/observation_definition_query_result.dart';
+import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
 import 'package:podd_app/models/observation_subject_query_result.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
@@ -123,7 +126,7 @@ class ObservationApi extends GraphQlBaseApi {
         typeConverter: (resp) => ObservationSubjectGetResult.fromJson(resp));
   }
 
-  Future<ObservationSubjectSubmitResult> submit(
+  Future<ObservationSubjectSubmitResult> submitReportSubject(
       ObservationReportSubject report) async {
     const mutation = r'''
       mutation submitObservationSubject($data: GenericScalar!, $definitionId: Int!) {
@@ -158,6 +161,41 @@ class ObservationApi extends GraphQlBaseApi {
       return ObservationSubjectSubmitSuccess(result);
     } on OperationException catch (e) {
       return ObservationSubjectSubmitFailure(e);
+    }
+  }
+
+  Future<ObservationMonitoringRecordSubmitResult> submitReportMonitoringRecord(
+      ObservationReportMonitoringRecord report) async {
+    const mutation = r'''
+      mutation submitObservationSubjectMonitoring($data: GenericScalar!, $monitoringDefinitionId: Int!, $subjectId: Int!) {
+        submitObservationSubjectMonitoring(data: $data, monitoringDefinitionId: $monitoringDefinitionId, subjectId: $subjectId) {
+          result {
+            id
+            title
+            description
+            isActive
+            formData
+            monitoringDefinitionId
+            subjectId
+          }  	
+        }
+      }
+    ''';
+    try {
+      var result = await runGqlMutation<ObservationSubjectMonitoring>(
+        mutation: mutation,
+        parseData: (json) =>
+            ObservationSubjectMonitoring.fromJson(json!["result"]),
+        variables: {
+          "monitoringDefinitionId": report.monitoringDefinitionId,
+          "subjectId": report.subjectId,
+          "data": report.data,
+        },
+      );
+
+      return ObservationMonitoringRecordSubmitSuccess(result);
+    } on OperationException catch (e) {
+      return ObservationMonitoringRecordSubmitFailure(e);
     }
   }
 }

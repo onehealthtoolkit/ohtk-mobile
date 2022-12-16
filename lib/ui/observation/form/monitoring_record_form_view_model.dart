@@ -2,16 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:podd_app/locator.dart';
-import 'package:podd_app/models/entities/observation_definition.dart';
-import 'package:podd_app/models/entities/observation_report_subject.dart';
+import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
+import 'package:podd_app/models/entities/observation_report_monitoring_record.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
-import 'package:podd_app/models/observation_subject_submit_result.dart';
+import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
+import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/services/observation_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:uuid/uuid.dart';
 
-enum ObservationSubjectFormState {
+enum ObservationMonitoringRecordFormState {
   formInput,
   confirmation,
 }
@@ -23,77 +24,80 @@ enum BackAction {
 
 var _uuid = const Uuid();
 
-class ObservationSubjectFormViewModel extends BaseViewModel {
+class ObservationMonitoringRecordFormViewModel extends BaseViewModel {
   final IObservationService _observationService =
       locator<IObservationService>();
 
-  final ObservationDefinition _definition;
-  final ObservationSubject? _subject;
+  final ObservationMonitoringDefinition _definition;
+  final ObservationSubject _subject;
+  final ObservationSubjectMonitoring? _monitoringRecord;
+
   bool isReady = false;
-  String _subjectId = "";
+  String _reportId = "";
   Form _formStore = Form.fromJson({}, "");
-  ObservationSubjectFormState state = ObservationSubjectFormState.formInput;
+  ObservationMonitoringRecordFormState state =
+      ObservationMonitoringRecordFormState.formInput;
 
   Form get formStore => _formStore;
 
-  ObservationSubjectFormViewModel(this._definition, [this._subject]) {
+  ObservationMonitoringRecordFormViewModel(this._definition, this._subject,
+      [this._monitoringRecord]) {
     init();
   }
 
   init() async {
-    _subjectId = _uuid.v4();
-    _formStore = Form.fromJson(
-        json.decode(_definition.registerFormDefinition), _subjectId);
+    _reportId = _uuid.v4();
+    _formStore =
+        Form.fromJson(json.decode(_definition.formDefinition), _reportId);
 
     final String _timezone = await FlutterNativeTimezone.getLocalTimezone();
     _formStore.setTimezone(_timezone);
 
-    if (_subject != null) {
-      _formStore.loadJsonValue(_subject!.formData ?? {});
+    if (_monitoringRecord != null) {
+      _formStore.loadJsonValue(_monitoringRecord!.formData ?? {});
     }
     isReady = true;
     notifyListeners();
   }
 
   BackAction back() {
-    if (state == ObservationSubjectFormState.formInput) {
+    if (state == ObservationMonitoringRecordFormState.formInput) {
       if (formStore.couldGoToPreviousSection) {
         formStore.previous();
       } else {
         return BackAction.navigationPop;
       }
-    } else if (state == ObservationSubjectFormState.confirmation) {
-      state = ObservationSubjectFormState.formInput;
+    } else if (state == ObservationMonitoringRecordFormState.confirmation) {
+      state = ObservationMonitoringRecordFormState.formInput;
       notifyListeners();
     }
     return BackAction.doNothing;
   }
 
   next() {
-    if (state == ObservationSubjectFormState.formInput) {
+    if (state == ObservationMonitoringRecordFormState.formInput) {
       if (formStore.couldGoToNextSection) {
         formStore.next();
       } else {
         if (formStore.currentSection.validate()) {
-          state = ObservationSubjectFormState.confirmation;
+          state = ObservationMonitoringRecordFormState.confirmation;
           notifyListeners();
         }
       }
     } else {}
   }
 
-  Future<ObservationSubjectSubmitResult> submit() async {
+  Future<ObservationMonitoringRecordSubmitResult> submit() async {
     setBusy(true);
-    String? gpsLocation = _findFirstLocationValue(_formStore);
 
-    var report = ObservationReportSubject(
-      id: _subjectId,
+    var report = ObservationReportMonitoringRecord(
+      id: _reportId,
       data: _formStore.toJsonValue(),
-      definitionId: _definition.id,
-      gpsLocation: gpsLocation,
+      monitoringDefinitionId: _definition.id,
+      subjectId: _subject.id,
     );
 
-    var result = await _observationService.submitReportSubject(report);
+    var result = await _observationService.submitReportMonitoringRecord(report);
 
     setBusy(false);
     return result;

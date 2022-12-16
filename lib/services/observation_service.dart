@@ -2,10 +2,12 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
+import 'package:podd_app/models/entities/observation_report_monitoring_record.dart';
 import 'package:podd_app/models/entities/observation_report_subject.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/models/entities/observation_subject_report.dart';
+import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
 import 'package:podd_app/models/observation_subject_monitoring_query_result.dart';
 import 'package:podd_app/models/observation_subject_query_result.dart';
 import 'package:podd_app/models/observation_subject_report_query_result.dart';
@@ -33,8 +35,11 @@ abstract class IObservationService with ReactiveServiceMixin {
 
   Future<void> fetchAllObservationSubjectReports(int subjectId);
 
-  Future<ObservationSubjectSubmitResult> submit(
+  Future<ObservationSubjectSubmitResult> submitReportSubject(
       ObservationReportSubject report);
+
+  Future<ObservationMonitoringRecordSubmitResult> submitReportMonitoringRecord(
+      ObservationReportMonitoringRecord report);
 }
 
 class ObservationService extends IObservationService {
@@ -101,17 +106,19 @@ class ObservationService extends IObservationService {
   @override
   Future<ObservationSubject> getObservationSubject(int id) async {
     var result = await _observationApi.getObservationSubject(id);
+    var monitoringRecords = result.data.monitoringRecords;
+
+    _observationSubjectMonitorings.clear();
+    _observationSubjectMonitorings.addAll(monitoringRecords);
+
     return result.data;
   }
 
   @override
   Future<void> fetchAllObservationSubjectMonitorings(int subjectId) async {
     // TODO call fetchSubjectMonitorings api
-    var result = getMockObservationSubjectMonitorings();
-    await Future.delayed(Duration(seconds: 1));
-
-    _observationSubjectMonitorings.clear();
-    _observationSubjectMonitorings.addAll(result.data);
+    // _observationSubjectMonitorings.clear();
+    // _observationSubjectMonitorings.addAll(result.data);
   }
 
   @override
@@ -125,10 +132,10 @@ class ObservationService extends IObservationService {
   }
 
   @override
-  Future<ObservationSubjectSubmitResult> submit(
+  Future<ObservationSubjectSubmitResult> submitReportSubject(
       ObservationReportSubject report) async {
     try {
-      var result = await _observationApi.submit(report);
+      var result = await _observationApi.submitReportSubject(report);
 
       if (result is ObservationSubjectSubmitSuccess) {
         // TODO submit images
@@ -145,6 +152,30 @@ class ObservationService extends IObservationService {
       _logger.e(_e);
       // TODO save to local db
       return ObservationSubjectSubmitPending();
+    }
+  }
+
+  @override
+  Future<ObservationMonitoringRecordSubmitResult> submitReportMonitoringRecord(
+      ObservationReportMonitoringRecord report) async {
+    try {
+      var result = await _observationApi.submitReportMonitoringRecord(report);
+
+      if (result is ObservationMonitoringRecordSubmitSuccess) {
+        // TODO submit images
+        // TODO delete from local db
+        _observationSubjectMonitorings.insert(0, result.monitoringRecord);
+      }
+
+      if (result is ObservationMonitoringRecordSubmitFailure) {
+        // TODO save to local db
+        return ObservationMonitoringRecordSubmitPending();
+      }
+      return result;
+    } on LinkException catch (_e) {
+      _logger.e(_e);
+      // TODO save to local db
+      return ObservationMonitoringRecordSubmitPending();
     }
   }
 }

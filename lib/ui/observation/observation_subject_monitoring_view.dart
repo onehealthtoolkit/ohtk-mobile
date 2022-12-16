@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
+import 'package:podd_app/ui/observation/form/monitoring_record_form_view.dart';
 import 'package:podd_app/ui/observation/observation_subject_monitoring_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -44,6 +45,7 @@ class _MonitoringDefinitionListing
           return ListTile(
             title: _title(context, viewModel, monitoringDefinition),
             subtitle: _MonitoringRecordListing(monitoringDefinition.id),
+            contentPadding: const EdgeInsets.all(0),
           );
         },
         separatorBuilder: (context, index) => const Divider(),
@@ -59,22 +61,32 @@ class _MonitoringDefinitionListing
   ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      color: Colors.blue[50],
+      decoration: BoxDecoration(
+        color: Colors.blue[50],
+        border: Border(
+          bottom: BorderSide(width: 4.0, color: Colors.lightBlue.shade900),
+        ),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(monitoringDefinition.name),
           ElevatedButton(
             child: const Icon(Icons.add),
+            style: ElevatedButton.styleFrom(
+              fixedSize: const Size(16, 16),
+              shape: const CircleBorder(),
+            ),
             onPressed: () {
-              //   Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => ObservationSubjectFormView(
-              //       definition: definition,
-              //     ),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ObservationMonitoringRecordFormView(
+                    monitoringDefinition: monitoringDefinition,
+                    subject: viewModel.subject,
+                  ),
+                ),
+              );
             },
           ),
         ],
@@ -115,6 +127,7 @@ class _MonitoringRecordListing
                   );
 
             return ListTile(
+                contentPadding: const EdgeInsets.all(4),
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(4.0),
                   child: ConstrainedBox(
@@ -125,7 +138,7 @@ class _MonitoringRecordListing
                     child: leading,
                   ),
                 ),
-                title: Text(monitoring.title ?? ""),
+                title: Text(monitoring.title),
                 dense: true,
                 visualDensity: const VisualDensity(vertical: -3),
                 onTap: () {
@@ -139,7 +152,7 @@ class _MonitoringRecordListing
           },
           itemCount: items.length,
           shrinkWrap: true,
-          physics: ClampingScrollPhysics(),
+          physics: const ClampingScrollPhysics(),
         ),
       ),
     );
