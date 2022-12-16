@@ -33,6 +33,8 @@ abstract class IObservationService with ReactiveServiceMixin {
 
   Future<void> fetchAllObservationSubjectMonitorings(int subjectId);
 
+  Future<ObservationSubjectMonitoring> getObservationSubjectMonitoring(int id);
+
   Future<void> fetchAllObservationSubjectReports(int subjectId);
 
   Future<ObservationSubjectSubmitResult> submitReportSubject(
@@ -116,9 +118,17 @@ class ObservationService extends IObservationService {
 
   @override
   Future<void> fetchAllObservationSubjectMonitorings(int subjectId) async {
-    // TODO call fetchSubjectMonitorings api
-    // _observationSubjectMonitorings.clear();
-    // _observationSubjectMonitorings.addAll(result.data);
+    var result =
+        await _observationApi.fetchObservationMonitoringRecords(subjectId);
+    _observationSubjectMonitorings.clear();
+    _observationSubjectMonitorings.addAll(result.data);
+  }
+
+  @override
+  Future<ObservationSubjectMonitoring> getObservationSubjectMonitoring(
+      int id) async {
+    var result = await _observationApi.getObservationMonitoringRecord(id);
+    return result.data;
   }
 
   @override

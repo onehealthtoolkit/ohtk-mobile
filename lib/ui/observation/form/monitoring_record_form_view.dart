@@ -7,6 +7,7 @@ import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
+import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
@@ -17,18 +18,20 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 class ObservationMonitoringRecordFormView extends StatelessWidget {
   final ObservationMonitoringDefinition monitoringDefinition;
   final ObservationSubject subject;
+  final ObservationSubjectMonitoring? monitoringRecord;
 
   const ObservationMonitoringRecordFormView({
     Key? key,
     required this.monitoringDefinition,
     required this.subject,
+    this.monitoringRecord,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ObservationMonitoringRecordFormViewModel>.reactive(
       viewModelBuilder: () => ObservationMonitoringRecordFormViewModel(
-          monitoringDefinition, subject),
+          monitoringDefinition, subject, monitoringRecord),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
           return const Center(child: CircularProgressIndicator());

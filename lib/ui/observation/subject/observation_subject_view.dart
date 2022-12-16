@@ -3,9 +3,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/ui/observation/form/subject_form_view.dart';
-import 'package:podd_app/ui/observation/observation_subject_monitoring_view.dart';
-import 'package:podd_app/ui/observation/observation_subject_report_view.dart';
-import 'package:podd_app/ui/observation/observation_subject_view_model.dart';
+import 'package:podd_app/ui/observation/subject/observation_subject_monitoring_view.dart';
+import 'package:podd_app/ui/observation/subject/observation_subject_report_view.dart';
+import 'package:podd_app/ui/observation/subject/observation_subject_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 

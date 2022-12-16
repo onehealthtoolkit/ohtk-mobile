@@ -5,6 +5,7 @@ import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/models/observation_definition_query_result.dart';
 import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
+import 'package:podd_app/models/observation_subject_monitoring_query_result.dart';
 import 'package:podd_app/models/observation_subject_query_result.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
@@ -197,5 +198,65 @@ class ObservationApi extends GraphQlBaseApi {
     } on OperationException catch (e) {
       return ObservationMonitoringRecordSubmitFailure(e);
     }
+  }
+
+  Future<ObservationSubjectMonitoringQueryResult>
+      fetchObservationMonitoringRecords(
+    int subjectId, {
+    limit = 100,
+    offset = 0,
+  }) async {
+    const query = r'''
+      query observationSubjectMonitoringRecords($limit: Int, $offset: Int, $subjectId: String) {
+        observationSubjectMonitoringRecords(limit: $limit, offset: $offset, subject_Id_In: [$subjectId]) {
+          totalCount
+          results { 
+            id
+            monitoringDefinitionId
+            subjectId
+            title
+            description
+            isActive
+            formData
+          }
+          pageInfo {
+            hasNextPage
+          }
+        }          
+      }
+    ''';
+    return runGqlQuery<ObservationSubjectMonitoringQueryResult>(
+      query: query,
+      variables: {
+        "limit": limit,
+        "offset": offset,
+        "subjectId": subjectId.toString()
+      },
+      fetchPolicy: FetchPolicy.cacheAndNetwork,
+      typeConverter: (resp) =>
+          ObservationSubjectMonitoringQueryResult.fromJson(resp),
+    );
+  }
+
+  Future<ObservationSubjectMonitoringGetResult> getObservationMonitoringRecord(
+      int id) {
+    const query = r'''
+      query observationSubjectMonitoringRecord($id: ID!) {
+        observationSubjectMonitoringRecord(id: $id) {
+          id
+          monitoringDefinitionId
+          subjectId
+          title
+          description
+          isActive
+          formData
+        }
+      }
+    ''';
+    return runGqlQuery(
+        query: query,
+        variables: {"id": id},
+        typeConverter: (resp) =>
+            ObservationSubjectMonitoringGetResult.fromJson(resp));
   }
 }

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
+import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/ui/observation/form/monitoring_record_form_view.dart';
-import 'package:podd_app/ui/observation/observation_subject_monitoring_view_model.dart';
+import 'package:podd_app/ui/observation/monitoring/observation_monitoring_view.dart';
+import 'package:podd_app/ui/observation/subject/observation_subject_monitoring_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
@@ -44,7 +46,7 @@ class _MonitoringDefinitionListing
 
           return ListTile(
             title: _title(context, viewModel, monitoringDefinition),
-            subtitle: _MonitoringRecordListing(monitoringDefinition.id),
+            subtitle: _MonitoringRecordListing(monitoringDefinition),
             contentPadding: const EdgeInsets.all(0),
           );
         },
@@ -97,14 +99,14 @@ class _MonitoringDefinitionListing
 
 class _MonitoringRecordListing
     extends HookViewModelWidget<ObservationSubjectMonitoringViewModel> {
-  final int monitoringDefinitionId;
+  final ObservationMonitoringDefinition monitoringDefinition;
 
-  const _MonitoringRecordListing(this.monitoringDefinitionId);
+  const _MonitoringRecordListing(this.monitoringDefinition);
 
   @override
   Widget buildViewModelWidget(
       BuildContext context, ObservationSubjectMonitoringViewModel viewModel) {
-    var items = viewModel.getSortedMonitoringRecords(monitoringDefinitionId);
+    var items = viewModel.getSortedMonitoringRecords(monitoringDefinition.id);
 
     return RefreshIndicator(
       onRefresh: () async => viewModel.fetchSubjectMonitorings(),
@@ -142,12 +144,15 @@ class _MonitoringRecordListing
                 dense: true,
                 visualDensity: const VisualDensity(vertical: -3),
                 onTap: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) =>
-                  //         ObservationSubjectView(id: monitoring.id),
-                  //   ),
-                  // );
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ObservationMonitoringRecordView(
+                        monitoringDefinition: monitoringDefinition,
+                        subject: viewModel.subject,
+                        monitoringRecord: monitoring,
+                      ),
+                    ),
+                  );
                 });
           },
           itemCount: items.length,

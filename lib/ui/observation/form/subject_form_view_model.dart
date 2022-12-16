@@ -93,7 +93,13 @@ class ObservationSubjectFormViewModel extends BaseViewModel {
       gpsLocation: gpsLocation,
     );
 
-    var result = await _observationService.submitReportSubject(report);
+    ObservationSubjectSubmitResult result;
+    if (_subject != null) {
+      // TODO update form data
+      result = ObservationSubjectSubmitPending();
+    } else {
+      result = await _observationService.submitReportSubject(report);
+    }
 
     setBusy(false);
     return result;

@@ -97,7 +97,13 @@ class ObservationMonitoringRecordFormViewModel extends BaseViewModel {
       subjectId: _subject.id,
     );
 
-    var result = await _observationService.submitReportMonitoringRecord(report);
+    ObservationMonitoringRecordSubmitResult result;
+    if (_monitoringRecord != null) {
+      // TODO update form data
+      result = ObservationMonitoringRecordSubmitPending();
+    } else {
+      result = await _observationService.submitReportMonitoringRecord(report);
+    }
 
     setBusy(false);
     return result;

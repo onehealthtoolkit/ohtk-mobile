@@ -1,5 +1,7 @@
+import 'package:podd_app/models/entities/utils.dart';
+
 class ObservationSubjectMonitoring {
-  String id;
+  int id;
   int subjectId;
   int monitoringDefinitionId;
   Map<String, dynamic>? formData;
@@ -20,7 +22,7 @@ class ObservationSubjectMonitoring {
   });
 
   ObservationSubjectMonitoring.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
+      : id = cvInt(json, (m) => m['id']),
         subjectId = json['subjectId'],
         monitoringDefinitionId = json['monitoringDefinitionId'],
         formData = Map<String, dynamic>.from(json['formData']),
