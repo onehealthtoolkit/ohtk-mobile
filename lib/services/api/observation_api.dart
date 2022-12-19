@@ -130,8 +130,8 @@ class ObservationApi extends GraphQlBaseApi {
   Future<ObservationSubjectSubmitResult> submitReportSubject(
       ObservationReportSubject report) async {
     const mutation = r'''
-      mutation submitObservationSubject($data: GenericScalar!, $definitionId: Int!) {
-        submitObservationSubject(data: $data, definitionId: $definitionId) {
+      mutation submitObservationSubject($data: GenericScalar!, $definitionId: Int!, $gpsLocation: String) {
+        submitObservationSubject(data: $data, definitionId: $definitionId, gpsLocation: $gpsLocation) {
           result {
             id
             definitionId
@@ -156,6 +156,7 @@ class ObservationApi extends GraphQlBaseApi {
         variables: {
           "definitionId": report.definitionId,
           "data": report.data,
+          "gpsLocation": report.gpsLocation,
         },
       );
 
