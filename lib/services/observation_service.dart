@@ -42,6 +42,9 @@ abstract class IObservationService with ReactiveServiceMixin {
 
   Future<ObservationMonitoringRecordSubmitResult> submitReportMonitoringRecord(
       ObservationReportMonitoringRecord report);
+
+  fetchAllObservationSubjectsInBounded(int definitionId, double topLeftX,
+      double topLeftY, double bottomRightX, double bottomRightY) {}
 }
 
 class ObservationService extends IObservationService {
@@ -187,6 +190,20 @@ class ObservationService extends IObservationService {
       // TODO save to local db
       return ObservationMonitoringRecordSubmitPending();
     }
+  }
+
+  @override
+  Future<List<ObservationSubject>> fetchAllObservationSubjectsInBounded(
+      int definitionId,
+      double topLeftX,
+      double topLeftY,
+      double bottomRightX,
+      double bottomRightY) async {
+    print(
+        "topLeftX: $topLeftX, topLeftY: $topLeftY, bottomRightX: $bottomRightX, bottomRightY: $bottomRightY");
+    var result = await _observationApi.fetchObservationSubjectsInBounded(
+        definitionId, topLeftX, topLeftY, bottomRightX, bottomRightY);
+    return result;
   }
 }
 

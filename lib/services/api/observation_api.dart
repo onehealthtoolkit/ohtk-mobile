@@ -260,4 +260,47 @@ class ObservationApi extends GraphQlBaseApi {
         typeConverter: (resp) =>
             ObservationSubjectMonitoringGetResult.fromJson(resp));
   }
+
+  fetchObservationSubjectsInBounded(int definitionId, double topLeftX,
+      double topLeftY, double bottomRightX, double bottomRightY) {
+    const query = r'''
+      query observationSubjectsInBounded($definitionId: Int, $topLeftX: Float, $topLeftY: Float, $bottomRightX: Float, $bottomRightY: Float) {
+        observationSubjectsInBounded(definitionId: $definitionId, topLeftX: $topLeftX, topLeftY: $topLeftY, bottomRightX: $bottomRightX, bottomRightY: $bottomRightY) {
+          id
+          definitionId
+          title
+          description
+          gpsLocation
+          identity
+          isActive
+          formData
+          monitoringRecords {
+            id
+            title
+            description
+            monitoringDefinitionId
+            subjectId
+            isActive
+            formData
+          }
+        }
+      }
+    ''';
+    return runGqlQuery<List<ObservationSubject>>(
+      query: query,
+      variables: {
+        "definitionId": definitionId,
+        "topLeftX": topLeftX,
+        "topLeftY": topLeftY,
+        "bottomRightX": bottomRightX,
+        "bottomRightY": bottomRightY,
+      },
+      fetchPolicy: FetchPolicy.networkOnly,
+      typeConverter: (resp) {
+        return (resp["observationSubjectsInBounded"] as List)
+            .map((e) => ObservationSubject.fromJson(e))
+            .toList();
+      },
+    );
+  }
 }

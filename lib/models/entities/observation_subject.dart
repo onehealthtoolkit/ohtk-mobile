@@ -6,6 +6,7 @@ class ObservationSubject {
   int definitionId;
   int? authorityId;
   Map<String, dynamic>? formData;
+  String? gpsLocation;
   String title;
   String description;
   String identity;
@@ -23,6 +24,7 @@ class ObservationSubject {
     required this.identity,
     this.authorityId,
     this.formData,
+    this.gpsLocation,
     this.imageUrl,
     this.monitoringRecords = const [],
   });
@@ -36,6 +38,7 @@ class ObservationSubject {
         title = json['title'],
         description = json['description'],
         identity = json['identity'],
+        gpsLocation = json['gpsLocation'],
         imageUrl = json['imageUrl'],
         monitoringRecords = json['monitoringRecords'] != null
             ? (json['monitoringRecords'] as List)
