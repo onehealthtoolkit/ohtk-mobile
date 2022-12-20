@@ -145,7 +145,8 @@ class ReportService extends IReportService {
         for (var img in localImages) {
           var submitImageResult = await _imageApi.submit(img);
           if (submitImageResult is ImageSubmitSuccess) {
-            result.incidentReport.images!.add(submitImageResult.image);
+            result.incidentReport.images!
+                .add(submitImageResult.image as IncidentReportImage);
           }
         }
 
@@ -184,7 +185,8 @@ class ReportService extends IReportService {
         for (var img in localImages) {
           var submitImageResult = await _imageApi.submit(img);
           if (submitImageResult is ImageSubmitSuccess) {
-            result.followupReport.images!.add(submitImageResult.image);
+            result.followupReport.images!
+                .add(submitImageResult.image as IncidentReportImage);
           }
         }
 

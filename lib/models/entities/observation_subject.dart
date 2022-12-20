@@ -1,5 +1,13 @@
+import 'package:podd_app/models/entities/base_report_image.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/models/entities/utils.dart';
+
+class ObservationReportImage extends BaseReportImage {
+  ObservationReportImage(Map<String, dynamic> json) : super(json);
+
+  factory ObservationReportImage.fromJson(Map<String, dynamic> json) =>
+      ObservationReportImage(json);
+}
 
 class ObservationSubject {
   int id;
@@ -10,8 +18,8 @@ class ObservationSubject {
   String title;
   String description;
   String identity;
-  String? imageUrl;
   bool isActive;
+  List<ObservationReportImage>? images;
 
   List<ObservationSubjectMonitoring> monitoringRecords;
 
@@ -25,9 +33,13 @@ class ObservationSubject {
     this.authorityId,
     this.formData,
     this.gpsLocation,
-    this.imageUrl,
     this.monitoringRecords = const [],
+    this.images,
   });
+
+  String? get imageUrl {
+    return images != null && images!.isNotEmpty ? images![0].imageUrl : null;
+  }
 
   ObservationSubject.fromJson(Map<String, dynamic> json)
       : id = cvInt(json, (m) => m['id']),
@@ -39,7 +51,11 @@ class ObservationSubject {
         description = json['description'],
         identity = json['identity'],
         gpsLocation = json['gpsLocation'],
-        imageUrl = json['imageUrl'],
+        images = json["images"] != null
+            ? (json["images"] as List)
+                .map((image) => ObservationReportImage.fromJson(image))
+                .toList()
+            : [],
         monitoringRecords = json['monitoringRecords'] != null
             ? (json['monitoringRecords'] as List)
                 .map((item) => ObservationSubjectMonitoring.fromJson(item))

@@ -78,6 +78,12 @@ class ObservationApi extends GraphQlBaseApi {
               isActive
               formData
             }
+            images {
+              id
+              file
+              thumbnail
+              imageUrl
+            }
           }
           pageInfo {
             hasNextPage
@@ -117,6 +123,12 @@ class ObservationApi extends GraphQlBaseApi {
             subjectId
             isActive
             formData
+          }
+          images {
+            id
+            file
+            thumbnail
+            imageUrl
           }
         }
       }

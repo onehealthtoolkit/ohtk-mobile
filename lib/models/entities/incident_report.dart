@@ -1,23 +1,11 @@
 import 'package:intl/intl.dart';
+import 'package:podd_app/models/entities/base_report_image.dart';
 
-class IncidentReportImage {
-  String id;
-  String filePath;
-  String thumbnailPath;
-  String imageUrl;
-
-  IncidentReportImage(
-      {required this.id,
-      required this.filePath,
-      required this.thumbnailPath,
-      required this.imageUrl});
+class IncidentReportImage extends BaseReportImage {
+  IncidentReportImage(Map<String, dynamic> json) : super(json);
 
   factory IncidentReportImage.fromJson(Map<String, dynamic> json) =>
-      IncidentReportImage(
-          id: json["id"],
-          filePath: json["file"],
-          thumbnailPath: json["thumbnail"],
-          imageUrl: json["imageUrl"]);
+      IncidentReportImage(json);
 }
 
 class IncidentReport {
