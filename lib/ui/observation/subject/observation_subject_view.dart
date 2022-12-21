@@ -40,33 +40,30 @@ class ObservationSubjectView extends HookWidget {
     );
   }
 
-  SingleChildScrollView _bodyView(
-      TabController _tabController, BuildContext context) {
-    return SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints:
-            BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-        child: Column(
-          children: [
-            _SubjectDetail(),
-            _moreDetailTabBar(_tabController, context),
-            _moreDetailTabBarView(_tabController)
-          ],
-        ),
-      ),
+  Widget _bodyView(TabController _tabController, BuildContext context) {
+    return NestedScrollView(
+      headerSliverBuilder: (context, value) {
+        return [
+          SliverToBoxAdapter(
+            child: _SubjectDetail(),
+          ),
+          SliverToBoxAdapter(
+            child: _moreDetailTabBar(_tabController, context),
+          ),
+        ];
+      },
+      body: _moreDetailTabBarView(_tabController),
     );
   }
 
-  Flexible _moreDetailTabBarView(TabController _tabController) {
-    return Flexible(
-      child: TabBarView(
-        controller: _tabController,
-        children: [
-          ObservationSubjectMonitoringView(
-              definition: definition, subject: subject),
-          ObservationSubjectReportView(subjectId: subject.id),
-        ],
-      ),
+  Widget _moreDetailTabBarView(TabController _tabController) {
+    return TabBarView(
+      controller: _tabController,
+      children: [
+        ObservationSubjectMonitoringView(
+            definition: definition, subject: subject),
+        ObservationSubjectReportView(subjectId: subject.id),
+      ],
     );
   }
 

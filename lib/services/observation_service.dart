@@ -205,9 +205,8 @@ class ObservationService extends IObservationService {
           if (submitImageResult is ImageSubmitFailure) {
             _logger.e("Submit image error: ${submitImageResult.messages}");
           }
-
-          _observationSubjectMonitorings.insert(0, result.monitoringRecord);
         }
+        _observationSubjectMonitorings.insert(0, result.monitoringRecord);
       }
 
       if (result is ObservationMonitoringRecordSubmitFailure) {
