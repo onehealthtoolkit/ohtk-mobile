@@ -123,6 +123,12 @@ class ObservationApi extends GraphQlBaseApi {
             subjectId
             isActive
             formData
+            images {
+              id
+              file
+              thumbnail
+              imageUrl
+            }
           }
           images {
             id

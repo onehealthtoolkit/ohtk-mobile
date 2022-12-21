@@ -156,8 +156,8 @@ class ObservationService extends IObservationService {
         // submit images
         var localImages = await _imageService.findByReportId(report.id);
         for (var img in localImages) {
-          var submitImageResult =
-              await _imageApi.submitObservationImage(img, result.subject.id);
+          var submitImageResult = await _imageApi.submitObservationImage(
+              img, result.subject.id, "subject");
           if (submitImageResult is ImageSubmitSuccess) {
             result.subject.images!
                 .add(submitImageResult.image as ObservationReportImage);
@@ -196,7 +196,7 @@ class ObservationService extends IObservationService {
         var localImages = await _imageService.findByReportId(report.id);
         for (var img in localImages) {
           var submitImageResult = await _imageApi.submitObservationImage(
-              img, result.monitoringRecord.id);
+              img, result.monitoringRecord.id, "monitoring");
           if (submitImageResult is ImageSubmitSuccess) {
             result.monitoringRecord.images!
                 .add(submitImageResult.image as ObservationReportImage);
