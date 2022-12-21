@@ -108,16 +108,4 @@ class ObservationMonitoringRecordFormViewModel extends BaseViewModel {
     setBusy(false);
     return result;
   }
-
-  String? _findFirstLocationValue(Form form) {
-    String? result;
-    var field = form.findField(((field) =>
-        (field is LocationField) &&
-        (field.longitude != null && field.latitude != null)));
-
-    if (field != null && field is LocationField) {
-      result = "${field.longitude.toString()},${field.latitude.toString()}";
-    }
-    return result;
-  }
 }

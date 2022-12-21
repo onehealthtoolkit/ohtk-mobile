@@ -10,7 +10,6 @@ import 'package:podd_app/models/entities/observation_subject_report.dart';
 import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
-import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/observation_api.dart';
 import 'package:podd_app/services/db_service.dart';
@@ -190,9 +189,25 @@ class ObservationService extends IObservationService {
       var result = await _observationApi.submitReportMonitoringRecord(report);
 
       if (result is ObservationMonitoringRecordSubmitSuccess) {
-        // TODO submit images
         // TODO delete from local db
-        _observationSubjectMonitorings.insert(0, result.monitoringRecord);
+        result.monitoringRecord.images = List.of([]);
+
+        // submit images
+        var localImages = await _imageService.findByReportId(report.id);
+        for (var img in localImages) {
+          var submitImageResult = await _imageApi.submitObservationImage(
+              img, result.monitoringRecord.id);
+          if (submitImageResult is ImageSubmitSuccess) {
+            result.monitoringRecord.images!
+                .add(submitImageResult.image as ObservationReportImage);
+          }
+
+          if (submitImageResult is ImageSubmitFailure) {
+            _logger.e("Submit image error: ${submitImageResult.messages}");
+          }
+
+          _observationSubjectMonitorings.insert(0, result.monitoringRecord);
+        }
       }
 
       if (result is ObservationMonitoringRecordSubmitFailure) {

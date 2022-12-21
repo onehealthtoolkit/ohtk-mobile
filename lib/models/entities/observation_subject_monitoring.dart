@@ -1,3 +1,4 @@
+import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/utils.dart';
 
 class ObservationSubjectMonitoring {
@@ -7,8 +8,9 @@ class ObservationSubjectMonitoring {
   Map<String, dynamic>? formData;
   String title;
   String description;
-  String? imageUrl;
   bool isActive;
+
+  List<ObservationReportImage>? images;
 
   ObservationSubjectMonitoring({
     required this.id,
@@ -18,8 +20,12 @@ class ObservationSubjectMonitoring {
     required this.description,
     required this.isActive,
     this.formData,
-    this.imageUrl,
+    this.images,
   });
+
+  String? get imageUrl {
+    return images != null && images!.isNotEmpty ? images![0].imageUrl : null;
+  }
 
   ObservationSubjectMonitoring.fromJson(Map<String, dynamic> json)
       : id = cvInt(json, (m) => m['id']),
@@ -29,5 +35,9 @@ class ObservationSubjectMonitoring {
         isActive = json['isActive'],
         title = json['title'],
         description = json['description'],
-        imageUrl = json['imageUrl'];
+        images = json["images"] != null
+            ? (json["images"] as List)
+                .map((image) => ObservationReportImage.fromJson(image))
+                .toList()
+            : [];
 }
