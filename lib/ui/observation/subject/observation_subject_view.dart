@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
@@ -6,6 +8,7 @@ import 'package:podd_app/ui/observation/form/subject_form_view.dart';
 import 'package:podd_app/ui/observation/subject/observation_subject_monitoring_view.dart';
 import 'package:podd_app/ui/observation/subject/observation_subject_report_view.dart';
 import 'package:podd_app/ui/observation/subject/observation_subject_view_model.dart';
+import 'package:podd_app/ui/report/full_screen_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
@@ -46,6 +49,9 @@ class ObservationSubjectView extends HookWidget {
         return [
           SliverToBoxAdapter(
             child: _SubjectDetail(),
+          ),
+          SliverToBoxAdapter(
+            child: _Images(),
           ),
           SliverToBoxAdapter(
             child: _moreDetailTabBar(_tabController, context),
@@ -92,6 +98,60 @@ class ObservationSubjectView extends HookWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _Images extends HookViewModelWidget<ObservationSubjectViewModel> {
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context, ObservationSubjectViewModel viewModel) {
+    final images = viewModel.data!.images;
+
+    var imageWidgets = images?.map((image) => Container(
+          margin: const EdgeInsets.all(0),
+          child: FullScreenWidget(
+            fullscreenChild: CachedNetworkImage(
+              imageUrl: image.imageUrl,
+              fit: BoxFit.contain,
+              placeholder: (context, url) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
+            child: CachedNetworkImage(
+              imageUrl: image.thumbnailPath,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
+          ),
+        ));
+
+    return Container(
+      color: Colors.white,
+      constraints:
+          const BoxConstraints(minWidth: double.infinity, minHeight: 150),
+      padding: const EdgeInsets.all(12.0),
+      child: SizedBox(
+        height: 200,
+        child: (images != null && images.isNotEmpty)
+            ? CarouselSlider(
+                items: imageWidgets?.toList() ?? [],
+                options: CarouselOptions(
+                  height: 200,
+                  enlargeCenterPage: true,
+                  aspectRatio: 1,
+                  viewportFraction: 0.8,
+                  autoPlay: true,
+                  disableCenter: true,
+                  enableInfiniteScroll: false,
+                ),
+              )
+            : const Text("No images uploaded"),
       ),
     );
   }
