@@ -43,32 +43,14 @@ class _Listing extends HookViewModelWidget<ObservationHomeViewModel> {
               final observationDefinition =
                   viewModel.observationDefinitions[index];
 
-              var leading = observationDefinition.imageUrl != null
-                  ? CachedNetworkImage(
-                      imageUrl: observationDefinition.imageUrl!,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      fit: BoxFit.fill,
-                    )
-                  : Container(
-                      color: Colors.grey.shade300,
-                      width: 80,
-                    );
-
               return ListTile(
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(4.0),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minWidth: 70,
-                      maxWidth: 70,
-                      minHeight: 52,
-                      maxHeight: 52,
-                    ),
-                    child: leading,
+                title: Text(
+                  observationDefinition.name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                title: Text(observationDefinition.name),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -77,6 +59,7 @@ class _Listing extends HookViewModelWidget<ObservationHomeViewModel> {
                     ),
                   );
                 },
+                trailing: const Icon(Icons.arrow_forward_ios),
               );
             }),
           );
