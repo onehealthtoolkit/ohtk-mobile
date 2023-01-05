@@ -108,57 +108,54 @@ class _MonitoringRecordListing
       BuildContext context, ObservationSubjectMonitoringViewModel viewModel) {
     var items = viewModel.getSortedMonitoringRecords(monitoringDefinition.id);
 
-    return RefreshIndicator(
-      onRefresh: () async => viewModel.fetchSubjectMonitorings(),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            var monitoring = items[index];
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          var monitoring = items[index];
 
-            var leading = monitoring.imageUrl != null
-                ? CachedNetworkImage(
-                    imageUrl: monitoring.imageUrl!,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    fit: BoxFit.fill,
-                  )
-                : Container(
-                    color: Colors.grey.shade300,
-                    width: 80,
-                  );
+          var leading = monitoring.imageUrl != null
+              ? CachedNetworkImage(
+                  imageUrl: monitoring.imageUrl!,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  fit: BoxFit.fill,
+                )
+              : Container(
+                  color: Colors.grey.shade300,
+                  width: 80,
+                );
 
-            return ListTile(
-                contentPadding: const EdgeInsets.all(4),
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(4.0),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minWidth: 50,
-                      maxWidth: 50,
-                    ),
-                    child: leading,
+          return ListTile(
+              contentPadding: const EdgeInsets.all(4),
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(4.0),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minWidth: 50,
+                    maxWidth: 50,
                   ),
+                  child: leading,
                 ),
-                title: Text(monitoring.title),
-                dense: true,
-                visualDensity: const VisualDensity(vertical: -3),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ObservationMonitoringRecordView(
-                        monitoringDefinition: monitoringDefinition,
-                        subject: viewModel.subject,
-                        monitoringRecord: monitoring,
-                      ),
+              ),
+              title: Text(monitoring.title),
+              dense: true,
+              visualDensity: const VisualDensity(vertical: -3),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ObservationMonitoringRecordView(
+                      monitoringDefinition: monitoringDefinition,
+                      subject: viewModel.subject,
+                      monitoringRecord: monitoring,
                     ),
-                  );
-                });
-          },
-          itemCount: items.length,
-          shrinkWrap: true,
-          physics: const ClampingScrollPhysics(),
-        ),
+                  ),
+                );
+              });
+        },
+        itemCount: items.length,
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
       ),
     );
   }

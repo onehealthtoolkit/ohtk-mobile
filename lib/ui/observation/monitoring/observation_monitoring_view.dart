@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
@@ -32,7 +33,8 @@ class ObservationMonitoringRecordView extends StatelessWidget {
       ),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
-          title: const Text("Subject Monitoring View"),
+          title: Text(AppLocalizations.of(context)!
+              .observationSubjectMonitoringViewTitle),
         ),
         body: Padding(
             padding: const EdgeInsets.all(8),
@@ -131,18 +133,28 @@ class _MonitoringRecordDetail
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 10),
-          Text(monitoringRecord.id.toString()),
-          const SizedBox(height: 10),
           Text(
-            monitoringRecord.title,
+            monitoringRecord.title.isNotEmpty
+                ? monitoringRecord.title
+                : "no title",
             textScaleFactor: 1.5,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 10),
-          Text(monitoringRecord.description),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
+          Container(
+            color: Colors.white,
+            constraints:
+                const BoxConstraints(minHeight: 80, minWidth: double.infinity),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(monitoringRecord.description.isNotEmpty
+                  ? monitoringRecord.description
+                  : "no description"),
+            ),
+          ),
+          const SizedBox(height: 8),
           GestureDetector(
             onTap: () => Navigator.push(
               context,
@@ -160,6 +172,7 @@ class _MonitoringRecordDetail
             ),
           ),
           _data(monitoringRecord),
+          const SizedBox(height: 8),
         ],
       ),
     );
@@ -173,25 +186,27 @@ class _MonitoringRecordDetail
         ),
         columnWidths: const <int, TableColumnWidth>{
           0: FlexColumnWidth(1),
-          1: FlexColumnWidth(1),
+          1: FlexColumnWidth(2),
         },
         children: monitoringRecord.formData!.entries.map((entry) {
-          return TableRow(
-            children: [
-              TableCell(
-                  verticalAlignment: TableCellVerticalAlignment.middle,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(entry.key),
-                  )),
-              TableCell(
-                  verticalAlignment: TableCellVerticalAlignment.middle,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(entry.value.toString()),
-                  )),
-            ],
-          );
+          return entry.key.contains("__value")
+              ? const TableRow(children: [SizedBox.shrink(), SizedBox.shrink()])
+              : TableRow(
+                  children: [
+                    TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(entry.key),
+                        )),
+                    TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(entry.value.toString()),
+                        )),
+                  ],
+                );
         }).toList());
 
     return monitoringRecord.formData != null
