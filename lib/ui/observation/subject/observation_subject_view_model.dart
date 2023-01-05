@@ -16,4 +16,16 @@ class ObservationSubjectViewModel extends FutureViewModel<ObservationSubject> {
   Future<ObservationSubject> futureToRun() {
     return observationService.getObservationSubject(subject.id);
   }
+
+  List<double>? get latlng {
+    List<double>? latlng;
+    var location = data?.gpsLocation;
+    if (location != null) {
+      if (location.isNotEmpty) {
+        var lnglat = data!.gpsLocation!.split(",");
+        latlng = [double.parse(lnglat[1]), double.parse(lnglat[0])];
+      }
+    }
+    return latlng;
+  }
 }

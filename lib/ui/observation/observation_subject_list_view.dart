@@ -33,6 +33,7 @@ class _SubjectListing
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView.separated(
+          key: const PageStorageKey('subject-list-storage-key'),
           itemBuilder: (context, index) {
             var subject = viewModel.observationSubjects[index];
 
@@ -61,7 +62,7 @@ class _SubjectListing
                     child: leading,
                   ),
                 ),
-                title: Text(subject.title ?? ""),
+                title: Text(subject.title),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(

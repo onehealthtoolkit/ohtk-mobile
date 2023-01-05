@@ -115,6 +115,7 @@ class ObservationApi extends GraphQlBaseApi {
           identity
           isActive
           formData
+          gpsLocation
           monitoringRecords {
             id
             title
