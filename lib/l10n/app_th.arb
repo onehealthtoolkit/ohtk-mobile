@@ -45,5 +45,10 @@
   "fieldUndefinedLocation": "ยังไม่ระบุพิกัด",
   "fieldUseCurrentLocation": "ใช้ตำแหน่งปัจจุบัน",
   "authorityLabel": "หน่วยงาน",
-  "incidentDate": "วันที่เกิดเหตุ"
+  "incidentDate": "วันที่เกิดเหตุ",
+  "consentButton": "ยินยอม",
+  "observationSubjectViewTitle": "หัวเรื่อง",
+  "observationSubjectDetailTabLabel": "รายละเอียด",
+  "observationSubjectMonitoringTabLabel": "การเฝ้าดูติดตาม",
+  "observationSubjectMonitoringViewTitle": "หัวเรื่องการเฝ้าดูติดตาม"
 }
