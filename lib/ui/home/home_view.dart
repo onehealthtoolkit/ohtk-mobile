@@ -123,7 +123,7 @@ class HomeView extends HookWidget {
               icon: Icon(Icons.art_track),
             ),
             BottomNavigationBarItem(
-              label: 'Observation',
+              label: 'Observations',
               icon: Icon(Icons.search),
             ),
             BottomNavigationBarItem(

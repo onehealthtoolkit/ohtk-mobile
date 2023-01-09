@@ -62,12 +62,10 @@ class _MonitoringDefinitionListing
     ObservationMonitoringDefinition monitoringDefinition,
   ) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.blue[50],
-        border: Border(
-          bottom: BorderSide(width: 4.0, color: Colors.lightBlue.shade900),
-        ),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -139,7 +137,8 @@ class _MonitoringRecordListing
                 ),
               ),
               title: Text(monitoring.title),
-              dense: true,
+              subtitle: Text(monitoring.description),
+              dense: false,
               visualDensity: const VisualDensity(vertical: -3),
               onTap: () {
                 Navigator.of(context).push(

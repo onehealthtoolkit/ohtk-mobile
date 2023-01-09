@@ -13,14 +13,14 @@ Future<bool> confirm(
     builder: (_) => WillPopScope(
       child: AlertDialog(
         title: title,
-        content: content ?? const Text('Are you sure continue?'),
+        content: content ?? const Text('Are you sure to continue?'),
         actions: <Widget>[
           TextButton(
-            child: textCancel ?? const Text('Cancel'),
+            child: textCancel ?? const Text('No'),
             onPressed: () => Navigator.pop(context, false),
           ),
           TextButton(
-            child: textOK ?? const Text('OK'),
+            child: textOK ?? const Text('Yes'),
             onPressed: () => Navigator.pop(context, true),
           ),
         ],
