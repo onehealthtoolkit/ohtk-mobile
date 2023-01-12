@@ -171,6 +171,7 @@ void setupLocator(String environment) {
     IDbService,
     ImageApi,
     IImageService,
+    ObservationApi,
   ]);
 
   registerViewModelLocators();

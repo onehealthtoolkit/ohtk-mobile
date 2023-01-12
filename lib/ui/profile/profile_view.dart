@@ -45,6 +45,8 @@ class ProfileView extends StatelessWidget {
                           ),
                           onPressed: () async {
                             await viewModel.logout();
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, '/', (route) => false);
                           },
                           child:
                               Text(AppLocalizations.of(context)!.logoutButton),
