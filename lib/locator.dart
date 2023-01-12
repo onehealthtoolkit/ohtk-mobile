@@ -169,6 +169,7 @@ void setupLocator(String environment) {
     return ObservationService();
   }, dependsOn: [
     IDbService,
+    ObservationApi,
   ]);
 
   registerViewModelLocators();

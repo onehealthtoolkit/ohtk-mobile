@@ -233,6 +233,7 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
           DropdownMenuItem(child: Text("English"), value: "en"),
           DropdownMenuItem(child: Text("ภาษาไทย"), value: "th"),
           DropdownMenuItem(child: Text("ភាសាខ្មែរ"), value: "km"),
+          DropdownMenuItem(child: Text("ພາສາລາວ"), value: "lo"),
         ]);
   }
 }
