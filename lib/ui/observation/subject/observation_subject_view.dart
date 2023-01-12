@@ -17,7 +17,7 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ObservationSubjectView extends HookWidget {
   final ObservationDefinition definition;
-  final ObservationSubject subject;
+  final ObservationSubjectRecord subject;
 
   const ObservationSubjectView({
     Key? key,
@@ -197,7 +197,7 @@ class _SubjectDetail extends HookViewModelWidget<ObservationSubjectViewModel> {
     );
   }
 
-  _data(ObservationSubject subject) {
+  _data(ObservationSubjectRecord subject) {
     var dataTable = Table(
         border: TableBorder.all(
           color: Colors.grey.shade400,

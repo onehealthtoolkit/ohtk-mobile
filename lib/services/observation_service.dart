@@ -19,31 +19,30 @@ import 'package:stacked/stacked.dart';
 abstract class IObservationService with ReactiveServiceMixin {
   final _logger = locator<Logger>();
 
-  List<ObservationSubject> get observationSubjects;
+  List<ObservationSubjectRecord> get subjectRecords;
 
-  List<ObservationSubjectMonitoring> get observationSubjectMonitorings;
+  List<ObservationMonitoringRecord> get monitoringRecords;
 
   List<ObservationSubjectReport> get observationSubjectReports;
 
   Future<List<ObservationDefinition>> fetchAllObservationDefinitions();
 
-  Future<void> fetchAllObservationSubjects(bool resetFlag, int definitionId);
+  Future<void> fetchAllSubjectRecords(bool resetFlag, int definitionId);
 
-  Future<ObservationSubject> getObservationSubject(int id);
+  Future<ObservationSubjectRecord> getSubject(String id);
 
-  Future<void> fetchAllObservationSubjectMonitorings(int subjectId);
+  Future<void> fetchAllMonitoringRecords(String subjectId);
 
-  Future<ObservationSubjectMonitoring> getObservationSubjectMonitoring(int id);
+  Future<ObservationMonitoringRecord> getMonitoringRecord(String id);
 
   Future<void> fetchAllObservationSubjectReports(int subjectId);
 
-  Future<ObservationSubjectSubmitResult> submitReportSubject(
-      ObservationReportSubject report);
+  Future<SubjectRecordSubmitResult> submitSubjectRecord(SubjectRecord report);
 
-  Future<ObservationMonitoringRecordSubmitResult> submitReportMonitoringRecord(
-      ObservationReportMonitoringRecord report);
+  Future<MonitoringRecordSubmitResult> submitMonitoringRecord(
+      MonitoringRecord report);
 
-  fetchAllObservationSubjectsInBounded(int definitionId, double topLeftX,
+  fetchAllSubjectRecordsInBounded(int definitionId, double topLeftX,
       double topLeftY, double bottomRightX, double bottomRightY) {}
 }
 
@@ -53,34 +52,32 @@ class ObservationService extends IObservationService {
   final _imageService = locator<IImageService>();
   final _observationApi = locator<ObservationApi>();
 
-  final ReactiveList<ObservationSubject> _observationSubjects =
-      ReactiveList<ObservationSubject>();
+  final ReactiveList<ObservationSubjectRecord> _subjectRecords =
+      ReactiveList<ObservationSubjectRecord>();
 
-  final ReactiveList<ObservationSubjectMonitoring>
-      _observationSubjectMonitorings =
-      ReactiveList<ObservationSubjectMonitoring>();
+  final ReactiveList<ObservationMonitoringRecord> _monitoringRecords =
+      ReactiveList<ObservationMonitoringRecord>();
 
   final ReactiveList<ObservationSubjectReport> _observationSubjectReports =
       ReactiveList<ObservationSubjectReport>();
 
-  bool hasMoreObservationSubjects = false;
-  int currentObservationSubjectNextOffset = 0;
-  int observationSubjectLimit = 20;
+  bool hasMoreSubjectRecords = false;
+  int currentSubjectRecordNextOffset = 0;
+  int subjectRecordLimit = 20;
 
   ObservationService() {
     listenToReactiveValues([
-      _observationSubjects,
-      _observationSubjectMonitorings,
+      _subjectRecords,
+      _monitoringRecords,
       _observationSubjectReports,
     ]);
   }
 
   @override
-  List<ObservationSubject> get observationSubjects => _observationSubjects;
+  List<ObservationSubjectRecord> get subjectRecords => _subjectRecords;
 
   @override
-  List<ObservationSubjectMonitoring> get observationSubjectMonitorings =>
-      _observationSubjectMonitorings;
+  List<ObservationMonitoringRecord> get monitoringRecords => _monitoringRecords;
 
   @override
   List<ObservationSubjectReport> get observationSubjectReports =>
@@ -93,46 +90,43 @@ class ObservationService extends IObservationService {
   }
 
   @override
-  Future<void> fetchAllObservationSubjects(
-      bool resetFlag, int definitionId) async {
+  Future<void> fetchAllSubjectRecords(bool resetFlag, int definitionId) async {
     if (resetFlag) {
-      currentObservationSubjectNextOffset = 0;
+      currentSubjectRecordNextOffset = 0;
     }
-    var result = await _observationApi.fetchObservationSubjects(definitionId);
+    var result = await _observationApi.fetchSubjectRecords(definitionId);
 
     if (resetFlag) {
-      _observationSubjects.clear();
+      _subjectRecords.clear();
     }
 
-    _observationSubjects.addAll(result.data);
-    hasMoreObservationSubjects = result.hasNextPage;
-    currentObservationSubjectNextOffset =
-        currentObservationSubjectNextOffset + observationSubjectLimit;
+    _subjectRecords.addAll(result.data);
+    hasMoreSubjectRecords = result.hasNextPage;
+    currentSubjectRecordNextOffset =
+        currentSubjectRecordNextOffset + subjectRecordLimit;
   }
 
   @override
-  Future<ObservationSubject> getObservationSubject(int id) async {
-    var result = await _observationApi.getObservationSubject(id);
+  Future<ObservationSubjectRecord> getSubject(String id) async {
+    var result = await _observationApi.getSubjectRecord(id);
     var monitoringRecords = result.data.monitoringRecords;
 
-    _observationSubjectMonitorings.clear();
-    _observationSubjectMonitorings.addAll(monitoringRecords);
+    _monitoringRecords.clear();
+    _monitoringRecords.addAll(monitoringRecords);
 
     return result.data;
   }
 
   @override
-  Future<void> fetchAllObservationSubjectMonitorings(int subjectId) async {
-    var result =
-        await _observationApi.fetchObservationMonitoringRecords(subjectId);
-    _observationSubjectMonitorings.clear();
-    _observationSubjectMonitorings.addAll(result.data);
+  Future<void> fetchAllMonitoringRecords(String subjectId) async {
+    var result = await _observationApi.fetchMonitoringRecords(subjectId);
+    _monitoringRecords.clear();
+    _monitoringRecords.addAll(result.data);
   }
 
   @override
-  Future<ObservationSubjectMonitoring> getObservationSubjectMonitoring(
-      int id) async {
-    var result = await _observationApi.getObservationMonitoringRecord(id);
+  Future<ObservationMonitoringRecord> getMonitoringRecord(String id) async {
+    var result = await _observationApi.getMonitoringRecord(id);
     return result.data;
   }
 
@@ -144,12 +138,12 @@ class ObservationService extends IObservationService {
   }
 
   @override
-  Future<ObservationSubjectSubmitResult> submitReportSubject(
-      ObservationReportSubject report) async {
+  Future<SubjectRecordSubmitResult> submitSubjectRecord(
+      SubjectRecord report) async {
     try {
-      var result = await _observationApi.submitReportSubject(report);
+      var result = await _observationApi.submitSubjectRecord(report);
 
-      if (result is ObservationSubjectSubmitSuccess) {
+      if (result is SubjectRecordSubmitSuccess) {
         // TODO delete from local db
         result.subject.images = List.of([]);
 
@@ -160,35 +154,35 @@ class ObservationService extends IObservationService {
               img, result.subject.id, "subject");
           if (submitImageResult is ImageSubmitSuccess) {
             result.subject.images!
-                .add(submitImageResult.image as ObservationReportImage);
+                .add(submitImageResult.image as ObservationRecordImage);
           }
 
           if (submitImageResult is ImageSubmitFailure) {
             _logger.e("Submit image error: ${submitImageResult.messages}");
           }
         }
-        _observationSubjects.insert(0, result.subject);
+        _subjectRecords.insert(0, result.subject);
       }
 
-      if (result is ObservationSubjectSubmitFailure) {
+      if (result is SubjectRecordSubmitFailure) {
         // TODO save to local db
-        return ObservationSubjectSubmitPending();
+        return SubjectRecordSubmitPending();
       }
       return result;
     } on LinkException catch (_e) {
       _logger.e(_e);
       // TODO save to local db
-      return ObservationSubjectSubmitPending();
+      return SubjectRecordSubmitPending();
     }
   }
 
   @override
-  Future<ObservationMonitoringRecordSubmitResult> submitReportMonitoringRecord(
-      ObservationReportMonitoringRecord report) async {
+  Future<MonitoringRecordSubmitResult> submitMonitoringRecord(
+      MonitoringRecord report) async {
     try {
-      var result = await _observationApi.submitReportMonitoringRecord(report);
+      var result = await _observationApi.submitMonitoringRecord(report);
 
-      if (result is ObservationMonitoringRecordSubmitSuccess) {
+      if (result is MonitoringRecordSubmitSuccess) {
         // TODO delete from local db
         result.monitoringRecord.images = List.of([]);
 
@@ -199,30 +193,30 @@ class ObservationService extends IObservationService {
               img, result.monitoringRecord.id, "monitoring");
           if (submitImageResult is ImageSubmitSuccess) {
             result.monitoringRecord.images!
-                .add(submitImageResult.image as ObservationReportImage);
+                .add(submitImageResult.image as ObservationRecordImage);
           }
 
           if (submitImageResult is ImageSubmitFailure) {
             _logger.e("Submit image error: ${submitImageResult.messages}");
           }
         }
-        _observationSubjectMonitorings.insert(0, result.monitoringRecord);
+        _monitoringRecords.insert(0, result.monitoringRecord);
       }
 
-      if (result is ObservationMonitoringRecordSubmitFailure) {
+      if (result is MonitoringRecordSubmitFailure) {
         // TODO save to local db
-        return ObservationMonitoringRecordSubmitPending();
+        return MonitoringRecordSubmitPending();
       }
       return result;
     } on LinkException catch (_e) {
       _logger.e(_e);
       // TODO save to local db
-      return ObservationMonitoringRecordSubmitPending();
+      return MonitoringRecordSubmitPending();
     }
   }
 
   @override
-  Future<List<ObservationSubject>> fetchAllObservationSubjectsInBounded(
+  Future<List<ObservationSubjectRecord>> fetchAllSubjectRecordsInBounded(
       int definitionId,
       double topLeftX,
       double topLeftY,
@@ -230,7 +224,7 @@ class ObservationService extends IObservationService {
       double bottomRightY) async {
     print(
         "topLeftX: $topLeftX, topLeftY: $topLeftY, bottomRightX: $bottomRightX, bottomRightY: $bottomRightY");
-    var result = await _observationApi.fetchObservationSubjectsInBounded(
+    var result = await _observationApi.fetchSubjectRecordsInBounded(
         definitionId, topLeftX, topLeftY, bottomRightX, bottomRightY);
     return result;
   }

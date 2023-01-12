@@ -14,10 +14,10 @@ class ObservationSubjectListViewModel extends ReactiveViewModel {
   @override
   List<ReactiveServiceMixin> get reactiveServices => [observationService];
 
-  List<ObservationSubject> get observationSubjects =>
-      observationService.observationSubjects;
+  List<ObservationSubjectRecord> get observationSubjects =>
+      observationService.subjectRecords;
 
   refetchSubjects() {
-    observationService.fetchAllObservationSubjects(false, definition.id);
+    observationService.fetchAllSubjectRecords(false, definition.id);
   }
 }

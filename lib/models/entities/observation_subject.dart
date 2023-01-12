@@ -2,15 +2,15 @@ import 'package:podd_app/models/entities/base_report_image.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/models/entities/utils.dart';
 
-class ObservationReportImage extends BaseReportImage {
-  ObservationReportImage(Map<String, dynamic> json) : super(json);
+class ObservationRecordImage extends BaseReportImage {
+  ObservationRecordImage(Map<String, dynamic> json) : super(json);
 
-  factory ObservationReportImage.fromJson(Map<String, dynamic> json) =>
-      ObservationReportImage(json);
+  factory ObservationRecordImage.fromJson(Map<String, dynamic> json) =>
+      ObservationRecordImage(json);
 }
 
-class ObservationSubject {
-  int id;
+class ObservationSubjectRecord {
+  String id;
   int definitionId;
   int? authorityId;
   Map<String, dynamic>? formData;
@@ -19,11 +19,11 @@ class ObservationSubject {
   String description;
   String identity;
   bool isActive;
-  List<ObservationReportImage>? images;
+  List<ObservationRecordImage>? images;
 
-  List<ObservationSubjectMonitoring> monitoringRecords;
+  List<ObservationMonitoringRecord> monitoringRecords;
 
-  ObservationSubject({
+  ObservationSubjectRecord({
     required this.id,
     required this.definitionId,
     required this.isActive,
@@ -41,8 +41,8 @@ class ObservationSubject {
     return images != null && images!.isNotEmpty ? images![0].imageUrl : null;
   }
 
-  ObservationSubject.fromJson(Map<String, dynamic> json)
-      : id = cvInt(json, (m) => m['id']),
+  ObservationSubjectRecord.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
         definitionId = cvInt(json, (m) => m['definitionId']),
         isActive = json['isActive'],
         authorityId = json['authorityId'],
@@ -53,12 +53,12 @@ class ObservationSubject {
         gpsLocation = json['gpsLocation'],
         images = json["images"] != null
             ? (json["images"] as List)
-                .map((image) => ObservationReportImage.fromJson(image))
+                .map((image) => ObservationRecordImage.fromJson(image))
                 .toList()
             : [],
         monitoringRecords = json['monitoringRecords'] != null
             ? (json['monitoringRecords'] as List)
-                .map((item) => ObservationSubjectMonitoring.fromJson(item))
+                .map((item) => ObservationMonitoringRecord.fromJson(item))
                 .toList()
             : [];
 }

@@ -2,14 +2,14 @@ import 'dart:convert';
 
 import 'package:intl/intl.dart';
 
-class ObservationReportSubject {
+class SubjectRecord {
   String id;
   Map<String, dynamic> data;
   int definitionId;
   DateTime? incidentDate;
   String? gpsLocation;
 
-  ObservationReportSubject({
+  SubjectRecord({
     required this.id,
     required this.data,
     required this.definitionId,
@@ -17,7 +17,7 @@ class ObservationReportSubject {
     this.gpsLocation,
   });
 
-  ObservationReportSubject.fromMap(Map<String, dynamic> map)
+  SubjectRecord.fromMap(Map<String, dynamic> map)
       : id = map["id"],
         data = json.decode(map["data"]),
         definitionId = map["definition_id"],
@@ -40,7 +40,7 @@ class ObservationReportSubject {
 
   @override
   bool operator ==(Object other) {
-    return (other is ObservationReportSubject && other.id == id);
+    return (other is SubjectRecord && other.id == id);
   }
 
   @override

@@ -29,8 +29,8 @@ class ObservationMonitoringRecordFormViewModel extends BaseViewModel {
       locator<IObservationService>();
 
   final ObservationMonitoringDefinition _definition;
-  final ObservationSubject _subject;
-  final ObservationSubjectMonitoring? _monitoringRecord;
+  final ObservationSubjectRecord _subject;
+  final ObservationMonitoringRecord? _monitoringRecord;
 
   bool isReady = false;
   String _reportId = "";
@@ -87,22 +87,22 @@ class ObservationMonitoringRecordFormViewModel extends BaseViewModel {
     } else {}
   }
 
-  Future<ObservationMonitoringRecordSubmitResult> submit() async {
+  Future<MonitoringRecordSubmitResult> submit() async {
     setBusy(true);
 
-    var report = ObservationReportMonitoringRecord(
+    var report = MonitoringRecord(
       id: _reportId,
       data: _formStore.toJsonValue(),
       monitoringDefinitionId: _definition.id,
       subjectId: _subject.id,
     );
 
-    ObservationMonitoringRecordSubmitResult result;
+    MonitoringRecordSubmitResult result;
     if (_monitoringRecord != null) {
       // TODO update form data
-      result = ObservationMonitoringRecordSubmitPending();
+      result = MonitoringRecordSubmitPending();
     } else {
-      result = await _observationService.submitReportMonitoringRecord(report);
+      result = await _observationService.submitMonitoringRecord(report);
     }
 
     setBusy(false);

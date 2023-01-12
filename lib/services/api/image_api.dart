@@ -48,21 +48,21 @@ class ImageApi extends GraphQlBaseApi {
 
   Future<ImageSubmitResult> submitObservationImage(
     ReportImage reportImage,
-    int observationRefId,
+    String observationRefId,
     String observationImageType,
   ) async {
     const mutation = r'''
-      mutation submitObservationImage(
-        $observationType: ObservationSubmitImageType!,
+      mutation submitRecordImage(
+        $recordType: RecordType!,
         $image: Upload!,
         $imageId: UUID,
-        $reportId: ID
+        $recordId: UUID!
       ) {
-        submitObservationImage(
-          observationType: $observationType,
+        submitRecordImage(
+          recordType: $recordType,
           image: $image, 
           imageId: $imageId, 
-          reportId: $reportId
+          recordId: $recordId
         ) {
           id
           file
@@ -78,14 +78,14 @@ class ImageApi extends GraphQlBaseApi {
     );
 
     try {
-      var result = await runGqlMutation<ObservationReportImage>(
+      var result = await runGqlMutation<ObservationRecordImage>(
           mutation: mutation,
-          parseData: (json) => ObservationReportImage.fromJson(json!),
+          parseData: (json) => ObservationRecordImage.fromJson(json!),
           variables: {
-            "observationType": observationImageType,
+            "recordType": observationImageType,
             "image": file,
             "imageId": reportImage.id,
-            "reportId": observationRefId.toString()
+            "recordId": observationRefId
           });
 
       return ImageSubmitSuccess(result);

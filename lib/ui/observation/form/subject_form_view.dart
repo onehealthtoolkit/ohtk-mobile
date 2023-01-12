@@ -16,7 +16,7 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ObservationSubjectFormView extends StatelessWidget {
   final ObservationDefinition definition;
-  final ObservationSubject? subject;
+  final ObservationSubjectRecord? subject;
 
   const ObservationSubjectFormView({
     Key? key,
@@ -125,8 +125,8 @@ class _ConfirmSubmit
               ),
               onPressed: () async {
                 var result = await viewModel.submit();
-                if (result is ObservationSubjectSubmitSuccess ||
-                    result is ObservationSubjectSubmitPending) {
+                if (result is SubjectRecordSubmitSuccess ||
+                    result is SubjectRecordSubmitPending) {
                   Navigator.pop(context);
                 }
               },

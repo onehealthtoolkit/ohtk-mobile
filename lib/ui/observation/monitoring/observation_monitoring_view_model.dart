@@ -6,12 +6,12 @@ import 'package:podd_app/services/observation_service.dart';
 import 'package:stacked/stacked.dart';
 
 class ObservationMonitoringRecordViewModel
-    extends FutureViewModel<ObservationSubjectMonitoring> {
+    extends FutureViewModel<ObservationMonitoringRecord> {
   IObservationService observationService = locator<IObservationService>();
 
   ObservationMonitoringDefinition monitoringDefinition;
-  ObservationSubject subject;
-  ObservationSubjectMonitoring monitoringRecord;
+  ObservationSubjectRecord subject;
+  ObservationMonitoringRecord monitoringRecord;
 
   ObservationMonitoringRecordViewModel({
     required this.monitoringDefinition,
@@ -20,8 +20,7 @@ class ObservationMonitoringRecordViewModel
   });
 
   @override
-  Future<ObservationSubjectMonitoring> futureToRun() {
-    return observationService
-        .getObservationSubjectMonitoring(monitoringRecord.id);
+  Future<ObservationMonitoringRecord> futureToRun() {
+    return observationService.getMonitoringRecord(monitoringRecord.id);
   }
 }

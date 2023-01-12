@@ -13,8 +13,8 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ObservationMonitoringRecordView extends StatelessWidget {
   final ObservationMonitoringDefinition monitoringDefinition;
-  final ObservationSubject subject;
-  final ObservationSubjectMonitoring monitoringRecord;
+  final ObservationSubjectRecord subject;
+  final ObservationMonitoringRecord monitoringRecord;
 
   const ObservationMonitoringRecordView({
     Key? key,
@@ -178,7 +178,7 @@ class _MonitoringRecordDetail
     );
   }
 
-  _data(ObservationSubjectMonitoring monitoringRecord) {
+  _data(ObservationMonitoringRecord monitoringRecord) {
     var dataTable = Table(
         border: TableBorder.all(
           color: Colors.grey.shade400,

@@ -15,22 +15,21 @@ class ObservationSubjectMapViewModel extends BaseViewModel {
 
   GoogleMapController? controller;
 
-  final ReactiveList<ObservationSubject> _subjects =
-      ReactiveList<ObservationSubject>();
+  final ReactiveList<ObservationSubjectRecord> _subjects =
+      ReactiveList<ObservationSubjectRecord>();
 
   ObservationSubjectMapViewModel(this.definitionId) {
     setBusy(true);
     _getCurrentLocation();
   }
 
-  List<ObservationSubject> get subjects => _subjects;
+  List<ObservationSubjectRecord> get subjects => _subjects;
 
   fetch(double topLeftX, double topLeftY, double bottomRightX,
       double bottomRightY) async {
     _subjects.clear();
-    _subjects.addAll(
-        await observationService.fetchAllObservationSubjectsInBounded(
-            definitionId, topLeftX, topLeftY, bottomRightX, bottomRightY));
+    _subjects.addAll(await observationService.fetchAllSubjectRecordsInBounded(
+        definitionId, topLeftX, topLeftY, bottomRightX, bottomRightY));
     notifyListeners();
   }
 

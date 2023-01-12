@@ -14,7 +14,7 @@ class ObservationViewModel extends BaseViewModel {
   }
 
   Future<void> fetchObservationSubjects() async {
-    await observationService.fetchAllObservationSubjects(true, definition.id);
+    await observationService.fetchAllSubjectRecords(true, definition.id);
     setBusy(false);
   }
 }

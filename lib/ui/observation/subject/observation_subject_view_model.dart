@@ -4,17 +4,18 @@ import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/services/observation_service.dart';
 import 'package:stacked/stacked.dart';
 
-class ObservationSubjectViewModel extends FutureViewModel<ObservationSubject> {
+class ObservationSubjectViewModel
+    extends FutureViewModel<ObservationSubjectRecord> {
   IObservationService observationService = locator<IObservationService>();
 
   ObservationDefinition definition;
-  ObservationSubject subject;
+  ObservationSubjectRecord subject;
 
   ObservationSubjectViewModel(this.definition, this.subject);
 
   @override
-  Future<ObservationSubject> futureToRun() {
-    return observationService.getObservationSubject(subject.id);
+  Future<ObservationSubjectRecord> futureToRun() {
+    return observationService.getSubject(subject.id);
   }
 
   List<double>? get latlng {

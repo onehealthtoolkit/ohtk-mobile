@@ -28,7 +28,7 @@ class ObservationSubjectFormViewModel extends BaseViewModel {
       locator<IObservationService>();
 
   final ObservationDefinition _definition;
-  final ObservationSubject? _subject;
+  final ObservationSubjectRecord? _subject;
   bool isReady = false;
   String _subjectId = "";
   Form _formStore = Form.fromJson({}, "");
@@ -82,23 +82,23 @@ class ObservationSubjectFormViewModel extends BaseViewModel {
     } else {}
   }
 
-  Future<ObservationSubjectSubmitResult> submit() async {
+  Future<SubjectRecordSubmitResult> submit() async {
     setBusy(true);
     String? gpsLocation = _findFirstLocationValue(_formStore);
 
-    var report = ObservationReportSubject(
+    var report = SubjectRecord(
       id: _subjectId,
       data: _formStore.toJsonValue(),
       definitionId: _definition.id,
       gpsLocation: gpsLocation,
     );
 
-    ObservationSubjectSubmitResult result;
+    SubjectRecordSubmitResult result;
     if (_subject != null) {
       // TODO update form data
-      result = ObservationSubjectSubmitPending();
+      result = SubjectRecordSubmitPending();
     } else {
-      result = await _observationService.submitReportSubject(report);
+      result = await _observationService.submitSubjectRecord(report);
     }
 
     setBusy(false);

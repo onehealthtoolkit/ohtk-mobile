@@ -10,7 +10,7 @@ class ObservationSubjectMonitoringViewModel extends ReactiveViewModel {
   IObservationService observationService = locator<IObservationService>();
 
   ObservationDefinition definition;
-  ObservationSubject subject;
+  ObservationSubjectRecord subject;
 
   ObservationSubjectMonitoringViewModel({
     required this.definition,
@@ -23,10 +23,10 @@ class ObservationSubjectMonitoringViewModel extends ReactiveViewModel {
   List<ObservationMonitoringDefinition> get observationMonitoringDefinitions =>
       definition.monitoringDefinitions;
 
-  List<ObservationSubjectMonitoring> get observationSubjectMonitoringRecords =>
-      observationService.observationSubjectMonitorings;
+  List<ObservationMonitoringRecord> get observationSubjectMonitoringRecords =>
+      observationService.monitoringRecords;
 
-  List<ObservationSubjectMonitoring> getSortedMonitoringRecords(
+  List<ObservationMonitoringRecord> getSortedMonitoringRecords(
       int monitoringDefinitionId) {
     return observationSubjectMonitoringRecords
         .where(
@@ -35,6 +35,6 @@ class ObservationSubjectMonitoringViewModel extends ReactiveViewModel {
   }
 
   fetchSubjectMonitorings() {
-    observationService.fetchAllObservationSubjectMonitorings(subject.id);
+    observationService.fetchAllMonitoringRecords(subject.id);
   }
 }

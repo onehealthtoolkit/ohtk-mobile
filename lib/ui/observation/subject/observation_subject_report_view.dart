@@ -56,7 +56,7 @@ class _ReportListing
                     child: leading,
                   ),
                 ),
-                title: Text(report.reportTypeName ?? ""),
+                title: Text(report.reportTypeName),
                 dense: true,
                 visualDensity: const VisualDensity(vertical: -3),
                 onTap: () {

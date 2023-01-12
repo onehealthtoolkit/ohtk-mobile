@@ -1,19 +1,19 @@
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/operation_exception_failure.dart';
 
-abstract class ObservationSubjectSubmitResult {}
+abstract class SubjectRecordSubmitResult {}
 
-class ObservationSubjectSubmitSuccess extends ObservationSubjectSubmitResult {
-  final ObservationSubject _subject;
+class SubjectRecordSubmitSuccess extends SubjectRecordSubmitResult {
+  final ObservationSubjectRecord _subject;
 
-  ObservationSubjectSubmitSuccess(this._subject);
+  SubjectRecordSubmitSuccess(this._subject);
 
-  ObservationSubject get subject => _subject;
+  ObservationSubjectRecord get subject => _subject;
 }
 
-class ObservationSubjectSubmitFailure extends OperationExceptionFailure
-    with ObservationSubjectSubmitResult {
-  ObservationSubjectSubmitFailure(e) : super(e);
+class SubjectRecordSubmitFailure extends OperationExceptionFailure
+    with SubjectRecordSubmitResult {
+  SubjectRecordSubmitFailure(e) : super(e);
 }
 
-class ObservationSubjectSubmitPending extends ObservationSubjectSubmitResult {}
+class SubjectRecordSubmitPending extends SubjectRecordSubmitResult {}

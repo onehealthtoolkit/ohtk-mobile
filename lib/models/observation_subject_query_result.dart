@@ -1,30 +1,30 @@
 import 'package:podd_app/models/entities/observation_subject.dart';
 
-class ObservationSubjectQueryResult {
-  List<ObservationSubject> data;
+class SubjectRecordQueryResult {
+  List<ObservationSubjectRecord> data;
   bool hasNextPage;
 
-  ObservationSubjectQueryResult(this.data, this.hasNextPage);
+  SubjectRecordQueryResult(this.data, this.hasNextPage);
 
-  factory ObservationSubjectQueryResult.fromJson(Map<String, dynamic> json) {
-    return ObservationSubjectQueryResult(
+  factory SubjectRecordQueryResult.fromJson(Map<String, dynamic> json) {
+    return SubjectRecordQueryResult(
       (json["results"] as List)
-          .map((item) => ObservationSubject.fromJson(item))
+          .map((item) => ObservationSubjectRecord.fromJson(item))
           .toList(),
       (json["pageInfo"] as Map)["hasNextPage"],
     );
   }
 }
 
-class ObservationSubjectGetResult {
-  ObservationSubject data;
+class SubjectRecordGetResult {
+  ObservationSubjectRecord data;
 
-  ObservationSubjectGetResult({
+  SubjectRecordGetResult({
     required this.data,
   });
 
-  factory ObservationSubjectGetResult.fromJson(Map<String, dynamic> jsonMap) {
-    return ObservationSubjectGetResult(
-        data: ObservationSubject.fromJson(jsonMap));
+  factory SubjectRecordGetResult.fromJson(Map<String, dynamic> jsonMap) {
+    return SubjectRecordGetResult(
+        data: ObservationSubjectRecord.fromJson(jsonMap));
   }
 }

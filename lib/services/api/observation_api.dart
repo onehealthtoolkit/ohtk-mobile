@@ -52,7 +52,7 @@ class ObservationApi extends GraphQlBaseApi {
     );
   }
 
-  Future<ObservationSubjectQueryResult> fetchObservationSubjects(
+  Future<SubjectRecordQueryResult> fetchSubjectRecords(
     int definitionId, {
     limit = 20,
     offset = 0,
@@ -91,7 +91,7 @@ class ObservationApi extends GraphQlBaseApi {
         }          
       }
     ''';
-    return runGqlQuery<ObservationSubjectQueryResult>(
+    return runGqlQuery<SubjectRecordQueryResult>(
       query: query,
       variables: {
         "limit": limit,
@@ -99,11 +99,11 @@ class ObservationApi extends GraphQlBaseApi {
         "definitionId": definitionId.toString()
       },
       fetchPolicy: FetchPolicy.cacheAndNetwork,
-      typeConverter: (resp) => ObservationSubjectQueryResult.fromJson(resp),
+      typeConverter: (resp) => SubjectRecordQueryResult.fromJson(resp),
     );
   }
 
-  Future<ObservationSubjectGetResult> getObservationSubject(int id) {
+  Future<SubjectRecordGetResult> getSubjectRecord(String id) {
     const query = r'''
       query observationSubject($id: ID!) {
         observationSubject(id: $id) {
@@ -143,11 +143,11 @@ class ObservationApi extends GraphQlBaseApi {
     return runGqlQuery(
         query: query,
         variables: {"id": id},
-        typeConverter: (resp) => ObservationSubjectGetResult.fromJson(resp));
+        typeConverter: (resp) => SubjectRecordGetResult.fromJson(resp));
   }
 
-  Future<ObservationSubjectSubmitResult> submitReportSubject(
-      ObservationReportSubject report) async {
+  Future<SubjectRecordSubmitResult> submitSubjectRecord(
+      SubjectRecord report) async {
     const mutation = r'''
       mutation submitObservationSubject($data: GenericScalar!, $definitionId: Int!, $gpsLocation: String) {
         submitObservationSubject(data: $data, definitionId: $definitionId, gpsLocation: $gpsLocation) {
@@ -169,9 +169,9 @@ class ObservationApi extends GraphQlBaseApi {
       }
     ''';
     try {
-      var result = await runGqlMutation<ObservationSubject>(
+      var result = await runGqlMutation<ObservationSubjectRecord>(
         mutation: mutation,
-        parseData: (json) => ObservationSubject.fromJson(json!["result"]),
+        parseData: (json) => ObservationSubjectRecord.fromJson(json!["result"]),
         variables: {
           "definitionId": report.definitionId,
           "data": report.data,
@@ -179,16 +179,16 @@ class ObservationApi extends GraphQlBaseApi {
         },
       );
 
-      return ObservationSubjectSubmitSuccess(result);
+      return SubjectRecordSubmitSuccess(result);
     } on OperationException catch (e) {
-      return ObservationSubjectSubmitFailure(e);
+      return SubjectRecordSubmitFailure(e);
     }
   }
 
-  Future<ObservationMonitoringRecordSubmitResult> submitReportMonitoringRecord(
-      ObservationReportMonitoringRecord report) async {
+  Future<MonitoringRecordSubmitResult> submitMonitoringRecord(
+      MonitoringRecord report) async {
     const mutation = r'''
-      mutation submitObservationSubjectMonitoring($data: GenericScalar!, $monitoringDefinitionId: Int!, $subjectId: Int!) {
+      mutation submitObservationSubjectMonitoring($data: GenericScalar!, $monitoringDefinitionId: Int!, $subjectId: UUID!) {
         submitObservationSubjectMonitoring(data: $data, monitoringDefinitionId: $monitoringDefinitionId, subjectId: $subjectId) {
           result {
             id
@@ -203,10 +203,10 @@ class ObservationApi extends GraphQlBaseApi {
       }
     ''';
     try {
-      var result = await runGqlMutation<ObservationSubjectMonitoring>(
+      var result = await runGqlMutation<ObservationMonitoringRecord>(
         mutation: mutation,
         parseData: (json) =>
-            ObservationSubjectMonitoring.fromJson(json!["result"]),
+            ObservationMonitoringRecord.fromJson(json!["result"]),
         variables: {
           "monitoringDefinitionId": report.monitoringDefinitionId,
           "subjectId": report.subjectId,
@@ -214,20 +214,19 @@ class ObservationApi extends GraphQlBaseApi {
         },
       );
 
-      return ObservationMonitoringRecordSubmitSuccess(result);
+      return MonitoringRecordSubmitSuccess(result);
     } on OperationException catch (e) {
-      return ObservationMonitoringRecordSubmitFailure(e);
+      return MonitoringRecordSubmitFailure(e);
     }
   }
 
-  Future<ObservationSubjectMonitoringQueryResult>
-      fetchObservationMonitoringRecords(
-    int subjectId, {
+  Future<MonitoringRecordQueryResult> fetchMonitoringRecords(
+    String subjectId, {
     limit = 100,
     offset = 0,
   }) async {
     const query = r'''
-      query observationSubjectMonitoringRecords($limit: Int, $offset: Int, $subjectId: String) {
+      query observationSubjectMonitoringRecords($limit: Int, $offset: Int, $subjectId: UUID) {
         observationSubjectMonitoringRecords(limit: $limit, offset: $offset, subject_Id_In: [$subjectId]) {
           totalCount
           results { 
@@ -251,21 +250,19 @@ class ObservationApi extends GraphQlBaseApi {
         }          
       }
     ''';
-    return runGqlQuery<ObservationSubjectMonitoringQueryResult>(
+    return runGqlQuery<MonitoringRecordQueryResult>(
       query: query,
       variables: {
         "limit": limit,
         "offset": offset,
-        "subjectId": subjectId.toString()
+        "subjectId": subjectId,
       },
       fetchPolicy: FetchPolicy.cacheAndNetwork,
-      typeConverter: (resp) =>
-          ObservationSubjectMonitoringQueryResult.fromJson(resp),
+      typeConverter: (resp) => MonitoringRecordQueryResult.fromJson(resp),
     );
   }
 
-  Future<ObservationSubjectMonitoringGetResult> getObservationMonitoringRecord(
-      int id) {
+  Future<MonitoringRecordGetResult> getMonitoringRecord(String id) {
     const query = r'''
       query observationSubjectMonitoringRecord($id: ID!) {
         observationSubjectMonitoringRecord(id: $id) {
@@ -288,11 +285,10 @@ class ObservationApi extends GraphQlBaseApi {
     return runGqlQuery(
         query: query,
         variables: {"id": id},
-        typeConverter: (resp) =>
-            ObservationSubjectMonitoringGetResult.fromJson(resp));
+        typeConverter: (resp) => MonitoringRecordGetResult.fromJson(resp));
   }
 
-  fetchObservationSubjectsInBounded(int definitionId, double topLeftX,
+  fetchSubjectRecordsInBounded(int definitionId, double topLeftX,
       double topLeftY, double bottomRightX, double bottomRightY) {
     const query = r'''
       query observationSubjectsInBounded($definitionId: Int, $topLeftX: Float, $topLeftY: Float, $bottomRightX: Float, $bottomRightY: Float) {
@@ -317,7 +313,7 @@ class ObservationApi extends GraphQlBaseApi {
         }
       }
     ''';
-    return runGqlQuery<List<ObservationSubject>>(
+    return runGqlQuery<List<ObservationSubjectRecord>>(
       query: query,
       variables: {
         "definitionId": definitionId,
@@ -329,7 +325,7 @@ class ObservationApi extends GraphQlBaseApi {
       fetchPolicy: FetchPolicy.networkOnly,
       typeConverter: (resp) {
         return (resp["observationSubjectsInBounded"] as List)
-            .map((e) => ObservationSubject.fromJson(e))
+            .map((e) => ObservationSubjectRecord.fromJson(e))
             .toList();
       },
     );
