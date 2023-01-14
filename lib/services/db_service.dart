@@ -14,7 +14,7 @@ class DbService extends IDbService {
     // follow this migration pattern https://github.com/tekartik/sqflite/blob/master/sqflite/doc/migration_example.md
     _db = await openDatabase(
       'podd.db',
-      version: 6,
+      version: 7,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onDowngrade: onDatabaseDowngradeDelete,
@@ -27,6 +27,8 @@ class DbService extends IDbService {
     _createTableCategoryV2(batch);
     _createTableReportImageV2(batch);
     _createTableReportV5(batch);
+    _createTableObservationDefinitionV1(batch);
+    _createTableMonitoringDefinitionV1(batch);
     await batch.commit();
   }
 
@@ -47,6 +49,10 @@ class DbService extends IDbService {
     }
     if (oldVersion == 5) {
       await _alterTableReportTypeV6(batch);
+    }
+    if (oldVersion == 6) {
+      await _createTableObservationDefinitionV1(batch);
+      await _createTableMonitoringDefinitionV1(batch);
     }
     await batch.commit();
   }
@@ -112,6 +118,31 @@ class DbService extends IDbService {
         incident_in_authority BOOLEAN
       )
     ''');
+  }
+
+  _createTableObservationDefinitionV1(Batch batch) {
+    batch.execute("DROP TABLE IF EXISTS observation_definition");
+    batch.execute('''CREATE TABLE observation_definition (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      description TEXT,
+      form_definition TEXT,
+      updated_at TEXT,
+      is_active INT
+    )''');
+  }
+
+  _createTableMonitoringDefinitionV1(Batch batch) {
+    batch.execute("DROP TABLE IF EXISTS monitoring_definition");
+    batch.execute('''CREATE TABLE monitoring_definition (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      description TEXT,
+      form_definition TEXT,
+      updated_at TEXT,
+      is_active INT,
+      definition_id TEXT
+    )''');
   }
 
   _alterTableReportTypeV3(Batch batch) {

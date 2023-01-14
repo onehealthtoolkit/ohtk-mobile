@@ -7,7 +7,7 @@ import 'package:podd_app/models/entities/observation_report_subject.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
-import 'package:podd_app/services/observation_service.dart';
+import 'package:podd_app/services/observation_record_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:uuid/uuid.dart';
 
@@ -24,8 +24,8 @@ enum BackAction {
 var _uuid = const Uuid();
 
 class ObservationSubjectFormViewModel extends BaseViewModel {
-  final IObservationService _observationService =
-      locator<IObservationService>();
+  final IObservationRecordService _observationService =
+      locator<IObservationRecordService>();
 
   final ObservationDefinition _definition;
   final ObservationSubjectRecord? _subject;

@@ -4,6 +4,7 @@ import 'package:podd_app/models/login_result.dart';
 import 'package:podd_app/models/user_profile.dart';
 import 'package:podd_app/services/gql_service.dart';
 import 'package:podd_app/services/jwt.dart';
+import 'package:podd_app/services/observation_definition_service.dart';
 import 'package:podd_app/services/report_service.dart';
 import 'package:podd_app/services/report_type_service.dart';
 import 'package:podd_app/services/secure_storage_service.dart';
@@ -46,6 +47,9 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
   final _reportService = locator<IReportService>();
 
   final _gqlService = locator<GqlService>();
+
+  final _observationDefinitionService =
+      locator<IObservationDefinitionService>();
 
   final ReactiveValue<bool?> _isLogin = ReactiveValue<bool?>(null);
 
@@ -118,6 +122,7 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
 
     await _secureStorageService.setUserProfile(profile);
     await _reportTypeService.sync();
+    await _observationDefinitionService.sync();
   }
 
   @override

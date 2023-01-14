@@ -1,9 +1,9 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_report_monitoring_record.dart';
 import 'package:podd_app/models/entities/observation_report_subject.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
-import 'package:podd_app/models/observation_definition_query_result.dart';
 import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
 import 'package:podd_app/models/observation_subject_monitoring_query_result.dart';
 import 'package:podd_app/models/observation_subject_query_result.dart';
@@ -13,43 +13,47 @@ import 'package:podd_app/services/api/graph_ql_base_api.dart';
 class ObservationApi extends GraphQlBaseApi {
   ObservationApi(ResolveGraphqlClient client) : super(client);
 
-  Future<ObservationDefinitionQueryResult> fetchObservationDefinitions({
-    limit = 20,
-    offset = 0,
-  }) async {
+  Future<ObservationDefinitionSyncOutputType> syncObservationDefinitions(
+      List<ObservationDefinitionSyncInputType> data) async {
     const query = r'''
-      query adminObservationDefinitionQuery($limit: Int, $offset: Int) {
-        adminObservationDefinitionQuery(limit: $limit, offset: $offset) {
-          totalCount
-          results { 
+      query syncObservationDefinitions($data: [ObservationDefinitionSyncInputType!]!) {
+        syncObservationDefinitions(data: $data) {
+          updatedList {
             id
             name
             description
             isActive
             registerFormDefinition
+            updatedAt
             monitoringDefinitions {
               id
               name
               description
               isActive
               formDefinition
+              updatedAt
+              definitionId
             }
           }
-          pageInfo {
-            hasNextPage
-          }
-        }          
+          removedList {
+            id
+          }	
+        }
       }
     ''';
-    return runGqlQuery<ObservationDefinitionQueryResult>(
-      query: query,
-      variables: {
-        "limit": limit,
-        "offset": offset,
-      },
-      fetchPolicy: FetchPolicy.cacheAndNetwork,
-      typeConverter: (resp) => ObservationDefinitionQueryResult.fromJson(resp),
-    );
+    return runGqlQuery<ObservationDefinitionSyncOutputType>(
+        query: query,
+        fetchPolicy: FetchPolicy.noCache,
+        variables: {
+          "data": data.map((e) => e.toMap()).toList(),
+        },
+        typeConverter: (resp) => ObservationDefinitionSyncOutputType(
+            updatedList: (resp['updatedList'] as List)
+                .map((e) => ObservationDefinition.fromJson(e))
+                .toList(),
+            removedList: (resp['removedList'] as List)
+                .map((e) => e['id'].toString())
+                .toList()));
   }
 
   Future<SubjectRecordQueryResult> fetchSubjectRecords(
@@ -330,4 +334,29 @@ class ObservationApi extends GraphQlBaseApi {
       },
     );
   }
+}
+
+class ObservationDefinitionSyncInputType {
+  final String id;
+  final DateTime updatedAt;
+
+  ObservationDefinitionSyncInputType({
+    required this.id,
+    required this.updatedAt,
+  });
+
+  Map<String, Object?> toMap() => {
+        'id': id,
+        'updatedAt': updatedAt.toIso8601String(),
+      };
+}
+
+class ObservationDefinitionSyncOutputType {
+  List<ObservationDefinition> updatedList;
+  List<String> removedList;
+
+  ObservationDefinitionSyncOutputType({
+    required this.updatedList,
+    required this.removedList,
+  });
 }

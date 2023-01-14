@@ -13,7 +13,7 @@ class ObservationHomeView extends StatelessWidget {
     return ViewModelBuilder<ObservationHomeViewModel>.nonReactive(
       viewModelBuilder: () => ObservationHomeViewModel(),
       builder: (context, viewModel, child) => RefreshIndicator(
-        onRefresh: () => viewModel.fetch(),
+        onRefresh: () => viewModel.syncDefinitions(),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Flex(direction: Axis.vertical, children: [

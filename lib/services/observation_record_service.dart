@@ -1,7 +1,6 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
-import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_report_monitoring_record.dart';
 import 'package:podd_app/models/entities/observation_report_subject.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
@@ -12,11 +11,10 @@ import 'package:podd_app/models/observation_monitoring_record_submit_result.dart
 import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/observation_api.dart';
-import 'package:podd_app/services/db_service.dart';
 import 'package:podd_app/services/image_service.dart';
 import 'package:stacked/stacked.dart';
 
-abstract class IObservationService with ReactiveServiceMixin {
+abstract class IObservationRecordService with ReactiveServiceMixin {
   final _logger = locator<Logger>();
 
   List<ObservationSubjectRecord> get subjectRecords;
@@ -24,8 +22,6 @@ abstract class IObservationService with ReactiveServiceMixin {
   List<ObservationMonitoringRecord> get monitoringRecords;
 
   List<ObservationSubjectReport> get observationSubjectReports;
-
-  Future<List<ObservationDefinition>> fetchAllObservationDefinitions();
 
   Future<void> fetchAllSubjectRecords(bool resetFlag, int definitionId);
 
@@ -46,8 +42,7 @@ abstract class IObservationService with ReactiveServiceMixin {
       double topLeftY, double bottomRightX, double bottomRightY) {}
 }
 
-class ObservationService extends IObservationService {
-  final _dbService = locator<IDbService>();
+class ObservationRecordService extends IObservationRecordService {
   final _imageApi = locator<ImageApi>();
   final _imageService = locator<IImageService>();
   final _observationApi = locator<ObservationApi>();
@@ -65,7 +60,7 @@ class ObservationService extends IObservationService {
   int currentSubjectRecordNextOffset = 0;
   int subjectRecordLimit = 20;
 
-  ObservationService() {
+  ObservationRecordService() {
     listenToReactiveValues([
       _subjectRecords,
       _monitoringRecords,
@@ -82,12 +77,6 @@ class ObservationService extends IObservationService {
   @override
   List<ObservationSubjectReport> get observationSubjectReports =>
       _observationSubjectReports;
-
-  @override
-  Future<List<ObservationDefinition>> fetchAllObservationDefinitions() async {
-    var result = await _observationApi.fetchObservationDefinitions();
-    return result.data;
-  }
 
   @override
   Future<void> fetchAllSubjectRecords(bool resetFlag, int definitionId) async {
