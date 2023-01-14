@@ -84,19 +84,21 @@ class _FormInput extends HookViewModelWidget<ObservationSubjectFormViewModel> {
       BuildContext context, ObservationSubjectFormViewModel viewModel) {
     final form = viewModel.formStore;
     return Observer(
-      builder: (_) => ListView.builder(
-        key: ObjectKey(form.currentSectionIdx),
-        itemBuilder: (context, index) {
-          if (index < form.currentSection.questions.length) {
-            return FormQuestion(
-              question: form.currentSection.questions[index],
-            );
-          } else {
-            return _Footer();
-          }
-        },
-        itemCount: form.currentSection.questions.length + 1,
-      ),
+      builder: (_) => form.numberOfSections > 0
+          ? ListView.builder(
+              key: ObjectKey(form.currentSectionIdx),
+              itemBuilder: (context, index) {
+                if (index < form.currentSection.questions.length) {
+                  return FormQuestion(
+                    question: form.currentSection.questions[index],
+                  );
+                } else {
+                  return _Footer();
+                }
+              },
+              itemCount: form.currentSection.questions.length + 1,
+            )
+          : const SizedBox.shrink(),
     );
   }
 }
@@ -195,39 +197,41 @@ class _DotStepper extends HookViewModelWidget<ObservationSubjectFormViewModel> {
       BuildContext context, ObservationSubjectFormViewModel viewModel) {
     Form store = viewModel.formStore;
     return Observer(
-      builder: (_) => Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
-                child: Center(
-                  child: Column(
-                    children: [
-                      Text(store.currentSection.label),
-                      if (store.numberOfSections > 1)
-                        DotStepper(
-                          dotCount: store.numberOfSections,
-                          spacing: 10,
-                          dotRadius: 12,
-                          activeStep: store.currentSectionIdx,
-                          tappingEnabled: false,
-                          indicatorDecoration:
-                              const IndicatorDecoration(color: Colors.blue),
-                          shape: Shape.pipe,
-                          indicator: Indicator.jump,
+      builder: (_) => store.numberOfSections > 0
+          ? Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Text(store.currentSection.label),
+                            if (store.numberOfSections > 1)
+                              DotStepper(
+                                dotCount: store.numberOfSections,
+                                spacing: 10,
+                                dotRadius: 12,
+                                activeStep: store.currentSectionIdx,
+                                tappingEnabled: false,
+                                indicatorDecoration: const IndicatorDecoration(
+                                    color: Colors.blue),
+                                shape: Shape.pipe,
+                                indicator: Indicator.jump,
+                              ),
+                          ],
                         ),
-                    ],
-                  ),
-                ),
+                      ),
+                    ),
+                  )
+                ],
               ),
-            ),
-          ],
-        ),
-      ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 }
