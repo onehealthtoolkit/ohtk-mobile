@@ -4,8 +4,9 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
-import 'package:podd_app/models/entities/report.dart';
+import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/models/report_submit_result.dart';
+import 'package:podd_app/services/observation_record_service.dart';
 import 'package:podd_app/services/report_service.dart';
 import 'package:stacked/stacked.dart';
 
@@ -14,7 +15,10 @@ class ReSubmitViewModel extends ReactiveViewModel {
 
   final _logger = locator<Logger>();
   final IReportService _reportService = locator<IReportService>();
-  final reportStates = <String, Progress>{};
+  final IObservationRecordService _recordService =
+      locator<IObservationRecordService>();
+
+  final submissionStates = <String, Progress>{};
 
   bool isOffline = true;
 
@@ -48,42 +52,91 @@ class ReSubmitViewModel extends ReactiveViewModel {
     _connectionChangeStream.cancel();
   }
 
-  List<PendingReportState> get pendingReports {
+  List<SubmissionState> get pendingReports {
     return _reportService.pendingReports
-        .map((report) => PendingReportState(report: report)
-          ..state = reportStates[report.id] ?? Progress.none)
+        .map((report) => SubmissionState(
+                item: SubmissionItem(
+              id: report.id,
+              name: report.reportTypeName ?? "",
+              date: report.incidentDate,
+            ))
+              ..state = submissionStates[report.id] ?? Progress.none)
+        .toList();
+  }
+
+  List<SubmissionState> get pendingSubjectRecords {
+    return _recordService.pendingSubjectRecords
+        .map((report) => SubmissionState(
+                item: SubmissionItem(
+              id: report.id,
+              name: report.definitionName,
+              date: report.recordDate,
+            ))
+              ..state = submissionStates[report.id] ?? Progress.none)
         .toList();
   }
 
   @override
   List<ReactiveServiceMixin> get reactiveServices => [_reportService];
 
-  void submitAllPendingReport() {
+  void submitAllPendings() async {
     for (var report in pendingReports) {
-      _submit(report);
+      _submitReport(report);
+    }
+    for (var record in pendingSubjectRecords) {
+      _submitSubjectRecord(record);
     }
   }
 
-  _submit(PendingReportState state) async {
-    reportStates[state.report.id] = Progress.pending;
+  _submitReport(SubmissionState state) async {
+    var item = state.item;
+    submissionStates[item.id] = Progress.pending;
     notifyListeners();
 
-    var result = await _reportService.submit(state.report);
+    var report = _reportService.pendingReports
+        .firstWhere((report) => report.id == item.id);
+    var result = await _reportService.submit(report);
 
     if (result is ReportSubmitSuccess) {
       _logger.i("resubmit report success");
-      reportStates[state.report.id] = Progress.complete;
+      submissionStates[item.id] = Progress.complete;
       notifyListeners();
     }
     if (result is ReportSubmitPending) {
       _logger.e("resubmit report fail");
-      reportStates[state.report.id] = Progress.fail;
+      submissionStates[item.id] = Progress.fail;
+      notifyListeners();
+    }
+  }
+
+  _submitSubjectRecord(SubmissionState state) async {
+    var item = state.item;
+    submissionStates[item.id] = Progress.pending;
+    notifyListeners();
+
+    var record = _recordService.pendingSubjectRecords
+        .firstWhere((record) => record.id == item.id);
+    var result = await _recordService.submitSubjectRecord(record);
+
+    if (result is SubjectRecordSubmitSuccess) {
+      _logger.i("resubmit subject record success");
+      submissionStates[item.id] = Progress.complete;
+      notifyListeners();
+    }
+    if (result is SubjectRecordSubmitPending) {
+      _logger.e("resubmit subject record fail");
+      submissionStates[item.id] = Progress.fail;
       notifyListeners();
     }
   }
 
   Future<void> deletePendingReport(String id) async {
     await _reportService.removePendingReport(id);
+    notifyListeners();
+  }
+
+  Future<void> deletePendingSubjectRecord(String id) async {
+    await _recordService.removePendingSubjectRecord(id);
     notifyListeners();
   }
 
@@ -99,11 +152,23 @@ enum Progress {
   fail,
 }
 
-class PendingReportState {
-  final Report report;
+class SubmissionState {
+  final SubmissionItem item;
   Progress state = Progress.none;
 
-  PendingReportState({
-    required this.report,
+  SubmissionState({
+    required this.item,
+  });
+}
+
+class SubmissionItem {
+  final String id;
+  final String name;
+  final DateTime date;
+
+  SubmissionItem({
+    required this.id,
+    required this.name,
+    required this.date,
   });
 }

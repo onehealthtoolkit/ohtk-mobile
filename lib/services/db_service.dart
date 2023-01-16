@@ -158,6 +158,7 @@ class DbService extends IDbService {
         id TEXT PRIMARY KEY,
         data TEXT,
         definition_id INT,
+        definition_name TEXT,
         record_date TEXT,
         gps_location TEXT
       )
@@ -171,6 +172,7 @@ class DbService extends IDbService {
         id TEXT PRIMARY KEY,
         data TEXT,
         monitoring_definition_id INT,
+        monitoring_definition_name TEXT,
         subject_id TEXT
       )
     ''');

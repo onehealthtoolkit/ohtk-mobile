@@ -10,7 +10,9 @@ import 'package:podd_app/ui/home/observation/observation_home_view.dart';
 import 'package:podd_app/ui/home/report_home_view.dart';
 import 'package:podd_app/ui/notification/user_message_list.dart';
 import 'package:podd_app/ui/notification/user_message_view.dart';
+import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_hooks/stacked_hooks.dart';
 
 import '../profile/profile_view.dart';
 
@@ -93,7 +95,7 @@ class HomeView extends HookWidget {
       },
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
-          elevation: 1,
+          elevation: viewModel.numberOfPendingSubmissions > 0 ? 0 : 1,
           centerTitle: true,
           title: Text(AppLocalizations.of(context)!.appName),
           actions: [
@@ -110,6 +112,12 @@ class HomeView extends HookWidget {
               },
             ),
           ],
+          bottom: PreferredSize(
+            preferredSize: viewModel.numberOfPendingSubmissions > 0
+                ? const Size.fromHeight(kToolbarHeight * .6)
+                : Size.zero,
+            child: _ReSubmitBlock(),
+          ),
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
@@ -148,5 +156,29 @@ class HomeView extends HookWidget {
       default:
         return const ReportHomeView();
     }
+  }
+}
+
+class _ReSubmitBlock extends HookViewModelWidget<HomeViewModel> {
+  @override
+  Widget buildViewModelWidget(BuildContext context, HomeViewModel viewModel) {
+    return viewModel.numberOfPendingSubmissions > 0
+        ? Container(
+            width: double.infinity,
+            height: kToolbarHeight * .6,
+            color: Colors.white,
+            child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ReSubmitView(),
+                  ),
+                );
+              },
+              child: Text(
+                  "${viewModel.numberOfPendingSubmissions} pending submissions, tap here to re-submit"),
+            ),
+          )
+        : const SizedBox.shrink();
   }
 }

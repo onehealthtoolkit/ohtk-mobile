@@ -6,14 +6,16 @@ class SubjectRecord {
   String id;
   Map<String, dynamic> data;
   int definitionId;
-  DateTime? recordDate;
+  String definitionName;
+  DateTime recordDate;
   String? gpsLocation;
 
   SubjectRecord({
     required this.id,
     required this.data,
     required this.definitionId,
-    this.recordDate,
+    required this.definitionName,
+    required this.recordDate,
     this.gpsLocation,
   });
 
@@ -21,9 +23,8 @@ class SubjectRecord {
       : id = map["id"],
         data = json.decode(map["data"]),
         definitionId = map["definition_id"],
-        recordDate = map["record_date"] != null
-            ? DateFormat("yyyy-MM-dd").parse(map["record_date"])
-            : null,
+        definitionName = map["definition_name"],
+        recordDate = DateFormat("yyyy-MM-dd").parse(map["record_date"]),
         gpsLocation = map["gps_location"];
 
   Map<String, dynamic> toMap() {
@@ -31,9 +32,8 @@ class SubjectRecord {
       "id": id,
       "data": json.encode(data),
       "definition_id": definitionId,
-      "record_date": recordDate != null
-          ? DateFormat("yyyy-MM-dd").format(recordDate!)
-          : null,
+      "definition_name": definitionName,
+      "record_date": DateFormat("yyyy-MM-dd").format(recordDate!),
       "gps_location": gpsLocation,
     };
   }

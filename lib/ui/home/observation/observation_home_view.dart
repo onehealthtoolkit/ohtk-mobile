@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:podd_app/ui/home/observation/observation_home_view_model.dart';
 import 'package:podd_app/ui/observation/observation_view.dart';

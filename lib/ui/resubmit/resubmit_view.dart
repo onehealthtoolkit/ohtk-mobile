@@ -13,7 +13,7 @@ class ReSubmitView extends StatelessWidget {
       viewModelBuilder: () => ReSubmitViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
-          title: const Text("Pending reports"),
+          title: const Text("Pending submissions"),
         ),
         body: _Body(),
       ),
@@ -35,7 +35,7 @@ class _Body extends HookViewModelWidget<ReSubmitViewModel> {
 
   _showEmptyMessage(BuildContext context, ReSubmitViewModel viewModel) {
     return const Center(
-      child: Text("There are no pending reports."),
+      child: Text("There are no pending submissions."),
     );
   }
 
@@ -45,21 +45,36 @@ class _Body extends HookViewModelWidget<ReSubmitViewModel> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ListView.builder(
-              itemCount: viewModel.pendingReports.length,
-              itemBuilder: ((context, index) {
-                var reportState = viewModel.pendingReports[index];
-                return Dismissible(
-                  key: Key(reportState.report.id),
-                  child: Card(
-                    child: _PendingReport(reportState: reportState),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Reports",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                  background: Container(color: Colors.red),
-                  onDismissed: (direction) async {
-                    await viewModel.deletePendingReport(reportState.report.id);
+                ),
+                PendingList(
+                  items: viewModel.pendingReports,
+                  onDismissed: (String id) async {
+                    await viewModel.deletePendingReport(id);
                   },
-                );
-              }),
+                ),
+                const Text(
+                  "Subject Records",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                PendingList(
+                  items: viewModel.pendingSubjectRecords,
+                  onDismissed: (String id) async {
+                    await viewModel.deletePendingSubjectRecord(id);
+                  },
+                ),
+              ],
             ),
           ),
         ),
@@ -78,9 +93,9 @@ class _Body extends HookViewModelWidget<ReSubmitViewModel> {
                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 20),
                 child: ElevatedButton(
                   onPressed: viewModel.pendingReports.isNotEmpty
-                      ? viewModel.submitAllPendingReport
+                      ? viewModel.submitAllPendings
                       : null,
-                  child: const Text("resubmit pending report"),
+                  child: const Text("Resubmit"),
                 ),
               ),
       ],
@@ -88,17 +103,55 @@ class _Body extends HookViewModelWidget<ReSubmitViewModel> {
   }
 }
 
-class _PendingReport extends StatelessWidget {
-  final PendingReportState reportState;
-  _PendingReport({Key? key, required this.reportState}) : super(key: key);
+typedef ItemDismissedCallback = Function(String id);
+
+class PendingList extends StatelessWidget {
+  final List<SubmissionState> items;
+  final ItemDismissedCallback? onDismissed;
+
+  const PendingList({
+    required this.items,
+    this.onDismissed,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: ((context, index) {
+          var reportState = items[index];
+
+          return Dismissible(
+            key: Key(reportState.item.id),
+            child: Card(
+              child: _PendingSubmission(reportState: reportState),
+            ),
+            background: Container(color: Colors.red),
+            onDismissed: (direction) {
+              onDismissed != null && onDismissed!(reportState.item.id);
+            },
+          );
+        }),
+        shrinkWrap: true,
+      ),
+    );
+  }
+}
+
+class _PendingSubmission extends StatelessWidget {
+  final SubmissionState reportState;
+  _PendingSubmission({Key? key, required this.reportState}) : super(key: key);
   final formatter = DateFormat('yyyy-MM-dd');
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(reportState.report.reportTypeName ?? ""),
+      title: Text(reportState.item.name),
       subtitle: Text(
-        formatter.format(reportState.report.incidentDate.toLocal()),
+        formatter.format(reportState.item.date.toLocal()),
       ),
       trailing: _buildProgressStatus(reportState.state),
     );
