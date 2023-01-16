@@ -91,6 +91,7 @@ class ObservationSubjectFormViewModel extends BaseViewModel {
       data: _formStore.toJsonValue(),
       definitionId: _definition.id,
       gpsLocation: gpsLocation,
+      recordDate: DateTime.now(),
     );
 
     SubjectRecordSubmitResult result;

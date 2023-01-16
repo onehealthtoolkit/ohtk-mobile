@@ -46,10 +46,10 @@ class ImageApi extends GraphQlBaseApi {
     }
   }
 
-  Future<ImageSubmitResult> submitObservationImage(
-    ReportImage reportImage,
-    String observationRefId,
-    String observationImageType,
+  Future<ImageSubmitResult> submitObservationRecordImage(
+    ReportImage recordImage,
+    String recordId,
+    String recordType,
   ) async {
     const mutation = r'''
       mutation submitRecordImage(
@@ -73,8 +73,8 @@ class ImageApi extends GraphQlBaseApi {
     ''';
 
     var file = dio.MultipartFile.fromBytes(
-      reportImage.image,
-      filename: reportImage.id,
+      recordImage.image,
+      filename: recordImage.id,
     );
 
     try {
@@ -82,10 +82,10 @@ class ImageApi extends GraphQlBaseApi {
           mutation: mutation,
           parseData: (json) => ObservationRecordImage.fromJson(json!),
           variables: {
-            "recordType": observationImageType,
+            "recordType": recordType,
             "image": file,
-            "imageId": reportImage.id,
-            "recordId": observationRefId
+            "imageId": recordImage.id,
+            "recordId": recordId
           });
 
       return ImageSubmitSuccess(result);
