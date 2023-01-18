@@ -94,7 +94,9 @@ class ObservationMonitoringRecordFormViewModel extends BaseViewModel {
       id: _reportId,
       data: _formStore.toJsonValue(),
       monitoringDefinitionId: _definition.id,
+      monitoringDefinitionName: _definition.name,
       subjectId: _subject.id,
+      recordDate: DateTime.now(),
     );
 
     MonitoringRecordSubmitResult result;

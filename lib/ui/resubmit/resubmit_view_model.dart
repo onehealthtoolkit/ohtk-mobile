@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/services/observation_record_service.dart';
@@ -55,29 +56,42 @@ class ReSubmitViewModel extends ReactiveViewModel {
   List<SubmissionState> get pendingReports {
     return _reportService.pendingReports
         .map((report) => SubmissionState(
-                item: SubmissionItem(
-              id: report.id,
-              name: report.reportTypeName ?? "",
-              date: report.incidentDate,
-            ))
-              ..state = submissionStates[report.id] ?? Progress.none)
+              item: SubmissionItem(
+                id: report.id,
+                name: report.reportTypeName ?? "",
+                date: report.incidentDate,
+              ),
+            )..state = submissionStates[report.id] ?? Progress.none)
         .toList();
   }
 
   List<SubmissionState> get pendingSubjectRecords {
     return _recordService.pendingSubjectRecords
-        .map((report) => SubmissionState(
-                item: SubmissionItem(
-              id: report.id,
-              name: report.definitionName,
-              date: report.recordDate,
-            ))
-              ..state = submissionStates[report.id] ?? Progress.none)
+        .map((record) => SubmissionState(
+              item: SubmissionItem(
+                id: record.id,
+                name: record.definitionName,
+                date: record.recordDate,
+              ),
+            )..state = submissionStates[record.id] ?? Progress.none)
+        .toList();
+  }
+
+  List<SubmissionState> get pendingMonitoringRecords {
+    return _recordService.pendingMonitoringRecords
+        .map((record) => SubmissionState(
+              item: SubmissionItem(
+                id: record.id,
+                name: record.monitoringDefinitionName,
+                date: record.recordDate,
+              ),
+            )..state = submissionStates[record.id] ?? Progress.none)
         .toList();
   }
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [_reportService];
+  List<ReactiveServiceMixin> get reactiveServices =>
+      [_reportService, _recordService];
 
   void submitAllPendings() async {
     for (var report in pendingReports) {
@@ -85,6 +99,9 @@ class ReSubmitViewModel extends ReactiveViewModel {
     }
     for (var record in pendingSubjectRecords) {
       _submitSubjectRecord(record);
+    }
+    for (var record in pendingMonitoringRecords) {
+      _submitMonitoringRecord(record);
     }
   }
 
@@ -130,6 +147,27 @@ class ReSubmitViewModel extends ReactiveViewModel {
     }
   }
 
+  _submitMonitoringRecord(SubmissionState state) async {
+    var item = state.item;
+    submissionStates[item.id] = Progress.pending;
+    notifyListeners();
+
+    var record = _recordService.pendingMonitoringRecords
+        .firstWhere((record) => record.id == item.id);
+    var result = await _recordService.submitMonitoringRecord(record);
+
+    if (result is MonitoringRecordSubmitSuccess) {
+      _logger.i("resubmit monitoring record success");
+      submissionStates[item.id] = Progress.complete;
+      notifyListeners();
+    }
+    if (result is MonitoringRecordSubmitPending) {
+      _logger.e("resubmit monitoring record fail");
+      submissionStates[item.id] = Progress.fail;
+      notifyListeners();
+    }
+  }
+
   Future<void> deletePendingReport(String id) async {
     await _reportService.removePendingReport(id);
     notifyListeners();
@@ -140,8 +178,15 @@ class ReSubmitViewModel extends ReactiveViewModel {
     notifyListeners();
   }
 
+  Future<void> deletePendingMonitoringRecord(String id) async {
+    await _recordService.removePendingMonitoringRecord(id);
+    notifyListeners();
+  }
+
   get isEmpty {
-    return _reportService.pendingReports.isEmpty;
+    return _reportService.pendingReports.isEmpty &&
+        _recordService.pendingSubjectRecords.isEmpty &&
+        _recordService.pendingMonitoringRecords.isEmpty;
   }
 }
 

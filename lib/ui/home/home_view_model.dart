@@ -16,12 +16,16 @@ class HomeViewModel extends IndexTrackingViewModel {
 
   List get pendingReports => reportService.pendingReports;
   List get pendingSubjectRecords => recordService.pendingSubjectRecords;
+  List get pendingMonitoringRecords => recordService.pendingMonitoringRecords;
 
   int get numberOfPendingSubmissions =>
-      pendingReports.length + pendingSubjectRecords.length;
+      pendingReports.length +
+      pendingSubjectRecords.length +
+      pendingMonitoringRecords.length;
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [reportService];
+  List<ReactiveServiceMixin> get reactiveServices =>
+      [reportService, recordService];
 
   UserProfile? get userProfile => authService.userProfile;
 

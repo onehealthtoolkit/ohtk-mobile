@@ -14,7 +14,7 @@ class DbService extends IDbService {
     // follow this migration pattern https://github.com/tekartik/sqflite/blob/master/sqflite/doc/migration_example.md
     _db = await openDatabase(
       'podd.db',
-      version: 8,
+      version: 9,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onDowngrade: onDatabaseDowngradeDelete,
@@ -30,7 +30,7 @@ class DbService extends IDbService {
     _createTableObservationDefinitionV1(batch);
     _createTableMonitoringDefinitionV1(batch);
     _createTableSubjectRecordV1(batch);
-    _createTableMonitoringRecordV1(batch);
+    _createTableMonitoringRecordV2(batch);
     await batch.commit();
   }
 
@@ -59,6 +59,9 @@ class DbService extends IDbService {
     if (oldVersion == 7) {
       await _createTableSubjectRecordV1(batch);
       await _createTableMonitoringRecordV1(batch);
+    }
+    if (oldVersion == 8) {
+      await _alterTableMonitoringRecordV1(batch);
     }
     await batch.commit();
   }
@@ -176,6 +179,24 @@ class DbService extends IDbService {
         subject_id TEXT
       )
     ''');
+  }
+
+  _createTableMonitoringRecordV2(Batch batch) {
+    batch.execute("DROP TABLE IF EXISTS monitoring_record");
+    batch.execute('''
+      CREATE TABLE monitoring_record (
+        id TEXT PRIMARY KEY,
+        data TEXT,
+        monitoring_definition_id INT,
+        monitoring_definition_name TEXT,
+        record_date TEXT,
+        subject_id TEXT
+      )
+    ''');
+  }
+
+  _alterTableMonitoringRecordV1(Batch batch) {
+    batch.execute("ALTER TABLE monitoring_record add column record_date TEXT");
   }
 
   _alterTableReportTypeV3(Batch batch) {

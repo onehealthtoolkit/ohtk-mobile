@@ -22,6 +22,8 @@ abstract class IObservationRecordService with ReactiveServiceMixin {
 
   List<ObservationSubjectRecord> get subjectRecords;
 
+  List<MonitoringRecord> get pendingMonitoringRecords;
+
   List<ObservationMonitoringRecord> get monitoringRecords;
 
   List<ObservationSubjectReport> get observationSubjectReports;
@@ -46,6 +48,8 @@ abstract class IObservationRecordService with ReactiveServiceMixin {
 
   Future<void> removePendingSubjectRecord(String id);
 
+  Future<void> removePendingMonitoringRecord(String id);
+
   Future<void> removeAllPendingRecords();
 }
 
@@ -60,6 +64,8 @@ class ObservationRecordService extends IObservationRecordService {
   final ReactiveList<ObservationSubjectRecord> _subjectRecords =
       ReactiveList<ObservationSubjectRecord>();
 
+  final ReactiveList<MonitoringRecord> _pendingMonitoringRecords =
+      ReactiveList<MonitoringRecord>();
   final ReactiveList<ObservationMonitoringRecord> _monitoringRecords =
       ReactiveList<ObservationMonitoringRecord>();
 
@@ -74,6 +80,7 @@ class ObservationRecordService extends IObservationRecordService {
     listenToReactiveValues([
       _pendingSubjectRecords,
       _subjectRecords,
+      _pendingMonitoringRecords,
       _monitoringRecords,
       _observationSubjectReports,
     ]);
@@ -81,9 +88,16 @@ class ObservationRecordService extends IObservationRecordService {
   }
 
   _init() async {
-    var rows = await _dbService.db.query("subject_record");
-    rows.map((row) => SubjectRecord.fromMap(row)).forEach((record) {
+    var subjectRows = await _dbService.db.query("subject_record");
+    subjectRows.map((row) => SubjectRecord.fromMap(row)).forEach((record) {
       _pendingSubjectRecords.add(record);
+    });
+
+    var monitoringRows = await _dbService.db.query("monitoring_record");
+    monitoringRows
+        .map((row) => MonitoringRecord.fromMap(row))
+        .forEach((record) {
+      _pendingMonitoringRecords.add(record);
     });
   }
 
@@ -92,6 +106,10 @@ class ObservationRecordService extends IObservationRecordService {
 
   @override
   List<ObservationSubjectRecord> get subjectRecords => _subjectRecords;
+
+  @override
+  List<MonitoringRecord> get pendingMonitoringRecords =>
+      _pendingMonitoringRecords;
 
   @override
   List<ObservationMonitoringRecord> get monitoringRecords => _monitoringRecords;
@@ -155,7 +173,7 @@ class ObservationRecordService extends IObservationRecordService {
       var result = await _observationApi.submitSubjectRecord(record);
 
       if (result is SubjectRecordSubmitSuccess) {
-        await _deleteFromLocalDB(record);
+        await _deleteSubjectRecordFromLocalDB(record);
         result.subject.images = List.of([]);
 
         // submit images
@@ -176,13 +194,13 @@ class ObservationRecordService extends IObservationRecordService {
       }
 
       if (result is SubjectRecordSubmitFailure) {
-        _saveToLocalDB(record);
+        _saveSubjectRecordToLocalDB(record);
         return SubjectRecordSubmitPending();
       }
       return result;
     } on LinkException catch (_e) {
       _logger.e(_e);
-      _saveToLocalDB(record);
+      _saveSubjectRecordToLocalDB(record);
       return SubjectRecordSubmitPending();
     }
   }
@@ -194,7 +212,7 @@ class ObservationRecordService extends IObservationRecordService {
       var result = await _observationApi.submitMonitoringRecord(record);
 
       if (result is MonitoringRecordSubmitSuccess) {
-        // TODO delete from local db
+        await _deleteMonitoringRecordFromLocalDB(record);
         result.monitoringRecord.images = List.of([]);
 
         // submit images
@@ -215,13 +233,13 @@ class ObservationRecordService extends IObservationRecordService {
       }
 
       if (result is MonitoringRecordSubmitFailure) {
-        // TODO save to local db
+        _saveMonitoringRecordToLocalDB(record);
         return MonitoringRecordSubmitPending();
       }
       return result;
     } on LinkException catch (_e) {
       _logger.e(_e);
-      // TODO save to local db
+      _saveMonitoringRecordToLocalDB(record);
       return MonitoringRecordSubmitPending();
     }
   }
@@ -240,7 +258,7 @@ class ObservationRecordService extends IObservationRecordService {
     return result;
   }
 
-  _deleteFromLocalDB(SubjectRecord record) async {
+  _deleteSubjectRecordFromLocalDB(SubjectRecord record) async {
     var _db = _dbService.db;
     _db.delete(
       "subject_record",
@@ -251,10 +269,10 @@ class ObservationRecordService extends IObservationRecordService {
     _pendingSubjectRecords.remove(record);
   }
 
-  Future<bool> _isRecordInLocalDB(String id) async {
+  Future<bool> _isSubjectRecordInLocalDB(String id) async {
     var _db = _dbService.db;
     var results = await _db.query(
-      'subject_record',
+      "subject_record",
       where: 'id = ?',
       whereArgs: [
         id,
@@ -263,9 +281,9 @@ class ObservationRecordService extends IObservationRecordService {
     return results.isNotEmpty;
   }
 
-  _saveToLocalDB(SubjectRecord record) async {
+  _saveSubjectRecordToLocalDB(SubjectRecord record) async {
     var _db = _dbService.db;
-    var isInDB = await _isRecordInLocalDB(record.id);
+    var isInDB = await _isSubjectRecordInLocalDB(record.id);
     if (isInDB) {
       _db.update(
         "subject_record",
@@ -289,12 +307,63 @@ class ObservationRecordService extends IObservationRecordService {
     _pendingSubjectRecords.removeWhere((r) => r.id == id);
   }
 
+  _deleteMonitoringRecordFromLocalDB(MonitoringRecord record) async {
+    var _db = _dbService.db;
+    _db.delete(
+      "monitoring_record",
+      where: "id = ?",
+      whereArgs: [record.id],
+    );
+
+    _pendingMonitoringRecords.remove(record);
+  }
+
+  Future<bool> _isMonitoringRecordInLocalDB(String id) async {
+    var _db = _dbService.db;
+    var results = await _db.query(
+      "monitoring_record",
+      where: 'id = ?',
+      whereArgs: [
+        id,
+      ],
+    );
+    return results.isNotEmpty;
+  }
+
+  _saveMonitoringRecordToLocalDB(MonitoringRecord record) async {
+    var _db = _dbService.db;
+    var isInDB = await _isMonitoringRecordInLocalDB(record.id);
+    if (isInDB) {
+      _db.update(
+        "monitoring_record",
+        record.toMap(),
+        where: "id = ?",
+        whereArgs: [
+          record.id,
+        ],
+      );
+    } else {
+      _db.insert("monitoring_record", record.toMap());
+      _pendingMonitoringRecords.add(record);
+    }
+  }
+
+  @override
+  Future<void> removePendingMonitoringRecord(String id) async {
+    var _db = _dbService.db;
+    await _db.delete("monitoring_record", where: "id = ?", whereArgs: [id]);
+    await _imageService.remove(id);
+    _pendingMonitoringRecords.removeWhere((r) => r.id == id);
+  }
+
   @override
   Future<void> removeAllPendingRecords() async {
     var _db = _dbService.db;
     await _db.delete("subject_record");
+    await _db.delete("monitoring_record");
 
     _pendingSubjectRecords.clear();
+    _pendingMonitoringRecords.clear();
     await _imageService.removeAll();
   }
 }

@@ -33,7 +33,7 @@ class SubjectRecord {
       "data": json.encode(data),
       "definition_id": definitionId,
       "definition_name": definitionName,
-      "record_date": DateFormat("yyyy-MM-dd").format(recordDate!),
+      "record_date": DateFormat("yyyy-MM-dd").format(recordDate),
       "gps_location": gpsLocation,
     };
   }

@@ -147,6 +147,7 @@ class ObservationApi extends GraphQlBaseApi {
     return runGqlQuery(
         query: query,
         variables: {"id": id},
+        fetchPolicy: FetchPolicy.cacheAndNetwork,
         typeConverter: (resp) => SubjectRecordGetResult.fromJson(resp));
   }
 
@@ -289,6 +290,7 @@ class ObservationApi extends GraphQlBaseApi {
     return runGqlQuery(
         query: query,
         variables: {"id": id},
+        fetchPolicy: FetchPolicy.cacheAndNetwork,
         typeConverter: (resp) => MonitoringRecordGetResult.fromJson(resp));
   }
 

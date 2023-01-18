@@ -48,30 +48,25 @@ class _Body extends HookViewModelWidget<ReSubmitViewModel> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Reports",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                _pendingTitle("Reports"),
                 PendingList(
                   items: viewModel.pendingReports,
                   onDismissed: (String id) async {
                     await viewModel.deletePendingReport(id);
                   },
                 ),
-                const Text(
-                  "Subject Records",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                _pendingTitle("Subject Records"),
                 PendingList(
                   items: viewModel.pendingSubjectRecords,
                   onDismissed: (String id) async {
                     await viewModel.deletePendingSubjectRecord(id);
+                  },
+                ),
+                _pendingTitle("Monitoring Records"),
+                PendingList(
+                  items: viewModel.pendingMonitoringRecords,
+                  onDismissed: (String id) async {
+                    await viewModel.deletePendingMonitoringRecord(id);
                   },
                 ),
               ],
@@ -92,15 +87,22 @@ class _Body extends HookViewModelWidget<ReSubmitViewModel> {
             : Padding(
                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 20),
                 child: ElevatedButton(
-                  onPressed: viewModel.pendingReports.isNotEmpty
-                      ? viewModel.submitAllPendings
-                      : null,
+                  onPressed:
+                      !viewModel.isEmpty ? viewModel.submitAllPendings : null,
                   child: const Text("Resubmit"),
                 ),
               ),
       ],
     );
   }
+
+  _pendingTitle(String name) => Text(
+        name,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      );
 }
 
 typedef ItemDismissedCallback = Function(String id);
