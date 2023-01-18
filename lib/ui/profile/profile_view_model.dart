@@ -2,7 +2,10 @@ import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/profile_result.dart';
 import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/profile_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
+
+const languageKey = "language";
 
 class ProfileViewModel extends BaseViewModel {
   IAuthService authService = locator<IAuthService>();
@@ -17,12 +20,16 @@ class ProfileViewModel extends BaseViewModel {
   String? password;
   String? confirmPassword;
 
+  String language = "en";
+
   ProfileViewModel() {
     initValue();
   }
 
   initValue() async {
     final userProfile = authService.userProfile;
+    final prefs = await SharedPreferences.getInstance();
+
     if (userProfile != null) {
       firstName = userProfile.firstName;
       lastName = userProfile.lastName;
@@ -31,6 +38,7 @@ class ProfileViewModel extends BaseViewModel {
       authorityName = userProfile.authorityName;
       notifyListeners();
     }
+    language = prefs.getString(languageKey) ?? "en";
   }
 
   void setFirstName(String value) {
@@ -62,6 +70,11 @@ class ProfileViewModel extends BaseViewModel {
     if (hasErrorForKey(key)) {
       setErrorForObject(key, null);
     }
+  }
+
+  changeLanguage(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(languageKey, value);
   }
 
   Future<ProfileResult> updateProfile() async {
