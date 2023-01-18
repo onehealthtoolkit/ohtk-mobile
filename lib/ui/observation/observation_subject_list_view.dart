@@ -63,6 +63,7 @@ class _SubjectListing
                   ),
                 ),
                 title: Text(subject.title),
+                subtitle: Text(subject.description),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
