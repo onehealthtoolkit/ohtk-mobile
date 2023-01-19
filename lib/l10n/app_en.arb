@@ -22,6 +22,7 @@
   "sendButton": "Send",
   "updateProfileButton": "Update Profile",
   "profileUpdateSuccess": "Profile Updated",
+  "passwordUpdatedSuccess": "Your password has been successfully changed!",
   "changePasswordButton": "Change Password",
   "laguageLabel": "Language",
   "serverLabel": "Server",

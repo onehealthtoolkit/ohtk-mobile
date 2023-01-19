@@ -266,7 +266,14 @@ class _ChangePasswordForm extends HookViewModelWidget<ProfileViewModel> {
                     : () async {
                         var result = await viewModel.changePassword();
                         if (result is ProfileSuccess && result.success) {
-                          Navigator.pop(context, true);
+                          var showSuccessMessage = SnackBar(
+                            content: Text(AppLocalizations.of(context)
+                                    ?.passwordUpdatedSuccess ??
+                                'Your password has been successfully changed!'),
+                            backgroundColor: Colors.green,
+                          );
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(showSuccessMessage);
                         }
                       },
                 child: viewModel.isBusy
