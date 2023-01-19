@@ -59,6 +59,7 @@ class MyApp extends StatelessWidget {
           }
           return OverlaySupport.global(
             child: MaterialApp(
+              debugShowCheckedModeBanner: false,
               title: 'OHTK Mobile',
               localizationsDelegates: const [
                 AppLocalizations.delegate,
