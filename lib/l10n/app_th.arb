@@ -33,8 +33,8 @@
   "lastNameLabel": "นามสกุล",
   "emailLabel": "อีเมล",
   "telephoneLabel": "โทรศัพท์",
-  "allReportTabLabel": "All Reports",
-  "myReportTabLabel": "My Reports",
+  "allReportTabLabel": "รายงานทั้งหมด",
+  "myReportTabLabel": "รายงานของฉัน",
   "detailTabLabel": "Detail",
   "commentTabLabel": "Comment",
   "followupTabLabel": "Followup",
@@ -51,6 +51,7 @@
   "observationSubjectDetailTabLabel": "รายละเอียด",
   "observationSubjectMonitoringTabLabel": "การเฝ้าดูติดตาม",
   "observationSubjectMonitoringViewTitle": "หัวเรื่องการเฝ้าดูติดตาม",
+  "validateRequiredMsg": "กรุณาระบุค่า",
   "dateFieldMaxErrorMsg": "{name} ต้องน้อยกว่า {max}",
   "dateFieldMinErrorMsg": "{name} ต้องมากกว่า {min}"
 }

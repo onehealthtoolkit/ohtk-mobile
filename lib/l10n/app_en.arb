@@ -59,7 +59,7 @@
   "observationSubjectDetailTabLabel": "Detail",
   "observationSubjectMonitoringTabLabel": "Monitoring",
   "observationSubjectMonitoringViewTitle": "Subject monitoring",
-  
+  "validateRequiredMsg": "This field is required",
   "dateFieldMaxErrorMsg": "{name} must be equal or less than {max}",
   "dateFieldMinErrorMsg": "{name} must be equal or more than {min}"
 }
