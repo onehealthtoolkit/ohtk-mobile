@@ -101,8 +101,9 @@ abstract class Field implements ConiditionSource {
 
   bool _validateRequired() {
     if (required == true && value == null) {
+      final localize = locator<AppLocalizations>();
       markError(formatWithMap(
-          requiredMessage ?? "This field is required", {"name": name}));
+          requiredMessage ?? localize.validateRequiredMsg, {"name": name}));
       return false;
     }
     return true;

@@ -180,12 +180,18 @@ class DateField extends Field {
         var valid =
             value!.millisecondsSinceEpoch >= minDate.millisecondsSinceEpoch;
         if (!valid) {
+          final localize = locator<AppLocalizations>();
+          final locale = locator<Locale>();
           markError(
             formatWithMap(
-              "{name} must be equal or more than {min}",
+              localize.dateFieldMinErrorMsg,
               {
                 "name": name,
-                "min": minDate.toIso8601String(),
+                "min": (withTime
+                    ? DateFormat("yMd HH:mm", locale.toLanguageTag())
+                        .format(minDate)
+                    : DateFormat("yMd", locale.toLanguageTag())
+                        .format(minDate)),
               },
             ),
           );
@@ -215,12 +221,18 @@ class DateField extends Field {
         var valid =
             value!.millisecondsSinceEpoch <= maxDate.millisecondsSinceEpoch;
         if (!valid) {
+          final localize = locator<AppLocalizations>();
+          final locale = locator<Locale>();
           markError(
             formatWithMap(
-              "{name} must be equal or less than {max}",
+              localize.dateFieldMaxErrorMsg,
               {
                 "name": name,
-                "max": maxDate.toIso8601String(),
+                "max": (withTime
+                    ? DateFormat("yMd HH:mm", locale.toLanguageTag())
+                        .format(maxDate)
+                    : DateFormat("yMd", locale.toLanguageTag())
+                        .format(maxDate)),
               },
             ),
           );

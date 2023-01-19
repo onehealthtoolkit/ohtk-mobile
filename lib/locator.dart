@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/services/api/auth_api.dart';
@@ -28,10 +30,31 @@ import 'package:podd_app/services/report_type_service.dart';
 import 'package:podd_app/services/secure_storage_service.dart';
 import 'package:podd_app/ui/home/all_reports_view_model.dart';
 import 'package:podd_app/ui/home/my_reports_view_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final locator = GetIt.instance;
 
+/*
+ * register localization that will use in OPSV not ui widget
+ */
+void setupAppLocalization() {
+  locator.registerSingletonAsync<AppLocalizations>(() async {
+    var prefs = await SharedPreferences.getInstance();
+    var language = prefs.getString("language") ?? "en";
+    return AppLocalizations.delegate.load(Locale(language));
+  });
+
+  locator.registerSingletonAsync<Locale>(() async {
+    var prefs = await SharedPreferences.getInstance();
+    var language = prefs.getString("language") ?? "en";
+    return Locale(language);
+  });
+}
+
 void setupLocator(String environment) {
+  locator.allowReassignment = true;
+
   if (locator.isRegistered<Logger>()) {
     locator.unregister<Logger>();
   }
