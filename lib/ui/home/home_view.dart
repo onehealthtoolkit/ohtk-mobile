@@ -93,68 +93,77 @@ class HomeView extends HookWidget {
           }
         });
       },
-      builder: (context, viewModel, child) => Scaffold(
-        appBar: AppBar(
-          elevation: viewModel.numberOfPendingSubmissions > 0 ? 0 : 1,
-          centerTitle: true,
-          title: Text(AppLocalizations.of(context)!.appName),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              tooltip: 'Messages',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const UserMessageList(),
-                  ),
-                );
-              },
-            ),
-          ],
-          bottom: PreferredSize(
-            preferredSize: viewModel.numberOfPendingSubmissions > 0
-                ? const Size.fromHeight(kToolbarHeight * .6)
-                : Size.zero,
-            child: _ReSubmitBlock(),
+      builder: (context, viewModel, child) {
+        var navigationBarItems = [
+          const BottomNavigationBarItem(
+            label: 'Incidents',
+            icon: Icon(Icons.art_track),
           ),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          selectedItemColor: Colors.blue[700],
-          currentIndex: viewModel.currentIndex,
-          onTap: viewModel.setIndex,
-          items: const [
-            BottomNavigationBarItem(
-              label: 'Incidents',
-              icon: Icon(Icons.art_track),
-            ),
-            BottomNavigationBarItem(
+          if (viewModel.hasObservationFeature)
+            const BottomNavigationBarItem(
               label: 'Observations',
               icon: Icon(Icons.format_list_bulleted),
             ),
-            BottomNavigationBarItem(
-              label: 'Profile',
-              icon: Icon(Icons.account_circle),
+          const BottomNavigationBarItem(
+            label: 'Profile',
+            icon: Icon(Icons.account_circle),
+          ),
+        ];
+
+        return Scaffold(
+          appBar: AppBar(
+            elevation: viewModel.numberOfPendingSubmissions > 0 ? 0 : 1,
+            centerTitle: true,
+            title: Text(AppLocalizations.of(context)!.appName),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.notifications),
+                tooltip: 'Messages',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserMessageList(),
+                    ),
+                  );
+                },
+              ),
+            ],
+            bottom: PreferredSize(
+              preferredSize: viewModel.numberOfPendingSubmissions > 0
+                  ? const Size.fromHeight(kToolbarHeight * .6)
+                  : Size.zero,
+              child: _ReSubmitBlock(),
             ),
-          ],
-        ),
-        body: getViewForIndex(viewModel.currentIndex),
-      ),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            selectedItemColor: Colors.blue[700],
+            currentIndex: viewModel.currentIndex,
+            onTap: viewModel.setIndex,
+            items: navigationBarItems,
+          ),
+          body: getViewForIndex(viewModel),
+        );
+      },
     );
   }
 
-  Widget getViewForIndex(int index) {
-    switch (index) {
-      case 0:
-        return const ReportHomeView();
-      case 1:
+  Widget getViewForIndex(HomeViewModel viewModel) {
+    int index = viewModel.currentIndex;
+    if (index == 0) {
+      return const ReportHomeView();
+    } else if (index == 1) {
+      if (viewModel.hasObservationFeature) {
         return const ObservationHomeView();
-      case 2:
+      } else {
         return const ProfileView();
-      default:
-        return const ReportHomeView();
+      }
+    } else if (index == 2) {
+      return const ProfileView();
+    } else {
+      return const ReportHomeView();
     }
   }
 }

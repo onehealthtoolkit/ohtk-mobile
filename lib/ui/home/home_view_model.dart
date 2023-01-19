@@ -33,6 +33,9 @@ class HomeViewModel extends IndexTrackingViewModel {
 
   bool get isConsent => userProfile?.consent ?? false;
 
+  bool get hasObservationFeature =>
+      userProfile?.hasFeatureEnabled("observation") ?? false;
+
   setupFirebaseMessaging({
     NotificationMessageCallback? onBackgroundMessage,
     NotificationMessageCallback? onForegroundMessage,
