@@ -68,17 +68,31 @@ class ReportFormViewModel extends BaseViewModel {
     return BackAction.doNothing;
   }
 
-  next() {
+  get firstInvalidQuestion {
+    return formStore.currentSection.firstInvalidQuestion;
+  }
+
+  get firstInvalidQuestionIndex {
+    return formStore.currentSection.firstInvalidQuestionIndex;
+  }
+
+  bool next() {
     if (state == ReportFormState.formInput) {
       if (formStore.couldGoToNextSection) {
-        formStore.next();
+        return formStore.next();
       } else {
-        if (formStore.currentSection.validate()) {
+        var isValid = formStore.currentSection.validate();
+        if (isValid) {
           state = ReportFormState.confirmation;
           notifyListeners();
+          return true;
+        } else {
+          return false;
         }
       }
-    } else {}
+    } else {
+      return false;
+    }
   }
 
   Future<ReportSubmitResult> submit() async {

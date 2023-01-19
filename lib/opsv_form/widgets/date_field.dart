@@ -57,26 +57,41 @@ class _DateTimeDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (BuildContext context) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-        child: Row(
-          children: [
-            _dayDropdown(field),
-            _monthDropdown(field),
-            _yearDropdown(field),
-            if (field.withTime)
-              const Text(
-                ": ",
-                style: TextStyle(fontWeight: FontWeight.bold),
-                textScaleFactor: 1.2,
-              ),
-            if (field.withTime) _hourDropdown(field),
-            if (field.withTime) _minuteDropdown(field),
-          ],
-        ),
-      );
-    });
+    double width = MediaQuery.of(context).size.width;
+
+    // we use locale from GetIt, so we need to wait for it to be ready
+    // Note: in dev mode only. In production, this is not needed
+    return FutureBuilder(
+        builder: ((context, snapshot) {
+          if (snapshot.hasData) {
+            return Observer(builder: (BuildContext context) {
+              return Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                child: Row(
+                  children: [
+                    Expanded(child: _dayDropdown(field), flex: 1),
+                    SizedBox(width: width * 0.05),
+                    Expanded(child: _monthDropdown(field), flex: 2),
+                    SizedBox(width: width * 0.05),
+                    Expanded(child: _yearDropdown(field), flex: 1),
+                    if (field.withTime)
+                      const Text(
+                        ": ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        textScaleFactor: 1.2,
+                      ),
+                    if (field.withTime) Expanded(child: _hourDropdown(field)),
+                    if (field.withTime) Expanded(child: _minuteDropdown(field)),
+                  ],
+                ),
+              );
+            });
+          } else {
+            return const SizedBox();
+          }
+        }),
+        future: locator.allReady());
   }
 
   bool _isLeapYear(int? year) {
@@ -112,7 +127,10 @@ class _DateTimeDropdown extends StatelessWidget {
       );
     }).toList();
 
-    return DropdownButton(
+    return DropdownButtonFormField(
+      decoration: const InputDecoration(
+        border: InputBorder.none,
+      ),
       hint: const Text("D"),
       value: field.day,
       onChanged: (int? value) {
@@ -124,6 +142,9 @@ class _DateTimeDropdown extends StatelessWidget {
 
   // month value is between 1-12
   _monthDropdown(opsv.DateField field) {
+    final locale = locator<Locale>();
+
+    var formatter = DateFormat.MMMM(locale.toString());
     final items = List<int>.generate(12, (int index) => index).map((e) {
       final month = e + 1;
       bool enabled = true;
@@ -138,7 +159,8 @@ class _DateTimeDropdown extends StatelessWidget {
           enabled = false;
         }
       }
-      final monthStr = DateFormat("MMMM").format(DateTime(2000, month, 1));
+
+      final monthStr = formatter.format(DateTime(2000, month, 1));
 
       return DropdownMenuItem(
         child: Text(monthStr, style: _optionStyle(enabled)),
@@ -147,8 +169,11 @@ class _DateTimeDropdown extends StatelessWidget {
       );
     }).toList();
 
-    return DropdownButton(
+    return DropdownButtonFormField(
       hint: const Text("M"),
+      decoration: const InputDecoration(
+        border: InputBorder.none,
+      ),
       value: field.month,
       onChanged: (int? value) {
         field.month = value;
@@ -174,8 +199,11 @@ class _DateTimeDropdown extends StatelessWidget {
       );
     }).toList();
 
-    return DropdownButton(
+    return DropdownButtonFormField(
       hint: const Text("Y"),
+      decoration: const InputDecoration(
+        border: InputBorder.none,
+      ),
       value: field.year,
       onChanged: (int? value) {
         field.year = value;
@@ -193,8 +221,11 @@ class _DateTimeDropdown extends StatelessWidget {
       );
     }).toList();
 
-    return DropdownButton(
+    return DropdownButtonFormField(
       hint: const Text("hh"),
+      decoration: const InputDecoration(
+        border: InputBorder.none,
+      ),
       value: field.hour,
       onChanged: (int? value) {
         field.hour = value;
@@ -212,8 +243,11 @@ class _DateTimeDropdown extends StatelessWidget {
       );
     }).toList();
 
-    return DropdownButton(
+    return DropdownButtonFormField(
       hint: const Text("mm"),
+      decoration: const InputDecoration(
+        border: InputBorder.none,
+      ),
       value: field.minute,
       onChanged: (int? value) {
         field.minute = value;

@@ -31,11 +31,11 @@
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Onehealttoolkit needs access to the camera.</string>
+	<string>The app requires use of your camera so you can add photos to your report.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.</string>
+	<string>The app collects your location while submitting a report, to help officials respond directly to your report.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Onehealttoolkit needs permission for the photo library.</string>
+	<string>The app collects photos to help officials determine the urgency of your report.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
