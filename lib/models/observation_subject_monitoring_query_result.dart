@@ -1,30 +1,28 @@
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 
-class ObservationSubjectMonitoringQueryResult {
-  List<ObservationSubjectMonitoring> data;
+class MonitoringRecordQueryResult {
+  List<ObservationMonitoringRecord> data;
 
-  ObservationSubjectMonitoringQueryResult(this.data);
+  MonitoringRecordQueryResult(this.data);
 
-  factory ObservationSubjectMonitoringQueryResult.fromJson(
-      Map<String, dynamic> json) {
-    return ObservationSubjectMonitoringQueryResult(
+  factory MonitoringRecordQueryResult.fromJson(Map<String, dynamic> json) {
+    return MonitoringRecordQueryResult(
       (json["results"] as List)
-          .map((item) => ObservationSubjectMonitoring.fromJson(item))
+          .map((item) => ObservationMonitoringRecord.fromJson(item))
           .toList(),
     );
   }
 }
 
-class ObservationSubjectMonitoringGetResult {
-  ObservationSubjectMonitoring data;
+class MonitoringRecordGetResult {
+  ObservationMonitoringRecord data;
 
-  ObservationSubjectMonitoringGetResult({
+  MonitoringRecordGetResult({
     required this.data,
   });
 
-  factory ObservationSubjectMonitoringGetResult.fromJson(
-      Map<String, dynamic> jsonMap) {
-    return ObservationSubjectMonitoringGetResult(
-        data: ObservationSubjectMonitoring.fromJson(jsonMap));
+  factory MonitoringRecordGetResult.fromJson(Map<String, dynamic> jsonMap) {
+    return MonitoringRecordGetResult(
+        data: ObservationMonitoringRecord.fromJson(jsonMap));
   }
 }

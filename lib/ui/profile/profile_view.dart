@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:podd_app/main.dart';
 import 'package:podd_app/models/profile_result.dart';
 import 'package:podd_app/ui/profile/profile_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -30,6 +31,8 @@ class ProfileView extends StatelessWidget {
                           const SizedBox(height: 20),
                           _ProfileForm(),
                           const SizedBox(height: 20),
+                          _Language(),
+                          const SizedBox(height: 20),
                           _ChangePasswordForm(),
                         ],
                       ),
@@ -58,6 +61,34 @@ class ProfileView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _Language extends HookViewModelWidget<ProfileViewModel> {
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context, ProfileViewModel viewModel) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
+      padding: const EdgeInsets.all(10.0),
+      child: DropdownButtonFormField<String>(
+          isExpanded: true,
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.laguageLabel,
+          ),
+          hint: const Text("Language"),
+          value: viewModel.language,
+          onChanged: (String? value) async {
+            await viewModel.changeLanguage(value ?? "en");
+            RestartWidget.restartApp(context);
+          },
+          items: const [
+            DropdownMenuItem(child: Text("English"), value: "en"),
+            DropdownMenuItem(child: Text("ภาษาไทย"), value: "th"),
+            DropdownMenuItem(child: Text("ភាសាខ្មែរ"), value: "km"),
+            DropdownMenuItem(child: Text("ພາສາລາວ"), value: "lo"),
+          ]),
     );
   }
 }

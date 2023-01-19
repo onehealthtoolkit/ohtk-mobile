@@ -7,7 +7,7 @@ import 'package:podd_app/models/entities/observation_report_subject.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
-import 'package:podd_app/services/observation_service.dart';
+import 'package:podd_app/services/observation_record_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:uuid/uuid.dart';
 
@@ -24,11 +24,11 @@ enum BackAction {
 var _uuid = const Uuid();
 
 class ObservationSubjectFormViewModel extends BaseViewModel {
-  final IObservationService _observationService =
-      locator<IObservationService>();
+  final IObservationRecordService _observationService =
+      locator<IObservationRecordService>();
 
   final ObservationDefinition _definition;
-  final ObservationSubject? _subject;
+  final ObservationSubjectRecord? _subject;
   bool isReady = false;
   String _subjectId = "";
   Form _formStore = Form.fromJson({}, "");
@@ -82,18 +82,26 @@ class ObservationSubjectFormViewModel extends BaseViewModel {
     } else {}
   }
 
-  Future<ObservationSubjectSubmitResult> submit() async {
+  Future<SubjectRecordSubmitResult> submit() async {
     setBusy(true);
     String? gpsLocation = _findFirstLocationValue(_formStore);
 
-    var report = ObservationReportSubject(
+    var report = SubjectRecord(
       id: _subjectId,
       data: _formStore.toJsonValue(),
       definitionId: _definition.id,
+      definitionName: _definition.name,
       gpsLocation: gpsLocation,
+      recordDate: DateTime.now(),
     );
 
-    var result = await _observationService.submit(report);
+    SubjectRecordSubmitResult result;
+    if (_subject != null) {
+      // TODO update form data
+      result = SubjectRecordSubmitPending();
+    } else {
+      result = await _observationService.submitSubjectRecord(report);
+    }
 
     setBusy(false);
     return result;

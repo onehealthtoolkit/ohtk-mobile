@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:podd_app/models/entities/utils.dart';
 
 class ObservationMonitoringDefinition {
@@ -6,17 +8,17 @@ class ObservationMonitoringDefinition {
   String formDefinition;
   bool isActive;
   String? description;
-  String? titleTemplate;
-  String? descriptionTemplate;
+  int definitionId;
+  String updatedAt;
 
   ObservationMonitoringDefinition({
     required this.id,
     required this.name,
     required this.formDefinition,
     required this.isActive,
+    required this.definitionId,
+    required this.updatedAt,
     this.description,
-    this.titleTemplate,
-    this.descriptionTemplate,
   });
 
   ObservationMonitoringDefinition.fromJson(Map<String, dynamic> jsonMap)
@@ -24,7 +26,29 @@ class ObservationMonitoringDefinition {
         name = jsonMap['name'],
         isActive = jsonMap['isActive'],
         description = jsonMap['description'],
-        formDefinition = jsonMap['formDefinition'],
-        titleTemplate = jsonMap['titleTemplate'],
-        descriptionTemplate = jsonMap['descriptionTemplate'];
+        formDefinition = json.encode(jsonMap['formDefinition']),
+        definitionId = jsonMap['definitionId'],
+        updatedAt = jsonMap['updatedAt'];
+
+  ObservationMonitoringDefinition.fromMap(Map<String, dynamic> map)
+      : id = cvInt(map, (m) => m['id']),
+        name = map['name'],
+        description = map['description'],
+        formDefinition = map['form_definition'],
+        definitionId = cvInt(map, (m) => m['definition_id']),
+        isActive = (map['is_active'] as int) == 1,
+        updatedAt = map['updated_at'];
+
+  Map<String, Object?> toMap() {
+    var map = <String, Object?>{
+      "id": id,
+      "name": name,
+      "description": description,
+      "definition_id": definitionId,
+      "form_definition": formDefinition,
+      "is_active": isActive ? 1 : 0,
+      "updated_at": updatedAt
+    };
+    return map;
+  }
 }

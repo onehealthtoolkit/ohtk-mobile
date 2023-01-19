@@ -59,7 +59,6 @@ class ReportHomeView extends HookWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _ReSubmitBlock(),
               Expanded(
                 child: TabBarView(controller: _tabController, children: [
                   AllReportsView(),
@@ -71,26 +70,5 @@ class ReportHomeView extends HookWidget {
         ),
       ),
     );
-  }
-}
-
-class _ReSubmitBlock extends HookViewModelWidget<ReportHomeViewModel> {
-  @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportHomeViewModel viewModel) {
-    if (viewModel.numberOfReportPendingToSubmit > 0) {
-      return TextButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const ReSubmitView(),
-            ),
-          );
-        },
-        child: Text(
-            "${viewModel.numberOfReportPendingToSubmit} reports still pending to submit tap here to re-submit"),
-      );
-    }
-    return Container();
   }
 }

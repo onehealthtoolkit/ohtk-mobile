@@ -1,31 +1,42 @@
-class ObservationSubjectMonitoring {
-  String id;
-  String definitionId;
-  String subjectId;
-  String monitoringId;
-  Map<String, dynamic>? formData;
-  String? title;
-  String? description;
-  String? imageUrl;
+import 'package:podd_app/models/entities/observation_subject.dart';
 
-  ObservationSubjectMonitoring({
+class ObservationMonitoringRecord {
+  String id;
+  String subjectId;
+  int monitoringDefinitionId;
+  Map<String, dynamic>? formData;
+  String title;
+  String description;
+  bool isActive;
+
+  List<ObservationRecordImage>? images;
+
+  ObservationMonitoringRecord({
     required this.id,
-    required this.definitionId,
     required this.subjectId,
-    required this.monitoringId,
+    required this.monitoringDefinitionId,
+    required this.title,
+    required this.description,
+    required this.isActive,
     this.formData,
-    this.title,
-    this.description,
-    this.imageUrl,
+    this.images,
   });
 
-  ObservationSubjectMonitoring.fromJson(Map<String, dynamic> json)
+  String? get imageUrl {
+    return images != null && images!.isNotEmpty ? images![0].imageUrl : null;
+  }
+
+  ObservationMonitoringRecord.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        definitionId = json['definitionId'],
         subjectId = json['subjectId'],
-        monitoringId = json['monitoringId'],
-        formData = json['formData'],
+        monitoringDefinitionId = json['monitoringDefinitionId'],
+        formData = Map<String, dynamic>.from(json['formData']),
+        isActive = json['isActive'],
         title = json['title'],
         description = json['description'],
-        imageUrl = json['imageUrl'];
+        images = json["images"] != null
+            ? (json["images"] as List)
+                .map((image) => ObservationRecordImage.fromJson(image))
+                .toList()
+            : [];
 }

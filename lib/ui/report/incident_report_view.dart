@@ -63,42 +63,47 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
       BuildContext context, IncidentReportViewModel viewModel) {
     final incident = viewModel.data!;
 
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 10),
-          _title(context, incident),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-            child: Text(
-              formatter.format(incident.createdAt.toLocal()),
-              textScaleFactor: .75,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Container(
-              color: Colors.white,
-              constraints: const BoxConstraints(
-                  minHeight: 80, minWidth: double.infinity),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Text(incident.description.isEmpty
-                    ? "no description"
-                    : incident.description),
+    return LayoutBuilder(builder: (context, constraints) {
+      return SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              _title(context, incident),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                child: Text(
+                  formatter.format(incident.createdAt.toLocal()),
+                  textScaleFactor: .75,
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Container(
+                  color: Colors.white,
+                  constraints: const BoxConstraints(
+                      minHeight: 80, minWidth: double.infinity),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(incident.description.isEmpty
+                        ? "no description"
+                        : incident.description),
+                  ),
+                ),
+              ),
+              _Data(),
+              _Images(),
+              const SizedBox(height: 8),
+              _Map(),
+            ],
           ),
-          _Data(),
-          _Images(),
-          const SizedBox(height: 8),
-          _Map(),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 
   _title(BuildContext context, IncidentReport incident) {
@@ -148,7 +153,7 @@ class _Data extends HookViewModelWidget<IncidentReportViewModel> {
         ),
         columnWidths: const <int, TableColumnWidth>{
           0: FlexColumnWidth(1),
-          1: FlexColumnWidth(1),
+          1: FlexColumnWidth(2),
         },
         children: [
           TableRow(children: [

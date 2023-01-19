@@ -5,30 +5,33 @@ import 'package:im_stepper/stepper.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/locator.dart';
-import 'package:podd_app/models/entities/observation_definition.dart';
+import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
-import 'package:podd_app/models/observation_subject_submit_result.dart';
+import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
+import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
-import 'package:podd_app/ui/observation/form/subject_form_view_model.dart';
+import 'package:podd_app/ui/observation/form/monitoring_record_form_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
-class ObservationSubjectFormView extends StatelessWidget {
-  final ObservationDefinition definition;
-  final ObservationSubjectRecord? subject;
+class ObservationMonitoringRecordFormView extends StatelessWidget {
+  final ObservationMonitoringDefinition monitoringDefinition;
+  final ObservationSubjectRecord subject;
+  final ObservationMonitoringRecord? monitoringRecord;
 
-  const ObservationSubjectFormView({
+  const ObservationMonitoringRecordFormView({
     Key? key,
-    required this.definition,
-    this.subject,
+    required this.monitoringDefinition,
+    required this.subject,
+    this.monitoringRecord,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<ObservationSubjectFormViewModel>.reactive(
-      viewModelBuilder: () =>
-          ObservationSubjectFormViewModel(definition, subject),
+    return ViewModelBuilder<ObservationMonitoringRecordFormViewModel>.reactive(
+      viewModelBuilder: () => ObservationMonitoringRecordFormViewModel(
+          monitoringDefinition, subject, monitoringRecord),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
           return const Center(child: CircularProgressIndicator());
@@ -43,22 +46,22 @@ class ObservationSubjectFormView extends StatelessWidget {
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
                 title: Text(AppLocalizations.of(context)!.reportTitle +
-                    " ${definition.name}"),
+                    " ${monitoringDefinition.name}"),
               ),
               body: SafeArea(
                 child: Column(
                   children: [
                     if (viewModel.state ==
-                        ObservationSubjectFormState.formInput)
+                        ObservationMonitoringRecordFormState.formInput)
                       _DotStepper(),
                     if (viewModel.state ==
-                        ObservationSubjectFormState.confirmation)
+                        ObservationMonitoringRecordFormState.confirmation)
                       Expanded(
                         flex: 1,
                         child: _ConfirmSubmit(),
                       ),
                     if (viewModel.state ==
-                        ObservationSubjectFormState.formInput)
+                        ObservationMonitoringRecordFormState.formInput)
                       Expanded(
                         flex: 1,
                         child: _FormInput(),
@@ -78,10 +81,11 @@ class ObservationSubjectFormView extends StatelessWidget {
   }
 }
 
-class _FormInput extends HookViewModelWidget<ObservationSubjectFormViewModel> {
+class _FormInput
+    extends HookViewModelWidget<ObservationMonitoringRecordFormViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ObservationSubjectFormViewModel viewModel) {
+  Widget buildViewModelWidget(BuildContext context,
+      ObservationMonitoringRecordFormViewModel viewModel) {
     final form = viewModel.formStore;
     return Observer(
       builder: (_) => form.numberOfSections > 0
@@ -104,10 +108,10 @@ class _FormInput extends HookViewModelWidget<ObservationSubjectFormViewModel> {
 }
 
 class _ConfirmSubmit
-    extends HookViewModelWidget<ObservationSubjectFormViewModel> {
+    extends HookViewModelWidget<ObservationMonitoringRecordFormViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ObservationSubjectFormViewModel viewModel) {
+  Widget buildViewModelWidget(BuildContext context,
+      ObservationMonitoringRecordFormViewModel viewModel) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -127,8 +131,8 @@ class _ConfirmSubmit
               ),
               onPressed: () async {
                 var result = await viewModel.submit();
-                if (result is SubjectRecordSubmitSuccess ||
-                    result is SubjectRecordSubmitPending) {
+                if (result is MonitoringRecordSubmitSuccess ||
+                    result is MonitoringRecordSubmitPending) {
                   Navigator.pop(context);
                 }
               },
@@ -156,11 +160,12 @@ class _ConfirmSubmit
   }
 }
 
-class _Footer extends HookViewModelWidget<ObservationSubjectFormViewModel> {
+class _Footer
+    extends HookViewModelWidget<ObservationMonitoringRecordFormViewModel> {
   final Logger logger = locator<Logger>();
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ObservationSubjectFormViewModel viewModel) {
+  Widget buildViewModelWidget(BuildContext context,
+      ObservationMonitoringRecordFormViewModel viewModel) {
     return Container(
       padding: const EdgeInsets.all(10.0),
       child: Row(
@@ -191,10 +196,11 @@ class _Footer extends HookViewModelWidget<ObservationSubjectFormViewModel> {
   }
 }
 
-class _DotStepper extends HookViewModelWidget<ObservationSubjectFormViewModel> {
+class _DotStepper
+    extends HookViewModelWidget<ObservationMonitoringRecordFormViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ObservationSubjectFormViewModel viewModel) {
+  Widget buildViewModelWidget(BuildContext context,
+      ObservationMonitoringRecordFormViewModel viewModel) {
     Form store = viewModel.formStore;
     return Observer(
       builder: (_) => store.numberOfSections > 0
@@ -227,7 +233,7 @@ class _DotStepper extends HookViewModelWidget<ObservationSubjectFormViewModel> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             )

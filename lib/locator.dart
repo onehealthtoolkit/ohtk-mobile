@@ -19,7 +19,8 @@ import 'package:podd_app/services/forgot_password_service.dart';
 import 'package:podd_app/services/gql_service.dart';
 import 'package:podd_app/services/image_service.dart';
 import 'package:podd_app/services/notification_service.dart';
-import 'package:podd_app/services/observation_service.dart';
+import 'package:podd_app/services/observation_definition_service.dart';
+import 'package:podd_app/services/observation_record_service.dart';
 import 'package:podd_app/services/profile_service.dart';
 import 'package:podd_app/services/register_service.dart';
 import 'package:podd_app/services/report_service.dart';
@@ -118,6 +119,27 @@ void setupLocator(String environment) {
     IDbService,
   ]);
 
+  if (locator.isRegistered<IObservationRecordService>()) {
+    locator.unregister<IObservationRecordService>();
+  }
+  locator.registerSingletonAsync<IObservationRecordService>(() async {
+    return ObservationRecordService();
+  }, dependsOn: [
+    ImageApi,
+    IImageService,
+    ObservationApi,
+  ]);
+
+  if (locator.isRegistered<IObservationDefinitionService>()) {
+    locator.unregister<IObservationDefinitionService>();
+  }
+  locator.registerSingletonAsync<IObservationDefinitionService>(() async {
+    return ObservationDefinitionService();
+  }, dependsOn: [
+    IDbService,
+    ObservationApi,
+  ]);
+
   if (locator.isRegistered<IAuthService>()) {
     locator.unregister<IAuthService>();
   }
@@ -130,6 +152,7 @@ void setupLocator(String environment) {
     AuthApi,
     IReportTypeService,
     IReportService,
+    IObservationDefinitionService,
   ]);
 
   if (locator.isRegistered<IRegisterService>()) {
@@ -160,16 +183,6 @@ void setupLocator(String environment) {
   }, dependsOn: [
     ProfileApi,
     IAuthService,
-  ]);
-
-  if (locator.isRegistered<IObservationService>()) {
-    locator.unregister<IObservationService>();
-  }
-  locator.registerSingletonAsync<IObservationService>(() async {
-    return ObservationService();
-  }, dependsOn: [
-    IDbService,
-    ObservationApi,
   ]);
 
   registerViewModelLocators();

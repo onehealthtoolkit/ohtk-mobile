@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:podd_app/ui/home/observation/observation_home_view_model.dart';
 import 'package:podd_app/ui/observation/observation_view.dart';
@@ -13,7 +12,7 @@ class ObservationHomeView extends StatelessWidget {
     return ViewModelBuilder<ObservationHomeViewModel>.nonReactive(
       viewModelBuilder: () => ObservationHomeViewModel(),
       builder: (context, viewModel, child) => RefreshIndicator(
-        onRefresh: () => viewModel.fetch(),
+        onRefresh: () => viewModel.syncDefinitions(),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Flex(direction: Axis.vertical, children: [
@@ -43,32 +42,14 @@ class _Listing extends HookViewModelWidget<ObservationHomeViewModel> {
               final observationDefinition =
                   viewModel.observationDefinitions[index];
 
-              var leading = observationDefinition.imageUrl != null
-                  ? CachedNetworkImage(
-                      imageUrl: observationDefinition.imageUrl!,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      fit: BoxFit.fill,
-                    )
-                  : Container(
-                      color: Colors.grey.shade300,
-                      width: 80,
-                    );
-
               return ListTile(
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(4.0),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minWidth: 70,
-                      maxWidth: 70,
-                      minHeight: 52,
-                      maxHeight: 52,
-                    ),
-                    child: leading,
+                title: Text(
+                  observationDefinition.name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                title: Text(observationDefinition.name),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -77,6 +58,7 @@ class _Listing extends HookViewModelWidget<ObservationHomeViewModel> {
                     ),
                   );
                 },
+                trailing: const Icon(Icons.arrow_forward_ios),
               );
             }),
           );

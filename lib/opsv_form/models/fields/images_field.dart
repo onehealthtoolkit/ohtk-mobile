@@ -139,7 +139,7 @@ class ImagesField extends Field {
 
   @override
   void loadJsonValue(Map<String, dynamic> json) {
-    ilist(json[name] as List<String>).forEach((element) {
+    ilist(json[name] as List<dynamic>).forEach((element) {
       add(element);
     });
   }

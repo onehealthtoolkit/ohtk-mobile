@@ -1,13 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
-import 'package:podd_app/ui/observation/observation_subject_list_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+
+import 'observation_subject_map_view_model.dart';
 
 class ObservationSubjectMapView extends StatelessWidget {
   final ObservationDefinition definition;
@@ -20,25 +19,50 @@ class ObservationSubjectMapView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder.nonReactive(
-      viewModelBuilder: () => ObservationSubjectListViewModel(definition),
+      viewModelBuilder: () => ObservationSubjectMapViewModel(definition.id),
       builder: (context, model, child) => _SubjectMap(),
     );
   }
 }
 
-class _SubjectMap extends HookViewModelWidget<ObservationSubjectListViewModel> {
-  final latlng = [36.54995, -121.88107];
+class _SubjectMap extends HookViewModelWidget<ObservationSubjectMapViewModel> {
+  final GlobalKey _mapKey = GlobalKey();
 
   @override
   Widget buildViewModelWidget(
-      BuildContext context, ObservationSubjectListViewModel viewModel) {
-    final Completer<GoogleMapController> _controller = Completer();
-    var markers = <Marker>{};
+      BuildContext context, ObservationSubjectMapViewModel viewModel) {
+    if (viewModel.isBusy || viewModel.currentPosition == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
 
-    markers.add(Marker(
-      markerId: const MarkerId('center'),
-      position: LatLng(latlng[0], latlng[1]),
-    ));
+    var markers = viewModel.subjects
+        .where((subject) => subject.gpsLocation != null)
+        .map((subject) {
+      var latlng =
+          subject.gpsLocation!.split(',').map((e) => double.parse(e)).toList();
+      return Marker(
+        markerId: MarkerId(subject.id.toString()),
+        position: LatLng(latlng[1], latlng[0]),
+      );
+    });
+
+    onCameraIdle() {
+      viewModel.controller?.getVisibleRegion().then((region) {
+        // latitude = y axis
+        // longitude = x axis
+
+        // convert southwest and northeast to topLeft and bottomRight boundary
+        double topLeftX = region.southwest.longitude;
+        double topLeftY = region.northeast.latitude;
+
+        double bottomRightX = region.northeast.longitude;
+        double bottomRightY = region.southwest.latitude;
+
+        viewModel.fetch(topLeftX, topLeftY, bottomRightX, bottomRightY);
+      });
+    }
 
     return Container(
       color: Colors.white,
@@ -51,9 +75,12 @@ class _SubjectMap extends HookViewModelWidget<ObservationSubjectListViewModel> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: GoogleMap(
+            key: _mapKey,
             mapType: MapType.normal,
-            initialCameraPosition:
-                CameraPosition(zoom: 12, target: LatLng(latlng[0], latlng[1])),
+            initialCameraPosition: CameraPosition(
+                zoom: 14,
+                target: LatLng(viewModel.currentPosition!.latitude,
+                    viewModel.currentPosition!.longitude)),
             myLocationEnabled: false,
             myLocationButtonEnabled: false,
             scrollGesturesEnabled: true,
@@ -62,10 +89,11 @@ class _SubjectMap extends HookViewModelWidget<ObservationSubjectListViewModel> {
                 () => EagerGestureRecognizer(),
               ),
             },
+            markers: markers.toSet(),
             onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
+              viewModel.controller = controller;
             },
-            markers: markers,
+            onCameraIdle: onCameraIdle,
           )),
     );
   }

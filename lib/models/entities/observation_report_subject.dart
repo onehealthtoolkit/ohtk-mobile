@@ -2,28 +2,29 @@ import 'dart:convert';
 
 import 'package:intl/intl.dart';
 
-class ObservationReportSubject {
+class SubjectRecord {
   String id;
   Map<String, dynamic> data;
   int definitionId;
-  DateTime? incidentDate;
+  String definitionName;
+  DateTime recordDate;
   String? gpsLocation;
 
-  ObservationReportSubject({
+  SubjectRecord({
     required this.id,
     required this.data,
     required this.definitionId,
-    this.incidentDate,
+    required this.definitionName,
+    required this.recordDate,
     this.gpsLocation,
   });
 
-  ObservationReportSubject.fromMap(Map<String, dynamic> map)
+  SubjectRecord.fromMap(Map<String, dynamic> map)
       : id = map["id"],
         data = json.decode(map["data"]),
         definitionId = map["definition_id"],
-        incidentDate = map["incident_date"] != null
-            ? DateFormat("yyyy-MM-dd").parse(map["incident_date"])
-            : null,
+        definitionName = map["definition_name"],
+        recordDate = DateFormat("yyyy-MM-dd").parse(map["record_date"]),
         gpsLocation = map["gps_location"];
 
   Map<String, dynamic> toMap() {
@@ -31,18 +32,17 @@ class ObservationReportSubject {
       "id": id,
       "data": json.encode(data),
       "definition_id": definitionId,
-      "incident_date": incidentDate != null
-          ? DateFormat("yyyy-MM-dd").format(incidentDate!)
-          : null,
+      "definition_name": definitionName,
+      "record_date": DateFormat("yyyy-MM-dd").format(recordDate),
       "gps_location": gpsLocation,
     };
   }
 
   @override
   bool operator ==(Object other) {
-    return (other is ObservationReportSubject && other.id == id);
+    return (other is SubjectRecord && other.id == id);
   }
 
   @override
-  int get hashCode => Object.hash(id, data, definitionId, incidentDate);
+  int get hashCode => Object.hash(id, data, definitionId, recordDate);
 }

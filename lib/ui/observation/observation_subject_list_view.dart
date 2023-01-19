@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/ui/observation/observation_subject_list_view_model.dart';
-import 'package:podd_app/ui/observation/observation_subject_view.dart';
+import 'package:podd_app/ui/observation/subject/observation_subject_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
@@ -33,6 +33,7 @@ class _SubjectListing
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView.separated(
+          key: const PageStorageKey('subject-list-storage-key'),
           itemBuilder: (context, index) {
             var subject = viewModel.observationSubjects[index];
 
@@ -61,7 +62,8 @@ class _SubjectListing
                     child: leading,
                   ),
                 ),
-                title: Text(subject.title ?? ""),
+                title: Text(subject.title),
+                subtitle: Text(subject.description),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(

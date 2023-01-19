@@ -14,7 +14,7 @@ class DbService extends IDbService {
     // follow this migration pattern https://github.com/tekartik/sqflite/blob/master/sqflite/doc/migration_example.md
     _db = await openDatabase(
       'podd.db',
-      version: 6,
+      version: 9,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onDowngrade: onDatabaseDowngradeDelete,
@@ -27,6 +27,10 @@ class DbService extends IDbService {
     _createTableCategoryV2(batch);
     _createTableReportImageV2(batch);
     _createTableReportV5(batch);
+    _createTableObservationDefinitionV1(batch);
+    _createTableMonitoringDefinitionV1(batch);
+    _createTableSubjectRecordV1(batch);
+    _createTableMonitoringRecordV2(batch);
     await batch.commit();
   }
 
@@ -47,6 +51,17 @@ class DbService extends IDbService {
     }
     if (oldVersion == 5) {
       await _alterTableReportTypeV6(batch);
+    }
+    if (oldVersion == 6) {
+      await _createTableObservationDefinitionV1(batch);
+      await _createTableMonitoringDefinitionV1(batch);
+    }
+    if (oldVersion == 7) {
+      await _createTableSubjectRecordV1(batch);
+      await _createTableMonitoringRecordV1(batch);
+    }
+    if (oldVersion == 8) {
+      await _alterTableMonitoringRecordV1(batch);
     }
     await batch.commit();
   }
@@ -112,6 +127,76 @@ class DbService extends IDbService {
         incident_in_authority BOOLEAN
       )
     ''');
+  }
+
+  _createTableObservationDefinitionV1(Batch batch) {
+    batch.execute("DROP TABLE IF EXISTS observation_definition");
+    batch.execute('''CREATE TABLE observation_definition (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      description TEXT,
+      form_definition TEXT,
+      updated_at TEXT,
+      is_active INT
+    )''');
+  }
+
+  _createTableMonitoringDefinitionV1(Batch batch) {
+    batch.execute("DROP TABLE IF EXISTS monitoring_definition");
+    batch.execute('''CREATE TABLE monitoring_definition (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      description TEXT,
+      form_definition TEXT,
+      updated_at TEXT,
+      is_active INT,
+      definition_id TEXT
+    )''');
+  }
+
+  _createTableSubjectRecordV1(Batch batch) {
+    batch.execute("DROP TABLE IF EXISTS subject_record");
+    batch.execute('''
+      CREATE TABLE subject_record (
+        id TEXT PRIMARY KEY,
+        data TEXT,
+        definition_id INT,
+        definition_name TEXT,
+        record_date TEXT,
+        gps_location TEXT
+      )
+    ''');
+  }
+
+  _createTableMonitoringRecordV1(Batch batch) {
+    batch.execute("DROP TABLE IF EXISTS monitoring_record");
+    batch.execute('''
+      CREATE TABLE monitoring_record (
+        id TEXT PRIMARY KEY,
+        data TEXT,
+        monitoring_definition_id INT,
+        monitoring_definition_name TEXT,
+        subject_id TEXT
+      )
+    ''');
+  }
+
+  _createTableMonitoringRecordV2(Batch batch) {
+    batch.execute("DROP TABLE IF EXISTS monitoring_record");
+    batch.execute('''
+      CREATE TABLE monitoring_record (
+        id TEXT PRIMARY KEY,
+        data TEXT,
+        monitoring_definition_id INT,
+        monitoring_definition_name TEXT,
+        record_date TEXT,
+        subject_id TEXT
+      )
+    ''');
+  }
+
+  _alterTableMonitoringRecordV1(Batch batch) {
+    batch.execute("ALTER TABLE monitoring_record add column record_date TEXT");
   }
 
   _alterTableReportTypeV3(Batch batch) {
