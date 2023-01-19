@@ -35,8 +35,15 @@ class ObservationSubjectMapViewModel extends BaseViewModel {
   }
 
   Future<void> _getCurrentLocation() async {
-    currentPosition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        return Future.error('Location Not Available');
+      }
+    }
+    currentPosition = await Geolocator.getCurrentPosition();
     setBusy(false);
   }
 }
