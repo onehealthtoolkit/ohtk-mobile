@@ -71,6 +71,7 @@ class AuthApi extends GraphQlBaseApi {
           authorityName
           role
           consent
+          features
         }
       }
     ''';

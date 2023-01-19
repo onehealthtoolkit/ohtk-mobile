@@ -1,8 +1,6 @@
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
-import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
-import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/services/api/observation_api.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:sqflite/sql.dart';
@@ -20,14 +18,7 @@ class ObservationDefinitionService extends IObservationDefinitionService {
   final _dbService = locator<IDbService>();
   final _observationApi = locator<ObservationApi>();
 
-  final ReactiveList<ObservationSubjectRecord> _subjectRecords =
-      ReactiveList<ObservationSubjectRecord>();
-
-  ObservationDefinitionService() {
-    listenToReactiveValues([
-      _subjectRecords,
-    ]);
-  }
+  ObservationDefinitionService();
 
   @override
   Future<List<ObservationDefinition>> fetchAllObservationDefinitions() async {
