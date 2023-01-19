@@ -1,8 +1,7 @@
-import 'dart:ffi';
-
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/services/observation_record_service.dart';
 import 'package:stacked/stacked.dart';
@@ -11,7 +10,7 @@ class ObservationSubjectMapViewModel extends BaseViewModel {
   IObservationRecordService observationService =
       locator<IObservationRecordService>();
 
-  int definitionId;
+  ObservationDefinition definition;
   Position? currentPosition;
 
   GoogleMapController? controller;
@@ -19,7 +18,7 @@ class ObservationSubjectMapViewModel extends BaseViewModel {
   final ReactiveList<ObservationSubjectRecord> _subjects =
       ReactiveList<ObservationSubjectRecord>();
 
-  ObservationSubjectMapViewModel(this.definitionId) {
+  ObservationSubjectMapViewModel(this.definition) {
     setBusy(true);
     _getCurrentLocation();
   }
@@ -30,7 +29,7 @@ class ObservationSubjectMapViewModel extends BaseViewModel {
       double bottomRightY) async {
     _subjects.clear();
     _subjects.addAll(await observationService.fetchAllSubjectRecordsInBounded(
-        definitionId, topLeftX, topLeftY, bottomRightX, bottomRightY));
+        definition.id, topLeftX, topLeftY, bottomRightX, bottomRightY));
     notifyListeners();
   }
 

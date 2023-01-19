@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
+import 'package:podd_app/ui/observation/subject/observation_subject_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
@@ -19,7 +20,7 @@ class ObservationSubjectMapView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder.nonReactive(
-      viewModelBuilder: () => ObservationSubjectMapViewModel(definition.id),
+      viewModelBuilder: () => ObservationSubjectMapViewModel(definition),
       builder: (context, model, child) => _SubjectMap(),
     );
   }
@@ -45,6 +46,16 @@ class _SubjectMap extends HookViewModelWidget<ObservationSubjectMapViewModel> {
       return Marker(
         markerId: MarkerId(subject.id.toString()),
         position: LatLng(latlng[1], latlng[0]),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ObservationSubjectView(
+                definition: viewModel.definition,
+                subject: subject,
+              ),
+            ),
+          );
+        },
       );
     });
 
