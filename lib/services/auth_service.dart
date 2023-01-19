@@ -78,6 +78,7 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
     if (token != null) {
       _token = token;
       _userProfile = await _secureStorageService.getUserProfile();
+      await requestAccessTokenIfExpired();
       _isLogin.value = true;
     } else {
       _isLogin.value = false;
