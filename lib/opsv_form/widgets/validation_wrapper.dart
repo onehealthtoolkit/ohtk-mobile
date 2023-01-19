@@ -16,6 +16,7 @@ class _ValidationWrapperState extends State<ValidationWrapper> {
   Widget build(BuildContext context) {
     return Observer(builder: (BuildContext context) {
       return Container(
+        padding: const EdgeInsets.all(8),
         decoration: (widget.field.isValid == false)
             ? BoxDecoration(
                 border: Border.all(
@@ -29,8 +30,10 @@ class _ValidationWrapperState extends State<ValidationWrapper> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             widget.child,
+            const SizedBox(height: 8),
             if (widget.field.invalidMessage != "")
-              Text(widget.field.invalidMessage ?? ""),
+              Text(widget.field.invalidMessage ?? "",
+                  style: const TextStyle(color: Colors.red)),
           ],
         ),
       );

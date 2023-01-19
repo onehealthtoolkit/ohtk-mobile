@@ -50,5 +50,7 @@
   "observationSubjectViewTitle": "หัวเรื่อง",
   "observationSubjectDetailTabLabel": "รายละเอียด",
   "observationSubjectMonitoringTabLabel": "การเฝ้าดูติดตาม",
-  "observationSubjectMonitoringViewTitle": "หัวเรื่องการเฝ้าดูติดตาม"
+  "observationSubjectMonitoringViewTitle": "หัวเรื่องการเฝ้าดูติดตาม",
+  "dateFieldMaxErrorMsg": "{name} ต้องน้อยกว่า {max}",
+  "dateFieldMinErrorMsg": "{name} ต้องมากกว่า {min}"
 }

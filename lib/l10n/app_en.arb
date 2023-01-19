@@ -58,5 +58,8 @@
   "observationSubjectViewTitle": "Subject",
   "observationSubjectDetailTabLabel": "Detail",
   "observationSubjectMonitoringTabLabel": "Monitoring",
-  "observationSubjectMonitoringViewTitle": "Subject monitoring"
+  "observationSubjectMonitoringViewTitle": "Subject monitoring",
+  
+  "dateFieldMaxErrorMsg": "{name} must be equal or less than {max}",
+  "dateFieldMinErrorMsg": "{name} must be equal or more than {min}"
 }

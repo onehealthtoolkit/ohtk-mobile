@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
           _fetchLocale(),
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          setupAppLocalization();
           if (!snapshot.hasData) {
             return const MaterialApp(home: _WaitingScreen());
           }
