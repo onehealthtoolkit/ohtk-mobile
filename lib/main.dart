@@ -143,7 +143,6 @@ class _AppViewModel extends ReactiveViewModel {
   late Timer timer;
 
   _AppViewModel() : super() {
-    authService.requestAccessTokenIfExpired();
     timer = Timer.periodic(const Duration(minutes: 1), (timer) {
       authService.requestAccessTokenIfExpired();
     });
