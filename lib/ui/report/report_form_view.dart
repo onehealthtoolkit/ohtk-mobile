@@ -9,6 +9,7 @@ import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
 import 'package:podd_app/ui/report/report_form_view_model.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -40,8 +41,8 @@ class ReportFormView extends StatelessWidget {
               body: SafeArea(
                 child: Column(
                   children: [
-                    if (viewModel.state == ReportFormState.formInput)
-                      // _Stepper(),
+                    if (viewModel.state == ReportFormState.formInput &&
+                        viewModel.formStore.numberOfSections > 1)
                       _DotStepper(),
                     if (viewModel.state == ReportFormState.confirmation)
                       Expanded(
@@ -69,20 +70,23 @@ class ReportFormView extends StatelessWidget {
 }
 
 class _FormInput extends HookViewModelWidget<ReportFormViewModel> {
+  final ItemScrollController _scrollController = ItemScrollController();
+
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportFormViewModel viewModel) {
     final form = viewModel.formStore;
     return Observer(
-      builder: (_) => ListView.builder(
+      builder: (_) => ScrollablePositionedList.builder(
         key: ObjectKey(form.currentSectionIdx),
+        itemScrollController: _scrollController,
         itemBuilder: (context, index) {
           if (index < form.currentSection.questions.length) {
             return FormQuestion(
               question: form.currentSection.questions[index],
             );
           } else {
-            return _Footer();
+            return _Footer(_scrollController);
           }
         },
         itemCount: form.currentSection.questions.length + 1,
@@ -185,6 +189,10 @@ class _ConfirmIncidentArea extends HookViewModelWidget<ReportFormViewModel> {
 
 class _Footer extends HookViewModelWidget<ReportFormViewModel> {
   final Logger logger = locator<Logger>();
+  final ItemScrollController scrollController;
+
+  _Footer(this.scrollController);
+
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportFormViewModel viewModel) {
@@ -208,7 +216,15 @@ class _Footer extends HookViewModelWidget<ReportFormViewModel> {
           const Spacer(flex: 1),
           ElevatedButton(
             onPressed: () {
-              viewModel.next();
+              if (!viewModel.next()) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text("Invalid form value"),
+                ));
+                scrollController.scrollTo(
+                    index: viewModel.firstInvalidQuestionIndex,
+                    duration: const Duration(milliseconds: 400));
+              }
             },
             child: const Text("next >"),
           ),
@@ -237,18 +253,17 @@ class _DotStepper extends HookViewModelWidget<ReportFormViewModel> {
                   child: Column(
                     children: [
                       Text(store.currentSection.label),
-                      if (store.numberOfSections > 1)
-                        DotStepper(
-                          dotCount: store.numberOfSections,
-                          spacing: 10,
-                          dotRadius: 12,
-                          activeStep: store.currentSectionIdx,
-                          tappingEnabled: false,
-                          indicatorDecoration:
-                              const IndicatorDecoration(color: Colors.blue),
-                          shape: Shape.pipe,
-                          indicator: Indicator.jump,
-                        ),
+                      DotStepper(
+                        dotCount: store.numberOfSections,
+                        spacing: 10,
+                        dotRadius: 12,
+                        activeStep: store.currentSectionIdx,
+                        tappingEnabled: false,
+                        indicatorDecoration:
+                            const IndicatorDecoration(color: Colors.blue),
+                        shape: Shape.pipe,
+                        indicator: Indicator.jump,
+                      ),
                     ],
                   ),
                 ),

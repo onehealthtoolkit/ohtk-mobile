@@ -6,6 +6,9 @@ class Section {
   String? description;
   List<Question> questions = List.empty(growable: true);
 
+  Question? firstInvalidQuestion;
+  int firstInvalidQuestionIndex = -1;
+
   Section(this.label, {this.description});
 
   factory Section.fromJson(Map<String, dynamic> json) {
@@ -35,9 +38,18 @@ class Section {
 
   bool validate() {
     var result = true;
-    for (var question in questions) {
-      result = result && question.validate();
+    firstInvalidQuestion = null;
+    firstInvalidQuestionIndex = -1;
+    for (var i = 0; i < questions.length; i++) {
+      var question = questions[i];
+      var isValid = question.validate();
+      if (!isValid && firstInvalidQuestion == null) {
+        firstInvalidQuestion = question;
+        firstInvalidQuestionIndex = i;
+      }
+      result = result & isValid;
     }
+
     return result;
   }
 

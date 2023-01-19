@@ -108,12 +108,16 @@ class Form {
     });
   }
 
-  void next() {
-    runInAction(() {
+  bool next() {
+    return runInAction(() {
       if (couldGoToNextSection) {
-        if (currentSection.validate()) {
+        var isValid = currentSection.validate();
+        if (isValid) {
           _currentSectionIdx.value++;
         }
+        return isValid;
+      } else {
+        return false;
       }
     });
   }
