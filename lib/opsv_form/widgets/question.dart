@@ -21,11 +21,15 @@ class FormQuestion extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(question.label),
+                  Text(
+                    question.label,
+                    textScaleFactor: 1.2,
+                  ),
                   const SizedBox(height: 10),
                   ListView.builder(
-                    itemBuilder: (context, index) =>
-                        FormField(field: question.fields[index]),
+                    itemBuilder: (context, index) {
+                      return FormField(field: question.fields[index]);
+                    },
                     itemCount: question.fields.length,
                     shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),

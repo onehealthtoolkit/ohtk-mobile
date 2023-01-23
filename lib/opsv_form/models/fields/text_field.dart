@@ -114,6 +114,8 @@ class TextField extends PrimitiveField<String> {
         return value == targetValue;
       case ConditionOperator.contain:
         return value?.contains(targetValue) ?? false;
+      case ConditionOperator.notEqual:
+        return value != targetValue;
       default:
         return false;
     }

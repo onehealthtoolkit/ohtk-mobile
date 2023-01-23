@@ -27,11 +27,11 @@ class ProfileView extends StatelessWidget {
                     Expanded(
                       child: ListView(
                         children: [
+                          _Language(),
+                          const SizedBox(height: 20),
                           _Info(),
                           const SizedBox(height: 20),
                           _ProfileForm(),
-                          const SizedBox(height: 20),
-                          _Language(),
                           const SizedBox(height: 20),
                           _ChangePasswordForm(),
                         ],

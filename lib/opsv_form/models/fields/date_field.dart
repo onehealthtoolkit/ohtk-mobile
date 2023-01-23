@@ -248,6 +248,8 @@ class DateField extends Field {
     switch (operator) {
       case ConditionOperator.equal:
         return value?.toIso8601String() == targetValue;
+      case ConditionOperator.notEqual:
+        return value?.toIso8601String() != targetValue;
       case ConditionOperator.contain:
         return value?.toIso8601String().contains(targetValue) ?? false;
       default:

@@ -113,7 +113,16 @@ class IntegerField extends PrimitiveField<int> {
 
   @override
   bool evaluate(ConditionOperator operator, String targetValue) {
-    throw UnimplementedError();
+    switch (operator) {
+      case ConditionOperator.equal:
+        return value == int.parse(targetValue);
+      case ConditionOperator.notEqual:
+        return value != int.parse(targetValue);
+      case ConditionOperator.contain:
+        return value?.toString().contains(targetValue) ?? false;
+      default:
+        return false;
+    }
   }
 
   @override

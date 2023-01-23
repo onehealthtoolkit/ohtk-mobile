@@ -31,7 +31,10 @@ class _FormMultipleChoicesFieldState extends State<FormMultipleChoicesField> {
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
                     widget.field.label!,
-                    style: TextStyle(color: Colors.grey.shade700),
+                    textScaleFactor: 1.1,
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                    ),
                   ),
                 ),
               ...widget.field.options
@@ -78,7 +81,10 @@ class _OptionWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InkWell(
-                    child: Text(option.label),
+                    child: Text(
+                      option.label,
+                      textScaleFactor: 1.1,
+                    ),
                     onTap: () {
                       field.setSelectedFor(option.value, !_checkValue);
                     },

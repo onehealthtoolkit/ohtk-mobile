@@ -175,6 +175,10 @@ class MultipleChoicesField extends Field {
         var targets = targetValue.split(",");
         return ilist(targets)
             .all((v) => _selected[v] != null ? _selected[v]!.value : false);
+      case ConditionOperator.notEqual:
+        var targets = targetValue.split(",");
+        return !ilist(targets)
+            .all((v) => _selected[v] != null ? !_selected[v]!.value : false);
       default:
         return false;
     }

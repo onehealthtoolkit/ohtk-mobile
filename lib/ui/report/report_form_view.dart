@@ -258,11 +258,18 @@ class _DotStepper extends HookViewModelWidget<ReportFormViewModel> {
                         spacing: 10,
                         dotRadius: 12,
                         activeStep: store.currentSectionIdx,
-                        tappingEnabled: false,
+                        tappingEnabled: true,
                         indicatorDecoration:
                             const IndicatorDecoration(color: Colors.blue),
                         shape: Shape.pipe,
                         indicator: Indicator.jump,
+                        onDotTapped: (tappedDotIndex) {
+                          if (tappedDotIndex > store.currentSectionIdx) {
+                            viewModel.next();
+                          } else if (tappedDotIndex < store.currentSectionIdx) {
+                            viewModel.back();
+                          }
+                        },
                       ),
                     ],
                   ),

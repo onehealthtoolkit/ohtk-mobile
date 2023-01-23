@@ -99,6 +99,7 @@ class _RadioOption extends StatelessWidget {
               InkWell(
                 child: Text(
                   option.label,
+                  textScaleFactor: 1.1,
                 ),
                 onTap: () {
                   onSelect(option.value);
