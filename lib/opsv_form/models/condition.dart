@@ -1,6 +1,6 @@
 part of opensurveillance_form;
 
-enum ConditionOperator { equal, contain, none, notEqual }
+enum ConditionOperator { equal, contain, none, notEqual, isOneOf, isNotOneOf }
 
 ConditionOperator _parse(String operator) {
   switch (operator) {
@@ -10,6 +10,12 @@ ConditionOperator _parse(String operator) {
       return ConditionOperator.notEqual;
     case 'contain':
       return ConditionOperator.contain;
+    case 'has_one_of':
+    case 'hasOneOf':
+    case 'isOneOf':
+      return ConditionOperator.isOneOf;
+    case 'isNotOneOf':
+      return ConditionOperator.isNotOneOf;
     default:
       return ConditionOperator.none;
   }

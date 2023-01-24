@@ -38,8 +38,7 @@ class _ValidationWrapperState extends State<ValidationWrapper> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 widget.child,
-                const SizedBox(height: 8),
-                if (widget.field.invalidMessage != "")
+                if (!widget.field.isValid)
                   Text(widget.field.invalidMessage ?? "",
                       style: const TextStyle(color: Colors.red)),
               ],
