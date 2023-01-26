@@ -60,7 +60,7 @@ class SimpleCondition extends Condition {
   bool evaluate(Values values) {
     Field? field = values.getDelegate(name)?.getField();
     if (field != null) {
-      return field.evaluate(operator, value);
+      return field._evaluate(operator, value);
     }
     return false;
   }
