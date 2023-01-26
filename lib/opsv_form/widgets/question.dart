@@ -26,10 +26,12 @@ class FormQuestion extends StatelessWidget {
                     textScaleFactor: 1.2,
                   ),
                   const SizedBox(height: 10),
-                  ListView.builder(
+                  ListView.separated(
                     itemBuilder: (context, index) {
                       return FormField(field: question.fields[index]);
                     },
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 10),
                     itemCount: question.fields.length,
                     shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),
