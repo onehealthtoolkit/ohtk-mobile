@@ -62,7 +62,7 @@ class _FollowupReportView extends HookViewModelWidget<FollowupReportViewModel> {
                     padding: const EdgeInsets.all(12.0),
                     child: Text(followup.description.isEmpty
                         ? "no description"
-                        : followup.description),
+                        : followup.trimWhitespaceDescription),
                   ),
                 ),
               ),

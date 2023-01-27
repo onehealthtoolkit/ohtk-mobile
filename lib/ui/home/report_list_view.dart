@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:intl/intl.dart';
 import 'package:podd_app/ui/report/incident_report_view.dart';
+import 'package:podd_app/utils.dart';
 
 import 'all_reports_view_model.dart';
 
@@ -66,7 +67,8 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
                 Text(formatter.format(report.createdAt.toLocal()),
                     textScaleFactor: .75),
                 Text(
-                  report.description,
+                  truncate(report.trimWhitespaceDescription,
+                      length: 100, omission: '...'),
                   textScaleFactor: .75,
                 ),
               ],

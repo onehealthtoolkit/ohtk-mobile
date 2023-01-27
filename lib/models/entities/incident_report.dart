@@ -64,4 +64,9 @@ class IncidentReport {
           : "",
     );
   }
+
+  String get trimWhitespaceDescription {
+    // replace multiple consecutive whitespace or newline with single whitespace
+    return description.replaceAll(RegExp(r"\s+"), " ");
+  }
 }

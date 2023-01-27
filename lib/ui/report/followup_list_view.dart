@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/report/followup_report_view.dart';
+import 'package:podd_app/utils.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:intl/intl.dart';
@@ -61,7 +62,7 @@ class _FollowupList extends HookViewModelWidget<FollowupListViewModel> {
                 Text(formatter.format(followup.createdAt.toLocal()),
                     textScaleFactor: .75),
                 Text(
-                  followup.description,
+                  truncate(followup.trimWhitespaceDescription, length: 100),
                   textScaleFactor: .75,
                 ),
               ],

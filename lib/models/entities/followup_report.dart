@@ -48,4 +48,9 @@ class FollowupReport {
           json['reportedBy'] != null ? User.fromJson(json['reportedBy']) : null,
     );
   }
+
+  String get trimWhitespaceDescription {
+    // replace multiple consecutive whitespace or newline with single whitespace
+    return description.replaceAll(RegExp(r"\s+"), " ");
+  }
 }
