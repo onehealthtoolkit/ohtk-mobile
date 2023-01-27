@@ -55,6 +55,7 @@
   "fieldUseCurrentLocation": "Use current location",
   "authorityLabel": "Authority",
   "incidentDate": "Incident Date",
+  "invalidReportTypeQrcode": "Invalid report type qrcode",
   "consentButton": "I agree",
   "observationSubjectViewTitle": "Subject",
   "observationSubjectDetailTabLabel": "Detail",

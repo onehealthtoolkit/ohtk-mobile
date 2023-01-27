@@ -8,6 +8,7 @@ import 'package:stacked/stacked.dart';
 
 abstract class IReportTypeService with ReactiveServiceMixin {
   Future<List<ReportType>> fetchAllReportType();
+  Future<ReportType?> getReportType(String id);
   Future<List<Category>> fetchAllCategory();
   Future<void> sync();
   Future<void> removeAll();
@@ -41,6 +42,17 @@ class ReportTypeService extends IReportTypeService {
     var _db = _dbService.db;
     var results = await _db.query('report_type', orderBy: 'ordering');
     return results.map((item) => ReportType.fromMap(item)).toList();
+  }
+
+  @override
+  Future<ReportType?> getReportType(String id) async {
+    var _db = _dbService.db;
+    var results =
+        await _db.query('report_type', where: "id = ?", whereArgs: [id]);
+    if (results.isNotEmpty) {
+      return results.map((item) => ReportType.fromMap(item)).toList()[0];
+    }
+    return null;
   }
 
   @override
