@@ -46,6 +46,7 @@
   "fieldUseCurrentLocation": "ใช้ตำแหน่งปัจจุบัน",
   "authorityLabel": "หน่วยงาน",
   "incidentDate": "วันที่เกิดเหตุ",
+  "invalidReportTypeQrcode": "qrcode ไม่ถูกต้องสำหรับประเภทรายงาน",
   "consentButton": "ยินยอม",
   "observationSubjectViewTitle": "หัวเรื่อง",
   "observationSubjectDetailTabLabel": "รายละเอียด",
