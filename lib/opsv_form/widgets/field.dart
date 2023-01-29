@@ -7,10 +7,7 @@ class FormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: _buildWidget(),
-    );
+    return _buildWidget();
   }
 
   _buildWidget() {

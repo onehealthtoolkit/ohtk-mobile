@@ -91,7 +91,7 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
                     padding: const EdgeInsets.all(12.0),
                     child: Text(incident.description.isEmpty
                         ? "no description"
-                        : incident.description),
+                        : incident.trimWhitespaceDescription),
                   ),
                 ),
               ),

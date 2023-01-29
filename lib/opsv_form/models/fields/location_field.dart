@@ -85,8 +85,20 @@ class LocationField extends PrimitiveField<String> {
     switch (operator) {
       case ConditionOperator.equal:
         return value == targetValue;
+      case ConditionOperator.notEqual:
+        return value != targetValue;
       case ConditionOperator.contain:
         return value?.contains(targetValue) ?? false;
+      case ConditionOperator.isOneOf:
+        return targetValue
+            .split(",")
+            .map((e) => e.trim())
+            .contains(value ?? '');
+      case ConditionOperator.isNotOneOf:
+        return !targetValue
+            .split(",")
+            .map((e) => e.trim())
+            .contains(value ?? '');
       default:
         return false;
     }

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/ui/report/report_form_view.dart';
+import 'package:podd_app/ui/report_type/form_simulator_view.dart';
+import 'package:podd_app/ui/report_type/qr_report_type_view.dart';
 import 'package:podd_app/ui/report_type/report_type_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -18,6 +21,37 @@ class ReportTypeView extends StatelessWidget {
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.reportTypeTitle),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.qr_code_scanner),
+              tooltip: 'Simulate report form',
+              onPressed: () async {
+                var result = await Navigator.push<ReportType>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const QrReportTypeView(),
+                  ),
+                );
+
+                if (result != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FormSimulatorView(result),
+                    ),
+                  );
+                } else {
+                  var errorMessage = SnackBar(
+                    content: Text(
+                        AppLocalizations.of(context)?.invalidReportTypeQrcode ??
+                            'Invalid report type qrcode'),
+                    backgroundColor: Colors.red,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(errorMessage);
+                }
+              },
+            ),
+          ],
         ),
         body: RefreshIndicator(
           onRefresh: () async {

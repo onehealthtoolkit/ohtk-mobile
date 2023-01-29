@@ -50,8 +50,20 @@ class DecimalField extends PrimitiveField<Decimal> {
     switch (operator) {
       case ConditionOperator.equal:
         return value == Decimal.parse(targetValue);
+      case ConditionOperator.notEqual:
+        return value != Decimal.parse(targetValue);
       case ConditionOperator.contain:
         return value?.toString().contains(targetValue) ?? false;
+      case ConditionOperator.isOneOf:
+        return targetValue
+            .split(",")
+            .map((e) => e.trim())
+            .contains(value?.toString());
+      case ConditionOperator.isNotOneOf:
+        return !targetValue
+            .split(",")
+            .map((e) => e.trim())
+            .contains(value?.toString());
       default:
         return false;
     }

@@ -108,9 +108,15 @@ class SingleChoicesField extends PrimitiveField<String> {
   bool evaluate(ConditionOperator operator, String targetValue) {
     switch (operator) {
       case ConditionOperator.equal:
-        return value == targetValue;
+        return value != null && value == targetValue;
       case ConditionOperator.contain:
         return value?.contains(targetValue) ?? false;
+      case ConditionOperator.notEqual:
+        return value != null && value != targetValue;
+      case ConditionOperator.isOneOf:
+        return targetValue.split(",").map((e) => e.trim()).contains(value);
+      case ConditionOperator.isNotOneOf:
+        return !targetValue.split(",").map((e) => e.trim()).contains(value);
       default:
         return false;
     }

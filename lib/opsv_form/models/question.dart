@@ -24,7 +24,9 @@ class Question implements ConiditionSource {
     );
     var jsonFields = json["fields"] as List;
     for (var jsonField in jsonFields) {
-      question.fields.add(Field.fromJson(jsonField));
+      var field = Field.fromJson(jsonField);
+      field.parent = question;
+      question.fields.add(field);
     }
     return question;
   }
@@ -80,13 +82,15 @@ class Question implements ConiditionSource {
   }
 
   void toJsonValue(Map<String, dynamic> result) {
-    Map<String, dynamic> aggregateResult = result;
-    if (name != null) {
-      aggregateResult = {};
-      result[name!] = aggregateResult;
-    }
-    for (var field in fields) {
-      field.toJsonValue(aggregateResult);
+    if (display) {
+      Map<String, dynamic> aggregateResult = result;
+      if (name != null) {
+        aggregateResult = {};
+        result[name!] = aggregateResult;
+      }
+      for (var field in fields) {
+        field.toJsonValue(aggregateResult);
+      }
     }
   }
 

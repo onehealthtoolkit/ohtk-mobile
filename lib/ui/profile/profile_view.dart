@@ -27,11 +27,11 @@ class ProfileView extends StatelessWidget {
                     Expanded(
                       child: ListView(
                         children: [
+                          _Language(),
+                          const SizedBox(height: 20),
                           _Info(),
                           const SizedBox(height: 20),
                           _ProfileForm(),
-                          const SizedBox(height: 20),
-                          _Language(),
                           const SizedBox(height: 20),
                           _ChangePasswordForm(),
                         ],
@@ -266,7 +266,14 @@ class _ChangePasswordForm extends HookViewModelWidget<ProfileViewModel> {
                     : () async {
                         var result = await viewModel.changePassword();
                         if (result is ProfileSuccess && result.success) {
-                          Navigator.pop(context, true);
+                          var showSuccessMessage = SnackBar(
+                            content: Text(AppLocalizations.of(context)
+                                    ?.passwordUpdatedSuccess ??
+                                'Your password has been successfully changed!'),
+                            backgroundColor: Colors.green,
+                          );
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(showSuccessMessage);
                         }
                       },
                 child: viewModel.isBusy

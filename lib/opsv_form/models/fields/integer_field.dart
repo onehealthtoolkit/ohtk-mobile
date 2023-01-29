@@ -72,7 +72,7 @@ class IntegerField extends PrimitiveField<int> {
       return false;
     }
     if (min != null) {
-      var valid = value! >= min!;
+      var valid = value != null && value! >= min!;
       if (!valid) {
         markError(
           formatWithMap(
@@ -113,7 +113,26 @@ class IntegerField extends PrimitiveField<int> {
 
   @override
   bool evaluate(ConditionOperator operator, String targetValue) {
-    throw UnimplementedError();
+    switch (operator) {
+      case ConditionOperator.equal:
+        return value == int.parse(targetValue);
+      case ConditionOperator.notEqual:
+        return value != int.parse(targetValue);
+      case ConditionOperator.contain:
+        return value?.toString().contains(targetValue) ?? false;
+      case ConditionOperator.isOneOf:
+        return targetValue
+            .split(",")
+            .map((e) => e.trim())
+            .contains(value?.toString());
+      case ConditionOperator.isNotOneOf:
+        return !targetValue
+            .split(",")
+            .map((e) => e.trim())
+            .contains(value?.toString());
+      default:
+        return false;
+    }
   }
 
   @override

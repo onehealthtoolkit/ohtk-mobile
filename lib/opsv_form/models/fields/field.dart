@@ -11,6 +11,7 @@ abstract class Field implements ConiditionSource {
   String? requiredMessage;
   Condition? condition;
   String? tags;
+  Question? parent;
 
   final _invalidMessage = Observable<String?>(null);
 
@@ -107,6 +108,15 @@ abstract class Field implements ConiditionSource {
       return false;
     }
     return true;
+  }
+
+  bool _evaluate(ConditionOperator operator, String targetValue) {
+    if (display) {
+      if (parent != null && parent!.display) {
+        return evaluate(operator, targetValue);
+      }
+    }
+    return false;
   }
 
   bool evaluate(ConditionOperator operator, String targetValue);

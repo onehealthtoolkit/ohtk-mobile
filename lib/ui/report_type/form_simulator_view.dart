@@ -4,24 +4,25 @@ import 'package:im_stepper/stepper.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/entities/report.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
-import 'package:podd_app/ui/report/report_form_view_model.dart';
+import 'package:podd_app/ui/report_type/form_simulator_view_model.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class ReportFormView extends StatelessWidget {
+class FormSimulatorView extends StatelessWidget {
   final ReportType reportType;
-  const ReportFormView(this.reportType, {Key? key}) : super(key: key);
+  const FormSimulatorView(this.reportType, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<ReportFormViewModel>.reactive(
-      viewModelBuilder: () => ReportFormViewModel(reportType),
+    return ViewModelBuilder<FormSimulatorViewModel>.reactive(
+      viewModelBuilder: () => FormSimulatorViewModel(reportType),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
           return const Center(child: CircularProgressIndicator());
@@ -69,12 +70,12 @@ class ReportFormView extends StatelessWidget {
   }
 }
 
-class _FormInput extends HookViewModelWidget<ReportFormViewModel> {
+class _FormInput extends HookViewModelWidget<FormSimulatorViewModel> {
   final ItemScrollController _scrollController = ItemScrollController();
 
   @override
   Widget buildViewModelWidget(
-      BuildContext context, ReportFormViewModel viewModel) {
+      BuildContext context, FormSimulatorViewModel viewModel) {
     final form = viewModel.formStore;
     return Observer(
       builder: (_) => ScrollablePositionedList.builder(
@@ -95,43 +96,48 @@ class _FormInput extends HookViewModelWidget<ReportFormViewModel> {
   }
 }
 
-class _ConfirmSubmit extends HookViewModelWidget<ReportFormViewModel> {
+class _ConfirmSubmit extends HookViewModelWidget<FormSimulatorViewModel> {
   @override
   Widget buildViewModelWidget(
-      BuildContext context, ReportFormViewModel viewModel) {
+      BuildContext context, FormSimulatorViewModel viewModel) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            _ConfirmIncidentArea(),
+            _ConfirmReportData(),
             Expanded(
               flex: 1,
               child: Container(),
             ),
             const Padding(
               padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
-              child: Text("Press the submit button to submit your report"),
+              child: Text(
+                  "Press the submit button to simulate your report submission"),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50), // NEW
+                minimumSize: const Size.fromHeight(50),
               ),
-              onPressed: () async {
-                var result = await viewModel.submit();
-                if (result is ReportSubmitSuccess ||
-                    result is ReportSubmitPending) {
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text("Submit"),
+              onPressed: viewModel.isBusy
+                  ? null
+                  : () async {
+                      var result = await viewModel.submit();
+                      if (result is ReportSubmitSuccess ||
+                          result is ReportSubmitPending) {
+                        Navigator.pop(context);
+                      }
+                    },
+              child: viewModel.isBusy
+                  ? const CircularProgressIndicator()
+                  : const Text("Submit"),
             ),
             const SizedBox(
               height: 8,
             ),
             TextButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50), // NEW
+                minimumSize: const Size.fromHeight(50),
               ),
               onPressed: () {
                 viewModel.back();
@@ -148,46 +154,51 @@ class _ConfirmSubmit extends HookViewModelWidget<ReportFormViewModel> {
   }
 }
 
-class _ConfirmIncidentArea extends HookViewModelWidget<ReportFormViewModel> {
+class _ConfirmReportData extends HookViewModelWidget<FormSimulatorViewModel> {
   @override
   Widget buildViewModelWidget(
-      BuildContext context, ReportFormViewModel viewModel) {
+      BuildContext context, FormSimulatorViewModel viewModel) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-      child: Column(
-        children: [
-          const Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Did this incident occur in your own authority?",
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          RadioListTile<bool?>(
-            groupValue: viewModel.incidentInAuthority,
-            title: const Text("yes"),
-            value: true,
-            onChanged: (bool? value) {
-              viewModel.incidentInAuthority = value;
-            },
-          ),
-          RadioListTile<bool?>(
-            groupValue: viewModel.incidentInAuthority,
-            title: const Text("no"),
-            value: false,
-            onChanged: (bool? value) {
-              viewModel.incidentInAuthority = value;
-            },
-          ),
-        ],
-      ),
-    );
+        padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+        child: _data(viewModel.report));
+  }
+
+  _data(Report report) {
+    var dataTable = Table(
+        border: TableBorder.all(
+          color: Colors.grey.shade400,
+          width: 1,
+        ),
+        columnWidths: const <int, TableColumnWidth>{
+          0: FlexColumnWidth(1),
+          1: FlexColumnWidth(2),
+        },
+        children: report.data.entries.map((entry) {
+          return entry.key.contains("__value")
+              ? const TableRow(children: [SizedBox.shrink(), SizedBox.shrink()])
+              : TableRow(
+                  children: [
+                    TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(entry.key),
+                        )),
+                    TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(entry.value.toString()),
+                        )),
+                  ],
+                );
+        }).toList());
+
+    return dataTable;
   }
 }
 
-class _Footer extends HookViewModelWidget<ReportFormViewModel> {
+class _Footer extends HookViewModelWidget<FormSimulatorViewModel> {
   final Logger logger = locator<Logger>();
   final ItemScrollController scrollController;
 
@@ -195,7 +206,7 @@ class _Footer extends HookViewModelWidget<ReportFormViewModel> {
 
   @override
   Widget buildViewModelWidget(
-      BuildContext context, ReportFormViewModel viewModel) {
+      BuildContext context, FormSimulatorViewModel viewModel) {
     return Container(
       padding: const EdgeInsets.all(10.0),
       child: Row(
@@ -205,7 +216,7 @@ class _Footer extends HookViewModelWidget<ReportFormViewModel> {
               if (viewModel.back() == BackAction.navigationPop) {
                 if (await confirm(context)) {
                   logger.d("back using pop");
-                  Navigator.popUntil(context, ModalRoute.withName("/"));
+                  Navigator.pop(context);
                 }
               } else {
                 logger.d("back but do nothing");
@@ -234,10 +245,10 @@ class _Footer extends HookViewModelWidget<ReportFormViewModel> {
   }
 }
 
-class _DotStepper extends HookViewModelWidget<ReportFormViewModel> {
+class _DotStepper extends HookViewModelWidget<FormSimulatorViewModel> {
   @override
   Widget buildViewModelWidget(
-      BuildContext context, ReportFormViewModel viewModel) {
+      BuildContext context, FormSimulatorViewModel viewModel) {
     Form store = viewModel.formStore;
     return Observer(
       builder: (_) => Padding(
@@ -278,39 +289,6 @@ class _DotStepper extends HookViewModelWidget<ReportFormViewModel> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _Stepper extends HookViewModelWidget<ReportFormViewModel> {
-  @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportFormViewModel viewModel) {
-    Form store = viewModel.formStore;
-    if (store.numberOfSections == 1) {
-      return Container();
-    }
-    return Observer(
-      builder: (_) => Column(
-        children: [
-          if (store.currentSection.label.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-              child: Text(store.currentSection.label),
-            ),
-          NumberStepper(
-            numbers:
-                List.generate(store.numberOfSections, (index) => index + 1),
-            activeStep: store.currentSectionIdx,
-            activeStepColor: Colors.blue.shade200,
-            stepColor: Colors.grey.shade400,
-            stepRadius: 16,
-            enableStepTapping: false,
-            enableNextPreviousButtons: false,
-          ),
-          const SizedBox(height: 10),
-        ],
       ),
     );
   }
