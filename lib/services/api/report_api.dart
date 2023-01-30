@@ -59,6 +59,7 @@ class ReportApi extends GraphQlBaseApi {
           "incidentDate": formatter.format(report.incidentDate),
           "gpsLocation": report.gpsLocation,
           "incidentInAuthority": report.incidentInAuthority,
+          "testFlag": report.testFlag,
         },
       );
 
