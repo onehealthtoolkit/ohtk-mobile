@@ -110,6 +110,7 @@ class FormSimulatorViewModel extends BaseViewModel {
       incidentDate: incidentDate ?? DateTime.now(),
       gpsLocation: gpsLocation,
       incidentInAuthority: _incidentInAuthority,
+      testFlag: true,
     );
 
     return report;

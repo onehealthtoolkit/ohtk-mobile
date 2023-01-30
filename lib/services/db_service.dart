@@ -14,7 +14,7 @@ class DbService extends IDbService {
     // follow this migration pattern https://github.com/tekartik/sqflite/blob/master/sqflite/doc/migration_example.md
     _db = await openDatabase(
       'podd.db',
-      version: 9,
+      version: 10,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onDowngrade: onDatabaseDowngradeDelete,
@@ -26,7 +26,7 @@ class DbService extends IDbService {
     _createTableReportTypeV2(batch);
     _createTableCategoryV2(batch);
     _createTableReportImageV2(batch);
-    _createTableReportV5(batch);
+    _createTableReportV6(batch);
     _createTableObservationDefinitionV1(batch);
     _createTableMonitoringDefinitionV1(batch);
     _createTableSubjectRecordV1(batch);
@@ -62,6 +62,9 @@ class DbService extends IDbService {
     }
     if (oldVersion == 8) {
       await _alterTableMonitoringRecordV1(batch);
+    }
+    if (oldVersion == 9) {
+      await _alterTableReportV6(batch);
     }
     await batch.commit();
   }
@@ -113,7 +116,7 @@ class DbService extends IDbService {
     ''');
   }
 
-  _createTableReportV5(Batch batch) {
+  _createTableReportV6(Batch batch) {
     batch.execute("DROP TABLE IF EXISTS report");
     batch.execute('''
       CREATE TABLE report (
@@ -124,7 +127,8 @@ class DbService extends IDbService {
         incident_date TEXT,
         gps_location TEXT,
         submitted INT,
-        incident_in_authority BOOLEAN
+        incident_in_authority BOOLEAN,
+        test_flag INT
       )
     ''');
   }
@@ -238,5 +242,9 @@ class DbService extends IDbService {
 
   _alterTableReportV5(Batch batch) {
     batch.execute("ALTER TABLE report add column report_type_name TEXT");
+  }
+
+  _alterTableReportV6(Batch batch) {
+    batch.execute("ALTER TABLE report add column test_flag INT");
   }
 }

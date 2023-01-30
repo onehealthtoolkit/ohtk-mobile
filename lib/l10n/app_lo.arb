@@ -49,5 +49,6 @@
   "fieldUndefinedLocation": "ພິກັດຍັງບໍ່ໄດ້ລະບຸເທື່ອ",
   "fieldUseCurrentLocation": "ໃຊ້ສະຖານທີ່ປະຈຸບັນ",
   "authorityLabel": "ອົງການ",
-  "incidentDate": "ວັນທີເກີດເຫດ"
+  "incidentDate": "ວັນທີເກີດເຫດ",
+  "testFlag": "Test"
 }

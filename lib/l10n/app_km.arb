@@ -43,5 +43,6 @@
   "simulateReportTitle": "Simulate report",
   "closeSimulateReportButton": "Close report simulation",
   "fieldUndefinedLocation": "មិនបានជ្រើសរើសទីតាំងទេ។",
-  "fieldUseCurrentLocation": "ប្រើទីតាំងបច្ចុប្បន្ន"
+  "fieldUseCurrentLocation": "ប្រើទីតាំងបច្ចុប្បន្ន",
+  "testFlag": "Test"
 }

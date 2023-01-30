@@ -15,6 +15,7 @@ class ReportTypeViewModel extends BaseViewModel {
   final IReportTypeService _reportTypeService = locator<IReportTypeService>();
   final ReportApi _reportApi = locator<ReportApi>();
   final Logger _logger = locator<Logger>();
+  bool _testFlag = false;
 
   List<CategoryAndReportType> _categories = [];
 
@@ -25,6 +26,13 @@ class ReportTypeViewModel extends BaseViewModel {
     _reportTypeService.resetReportTypeSynced();
     fetch();
     setBusy(false);
+  }
+
+  bool get testFlag => _testFlag;
+
+  set testFlag(bool value) {
+    _testFlag = value;
+    notifyListeners();
   }
 
   fetch() async {

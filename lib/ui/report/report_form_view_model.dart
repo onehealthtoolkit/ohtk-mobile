@@ -26,6 +26,7 @@ class ReportFormViewModel extends BaseViewModel {
   final IReportService _reportService = locator<IReportService>();
 
   final ReportType _reportType;
+  final bool _testFlag;
   bool isReady = false;
   String _reportId = "";
   Form _formStore = Form.fromJson({}, "");
@@ -34,7 +35,7 @@ class ReportFormViewModel extends BaseViewModel {
 
   Form get formStore => _formStore;
 
-  ReportFormViewModel(this._reportType) {
+  ReportFormViewModel(this._testFlag, this._reportType) {
     init();
   }
 
@@ -108,6 +109,7 @@ class ReportFormViewModel extends BaseViewModel {
       incidentDate: incidentDate ?? DateTime.now(),
       gpsLocation: gpsLocation,
       incidentInAuthority: _incidentInAuthority,
+      testFlag: _testFlag,
     );
 
     var result = await _reportService.submit(report);

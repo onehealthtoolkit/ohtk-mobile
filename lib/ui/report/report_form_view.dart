@@ -16,12 +16,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportFormView extends StatelessWidget {
   final ReportType reportType;
-  const ReportFormView(this.reportType, {Key? key}) : super(key: key);
+  final bool testFlag;
+  const ReportFormView(this.testFlag, this.reportType, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ReportFormViewModel>.reactive(
-      viewModelBuilder: () => ReportFormViewModel(reportType),
+      viewModelBuilder: () => ReportFormViewModel(testFlag, reportType),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
           return const Center(child: CircularProgressIndicator());
@@ -37,6 +39,12 @@ class ReportFormView extends StatelessWidget {
               appBar: AppBar(
                 title: Text(AppLocalizations.of(context)!.reportTitle +
                     " ${reportType.name}"),
+                backgroundColor: testFlag
+                    ? Colors.yellow.shade500
+                    : Theme.of(context).appBarTheme.backgroundColor,
+                foregroundColor: testFlag
+                    ? Colors.black87
+                    : Theme.of(context).appBarTheme.foregroundColor,
               ),
               body: SafeArea(
                 child: Column(

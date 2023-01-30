@@ -66,5 +66,6 @@
   "observationSubjectMonitoringViewTitle": "Subject monitoring",
   "validateRequiredMsg": "This field is required",
   "dateFieldMaxErrorMsg": "{name} must be equal or less than {max}",
-  "dateFieldMinErrorMsg": "{name} must be equal or more than {min}"
+  "dateFieldMinErrorMsg": "{name} must be equal or more than {min}",
+  "testFlag": "Test"
 }
