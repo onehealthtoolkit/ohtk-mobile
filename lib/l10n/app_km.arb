@@ -38,6 +38,10 @@
   "zeroReportLabel": "របាយការណ៍​មិន​បាន​រក​ឃើញ​អ្វី​ខុស​ប្រក្រតី​ទេ។",  
   "zeroReportLastReportedMessage": "រាយការណ៍ចុងក្រោយនៅ {datetime}",
   "zeroReportSubmitSuccess": "បានផ្ញើរបាយការណ៍ដោយជោគជ័យ",
+  "invalidReportTypeQrcode": "Invalid report type qrcode",
+  "invalidFormValue": "Invalid form value",
+  "simulateReportTitle": "Simulate report",
+  "closeSimulateReportButton": "Close report simulation",
   "fieldUndefinedLocation": "មិនបានជ្រើសរើសទីតាំងទេ។",
   "fieldUseCurrentLocation": "ប្រើទីតាំងបច្ចុប្បន្ន"
 }
