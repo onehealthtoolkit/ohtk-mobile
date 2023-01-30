@@ -93,7 +93,7 @@ class FormSimulatorViewModel extends BaseViewModel {
 
   Future<ReportSubmitResult> submit() async {
     setBusy(true);
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     setBusy(false);
     return ReportSubmitPending();
   }
@@ -110,6 +110,7 @@ class FormSimulatorViewModel extends BaseViewModel {
       incidentDate: incidentDate ?? DateTime.now(),
       gpsLocation: gpsLocation,
       incidentInAuthority: _incidentInAuthority,
+      testFlag: true,
     );
 
     return report;

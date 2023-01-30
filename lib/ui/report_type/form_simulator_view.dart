@@ -36,7 +36,7 @@ class FormSimulatorView extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.reportTitle +
+                title: Text(AppLocalizations.of(context)!.simulateReportTitle +
                     " ${reportType.name}"),
               ),
               body: SafeArea(
@@ -100,55 +100,53 @@ class _ConfirmSubmit extends HookViewModelWidget<FormSimulatorViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, FormSimulatorViewModel viewModel) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            _ConfirmReportData(),
-            Expanded(
-              flex: 1,
-              child: Container(),
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          ConstrainedBox(
+            child: _ConfirmReportData(),
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height * .60,
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
-              child: Text(
-                  "Press the submit button to simulate your report submission"),
+          ),
+          const SizedBox(
+            height: 60,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size.fromHeight(50),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: viewModel.isBusy
-                  ? null
-                  : () async {
-                      var result = await viewModel.submit();
-                      if (result is ReportSubmitSuccess ||
-                          result is ReportSubmitPending) {
-                        Navigator.pop(context);
-                      }
-                    },
-              child: viewModel.isBusy
-                  ? const CircularProgressIndicator()
-                  : const Text("Submit"),
+            onPressed: viewModel.isBusy
+                ? null
+                : () async {
+                    var result = await viewModel.submit();
+                    if (result is ReportSubmitSuccess ||
+                        result is ReportSubmitPending) {
+                      Navigator.pop(context);
+                    }
+                  },
+            child: viewModel.isBusy
+                ? const CircularProgressIndicator()
+                : Text(AppLocalizations.of(context)!.closeSimulateReportButton),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          TextButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size.fromHeight(50),
             ),
-            const SizedBox(
-              height: 8,
-            ),
-            TextButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: () {
-                viewModel.back();
-              },
-              child: const Text("Back"),
-            ),
-            const SizedBox(
-              height: 60,
-            )
-          ],
-        ),
+            onPressed: () {
+              viewModel.back();
+            },
+            child: Text(AppLocalizations.of(context)!.backButton),
+          ),
+          const SizedBox(
+            height: 60,
+          ),
+        ],
       ),
     );
   }
@@ -222,22 +220,22 @@ class _Footer extends HookViewModelWidget<FormSimulatorViewModel> {
                 logger.d("back but do nothing");
               }
             },
-            child: const Text("< back"),
+            child: Text(AppLocalizations.of(context)!.formBackButton),
           ),
           const Spacer(flex: 1),
           ElevatedButton(
             onPressed: () {
               if (!viewModel.next()) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   backgroundColor: Colors.red,
-                  content: Text("Invalid form value"),
+                  content: Text(AppLocalizations.of(context)!.invalidFormValue),
                 ));
                 scrollController.scrollTo(
                     index: viewModel.firstInvalidQuestionIndex,
                     duration: const Duration(milliseconds: 400));
               }
             },
-            child: const Text("next >"),
+            child: Text(AppLocalizations.of(context)!.formNextButton),
           ),
         ],
       ),

@@ -11,12 +11,14 @@ class Report {
   String? gpsLocation;
   bool? incidentInAuthority;
   String? reportTypeName;
+  bool testFlag;
 
   Report({
     required this.id,
     required this.data,
     required this.reportTypeId,
     required this.incidentDate,
+    required this.testFlag,
     this.gpsLocation,
     this.incidentInAuthority,
     this.reportTypeName,
@@ -24,6 +26,7 @@ class Report {
 
   Report.fromMap(Map<String, dynamic> map)
       : id = map["id"],
+        testFlag = (map["test_flag"] as int) == 1,
         data = json.decode(map["data"]),
         reportTypeId = map["report_type_id"],
         reportTypeName = map["report_type_name"],
@@ -34,6 +37,7 @@ class Report {
   Map<String, dynamic> toMap() {
     return {
       "id": id,
+      "test_flag": testFlag ? 1 : 0,
       "data": json.encode(data),
       "report_type_id": reportTypeId,
       "report_type_name": reportTypeName,

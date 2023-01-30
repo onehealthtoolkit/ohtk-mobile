@@ -151,6 +151,7 @@ void setupLocator(String environment) {
     ImageApi,
     IImageService,
     ObservationApi,
+    IDbService,
   ]);
 
   if (locator.isRegistered<IObservationDefinitionService>()) {

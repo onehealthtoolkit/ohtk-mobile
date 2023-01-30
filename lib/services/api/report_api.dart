@@ -20,11 +20,14 @@ class ReportApi extends GraphQlBaseApi {
         $reportTypeId: UUID!,
         $incidentDate: Date!,
         $gpsLocation: String,
-        $incidentInAuthority: Boolean
+        $incidentInAuthority: Boolean,
+        $testFlag: Boolean,
       ){
         submitIncidentReport(data: $data, reportId: $reportId, 
           reportTypeId: $reportTypeId, incidentDate: $incidentDate, 
-          gpsLocation: $gpsLocation, incidentInAuthority: $incidentInAuthority) {
+          gpsLocation: $gpsLocation, incidentInAuthority: $incidentInAuthority, 
+          testFlag: $testFlag
+        ) {
           result {
             id
             incidentDate

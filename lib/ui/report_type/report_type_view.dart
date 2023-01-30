@@ -60,13 +60,34 @@ class ReportTypeView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 16),
-              _ZeroReport(),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _ZeroReport(),
+              ),
+              _TestFlag(),
               Expanded(child: _Listing()),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _TestFlag extends HookViewModelWidget<ReportTypeViewModel> {
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context, ReportTypeViewModel viewModel) {
+    return CheckboxListTile(
+      value: viewModel.testFlag,
+      title: Text(AppLocalizations.of(context)?.testFlag ?? "Test"),
+      controlAffinity: ListTileControlAffinity.leading,
+      onChanged: (value) {
+        viewModel.testFlag = value ?? false;
+      },
+      activeColor: Colors.black87,
+      checkColor: Colors.yellow.shade500,
+      tileColor: viewModel.testFlag ? Colors.yellow.shade500 : Colors.white,
     );
   }
 }
@@ -179,7 +200,8 @@ class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ReportFormView(reportType),
+                      builder: (context) =>
+                          ReportFormView(viewModel.testFlag, reportType),
                     ),
                   ).then((value) => {logger.d("back from from $value")});
                 }
