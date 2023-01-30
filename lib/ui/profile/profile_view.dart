@@ -7,6 +7,12 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+var decoration = BoxDecoration(
+  border: Border.all(color: Colors.grey.shade300),
+  borderRadius: BorderRadius.circular(4.0),
+  color: Colors.white,
+);
+
 class ProfileView extends StatelessWidget {
   const ProfileView({Key? key}) : super(key: key);
 
@@ -16,7 +22,7 @@ class ProfileView extends StatelessWidget {
       viewModelBuilder: () => ProfileViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey.shade50,
         body: SafeArea(
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -27,33 +33,32 @@ class ProfileView extends StatelessWidget {
                     Expanded(
                       child: ListView(
                         children: [
-                          _Language(),
-                          const SizedBox(height: 20),
-                          _Info(),
-                          const SizedBox(height: 20),
-                          _ProfileForm(),
-                          const SizedBox(height: 20),
-                          _ChangePasswordForm(),
-                        ],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(40),
-                            primary: Colors.red[600],
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(40),
+                                primary: Colors.red[600],
+                              ),
+                              onPressed: () async {
+                                await viewModel.logout();
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, '/', (route) => false);
+                              },
+                              child: Text(
+                                  AppLocalizations.of(context)!.logoutButton),
+                            ),
                           ),
-                          onPressed: () async {
-                            await viewModel.logout();
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, '/', (route) => false);
-                          },
-                          child:
-                              Text(AppLocalizations.of(context)!.logoutButton),
-                        ),
+                          const SizedBox(height: 8),
+                          _Language(),
+                          const SizedBox(height: 8),
+                          _Info(),
+                          const SizedBox(height: 8),
+                          _ProfileForm(),
+                          const SizedBox(height: 8),
+                          _ChangePasswordForm(),
+                          const SizedBox(height: 8),
+                        ],
                       ),
                     ),
                   ],
@@ -71,7 +76,8 @@ class _Language extends HookViewModelWidget<ProfileViewModel> {
       BuildContext context, ProfileViewModel viewModel) {
     return Container(
       margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(18.0),
+      decoration: decoration,
       child: DropdownButtonFormField<String>(
           isExpanded: true,
           decoration: InputDecoration(
@@ -97,22 +103,27 @@ class _Info extends HookViewModelWidget<ProfileViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, ProfileViewModel viewModel) {
+    var username = useTextEditingController();
+    username.text = viewModel.username ?? "";
+    var authorityName = useTextEditingController();
+    authorityName.text = viewModel.authorityName ?? "";
+
     return Container(
       margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
+      decoration: decoration,
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           children: [
             TextField(
-              controller: useTextEditingController(text: viewModel.username),
+              controller: username,
               readOnly: true,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.usernameLabel,
               ),
             ),
             TextField(
-              controller:
-                  useTextEditingController(text: viewModel.authorityName),
+              controller: authorityName,
               readOnly: true,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.authorityNameLabel,
@@ -138,8 +149,9 @@ class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
 
     return Container(
       margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
+      decoration: decoration,
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -223,8 +235,9 @@ class _ChangePasswordForm extends HookViewModelWidget<ProfileViewModel> {
       BuildContext context, ProfileViewModel viewModel) {
     return Container(
       margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
+      decoration: decoration,
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
