@@ -89,7 +89,9 @@ class Question implements ConiditionSource {
         result[name!] = aggregateResult;
       }
       for (var field in fields) {
-        field.toJsonValue(aggregateResult);
+        if (field.display) {
+          field.toJsonValue(aggregateResult);
+        }
       }
     }
   }
