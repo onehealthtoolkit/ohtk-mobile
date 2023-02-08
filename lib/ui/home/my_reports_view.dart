@@ -50,7 +50,8 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
               key: const PageStorageKey('my-reports-storage-key'),
               trailingFn: (report) {
                 var children = <Widget>[];
-                if (viewModel.canFollow(report.reportTypeId)) {
+                if (viewModel.canFollow(report.reportTypeId) &&
+                    !report.testFlag) {
                   children.insert(0, _followLink(context, report, viewModel));
                 }
                 return Row(

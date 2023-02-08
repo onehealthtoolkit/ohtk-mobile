@@ -43,6 +43,7 @@ class ReportApi extends GraphQlBaseApi {
               id
               username        
             }
+            testFlag
           }
         }
       }
@@ -94,9 +95,10 @@ class ReportApi extends GraphQlBaseApi {
     limit = 20,
     offset = 0,
   }) async {
+    // By default, test reports are included
     const query = r'''
-      query incidentReports($limit: Int, $offset: Int) {
-        incidentReports(limit: $limit, offset: $offset) {
+      query incidentReports($limit: Int, $offset: Int, $testFlag: Boolean) {
+        incidentReports(limit: $limit, offset: $offset, testFlag: $testFlag) {
           pageInfo {
             hasNextPage
           }
@@ -121,7 +123,8 @@ class ReportApi extends GraphQlBaseApi {
               imageUrl
               thumbnail
             }    
-            caseId  
+            caseId
+            testFlag
           }          
         }
       }
@@ -131,6 +134,7 @@ class ReportApi extends GraphQlBaseApi {
       variables: {
         "limit": limit,
         "offset": offset,
+        "testFlag": false,
       },
       fetchPolicy: FetchPolicy.cacheAndNetwork,
       typeConverter: (resp) => IncidentReportQueryResult.fromJson(resp),
@@ -166,6 +170,7 @@ class ReportApi extends GraphQlBaseApi {
           }      
           caseId
           threadId
+          testFlag
         }
       }
     ''';
@@ -179,9 +184,10 @@ class ReportApi extends GraphQlBaseApi {
     limit = 20,
     offset = 0,
   }) async {
+    // By default, test reports are included
     const query = r'''
-      query myIncidentReports($limit: Int, $offset: Int) {
-        myIncidentReports(limit: $limit, offset: $offset) {
+      query myIncidentReports($limit: Int, $offset: Int, $testFlag: Boolean) {
+        myIncidentReports(limit: $limit, offset: $offset, testFlag: $testFlag) {
           pageInfo {
             hasNextPage
           }
@@ -206,7 +212,8 @@ class ReportApi extends GraphQlBaseApi {
               imageUrl
               thumbnail
             }    
-            caseId  
+            caseId
+            testFlag
           }          
         }
       }
@@ -216,6 +223,7 @@ class ReportApi extends GraphQlBaseApi {
       variables: {
         "limit": limit,
         "offset": offset,
+        "testFlag": false,
       },
       fetchPolicy: FetchPolicy.cacheAndNetwork,
       typeConverter: (resp) => IncidentReportQueryResult.fromJson(resp),

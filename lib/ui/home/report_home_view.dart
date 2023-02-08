@@ -5,9 +5,7 @@ import 'package:podd_app/ui/home/all_reports_view.dart';
 import 'package:podd_app/ui/home/my_reports_view.dart';
 import 'package:podd_app/ui/home/report_home_view_model.dart';
 import 'package:podd_app/ui/report_type/report_type_view.dart';
-import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ReportHomeView extends HookWidget {
   const ReportHomeView({Key? key}) : super(key: key);

@@ -103,6 +103,18 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
               textScaleFactor: 0.8,
             ),
           ),
+        if (report.testFlag)
+          Container(
+            color: Colors.yellow[700],
+            padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+            child: const Text(
+              "Test",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+              textScaleFactor: 0.8,
+            ),
+          ),
       ],
     );
   }

@@ -22,6 +22,7 @@ class IncidentReport {
   String? caseId;
   int? threadId;
   String? authorityName;
+  bool testFlag;
 
   IncidentReport({
     required this.id,
@@ -37,6 +38,7 @@ class IncidentReport {
     this.caseId,
     this.threadId,
     this.authorityName,
+    this.testFlag = false,
   });
 
   factory IncidentReport.fromJson(Map<String, dynamic> json) {
@@ -52,6 +54,7 @@ class IncidentReport {
       data: json["data"],
       caseId: json["caseId"],
       threadId: json["threadId"],
+      testFlag: json["testFlag"] != null ? (json["testFlag"] as bool) : false,
       images: json["images"] != null
           ? (json["images"] as List)
               .map((image) => IncidentReportImage.fromJson(image))

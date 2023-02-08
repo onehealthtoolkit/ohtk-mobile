@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -45,15 +46,46 @@ class IncidentReportView extends HookWidget {
           child: viewModel.isBusy
               ? const CircularProgressIndicator()
               : !viewModel.hasError
-                  ? TabBarView(controller: _tabController, children: [
-                      _IncidentDetail(),
-                      ReportCommentView(viewModel.data!.threadId!),
-                      FollowupListView(viewModel.data!.id)
-                    ])
+                  ? _content(_tabController, viewModel)
                   : const Text("Incident report not found"),
         ),
       ),
     );
+  }
+
+  Widget _content(
+      TabController _tabController, IncidentReportViewModel viewModel) {
+    var view = TabBarView(controller: _tabController, children: [
+      _IncidentDetail(),
+      ReportCommentView(viewModel.data!.threadId!),
+      FollowupListView(viewModel.data!.id)
+    ]);
+
+    if (viewModel.data!.testFlag) {
+      return Stack(
+        children: [
+          view,
+          Align(
+            alignment: Alignment.center,
+            child: Transform.rotate(
+              angle: -math.pi / 4,
+              child: const Opacity(
+                opacity: 0.4,
+                child: Text(
+                  'Test Report',
+                  textScaleFactor: 4,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      );
+    }
+    return view;
   }
 }
 
@@ -125,6 +157,18 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
               padding: const EdgeInsets.fromLTRB(4, 2, 4, 2),
               child: const Text(
                 "Case",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+                textScaleFactor: 0.8,
+              ),
+            ),
+          if (incident.testFlag)
+            Container(
+              color: Colors.yellow[700],
+              padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+              child: const Text(
+                "Test",
                 style: TextStyle(
                   color: Colors.white,
                 ),
