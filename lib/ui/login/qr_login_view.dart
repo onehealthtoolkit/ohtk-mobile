@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/ui/login/qr_login_view_model.dart';
 import 'package:stacked/stacked.dart';
 
@@ -48,7 +49,7 @@ class QrLoginView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            CircularProgressIndicator(),
+            OhtkProgressIndicator(size: 80),
             SizedBox(height: 16),
             Text(
               "Please wait...",

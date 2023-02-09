@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/ui/observation/observation_subject_list_view_model.dart';
 import 'package:podd_app/ui/observation/subject/observation_subject_view.dart';
@@ -41,7 +42,7 @@ class _SubjectListing
                 ? CachedNetworkImage(
                     imageUrl: subject.imageUrl!,
                     placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
+                        const OhtkProgressIndicator(size: 100),
                     fit: BoxFit.fill,
                   )
                 : Container(

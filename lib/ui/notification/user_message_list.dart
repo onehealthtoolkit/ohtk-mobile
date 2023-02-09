@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/ui/notification/user_message_view_model.dart';
 import 'package:podd_app/ui/notification/user_message_view.dart';
 import 'package:stacked/stacked.dart';
@@ -32,7 +33,7 @@ class _UserMessageList extends HookViewModelWidget<UserMessageListViewModel> {
   Widget buildViewModelWidget(
       BuildContext context, UserMessageListViewModel viewModel) {
     return viewModel.isBusy
-        ? const Center(child: CircularProgressIndicator())
+        ? const Center(child: OhtkProgressIndicator(size: 100))
         : ListView.builder(
             itemCount: viewModel.userMessages.length,
             itemBuilder: (context, index) {

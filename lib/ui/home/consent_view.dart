@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:podd_app/ui/home/consent_view_model.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,7 +20,7 @@ class ConsentView extends HookWidget {
         if (viewModel.isBusy) {
           return const Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: OhtkProgressIndicator(),
             ),
           );
         }
@@ -32,17 +33,13 @@ class ConsentView extends HookWidget {
 
           return const Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: OhtkProgressIndicator(),
             ),
           );
         }
         return Padding(
           padding: const EdgeInsets.all(8),
-          child: viewModel.isBusy
-              ? const Center(child: CircularProgressIndicator())
-              : !viewModel.hasError
-                  ? _ConsentDetail()
-                  : const Text("Consent not found"),
+          child: _ConsentDetail(),
         );
       },
     );

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/ui/observation/subject/observation_subject_view.dart';
 import 'package:stacked/stacked.dart';
@@ -34,7 +35,7 @@ class _SubjectMap extends HookViewModelWidget<ObservationSubjectMapViewModel> {
       BuildContext context, ObservationSubjectMapViewModel viewModel) {
     if (viewModel.isBusy || viewModel.currentPosition == null) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: OhtkProgressIndicator(size: 100),
       );
     }
 

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/ui/report/followup_report_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -31,7 +32,7 @@ class _FollowupReportView extends HookViewModelWidget<FollowupReportViewModel> {
       BuildContext context, FollowupReportViewModel viewModel) {
     final followup = viewModel.data;
     if (followup == null) {
-      return const CircularProgressIndicator();
+      return const OhtkProgressIndicator(size: 100);
     } else {
       var formatter = DateFormat("dd/MM/yyyy HH:mm");
 

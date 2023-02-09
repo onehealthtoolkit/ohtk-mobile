@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/ui/observation/form/subject_form_view.dart';
 import 'package:podd_app/ui/observation/observation_subject_list_view.dart';
@@ -30,7 +31,7 @@ class ObservationView extends HookWidget {
           title: Text(definition.name),
         ),
         body: viewModel.isBusy
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(child: OhtkProgressIndicator(size: 100))
             : TabBarView(
                 controller: _tabController,
                 children: [

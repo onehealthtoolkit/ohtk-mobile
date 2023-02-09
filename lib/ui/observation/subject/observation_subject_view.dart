@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/ui/observation/form/subject_form_view.dart';
@@ -50,7 +51,7 @@ class ObservationSubjectView extends HookWidget {
         body: Padding(
             padding: const EdgeInsets.all(8),
             child: viewModel.isBusy
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(child: OhtkProgressIndicator(size: 100))
                 : !viewModel.hasError
                     ? _bodyView(_tabController, context)
                     : const Text("Observation subject not found")),

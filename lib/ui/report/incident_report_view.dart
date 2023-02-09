@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/report/followup_list_view.dart';
 import 'package:podd_app/ui/report/full_screen_view.dart';
@@ -29,27 +30,31 @@ class IncidentReportView extends HookWidget {
 
     return ViewModelBuilder<IncidentReportViewModel>.reactive(
       viewModelBuilder: () => IncidentReportViewModel(id),
-      builder: (context, viewModel, child) => Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(child: Text(AppLocalizations.of(context)!.detailTabLabel)),
-              Tab(child: Text(AppLocalizations.of(context)!.commentTabLabel)),
-              Tab(child: Text(AppLocalizations.of(context)!.followupTabLabel)),
-            ],
+      builder: (context, viewModel, child) {
+        return Scaffold(
+          appBar: AppBar(
+            bottom: TabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(child: Text(AppLocalizations.of(context)!.detailTabLabel)),
+                Tab(child: Text(AppLocalizations.of(context)!.commentTabLabel)),
+                Tab(
+                    child:
+                        Text(AppLocalizations.of(context)!.followupTabLabel)),
+              ],
+            ),
+            title: Text(AppLocalizations.of(context)!.reportDetailTitle),
           ),
-          title: Text(AppLocalizations.of(context)!.reportDetailTitle),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(8),
-          child: viewModel.isBusy
-              ? const CircularProgressIndicator()
-              : !viewModel.hasError
-                  ? _content(_tabController, viewModel)
-                  : const Text("Incident report not found"),
-        ),
-      ),
+          body: Padding(
+            padding: const EdgeInsets.all(8),
+            child: viewModel.isBusy
+                ? const Center(child: OhtkProgressIndicator(size: 100))
+                : !viewModel.hasError
+                    ? _content(_tabController, viewModel)
+                    : const Text("Incident report not found"),
+          ),
+        );
+      },
     );
   }
 

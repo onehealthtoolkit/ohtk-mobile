@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/home/my_reports_view_model.dart';
@@ -61,7 +62,10 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
                 );
               },
             )
-          : const Center(child: CircularProgressIndicator()),
+          : const Center(
+              child: OhtkProgressIndicator(
+              size: 100,
+            )),
     );
   }
 

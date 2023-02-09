@@ -119,7 +119,7 @@ class _FormLocationFieldState extends State<FormLocationField> {
                       child: Align(
                         alignment: Alignment.center,
                         child: Image.asset(
-                          "images/map_pin_icon.png",
+                          "assets/images/map_pin_icon.png",
                           height: 40,
                         ),
                       ),

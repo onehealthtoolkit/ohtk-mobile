@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/ui/home/observation/observation_home_view_model.dart';
 import 'package:podd_app/ui/observation/observation_view.dart';
 import 'package:stacked/stacked.dart';
@@ -32,7 +33,7 @@ class _Listing extends HookViewModelWidget<ObservationHomeViewModel> {
       BuildContext context, ObservationHomeViewModel viewModel) {
     return viewModel.isBusy
         ? const Center(
-            child: CircularProgressIndicator(),
+            child: OhtkProgressIndicator(size: 100),
           )
         : ListView.separated(
             separatorBuilder: (context, index) => const Divider(),

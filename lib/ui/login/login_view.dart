@@ -46,7 +46,7 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(50, 0, 50, 50),
-            child: Image.asset('images/logo.png'),
+            child: Image.asset('assets/images/logo.png'),
           ),
           _qrcodeLogin(context),
           const SizedBox(height: 10),

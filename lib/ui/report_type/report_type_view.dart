@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/ui/report/report_form_view.dart';
@@ -138,7 +139,7 @@ class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
                     return const SizedBox.shrink();
                   }
                 }
-                return const CircularProgressIndicator();
+                return const OhtkProgressIndicator(size: 100);
               },
             ),
           ],

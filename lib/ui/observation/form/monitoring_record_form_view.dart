@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/components/confirm.dart';
+import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
@@ -34,7 +35,7 @@ class ObservationMonitoringRecordFormView extends StatelessWidget {
           monitoringDefinition, subject, monitoringRecord),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: OhtkProgressIndicator(size: 100));
         }
         return WillPopScope(
           onWillPop: () async {
