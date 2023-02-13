@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/login_result.dart';
@@ -28,7 +29,9 @@ abstract class IAuthService {
 
   Future<void> fetchProfile();
 
-  Future<void> requestAccessTokenIfExpired();
+  // return true if token is expired and cannot refresh
+  // return false if token is not expired or expired but refresh successfully
+  Future<bool> requestAccessTokenIfExpired();
 
   Future<AuthResult> verifyQrToken(String token);
 
@@ -78,11 +81,33 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
     if (token != null) {
       _token = token;
       _userProfile = await _secureStorageService.getUserProfile();
-      await requestAccessTokenIfExpired();
-      _isLogin.value = true;
+      var isExpired = await requestAccessTokenIfExpired();
+      if (isExpired) {
+        _isLogin.value = false;
+      } else {
+        _isLogin.value = true;
+      }
     } else {
       _isLogin.value = false;
     }
+
+    _registerLifeCycleHandler();
+  }
+
+  _registerLifeCycleHandler() async {
+    SystemChannels.lifecycle.setMessageHandler((msg) async {
+      switch (msg) {
+        case "AppLifecycleState.resumed":
+          var isExpired = await requestAccessTokenIfExpired();
+          if (isExpired) {
+            _isLogin.value = false;
+          } else {
+            _isLogin.value = true;
+          }
+          break;
+        default:
+      }
+    });
   }
 
   @override
@@ -117,8 +142,8 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
   }
 
   _saveToken(AuthSuccess authSuccess) async {
-    await _secureStorageService.setLoginSuccess(authSuccess);
     _token = authSuccess.token;
+    await _secureStorageService.setLoginSuccess(authSuccess);
   }
 
   _fetchProfile() async {
@@ -130,17 +155,30 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
     await _observationDefinitionService.sync();
   }
 
+  // return true if token is expired and cannot refresh
+  // return false if token is not expired or expired but refresh successfully
+  /* 
+    1. If there is a token, and it 's expire then try to refresh it.
+    2. If the token is refreshed, return false.
+    3. If the token is not refreshed, return true.
+    4. If there is no token, return true. 
+  */
   @override
-  Future<void> requestAccessTokenIfExpired() async {
+  Future<bool> requestAccessTokenIfExpired() async {
     if (_token != null) {
       if (Jwt.isExpired(_token!)) {
         _logger.d("token expired");
         var authResult = await _authApi.refreshToken();
         if (authResult is AuthSuccess) {
           await _saveToken(authResult);
+          return false;
         }
+        return true; // try to refresh token but failed
+      } else {
+        return false;
       }
     }
+    return true; // token is null, then token is expired for sure.
   }
 
   @override
