@@ -54,10 +54,10 @@ class ObservationDefinitionService extends IObservationDefinitionService {
 
     if (result.removedList.isNotEmpty) {
       await _db.delete('observation_definition',
-          where: "id in (?)", whereArgs: result.removedList);
+          where: "id in (?)", whereArgs: [result.removedList]);
 
       await _db.delete('monitoring_definition',
-          where: "definition_id in (?)", whereArgs: result.removedList);
+          where: "definition_id in (?)", whereArgs: [result.removedList]);
     }
 
     for (var definition in result.updatedList) {
