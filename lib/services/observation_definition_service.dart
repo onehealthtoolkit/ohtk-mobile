@@ -7,11 +7,11 @@ import 'package:sqflite/sql.dart';
 import 'package:stacked/stacked.dart';
 
 abstract class IObservationDefinitionService with ReactiveServiceMixin {
-  final _logger = locator<Logger>();
-
   Future<List<ObservationDefinition>> fetchAllObservationDefinitions();
 
   Future<void> sync();
+
+  Future<void> removeAll();
 }
 
 class ObservationDefinitionService extends IObservationDefinitionService {
@@ -75,5 +75,12 @@ class ObservationDefinitionService extends IObservationDefinitionService {
         );
       }
     }
+  }
+
+  @override
+  Future<void> removeAll() async {
+    var _db = _dbService.db;
+    await _db.delete('observation_definition');
+    await _db.delete('monitoring_definition');
   }
 }
