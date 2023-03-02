@@ -13,15 +13,8 @@ class ReportHomeView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     TabController _tabController = useTabController(initialLength: 2);
-    final primaryColor = Theme.of(context).primaryColor;
     TabBar _tabBar = TabBar(
       controller: _tabController,
-      labelColor: Colors.blue[500],
-      unselectedLabelColor: Colors.blue[200],
-      labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-      indicator: UnderlineTabIndicator(
-        borderSide: BorderSide(color: primaryColor, width: 2),
-      ),
       tabs: [
         Tab(
           child: Text(AppLocalizations.of(context)!.allReportTabLabel),

@@ -138,8 +138,6 @@ class HomeView extends HookWidget {
           ),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
-            selectedItemColor: Colors.blue[700],
             currentIndex: viewModel.currentIndex,
             onTap: viewModel.setIndex,
             items: navigationBarItems,

@@ -28,6 +28,7 @@ import 'package:podd_app/services/register_service.dart';
 import 'package:podd_app/services/report_service.dart';
 import 'package:podd_app/services/report_type_service.dart';
 import 'package:podd_app/services/secure_storage_service.dart';
+import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/ui/home/all_reports_view_model.dart';
 import 'package:podd_app/ui/home/my_reports_view_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -49,6 +50,12 @@ void setupAppLocalization() {
     var prefs = await SharedPreferences.getInstance();
     var language = prefs.getString("language") ?? "en";
     return Locale(language);
+  });
+}
+
+void setupTheme() {
+  locator.registerSingletonAsync<AppTheme>(() async {
+    return AppTheme();
   });
 }
 
