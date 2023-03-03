@@ -132,7 +132,7 @@ class _ConfirmSubmit extends HookViewModelWidget<ReportFormViewModel> {
                   Navigator.pop(context);
                 }
               },
-              child: const Text("Submit"),
+              child: const Text("ยืนยันรายงาน"),
             ),
             const SizedBox(
               height: 8,

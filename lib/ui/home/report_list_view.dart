@@ -64,13 +64,35 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(formatter.format(report.createdAt.toLocal()),
-                    textScaleFactor: .75),
                 Text(
                   truncate(report.trimWhitespaceDescription,
                       length: 100, omission: '...'),
-                  textScaleFactor: .75,
+                  textScaleFactor: .9,
                 ),
+                if (report.caseId != null)
+                  Container(
+                    color: Colors.red,
+                    padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                    child: const Text(
+                      "Case",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                      textScaleFactor: 0.8,
+                    ),
+                  ),
+                if (report.testFlag)
+                  Container(
+                    color: Colors.yellow[700],
+                    padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                    child: const Text(
+                      "Test",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                      textScaleFactor: 0.8,
+                    ),
+                  ),
               ],
             ),
             onTap: () {
@@ -88,33 +110,18 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
 
   _title(BuildContext context, IncidentReport report) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(report.reportTypeName),
+        Text(
+          report.reportTypeName,
+          textScaleFactor: 1.2,
+        ),
         const SizedBox(width: 10),
-        if (report.caseId != null)
-          Container(
-            color: Colors.red,
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-            child: const Text(
-              "Case",
-              style: TextStyle(
-                color: Colors.white,
-              ),
-              textScaleFactor: 0.8,
-            ),
-          ),
-        if (report.testFlag)
-          Container(
-            color: Colors.yellow[700],
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-            child: const Text(
-              "Test",
-              style: TextStyle(
-                color: Colors.white,
-              ),
-              textScaleFactor: 0.8,
-            ),
-          ),
+        Text(
+          formatter.format(report.createdAt.toLocal()),
+          textScaleFactor: .8,
+          style: TextStyle(),
+        ),
       ],
     );
   }
