@@ -12,6 +12,7 @@ class FormLocationField extends StatefulWidget {
 class _FormLocationFieldState extends State<FormLocationField> {
   final Completer<GoogleMapController> _controller = Completer();
   final _logger = locator<Logger>();
+  final AppTheme appTheme = locator<AppTheme>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +37,21 @@ class _FormLocationFieldState extends State<FormLocationField> {
             if (latitude == null || longitude == null)
               Container(
                 decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.grey.shade100),
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(appTheme.borderRadius),
+                  color: appTheme.sub4,
+                ),
                 child: SizedBox(
                   height: 300,
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        const Icon(
+                          Icons.location_on_sharp,
+                          size: 60,
+                          color: Color(0xFFD9D9D9),
+                        ),
                         Text(AppLocalizations.of(context)!
                             .fieldUndefinedLocation),
                         ElevatedButton(

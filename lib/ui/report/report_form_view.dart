@@ -218,6 +218,7 @@ class _RadioOption extends StatelessWidget {
   final bool? value;
   final bool? groupValue;
   final ValueChanged<bool?>? onChanged;
+  final AppTheme appTheme = locator<AppTheme>();
 
   _RadioOption({
     Key? key,
@@ -233,7 +234,11 @@ class _RadioOption extends StatelessWidget {
       children: [
         RadioListTile<bool?>(
           groupValue: groupValue,
-          title: Text(title),
+          title: Text(
+            title,
+            style: TextStyle(
+                color: appTheme.inputTextColor, fontWeight: FontWeight.w500),
+          ),
           contentPadding: const EdgeInsets.all(0),
           activeColor: apptheme.primary,
           value: value,
@@ -319,7 +324,13 @@ class _DotStepper extends HookViewModelWidget<ReportFormViewModel> {
                 child: Center(
                   child: Column(
                     children: [
-                      Text(store.currentSection.label),
+                      Text(
+                        store.currentSection.label,
+                        style: TextStyle(
+                            color: appTheme.primary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
+                      ),
                       DotStepper(
                         dotCount: store.numberOfSections,
                         spacing: 10,
