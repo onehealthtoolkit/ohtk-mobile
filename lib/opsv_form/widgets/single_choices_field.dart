@@ -11,6 +11,7 @@ class FormSingleChoicesField extends StatefulWidget {
 
 class _FormSingleChoicesFieldState extends State<FormSingleChoicesField> {
   final TextEditingController _controller = TextEditingController();
+  final AppTheme appTheme = locator<AppTheme>();
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +54,13 @@ class _FormSingleChoicesFieldState extends State<FormSingleChoicesField> {
           children: [
             if (widget.field.label != null && widget.field.label != "")
               Padding(
-                padding: const EdgeInsets.only(left: 8.0),
+                padding: const EdgeInsets.only(left: 8.0, bottom: 0, top: 0),
                 child: Text(
                   widget.field.label!,
-                  style: TextStyle(color: Colors.grey.shade700),
+                  textScaleFactor: 1.1,
+                  style: TextStyle(
+                    color: appTheme.warn,
+                  ),
                 ),
               ),
             ...tiles.toList(),

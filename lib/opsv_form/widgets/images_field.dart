@@ -38,7 +38,7 @@ class _FormImagesFieldState extends State<FormImagesField> {
               color: apptheme.sub3,
               dashPattern: const [6, 6],
               borderType: BorderType.RRect,
-              radius: const Radius.circular(6),
+              radius: Radius.circular(apptheme.borderRadius),
               padding: const EdgeInsets.all(8),
               child: GridView.builder(
                 shrinkWrap: true,
@@ -91,14 +91,11 @@ class _FormImagesFieldState extends State<FormImagesField> {
   }
 
   _buildAddImageBox() {
-    return InkWell(
-      onTap: _showAddImageModal,
-      child: Container(
-        decoration: BoxDecoration(
-          color: apptheme.sub4,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(Icons.add_a_photo, color: apptheme.primary),
+    return CircleAvatar(
+      backgroundColor: apptheme.sub4,
+      child: IconButton(
+        icon: Icon(Icons.add_a_photo, color: apptheme.primary),
+        onPressed: _showAddImageModal,
       ),
     );
   }
