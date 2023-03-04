@@ -22,6 +22,8 @@ class AppTheme {
 
   double borderRadius = 6;
 
+  Color inputTextColor = Colors.black;
+
   // default font
   String font = 'NotoSansThai';
 
@@ -47,9 +49,11 @@ class AppTheme {
           fontWeight: FontWeight.bold,
         ),
         titleMedium: TextStyle(
-          // using in textinputfield
+          // also use by textinputfield
+          // this is conflict between report list view and textinputfield
           fontFamily: font,
-          color: Colors.black,
+          color: primary,
+          fontWeight: FontWeight.bold,
         ),
         titleLarge: TextStyle(
           fontFamily: font,

@@ -12,6 +12,7 @@ class FormDecimalField extends StatefulWidget {
 class _FormDecimalFieldState extends State<FormDecimalField> {
   final TextEditingController _controller = TextEditingController();
   final _logger = locator<Logger>();
+  final AppTheme appTheme = locator<AppTheme>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,11 @@ class _FormDecimalFieldState extends State<FormDecimalField> {
       return TextField(
         controller: _controller,
         textInputAction: TextInputAction.next,
+        style: TextStyle(
+          color: appTheme.inputTextColor,
+          fontFamily: appTheme.font,
+          fontWeight: FontWeight.w400,
+        ),
         keyboardType:
             const TextInputType.numberWithOptions(decimal: true, signed: false),
         inputFormatters: [

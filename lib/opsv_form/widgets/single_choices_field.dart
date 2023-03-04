@@ -129,6 +129,10 @@ class _RadioOption extends StatelessWidget {
             ),
           ],
         ),
+        if (option.textInput && field.value == option.value)
+          const SizedBox(
+            height: 4,
+          ),
         CustomPaint(
           painter: DashedLinePainter(backgroundColor: apptheme.primary),
           child: Container(

@@ -10,6 +10,7 @@ class FormTextField extends StatefulWidget {
 }
 
 class _FormTextFieldState extends State<FormTextField> {
+  final AppTheme appTheme = locator<AppTheme>();
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -28,6 +29,11 @@ class _FormTextFieldState extends State<FormTextField> {
       }
       return TextField(
         controller: _controller,
+        style: TextStyle(
+          color: appTheme.inputTextColor,
+          fontFamily: appTheme.font,
+          fontWeight: FontWeight.w400,
+        ),
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           // border: const OutlineInputBorder(),
