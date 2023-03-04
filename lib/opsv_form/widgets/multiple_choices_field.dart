@@ -52,6 +52,7 @@ class _OptionWidget extends StatelessWidget {
   final opsv.MultipleChoicesField field;
   final opsv.ChoiceOption option;
   final TextEditingController _controller = TextEditingController();
+  final AppTheme apptheme = locator<AppTheme>();
 
   _OptionWidget(this.field, this.option, {Key? key}) : super(key: key);
 
@@ -69,37 +70,51 @@ class _OptionWidget extends StatelessWidget {
               text: _text,
               selection: TextSelection.collapsed(offset: _text.length));
         }
-        return Row(
+        return Column(
           children: [
-            Checkbox(
-                value: _checkValue,
-                onChanged: (value) {
-                  field.setSelectedFor(option.value, value ?? false);
-                }),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InkWell(
-                    child: Text(
-                      option.label,
-                      textScaleFactor: 1.1,
-                    ),
-                    onTap: () {
-                      field.setSelectedFor(option.value, !_checkValue);
-                    },
+            const SizedBox(
+              height: 4,
+            ),
+            Row(
+              children: [
+                Checkbox(
+                    value: _checkValue,
+                    activeColor: apptheme.primary,
+                    onChanged: (value) {
+                      field.setSelectedFor(option.value, value ?? false);
+                    }),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        child: Text(
+                          option.label,
+                          textScaleFactor: 1.1,
+                        ),
+                        onTap: () {
+                          field.setSelectedFor(option.value, !_checkValue);
+                        },
+                      ),
+                      if (option.textInput && _checkValue)
+                        TextField(
+                          controller: _controller,
+                          onChanged: (val) {
+                            field.setTextValueFor(option.value, val);
+                          },
+                          decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              errorText: _invalidTextMessage),
+                        ),
+                    ],
                   ),
-                  if (option.textInput && _checkValue)
-                    TextField(
-                      controller: _controller,
-                      onChanged: (val) {
-                        field.setTextValueFor(option.value, val);
-                      },
-                      decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          errorText: _invalidTextMessage),
-                    ),
-                ],
+                ),
+              ],
+            ),
+            CustomPaint(
+              painter: DashedLinePainter(backgroundColor: apptheme.primary),
+              child: Container(
+                height: 1,
               ),
             ),
           ],

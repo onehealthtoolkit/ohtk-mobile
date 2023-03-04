@@ -27,20 +27,9 @@ class _FormDateFieldState extends State<FormDateField> {
                     style: TextStyle(color: Colors.grey.shade700),
                   ),
                 ),
-              DecoratedBox(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  border: Border.fromBorderSide(
-                    BorderSide(
-                      color: Colors.black45,
-                      width: 1.0,
-                    ),
-                  ),
-                ),
-                child: widget.field.separatedFields
-                    ? _DateTimeDropdown(widget.field)
-                    : _DateTimePicker(widget.field),
-              )
+              widget.field.separatedFields
+                  ? _DateTimeDropdown(widget.field)
+                  : _DateTimePicker(widget.field)
             ],
           ),
         );
@@ -65,26 +54,22 @@ class _DateTimeDropdown extends StatelessWidget {
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
             return Observer(builder: (BuildContext context) {
-              return Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-                child: Row(
-                  children: [
-                    Expanded(child: _dayDropdown(field), flex: 1),
-                    SizedBox(width: width * 0.05),
-                    Expanded(child: _monthDropdown(field), flex: 2),
-                    SizedBox(width: width * 0.05),
-                    Expanded(child: _yearDropdown(field), flex: 1),
-                    if (field.withTime)
-                      const Text(
-                        ": ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                        textScaleFactor: 1.2,
-                      ),
-                    if (field.withTime) Expanded(child: _hourDropdown(field)),
-                    if (field.withTime) Expanded(child: _minuteDropdown(field)),
-                  ],
-                ),
+              return Row(
+                children: [
+                  Expanded(child: _dayDropdown(field), flex: 1),
+                  SizedBox(width: width * 0.05),
+                  Expanded(child: _monthDropdown(field), flex: 2),
+                  SizedBox(width: width * 0.05),
+                  Expanded(child: _yearDropdown(field), flex: 1),
+                  if (field.withTime)
+                    const Text(
+                      ": ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      textScaleFactor: 1.2,
+                    ),
+                  if (field.withTime) Expanded(child: _hourDropdown(field)),
+                  if (field.withTime) Expanded(child: _minuteDropdown(field)),
+                ],
               );
             });
           } else {

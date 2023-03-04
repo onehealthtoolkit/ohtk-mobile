@@ -30,7 +30,7 @@ class _FormTextFieldState extends State<FormTextField> {
         controller: _controller,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          border: const OutlineInputBorder(),
+          // border: const OutlineInputBorder(),
           labelText: widget.field.label,
           suffixText: widget.field.suffixLabel != null
               ? widget.field.suffixLabel!

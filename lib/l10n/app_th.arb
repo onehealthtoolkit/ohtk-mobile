@@ -58,5 +58,7 @@
   "validateRequiredMsg": "กรุณาระบุค่า",
   "dateFieldMaxErrorMsg": "{name} ต้องน้อยกว่า {max}",
   "dateFieldMinErrorMsg": "{name} ต้องมากกว่า {min}",
-  "testFlag": "ทดสอบ"
+  "testFlag": "ทดสอบ",
+  "yes": "ใช่",
+  "no": "ไม่ใช่"
 }

@@ -12,6 +12,8 @@ class ValidationWrapper extends StatefulWidget {
 }
 
 class _ValidationWrapperState extends State<ValidationWrapper> {
+  final AppTheme apptheme = locator<AppTheme>();
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (BuildContext context) {
@@ -29,7 +31,7 @@ class _ValidationWrapperState extends State<ValidationWrapper> {
                   )
                 : BoxDecoration(
                     border: Border.all(
-                      color: const Color.fromRGBO(100, 100, 100, 0.7),
+                      color: apptheme.bg2,
                       width: 1,
                     ),
                     borderRadius: BorderRadius.circular(4),

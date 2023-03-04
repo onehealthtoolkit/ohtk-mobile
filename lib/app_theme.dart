@@ -8,15 +8,19 @@ class AppTheme {
   // dark almost black
   Color bg1 = const Color.fromRGBO(57, 62, 70, 1);
   // soft white
-  Color bg2 = const Color.fromRGBO(57, 62, 70, 1);
+  Color bg2 = const Color(0xFFF9F9F9);
   // gray 1
   Color sub1 = const Color.fromRGBO(57, 62, 70, 1);
   // light gray 2
   Color sub2 = const Color.fromRGBO(173, 181, 194, 1);
   // lighter gray 3
   Color sub3 = const Color.fromRGBO(200, 205, 212, 1);
+
+  Color sub4 = const Color(0xFFe3e7ed);
   // orange
   Color warn = const Color.fromRGBO(243, 149, 95, 1);
+
+  double borderRadius = 6;
 
   // default font
   String font = 'NotoSansThai';
@@ -43,14 +47,54 @@ class AppTheme {
           fontWeight: FontWeight.bold,
         ),
         titleMedium: TextStyle(
+          // using in textinputfield
           fontFamily: font,
-          color: primary,
-          fontWeight: FontWeight.bold,
+          color: Colors.black,
         ),
         titleLarge: TextStyle(
           fontFamily: font,
           color: primary,
           fontWeight: FontWeight.w700,
+        ),
+      ),
+      inputDecorationTheme: defaultTheme.inputDecorationTheme.copyWith(
+        fillColor: bg2,
+        filled: true,
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: sub3),
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: primary),
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: primary),
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: warn),
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: warn),
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 12,
+        ),
+        labelStyle: TextStyle(
+          fontFamily: font,
+          color: sub2,
+        ),
+        hintStyle: TextStyle(
+          fontFamily: font,
+          color: sub2,
+        ),
+        errorStyle: TextStyle(
+          fontFamily: font,
+          color: warn,
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(

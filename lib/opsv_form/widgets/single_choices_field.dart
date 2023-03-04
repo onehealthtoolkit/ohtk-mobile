@@ -76,48 +76,63 @@ class _RadioOption extends StatelessWidget {
   final TextEditingController? currentText;
   final OnSelectFunction onSelect;
   final OnSetInputValue onSetInputValue;
+  final AppTheme apptheme = locator<AppTheme>();
 
-  const _RadioOption(this.option, this.field, this.currentText, this.onSelect,
+  _RadioOption(this.option, this.field, this.currentText, this.onSelect,
       this.onSetInputValue,
       {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Column(
       children: [
-        Radio<String>(
-          groupValue: field.value,
-          value: option.value,
-          onChanged: onSelect,
+        const SizedBox(
+          height: 4,
         ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InkWell(
-                child: Text(
-                  option.label,
-                  textScaleFactor: 1.1,
-                ),
-                onTap: () {
-                  onSelect(option.value);
-                },
-              ),
-              if (option.textInput && field.value == option.value)
-                TextField(
-                  controller: currentText,
-                  onTap: () {
-                    field.clearError();
-                  },
-                  onChanged: onSetInputValue,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    errorText: field.invalidTextInputMessage,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Radio<String>(
+              groupValue: field.value,
+              activeColor: apptheme.primary,
+              value: option.value,
+              onChanged: onSelect,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                    child: Text(
+                      option.label,
+                      textScaleFactor: 1.1,
+                    ),
+                    onTap: () {
+                      onSelect(option.value);
+                    },
                   ),
-                )
-            ],
+                  if (option.textInput && field.value == option.value)
+                    TextField(
+                      controller: currentText,
+                      onTap: () {
+                        field.clearError();
+                      },
+                      onChanged: onSetInputValue,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        errorText: field.invalidTextInputMessage,
+                      ),
+                    )
+                ],
+              ),
+            ),
+          ],
+        ),
+        CustomPaint(
+          painter: DashedLinePainter(backgroundColor: apptheme.primary),
+          child: Container(
+            height: 1,
           ),
         ),
       ],

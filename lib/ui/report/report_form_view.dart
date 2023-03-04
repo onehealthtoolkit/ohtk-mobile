@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Form;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:logger/logger.dart';
+import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_type.dart';
@@ -104,35 +105,48 @@ class _FormInput extends HookViewModelWidget<ReportFormViewModel> {
 }
 
 class _ConfirmSubmit extends HookViewModelWidget<ReportFormViewModel> {
+  final AppTheme apptheme = locator<AppTheme>();
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportFormViewModel viewModel) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.fromLTRB(40, 40, 40, 0),
         child: Column(
           children: [
             _ConfirmIncidentArea(),
-            Expanded(
-              flex: 1,
-              child: Container(),
+            const SizedBox(
+              height: 20,
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
-              child: Text("Press the submit button to submit your report"),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50), // NEW
+            ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: double.infinity),
+              child: TextButton(
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all<EdgeInsets>(
+                    const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                  ),
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                    Colors.white,
+                  ),
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    apptheme.primary,
+                  ),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.0),
+                      side: BorderSide(color: apptheme.primary),
+                    ),
+                  ),
+                ),
+                onPressed: () async {
+                  var result = await viewModel.submit();
+                  if (result is ReportSubmitSuccess ||
+                      result is ReportSubmitPending) {
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text("ยืนยันรายงาน"),
               ),
-              onPressed: () async {
-                var result = await viewModel.submit();
-                if (result is ReportSubmitSuccess ||
-                    result is ReportSubmitPending) {
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text("ยืนยันรายงาน"),
             ),
             const SizedBox(
               height: 8,
@@ -157,40 +171,82 @@ class _ConfirmSubmit extends HookViewModelWidget<ReportFormViewModel> {
 }
 
 class _ConfirmIncidentArea extends HookViewModelWidget<ReportFormViewModel> {
+  final AppTheme apptheme = locator<AppTheme>();
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportFormViewModel viewModel) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-      child: Column(
-        children: [
-          const Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Did this incident occur in your own authority?",
+    return Column(
+      children: [
+        const Align(
+          alignment: Alignment.center,
+          child: Text(
+            "Did this incident occur in your own authority?",
+            textScaleFactor: 1.1,
+          ),
+        ),
+        const SizedBox(
+          height: 6,
+        ),
+        Column(
+          children: [
+            _RadioOption(
+              title: AppLocalizations.of(context)!.yes,
+              value: true,
+              groupValue: viewModel.incidentInAuthority,
+              onChanged: (bool? value) {
+                viewModel.incidentInAuthority = value;
+              },
             ),
+            _RadioOption(
+              title: AppLocalizations.of(context)!.no,
+              value: false,
+              groupValue: viewModel.incidentInAuthority,
+              onChanged: (bool? value) {
+                viewModel.incidentInAuthority = value;
+              },
+            ),
+          ],
+        )
+      ],
+    );
+  }
+}
+
+class _RadioOption extends StatelessWidget {
+  final AppTheme apptheme = locator<AppTheme>();
+  final String title;
+  final bool? value;
+  final bool? groupValue;
+  final ValueChanged<bool?>? onChanged;
+
+  _RadioOption({
+    Key? key,
+    required this.title,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        RadioListTile<bool?>(
+          groupValue: groupValue,
+          title: Text(title),
+          contentPadding: const EdgeInsets.all(0),
+          activeColor: apptheme.primary,
+          value: value,
+          onChanged: onChanged,
+          visualDensity: VisualDensity.standard,
+        ),
+        CustomPaint(
+          painter: DashedLinePainter(backgroundColor: apptheme.primary),
+          child: Container(
+            height: 1,
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          RadioListTile<bool?>(
-            groupValue: viewModel.incidentInAuthority,
-            title: const Text("yes"),
-            value: true,
-            onChanged: (bool? value) {
-              viewModel.incidentInAuthority = value;
-            },
-          ),
-          RadioListTile<bool?>(
-            groupValue: viewModel.incidentInAuthority,
-            title: const Text("no"),
-            value: false,
-            onChanged: (bool? value) {
-              viewModel.incidentInAuthority = value;
-            },
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -243,6 +299,9 @@ class _Footer extends HookViewModelWidget<ReportFormViewModel> {
 }
 
 class _DotStepper extends HookViewModelWidget<ReportFormViewModel> {
+  // appTheme
+  final AppTheme appTheme = locator<AppTheme>();
+
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportFormViewModel viewModel) {
@@ -268,7 +327,7 @@ class _DotStepper extends HookViewModelWidget<ReportFormViewModel> {
                         activeStep: store.currentSectionIdx,
                         tappingEnabled: true,
                         indicatorDecoration:
-                            const IndicatorDecoration(color: Colors.blue),
+                            IndicatorDecoration(color: appTheme.primary),
                         shape: Shape.pipe,
                         indicator: Indicator.jump,
                         onDotTapped: (tappedDotIndex) {
@@ -286,39 +345,6 @@ class _DotStepper extends HookViewModelWidget<ReportFormViewModel> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _Stepper extends HookViewModelWidget<ReportFormViewModel> {
-  @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportFormViewModel viewModel) {
-    Form store = viewModel.formStore;
-    if (store.numberOfSections == 1) {
-      return Container();
-    }
-    return Observer(
-      builder: (_) => Column(
-        children: [
-          if (store.currentSection.label.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-              child: Text(store.currentSection.label),
-            ),
-          NumberStepper(
-            numbers:
-                List.generate(store.numberOfSections, (index) => index + 1),
-            activeStep: store.currentSectionIdx,
-            activeStepColor: Colors.blue.shade200,
-            stepColor: Colors.grey.shade400,
-            stepRadius: 16,
-            enableStepTapping: false,
-            enableNextPreviousButtons: false,
-          ),
-          const SizedBox(height: 10),
-        ],
       ),
     );
   }
