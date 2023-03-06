@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:intl/intl.dart';
 import 'package:podd_app/ui/report/incident_report_view.dart';
-import 'package:podd_app/utils.dart';
 
 import 'all_reports_view_model.dart';
 
@@ -15,7 +16,9 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
   final T viewModel;
   final TrailingFunction trailingFn;
 
-  const ReportListView({
+  final AppTheme appTheme = locator<AppTheme>();
+
+  ReportListView({
     Key? key,
     required this.viewModel,
     required this.trailingFn,
@@ -24,13 +27,13 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView.separated(
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+      child: ListView.builder(
         key: key,
-        separatorBuilder: (context, index) => const Divider(),
         itemCount: viewModel.incidentReports.length,
         itemBuilder: (context, index) {
           var report = viewModel.incidentReports[index];
+
           IncidentReportImage? image;
           if (report.images?.isNotEmpty != false) {
             image = report.images?.first;
@@ -38,63 +41,25 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
           var leading = image != null
               ? CachedNetworkImage(
                   imageUrl: viewModel.resolveImagePath(image.thumbnailPath),
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                  fit: BoxFit.fill,
+                  placeholder: (context, url) => const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: CircularProgressIndicator(),
+                  ),
+                  fit: BoxFit.cover,
                 )
-              : Container(
-                  color: Colors.grey.shade300,
-                  width: 80,
+              : ColoredBox(
+                  color: appTheme.placeholder,
+                  child: Image.asset(
+                    "assets/images/OHTK.png",
+                  ),
                 );
+
           var trailing = trailingFn(report);
-          return ListTile(
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(4.0),
-              child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minWidth: 70,
-                    maxWidth: 70,
-                    minHeight: 52,
-                    maxHeight: 52,
-                  ),
-                  child: leading),
-            ),
-            title: _title(context, report),
+
+          return IncidentReportItem(
+            report: report,
+            leading: leading,
             trailing: trailing,
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  truncate(report.trimWhitespaceDescription,
-                      length: 100, omission: '...'),
-                  textScaleFactor: .9,
-                ),
-                if (report.caseId != null)
-                  Container(
-                    color: Colors.red,
-                    padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                    child: const Text(
-                      "Case",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                      textScaleFactor: 0.8,
-                    ),
-                  ),
-                if (report.testFlag)
-                  Container(
-                    color: Colors.yellow[700],
-                    padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                    child: const Text(
-                      "Test",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                      textScaleFactor: 0.8,
-                    ),
-                  ),
-              ],
-            ),
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -107,6 +72,59 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
       ),
     );
   }
+}
+
+class IncidentReportItem extends StatelessWidget {
+  final IncidentReport report;
+  final void Function() onTap;
+  final Widget? leading;
+  final Widget? trailing;
+
+  final AppTheme appTheme = locator<AppTheme>();
+
+  IncidentReportItem({
+    Key? key,
+    required this.report,
+    required this.onTap,
+    this.leading,
+    this.trailing,
+  }) : super(key: key);
+
+  _testTag() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: appTheme.tag2,
+      ),
+      margin: const EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.fromLTRB(8, 2, 8, 0),
+      child: Text(
+        "Test",
+        style: TextStyle(
+          color: appTheme.bg1,
+        ),
+        textScaleFactor: 0.8,
+      ),
+    );
+  }
+
+  _caseTag() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: appTheme.tag1,
+      ),
+      margin: const EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+      child: Text(
+        "Case",
+        style: TextStyle(
+          color: appTheme.bg1,
+        ),
+        textScaleFactor: 0.7,
+      ),
+    );
+  }
 
   _title(BuildContext context, IncidentReport report) {
     return Row(
@@ -115,14 +133,75 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
         Text(
           report.reportTypeName,
           textScaleFactor: 1.2,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
-        const SizedBox(width: 10),
         Text(
           formatter.format(report.createdAt.toLocal()),
-          textScaleFactor: .8,
-          style: TextStyle(),
+          textScaleFactor: .9,
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium!
+              .copyWith(fontWeight: FontWeight.w100),
         ),
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var imageRatio = 0.23;
+    var imageWidth = MediaQuery.of(context).size.width * imageRatio;
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      color: appTheme.bg2,
+      elevation: 0,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4.0),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: imageWidth,
+                  maxWidth: imageWidth,
+                  minHeight: imageWidth,
+                  maxHeight: imageWidth,
+                ),
+                child: leading,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _title(context, report),
+                  Text(
+                    report.trimWhitespaceDescription,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Row(
+                    children: [
+                      if (report.caseId != null) _caseTag(),
+                      if (report.testFlag)
+                        const SizedBox(
+                          width: 5,
+                        ),
+                      if (report.testFlag) _testTag(),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

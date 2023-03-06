@@ -9,6 +9,8 @@ class AppTheme {
   Color bg1 = const Color.fromRGBO(57, 62, 70, 1);
   // soft white
   Color bg2 = const Color(0xFFF9F9F9);
+  // bg gray
+  Color placeholder = const Color.fromRGBO(227, 231, 237, 1);
   // gray 1
   Color sub1 = const Color.fromRGBO(57, 62, 70, 1);
   // light gray 2
@@ -19,6 +21,10 @@ class AppTheme {
   Color sub4 = const Color(0xFFe3e7ed);
   // orange
   Color warn = const Color.fromRGBO(243, 149, 95, 1);
+  // pastel red
+  Color tag1 = const Color.fromRGBO(255, 181, 181, 1);
+  // pastel yellow
+  Color tag2 = const Color.fromRGBO(255, 224, 164, 1);
 
   double borderRadius = 6;
 

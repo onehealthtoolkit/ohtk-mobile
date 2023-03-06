@@ -122,6 +122,7 @@ flutter:
   assets:
     - assets/images/logo.png
     - assets/images/map_pin_icon.png
+    - assets/images/OHTK.png
     - assets/animations/waiting.json
   #   - images/a_dot_ham.jpeg
 
@@ -139,6 +140,8 @@ flutter:
   fonts:
     - family: NotoSansThai
       fonts:
+        - asset: assets/fonts/NotoSansThai-Light.ttf
+          weight: 100
         - asset: assets/fonts/NotoSansThai-Regular.ttf
         - asset: assets/fonts/NotoSansThai-Bold.ttf
           weight: 700

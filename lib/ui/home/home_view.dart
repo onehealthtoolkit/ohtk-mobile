@@ -151,7 +151,7 @@ class HomeView extends HookWidget {
   Widget getViewForIndex(HomeViewModel viewModel) {
     int index = viewModel.currentIndex;
     if (index == 0) {
-      return const ReportHomeView();
+      return ReportHomeView();
     } else if (index == 1) {
       if (viewModel.hasObservationFeature) {
         return const ObservationHomeView();
@@ -161,7 +161,7 @@ class HomeView extends HookWidget {
     } else if (index == 2) {
       return const ProfileView();
     } else {
-      return const ReportHomeView();
+      return ReportHomeView();
     }
   }
 }
