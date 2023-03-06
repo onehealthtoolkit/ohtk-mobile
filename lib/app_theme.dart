@@ -112,6 +112,7 @@ class AppTheme {
           backgroundColor: primary,
           textStyle: TextStyle(
             fontFamily: font,
+            color: Colors.white,
           ),
         ),
       ),

@@ -147,60 +147,87 @@ class IncidentReportItem extends StatelessWidget {
     );
   }
 
+  _description() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Text(
+            report.trimWhitespaceDescription,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  _options() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              if (report.caseId != null) _caseTag(),
+              if (report.testFlag)
+                const SizedBox(
+                  width: 5,
+                ),
+              if (report.testFlag) _testTag(),
+            ],
+          ),
+        ),
+        if (trailing != null) trailing!,
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var imageRatio = 0.23;
     var imageWidth = MediaQuery.of(context).size.width * imageRatio;
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      color: appTheme.bg2,
-      elevation: 0,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4.0),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: imageWidth,
-                  maxWidth: imageWidth,
-                  minHeight: imageWidth,
-                  maxHeight: imageWidth,
-                ),
-                child: leading,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _title(context, report),
-                  Text(
-                    report.trimWhitespaceDescription,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+    return InkWell(
+      onTap: onTap,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        color: appTheme.bg2,
+        elevation: 0,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 8, 8, 0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4.0),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: imageWidth,
+                    maxWidth: imageWidth,
+                    minHeight: imageWidth,
+                    maxHeight: imageWidth,
                   ),
-                  Row(
-                    children: [
-                      if (report.caseId != null) _caseTag(),
-                      if (report.testFlag)
-                        const SizedBox(
-                          width: 5,
-                        ),
-                      if (report.testFlag) _testTag(),
-                    ],
-                  )
-                ],
+                  child: leading,
+                ),
               ),
             ),
-          )
-        ],
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 8, 8, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _title(context, report),
+                    _description(),
+                    _options()
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
