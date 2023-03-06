@@ -4,6 +4,7 @@ import 'package:im_stepper/stepper.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/confirm.dart';
+import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/report_submit_result.dart';
@@ -120,24 +121,7 @@ class _ConfirmSubmit extends HookViewModelWidget<ReportFormViewModel> {
             ),
             ConstrainedBox(
               constraints: const BoxConstraints(minWidth: double.infinity),
-              child: TextButton(
-                style: ButtonStyle(
-                  padding: MaterialStateProperty.all<EdgeInsets>(
-                    const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                  ),
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                    Colors.white,
-                  ),
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    apptheme.primary,
-                  ),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6.0),
-                      side: BorderSide(color: apptheme.primary),
-                    ),
-                  ),
-                ),
+              child: FlatButton.primary(
                 onPressed: () async {
                   var result = await viewModel.submit();
                   if (result is ReportSubmitSuccess ||
