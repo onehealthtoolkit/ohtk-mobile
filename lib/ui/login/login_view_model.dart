@@ -25,6 +25,8 @@ class LoginViewModel extends BaseViewModel {
   String? username;
   String? password;
 
+  bool obscureText = true;
+
   LoginViewModel() {
     fetchTenantAndLanguage();
   }
@@ -112,5 +114,10 @@ class LoginViewModel extends BaseViewModel {
     if (hasErrorForKey('password')) {
       setErrorForObject("password", null);
     }
+  }
+
+  void setObscureText(bool value) {
+    obscureText = value;
+    notifyListeners();
   }
 }

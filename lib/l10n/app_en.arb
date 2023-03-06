@@ -11,6 +11,7 @@
   "followupDetailTitle": "Followup detail",
   "profileTitle": "Profile",
   "loginButton": "Login",
+  "qrCodeLoginButton": "QRCode LOGIN",
   "logoutButton": "Logout",
   "registerButton": "Register",
   "forgotPasswordButton": "Forgot Password",
