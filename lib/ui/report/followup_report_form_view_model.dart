@@ -6,32 +6,18 @@ import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/followup_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/services/report_service.dart';
-import 'package:stacked/stacked.dart';
+import 'package:podd_app/ui/report/form_base_view_model.dart';
 import 'package:uuid/uuid.dart';
-
-enum ReportFormState {
-  formInput,
-  confirmation,
-}
-
-enum BackAction {
-  navigationPop,
-  doNothing,
-}
 
 var _uuid = const Uuid();
 
-class FollowupReportFormViewModel extends BaseViewModel {
+class FollowupReportFormViewModel extends FormBaseViewModel {
   final IReportService _reportService = locator<IReportService>();
 
   final ReportType reportType;
   final String incidentId;
-  bool isReady = false;
   String _reportId = "";
   Form _formStore = Form.fromJson({}, "");
-  ReportFormState state = ReportFormState.formInput;
-
-  Form get formStore => _formStore;
 
   FollowupReportFormViewModel({
     required this.incidentId,
@@ -53,36 +39,12 @@ class FollowupReportFormViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  BackAction back() {
-    if (state == ReportFormState.formInput) {
-      if (formStore.couldGoToPreviousSection) {
-        formStore.previous();
-      } else {
-        return BackAction.navigationPop;
-      }
-    } else if (state == ReportFormState.confirmation) {
-      state = ReportFormState.formInput;
-      notifyListeners();
-    }
-    return BackAction.doNothing;
-  }
-
-  next() {
-    if (state == ReportFormState.formInput) {
-      if (formStore.couldGoToNextSection) {
-        formStore.next();
-      } else {
-        if (formStore.currentSection.validate()) {
-          state = ReportFormState.confirmation;
-          notifyListeners();
-        }
-      }
-    } else {}
-  }
+  @override
+  Form get formStore => _formStore;
 
   Future<FollowupSubmitResult> submit() async {
     setBusy(true);
-    var data = _formStore.toJsonValue();
+    var data = formStore.toJsonValue();
     var result = await _reportService.submitFollowup(
       incidentId,
       _reportId,
