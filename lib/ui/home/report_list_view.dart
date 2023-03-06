@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/incident_report_tag.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:intl/intl.dart';
@@ -90,42 +91,6 @@ class IncidentReportItem extends StatelessWidget {
     this.trailing,
   }) : super(key: key);
 
-  _testTag() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: appTheme.tag2,
-      ),
-      margin: const EdgeInsets.only(top: 4),
-      padding: const EdgeInsets.fromLTRB(8, 2, 8, 0),
-      child: Text(
-        "Test",
-        style: TextStyle(
-          color: appTheme.bg1,
-        ),
-        textScaleFactor: 0.8,
-      ),
-    );
-  }
-
-  _caseTag() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: appTheme.tag1,
-      ),
-      margin: const EdgeInsets.only(top: 4),
-      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-      child: Text(
-        "Case",
-        style: TextStyle(
-          color: appTheme.bg1,
-        ),
-        textScaleFactor: 0.7,
-      ),
-    );
-  }
-
   _title(BuildContext context, IncidentReport report) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -150,6 +115,7 @@ class IncidentReportItem extends StatelessWidget {
   _description() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           child: Text(
@@ -157,6 +123,12 @@ class IncidentReportItem extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
+        ),
+        const SizedBox(width: 20),
+        Icon(
+          Icons.arrow_forward_ios_sharp,
+          size: 14,
+          color: appTheme.secondary,
         ),
       ],
     );
@@ -170,12 +142,9 @@ class IncidentReportItem extends StatelessWidget {
         Expanded(
           child: Row(
             children: [
-              if (report.caseId != null) _caseTag(),
-              if (report.testFlag)
-                const SizedBox(
-                  width: 5,
-                ),
-              if (report.testFlag) _testTag(),
+              if (report.caseId != null) IncidentReportCaseTag(),
+              if (report.testFlag) const SizedBox(width: 5),
+              if (report.testFlag) IncidentReportTestTag(),
             ],
           ),
         ),

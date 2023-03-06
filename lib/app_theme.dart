@@ -4,7 +4,7 @@ class AppTheme {
   // teal color
   Color primary = const Color.fromRGBO(0, 173, 181, 1);
   // soft teal color
-  Color secondary = const Color.fromRGBO(208, 242, 238, 1);
+  Color secondary = const Color.fromRGBO(170, 216, 211, 1);
   // dark almost black
   Color bg1 = const Color.fromRGBO(57, 62, 70, 1);
   // soft white
@@ -44,11 +44,30 @@ class AppTheme {
         iconTheme: IconThemeData(
           color: primary,
         ),
+        titleTextStyle: const TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+        ),
       ),
       textTheme: defaultTheme.textTheme.copyWith(
-        bodySmall: TextStyle(fontFamily: font, color: bg1),
-        bodyMedium: TextStyle(fontFamily: font, color: bg1),
-        bodyLarge: TextStyle(fontFamily: font, color: bg1),
+        bodySmall: TextStyle(
+          fontFamily: font,
+          color: bg1,
+          fontSize: 12,
+          fontWeight: FontWeight.w200,
+        ),
+        bodyMedium: TextStyle(
+          fontFamily: font,
+          color: bg1,
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+        ),
+        bodyLarge: TextStyle(
+          fontFamily: font,
+          color: bg1,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
         titleSmall: TextStyle(
           fontFamily: font,
           color: primary,

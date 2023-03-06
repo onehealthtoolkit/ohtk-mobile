@@ -20,12 +20,8 @@ class ReportHomeView extends HookWidget {
     TabBar _tabBar = TabBar(
       controller: _tabController,
       tabs: [
-        Tab(
-          child: Text(AppLocalizations.of(context)!.allReportTabLabel),
-        ),
-        Tab(
-          child: Text(AppLocalizations.of(context)!.myReportTabLabel),
-        ),
+        _tabItem(AppLocalizations.of(context)!.allReportTabLabel),
+        _tabItem(AppLocalizations.of(context)!.myReportTabLabel),
       ],
     );
 
@@ -39,16 +35,22 @@ class ReportHomeView extends HookWidget {
             child: _tabBar,
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ReportTypeView(),
-              ),
-            );
-          },
-          child: const Icon(Icons.add),
+        floatingActionButton: CircleAvatar(
+          radius: 40,
+          backgroundColor: Theme.of(context).primaryColor,
+          foregroundColor: Colors.white,
+          child: IconButton(
+            iconSize: 50,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ReportTypeView(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.add_circle_outline),
+          ),
         ),
         body: Center(
           child: Column(
@@ -63,6 +65,15 @@ class ReportHomeView extends HookWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Tab _tabItem(String label) {
+    return Tab(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16.0),
+        child: Text(label),
       ),
     );
   }
