@@ -339,7 +339,7 @@ class _DotStepper extends HookViewModelWidget<ReportFormViewModel> {
                         tappingEnabled: true,
                         indicatorDecoration:
                             IndicatorDecoration(color: appTheme.primary),
-                        shape: Shape.pipe,
+                        shape: Shape.pipe3,
                         indicator: Indicator.jump,
                         onDotTapped: (tappedDotIndex) {
                           if (tappedDotIndex > store.currentSectionIdx) {

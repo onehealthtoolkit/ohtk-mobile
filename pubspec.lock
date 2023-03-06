@@ -731,9 +731,11 @@ packages:
   im_stepper:
     dependency: "direct main"
     description:
-      name: im_stepper
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: f071159d2815dfe978a63d7175ca823a218b72cb
+      resolved-ref: f071159d2815dfe978a63d7175ca823a218b72cb
+      url: "https://github.com/onehealthtoolkit/package_im_stepper"
+    source: git
     version: "1.0.1+1"
   image:
     dependency: transitive

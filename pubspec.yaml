@@ -66,7 +66,10 @@ dependencies:
   firebase_core: ^1.21.1
   firebase_messaging: ^13.0.0
   dartz: ^0.10.1
-  im_stepper: ^1.0.1+1
+  im_stepper:
+    git:
+      url: https://github.com/onehealthtoolkit/package_im_stepper
+      ref: f071159d2815dfe978a63d7175ca823a218b72cb
   connectivity_plus: ^2.3.6+1
   scrollable_positioned_list: ^0.3.2
   flutter_native_timezone: ^2.0.0
