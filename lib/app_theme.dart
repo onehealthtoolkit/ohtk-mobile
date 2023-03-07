@@ -77,8 +77,8 @@ class AppTheme {
           // also use by textinputfield
           // this is conflict between report list view and textinputfield
           fontFamily: font,
-          color: primary,
-          fontWeight: FontWeight.bold,
+          color: sub1,
+          fontWeight: FontWeight.normal,
         ),
         titleLarge: TextStyle(
           fontFamily: font,

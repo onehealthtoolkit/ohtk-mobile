@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:podd_app/components/display_field.dart';
 import 'package:podd_app/main.dart';
-import 'package:podd_app/models/profile_result.dart';
+import 'package:podd_app/ui/profile/change_password_view.dart';
 import 'package:podd_app/ui/profile/profile_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../components/language_dropdown.dart';
+import 'profile_form_view.dart';
 
 var decoration = BoxDecoration(
   border: Border.all(color: Colors.grey.shade300),
@@ -18,7 +23,7 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<ProfileViewModel>.nonReactive(
+    return ViewModelBuilder<ProfileViewModel>.reactive(
       viewModelBuilder: () => ProfileViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         resizeToAvoidBottomInset: false,
@@ -32,9 +37,124 @@ class ProfileView extends StatelessWidget {
                   children: [
                     Expanded(
                       child: ListView(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 20),
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                          Column(
+                            children: [
+                              _Avatar(),
+                              const SizedBox(height: 8),
+                              _Language(),
+                              const SizedBox(height: 8),
+                              DisplayField(
+                                  label: AppLocalizations.of(context)!
+                                      .authorityNameLabel,
+                                  value: viewModel.authorityName),
+                            ],
+                          ),
+                          Divider(
+                            height: 20,
+                            thickness: 1,
+                            indent: 0,
+                            endIndent: 0,
+                            color: Colors.red.shade400,
+                          ),
+                          DisplayField(
+                              label:
+                                  AppLocalizations.of(context)!.usernameLabel,
+                              value: viewModel.username),
+                          DisplayField(
+                              label:
+                                  AppLocalizations.of(context)!.firstNameLabel,
+                              value: viewModel.firstName),
+                          DisplayField(
+                              label:
+                                  AppLocalizations.of(context)!.lastNameLabel,
+                              value: viewModel.lastName),
+                          DisplayField(
+                              label: AppLocalizations.of(context)!.emailLabel,
+                              value: viewModel.email),
+                          DisplayField(
+                              label:
+                                  AppLocalizations.of(context)!.telephoneLabel,
+                              value: viewModel.telephone),
+                          const SizedBox(height: 20),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(40),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ProfileFormView(),
+                                  ),
+                                );
+                              },
+                              child: viewModel.isBusy
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.settings_outlined,
+                                          size: 24,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          AppLocalizations.of(context)!
+                                              .updateProfileButton,
+                                        ),
+                                      ],
+                                    ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(40),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ChangePasswordView(),
+                                  ),
+                                );
+                              },
+                              child: viewModel.isBusy
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.lock_outline,
+                                          size: 24,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          AppLocalizations.of(context)!
+                                              .changePasswordButton,
+                                        ),
+                                      ],
+                                    ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size.fromHeight(40),
@@ -49,15 +169,6 @@ class ProfileView extends StatelessWidget {
                                   AppLocalizations.of(context)!.logoutButton),
                             ),
                           ),
-                          const SizedBox(height: 8),
-                          _Language(),
-                          const SizedBox(height: 8),
-                          _Info(),
-                          const SizedBox(height: 8),
-                          _ProfileForm(),
-                          const SizedBox(height: 8),
-                          _ChangePasswordForm(),
-                          const SizedBox(height: 8),
                         ],
                       ),
                     ),
@@ -74,233 +185,130 @@ class _Language extends HookViewModelWidget<ProfileViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, ProfileViewModel viewModel) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
-      padding: const EdgeInsets.all(18.0),
-      decoration: decoration,
-      child: DropdownButtonFormField<String>(
-          isExpanded: true,
-          decoration: InputDecoration(
-            labelText: AppLocalizations.of(context)!.laguageLabel,
+    return SizedBox(
+      width: 200,
+      height: 30,
+      child: LanguageDropdown(
+        value: viewModel.language,
+        onChanged: (String? value) async {
+          await viewModel.changeLanguage(value ?? "en");
+          RestartWidget.restartApp(context);
+        },
+      ),
+    );
+  }
+}
+
+class _Avatar extends HookViewModelWidget<ProfileViewModel> {
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context, ProfileViewModel viewModel) {
+    return SizedBox(
+      height: 115,
+      width: 115,
+      child: Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.expand,
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.white,
+            //backgroundColor: Color(0xFF7c3f96),
+            child: viewModel.photo != null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: Image.file(
+                      File(viewModel.photo!.path),
+                      width: 115,
+                      height: 115,
+                      fit: BoxFit.fill,
+                    ),
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: viewModel.avatarUrl == null
+                        ? Image.asset(
+                            'assets/images/default-avatar-profile.png')
+                        : Image.network(
+                            viewModel.avatarUrl!,
+                            errorBuilder: (BuildContext context,
+                                Object exception, StackTrace? stackTrace) {
+                              return const Text('เลือกรูปภาพ');
+                            },
+                            width: 115,
+                            height: 115,
+                            fit: BoxFit.fill,
+                          ),
+                  ),
+            //Text('เลือกรูปภาพ'),
+            radius: 55,
           ),
-          hint: const Text("Language"),
-          value: viewModel.language,
-          onChanged: (String? value) async {
-            await viewModel.changeLanguage(value ?? "en");
-            RestartWidget.restartApp(context);
-          },
-          items: const [
-            DropdownMenuItem(child: Text("English"), value: "en"),
-            DropdownMenuItem(child: Text("ภาษาไทย"), value: "th"),
-            DropdownMenuItem(child: Text("ភាសាខ្មែរ"), value: "km"),
-            DropdownMenuItem(child: Text("ພາສາລາວ"), value: "lo"),
-          ]),
+          Positioned(
+            bottom: 0,
+            right: -25,
+            child: RawMaterialButton(
+              onPressed: () {
+                _showAddImageModal(context, viewModel);
+              },
+              elevation: 2.0,
+              fillColor: Colors.white,
+              child: Icon(
+                Icons.camera_alt,
+                color: Theme.of(context).primaryColor,
+              ),
+              padding: const EdgeInsets.all(10.0),
+              shape: CircleBorder(
+                  side: BorderSide(
+                      width: 2, color: Theme.of(context).primaryColor)),
+            ),
+          ),
+        ],
+      ),
     );
   }
-}
 
-class _Info extends HookViewModelWidget<ProfileViewModel> {
-  @override
-  Widget buildViewModelWidget(
-      BuildContext context, ProfileViewModel viewModel) {
-    var username = useTextEditingController();
-    username.text = viewModel.username ?? "";
-    var authorityName = useTextEditingController();
-    authorityName.text = viewModel.authorityName ?? "";
-
-    return Container(
-      margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
-      decoration: decoration,
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
+  _showAddImageModal(BuildContext context, ProfileViewModel viewModel) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              controller: username,
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.usernameLabel,
-              ),
+            ListTile(
+              leading: const Icon(Icons.photo_album),
+              title: const Text('Pick from Gallery'),
+              onTap: () async {
+                var image = await _pickImage(ImageSource.gallery);
+                if (image != null) {
+                  viewModel.photo = image;
+                }
+                Navigator.pop(context);
+              },
             ),
-            TextField(
-              controller: authorityName,
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.authorityNameLabel,
-              ),
+            ListTile(
+              leading: const Icon(Icons.photo_camera),
+              title: const Text('Take a Photo'),
+              onTap: () async {
+                var image = await _pickImage(ImageSource.camera);
+                if (image != null) {
+                  viewModel.photo = image;
+                }
+                Navigator.pop(context);
+              },
             ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
-}
 
-class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
-  @override
-  Widget buildViewModelWidget(
-      BuildContext context, ProfileViewModel viewModel) {
-    var firstName = useTextEditingController();
-    firstName.text = viewModel.firstName ?? "";
-    var lastName = useTextEditingController();
-    lastName.text = viewModel.lastName ?? "";
-    var telephone = useTextEditingController();
-    telephone.text = viewModel.telephone ?? "";
-
-    return Container(
-      margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
-      decoration: decoration,
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            TextField(
-              textInputAction: TextInputAction.next,
-              onChanged: viewModel.setFirstName,
-              controller: firstName,
-              decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.firstNameLabel,
-                errorText: viewModel.error("firstName"),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              textInputAction: TextInputAction.next,
-              onChanged: viewModel.setLastName,
-              controller: lastName,
-              decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.lastNameLabel,
-                errorText: viewModel.error("lastName"),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              textInputAction: TextInputAction.next,
-              onChanged: viewModel.setTelephone,
-              controller: telephone,
-              decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.telephoneLabel,
-                errorText: viewModel.error("telephone"),
-              ),
-            ),
-            const SizedBox(height: 10),
-            if (viewModel.hasErrorForKey("general"))
-              Text(
-                viewModel.error("general"),
-                style: const TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(40),
-                ),
-                onPressed: viewModel.isBusy
-                    ? null
-                    : () async {
-                        var result = await viewModel.updateProfile();
-                        if (result is ProfileSuccess && result.success) {
-                          var showSuccessMessage = SnackBar(
-                            content: Text(AppLocalizations.of(context)
-                                    ?.profileUpdateSuccess ??
-                                'Profile update success'),
-                            backgroundColor: Colors.green,
-                          );
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(showSuccessMessage);
-                        }
-                      },
-                child: viewModel.isBusy
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(),
-                      )
-                    : Text(AppLocalizations.of(context)!.updateProfileButton),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ChangePasswordForm extends HookViewModelWidget<ProfileViewModel> {
-  @override
-  Widget buildViewModelWidget(
-      BuildContext context, ProfileViewModel viewModel) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
-      decoration: decoration,
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              textInputAction: TextInputAction.next,
-              obscureText: true,
-              onChanged: viewModel.setPassword,
-              decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.passwordLabel,
-                errorText: viewModel.error("password"),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              textInputAction: TextInputAction.next,
-              obscureText: true,
-              onChanged: viewModel.setConfirmPassword,
-              decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.confirmPasswordLabel,
-                errorText: viewModel.error("confirmPassword"),
-              ),
-            ),
-            const SizedBox(height: 10),
-            if (viewModel.hasErrorForKey("generalChangePassword"))
-              Text(
-                viewModel.error("generalChangePassword"),
-                style: const TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(40),
-                ),
-                onPressed: viewModel.isBusy
-                    ? null
-                    : () async {
-                        var result = await viewModel.changePassword();
-                        if (result is ProfileSuccess && result.success) {
-                          var showSuccessMessage = SnackBar(
-                            content: Text(AppLocalizations.of(context)
-                                    ?.passwordUpdatedSuccess ??
-                                'Your password has been successfully changed!'),
-                            backgroundColor: Colors.green,
-                          );
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(showSuccessMessage);
-                        }
-                      },
-                child: viewModel.isBusy
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(),
-                      )
-                    : Text(AppLocalizations.of(context)!.changePasswordButton),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  Future<XFile?> _pickImage(ImageSource source) async {
+    var picker = ImagePicker();
+    try {
+      final image = await picker.pickImage(source: source);
+      return image;
+    } catch (e) {
+      debugPrint("$e");
+    }
+    return null;
   }
 }

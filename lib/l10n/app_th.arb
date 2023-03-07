@@ -24,6 +24,7 @@
   "updateProfileButton": "แก้ไขโปรไฟล์",
   "profileUpdateSuccess": "แก้ไขโปรไฟล์สำเร็จ",
   "changePasswordButton": "แก้ไขรหัสผ่าน",
+  "confirmUpdate": "ยืนยันการแก้ไข",
   "laguageLabel": "ภาษา",
   "serverLabel": "เซิร์ฟเวอร์",
   "usernameLabel": "ชื่อผู้ใช้",

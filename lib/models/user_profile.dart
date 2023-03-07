@@ -10,6 +10,7 @@ class UserProfile {
   String? role;
   bool? consent;
   List<String> features;
+  String? avatarUrl;
 
   UserProfile(
       {required this.id,
@@ -22,7 +23,8 @@ class UserProfile {
       this.telephone,
       this.role,
       this.consent,
-      this.features = const []});
+      this.features = const [],
+      this.avatarUrl});
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
         id: json['id'] as int,
@@ -36,6 +38,7 @@ class UserProfile {
         role: json['role']?.toString(),
         consent: json['consent'] ?? false,
         features: (json['features'] as List).cast<String>(),
+        avatarUrl: json['avatarUrl']?.toString(),
       );
 
   Map<String, dynamic> toJson() {
@@ -51,6 +54,7 @@ class UserProfile {
       'role': role,
       'consent': consent,
       'features': features,
+      'avatarUrl': avatarUrl,
     };
   }
 

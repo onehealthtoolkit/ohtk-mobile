@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/profile_result.dart';
 import 'package:podd_app/services/auth_service.dart';
@@ -15,12 +16,15 @@ class ProfileViewModel extends BaseViewModel {
   String? authorityName;
   String? firstName;
   String? lastName;
+  String? email;
   String? telephone;
+  String? avatarUrl;
 
   String? password;
   String? confirmPassword;
 
   String language = "en";
+  XFile? photo;
 
   ProfileViewModel() {
     initValue();
@@ -35,7 +39,9 @@ class ProfileViewModel extends BaseViewModel {
       lastName = userProfile.lastName;
       telephone = userProfile.telephone;
       username = userProfile.username;
+      email = userProfile.email;
       authorityName = userProfile.authorityName;
+      avatarUrl = userProfile.avatarUrl;
       notifyListeners();
     }
     language = prefs.getString(languageKey) ?? "en";

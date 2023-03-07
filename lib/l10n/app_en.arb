@@ -22,6 +22,7 @@
   "submitButton": "Submit",
   "sendButton": "Send",
   "updateProfileButton": "Update Profile",
+  "confirmUpdate": "Confirm Update",
   "profileUpdateSuccess": "Profile Updated",
   "passwordUpdatedSuccess": "Your password has been successfully changed!",
   "changePasswordButton": "Change Password",

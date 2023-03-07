@@ -124,6 +124,7 @@ flutter:
     - assets/images/map_pin_icon.png
     - assets/images/OHTK.png
     - assets/animations/waiting.json
+    - assets/images/default-avatar-profile.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

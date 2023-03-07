@@ -10,6 +10,7 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../components/flat_button.dart';
+import '../../components/language_dropdown.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -290,27 +291,12 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
         child: CircularProgressIndicator(),
       );
     }
-    return DropdownButtonFormField<String>(
-        isExpanded: true,
-        decoration: const InputDecoration(
-          // labelText: AppLocalizations.of(context)!.laguageLabel,
-          contentPadding: EdgeInsets.symmetric(vertical: 5.0),
-          prefixIcon: Icon(
-            Icons.language,
-            size: 24,
-          ),
-        ),
-        hint: const Text("Language"),
-        value: viewModel.language,
-        onChanged: (String? value) async {
-          await viewModel.changeLanguage(value ?? "en");
-          RestartWidget.restartApp(context);
-        },
-        items: const [
-          DropdownMenuItem(child: Text("English"), value: "en"),
-          DropdownMenuItem(child: Text("ภาษาไทย"), value: "th"),
-          DropdownMenuItem(child: Text("ភាសាខ្មែរ"), value: "km"),
-          DropdownMenuItem(child: Text("ພາສາລາວ"), value: "lo"),
-        ]);
+    return LanguageDropdown(
+      value: viewModel.language,
+      onChanged: (String? value) async {
+        await viewModel.changeLanguage(value ?? "en");
+        RestartWidget.restartApp(context);
+      },
+    );
   }
 }
