@@ -76,6 +76,7 @@ dependencies:
   mobile_scanner: ^2.0.0
   jwt_decode: ^0.3.1
   dotted_border: ^2.0.0+1
+  flutter_svg: ^0.23.0
 
 # Fix build release issue: Error unsupported class file major version 59
 # https://stackoverflow.com/questions/72506950/flutter-error-could-not-resolve-all-artifacts-for-configuration-image-picker
@@ -123,6 +124,7 @@ flutter:
     - assets/images/logo.png
     - assets/images/map_pin_icon.png
     - assets/images/OHTK.png
+    - assets/images/add_image_comment_icon.svg
     - assets/animations/waiting.json
     - assets/images/default-avatar-profile.png
   #   - images/a_dot_ham.jpeg

@@ -49,7 +49,7 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
                   fit: BoxFit.cover,
                 )
               : ColoredBox(
-                  color: appTheme.placeholder,
+                  color: appTheme.sub4,
                   child: Image.asset(
                     "assets/images/OHTK.png",
                   ),

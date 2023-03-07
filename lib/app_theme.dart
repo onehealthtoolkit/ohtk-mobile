@@ -9,15 +9,13 @@ class AppTheme {
   Color bg1 = const Color.fromRGBO(57, 62, 70, 1);
   // soft white
   Color bg2 = const Color(0xFFF9F9F9);
-  // bg gray
-  Color placeholder = const Color.fromRGBO(227, 231, 237, 1);
   // gray 1
   Color sub1 = const Color.fromRGBO(57, 62, 70, 1);
   // light gray 2
   Color sub2 = const Color.fromRGBO(173, 181, 194, 1);
   // lighter gray 3
   Color sub3 = const Color.fromRGBO(200, 205, 212, 1);
-
+  // lightest gray (placeholder)
   Color sub4 = const Color(0xFFe3e7ed);
   // orange
   Color warn = const Color.fromRGBO(243, 149, 95, 1);
