@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/locator.dart';
@@ -8,6 +9,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FormFooter extends StatelessWidget {
+  final AppTheme apptheme = locator<AppTheme>();
   final Logger logger = locator<Logger>();
   final ItemScrollController scrollController;
   final FormBaseViewModel viewModel;
@@ -19,6 +21,24 @@ class FormFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: apptheme.bg2,
+        border: Border(
+          top: BorderSide(width: 2.0, color: Colors.grey.shade200),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade300,
+            blurRadius: 10.0,
+            spreadRadius: 0.0,
+            offset: const Offset(0, -4),
+          ),
+          BoxShadow(
+            color: apptheme.bg2,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Row(
         children: [
           TextButton(
@@ -44,6 +64,7 @@ class FormFooter extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   backgroundColor: Colors.red,
                   content: Text("Invalid form value"),
+                  duration: Duration(milliseconds: 700),
                 ));
                 scrollController.scrollTo(
                     index: viewModel.firstInvalidQuestionIndex,

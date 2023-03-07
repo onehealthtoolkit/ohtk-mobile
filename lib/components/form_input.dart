@@ -13,8 +13,44 @@ class FormInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
+    var appbarHeight = AppBar().preferredSize.height;
+
     return Observer(
-      builder: (_) => ScrollablePositionedList.builder(
+      builder: (_) => Stack(
+        children: [
+          SingleChildScrollView(
+            child: SizedBox(
+              height: height - appbarHeight - 70 - 160,
+              child: ScrollablePositionedList.builder(
+                itemScrollController: _scrollController,
+                itemBuilder: (context, index) {
+                  return FormQuestion(
+                    question:
+                        viewModel.formStore.currentSection.questions[index],
+                  );
+                },
+                itemCount: viewModel.formStore.currentSection.questions.length,
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SizedBox(
+              height: 70,
+              child: FormFooter(
+                viewModel: viewModel,
+                scrollController: _scrollController,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+/*
+ScrollablePositionedList.builder(
         itemScrollController: _scrollController,
         itemBuilder: (context, index) {
           if (index < viewModel.formStore.currentSection.questions.length) {
@@ -28,6 +64,4 @@ class FormInput extends StatelessWidget {
         },
         itemCount: viewModel.formStore.currentSection.questions.length + 1,
       ),
-    );
-  }
-}
+      */

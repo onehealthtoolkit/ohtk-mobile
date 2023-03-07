@@ -46,8 +46,6 @@ class _DateTimeDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-
     // we use locale from GetIt, so we need to wait for it to be ready
     // Note: in dev mode only. In production, this is not needed
     return FutureBuilder(
@@ -57,9 +55,9 @@ class _DateTimeDropdown extends StatelessWidget {
               return Row(
                 children: [
                   Expanded(child: _dayDropdown(field), flex: 1),
-                  SizedBox(width: width * 0.05),
+                  const SizedBox(width: 10, child: null),
                   Expanded(child: _monthDropdown(field), flex: 2),
-                  SizedBox(width: width * 0.05),
+                  const SizedBox(width: 10, child: null),
                   Expanded(child: _yearDropdown(field), flex: 1),
                   if (field.withTime)
                     const Text(
