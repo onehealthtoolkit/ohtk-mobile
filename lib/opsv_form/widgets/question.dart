@@ -29,10 +29,9 @@ class FormQuestion extends StatelessWidget {
                   children: [
                     Text(
                       question.label,
-                      textScaleFactor: 1.2,
-                      style: const TextStyle().copyWith(
-                        color: apptheme.warn,
-                      ),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: apptheme.warn,
+                          ),
                     ),
                     ListView.separated(
                       itemBuilder: (context, index) {

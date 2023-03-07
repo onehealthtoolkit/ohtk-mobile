@@ -76,41 +76,44 @@ class _OptionWidget extends StatelessWidget {
             const SizedBox(
               height: 4,
             ),
-            Row(
-              children: [
-                Checkbox(
-                    value: _checkValue,
-                    activeColor: apptheme.primary,
-                    onChanged: (value) {
-                      field.setSelectedFor(option.value, value ?? false);
-                    }),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        child: Text(
-                          option.label,
-                          textScaleFactor: 1.1,
-                        ),
-                        onTap: () {
-                          field.setSelectedFor(option.value, !_checkValue);
-                        },
+            Material(
+              child: InkWell(
+                onTap: () {
+                  field.setSelectedFor(option.value, !_checkValue);
+                },
+                child: Row(
+                  children: [
+                    Checkbox(
+                        value: _checkValue,
+                        activeColor: apptheme.primary,
+                        onChanged: (value) {
+                          field.setSelectedFor(option.value, value ?? false);
+                        }),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            option.label,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          if (option.textInput && _checkValue)
+                            TextField(
+                              controller: _controller,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                              onChanged: (val) {
+                                field.setTextValueFor(option.value, val);
+                              },
+                              decoration: InputDecoration(
+                                  border: const OutlineInputBorder(),
+                                  errorText: _invalidTextMessage),
+                            ),
+                        ],
                       ),
-                      if (option.textInput && _checkValue)
-                        TextField(
-                          controller: _controller,
-                          onChanged: (val) {
-                            field.setTextValueFor(option.value, val);
-                          },
-                          decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              errorText: _invalidTextMessage),
-                        ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
             CustomPaint(
               painter: DashedLinePainter(backgroundColor: apptheme.primary),

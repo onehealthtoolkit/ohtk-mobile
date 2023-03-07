@@ -94,44 +94,47 @@ class _RadioOption extends StatelessWidget {
         const SizedBox(
           height: 4,
         ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Radio<String>(
-              groupValue: field.value,
-              activeColor: apptheme.primary,
-              value: option.value,
-              onChanged: onSelect,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InkWell(
-                    child: Text(
-                      option.label,
-                      textScaleFactor: 1.1,
-                    ),
-                    onTap: () {
-                      onSelect(option.value);
-                    },
-                  ),
-                  if (option.textInput && field.value == option.value)
-                    TextField(
-                      controller: currentText,
-                      onTap: () {
-                        field.clearError();
-                      },
-                      onChanged: onSetInputValue,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        errorText: field.invalidTextInputMessage,
+        Material(
+          child: InkWell(
+            onTap: () {
+              onSelect(option.value);
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Radio<String>(
+                  groupValue: field.value,
+                  activeColor: apptheme.primary,
+                  value: option.value,
+                  onChanged: onSelect,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        option.label,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                    )
-                ],
-              ),
+                      if (option.textInput && field.value == option.value)
+                        TextField(
+                          controller: currentText,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          onTap: () {
+                            field.clearError();
+                          },
+                          onChanged: onSetInputValue,
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            errorText: field.invalidTextInputMessage,
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
         if (option.textInput && field.value == option.value)
           const SizedBox(

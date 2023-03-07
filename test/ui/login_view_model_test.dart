@@ -41,7 +41,7 @@ class AuthServiceMock implements IAuthService {
   }
 
   @override
-  Future<void> requestAccessTokenIfExpired() {
+  Future<bool> requestAccessTokenIfExpired() {
     // TODO: implement requestAccessTokenIfExpired
     throw UnimplementedError();
   }

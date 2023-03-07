@@ -36,134 +36,160 @@ class AppTheme {
   var defaultTheme = ThemeData.light();
 
   ThemeData get themeData => ThemeData(
-      fontFamily: font,
-      colorScheme: defaultTheme.colorScheme,
-      primaryColor: primary,
-      appBarTheme: defaultTheme.appBarTheme.copyWith(
-        backgroundColor: bg1,
-        iconTheme: IconThemeData(
-          color: primary,
-        ),
-        titleTextStyle: const TextStyle(
-          fontSize: 28,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      textTheme: defaultTheme.textTheme.copyWith(
-        bodySmall: TextStyle(
-          fontFamily: font,
-          color: bg1,
-          fontSize: 12,
-          fontWeight: FontWeight.w200,
-        ),
-        bodyMedium: TextStyle(
-          fontFamily: font,
-          color: bg1,
-          fontSize: 14,
-          fontWeight: FontWeight.normal,
-        ),
-        bodyLarge: TextStyle(
-          fontFamily: font,
-          color: bg1,
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
-        titleSmall: TextStyle(
-          fontFamily: font,
-          color: primary,
-          fontWeight: FontWeight.bold,
-        ),
-        titleMedium: TextStyle(
-          // also use by textinputfield
-          // this is conflict between report list view and textinputfield
-          fontFamily: font,
-          color: sub1,
-          fontWeight: FontWeight.normal,
-        ),
-        titleLarge: TextStyle(
-          fontFamily: font,
-          color: primary,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-      inputDecorationTheme: defaultTheme.inputDecorationTheme.copyWith(
-        fillColor: bg2,
-        filled: true,
-        border: OutlineInputBorder(
-          borderSide: BorderSide(color: sub3),
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: primary),
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: primary),
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: warn),
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: warn),
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 12,
-        ),
-        labelStyle: TextStyle(
-          fontFamily: font,
-          color: sub2,
-        ),
-        hintStyle: TextStyle(
-          fontFamily: font,
-          color: sub2,
-        ),
-        errorStyle: TextStyle(
-          fontFamily: font,
-          color: warn,
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primary,
-          textStyle: TextStyle(
-            fontFamily: font,
-            color: Colors.white,
+        fontFamily: font,
+        colorScheme: defaultTheme.colorScheme,
+        primaryColor: primary,
+        appBarTheme: defaultTheme.appBarTheme.copyWith(
+          backgroundColor: bg1,
+          iconTheme: IconThemeData(
+            color: primary,
+          ),
+          titleTextStyle: const TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
           ),
         ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: primary,
-          textStyle: TextStyle(
+        textTheme: defaultTheme.textTheme.copyWith(
+          bodySmall: TextStyle(
             fontFamily: font,
+            color: bg1,
+            fontSize: 12,
+            fontWeight: FontWeight.w200,
+          ),
+          bodyMedium: TextStyle(
+            fontFamily: font,
+            color: bg1,
+            fontSize: 14,
+            fontWeight: FontWeight.normal,
+          ),
+          bodyLarge: TextStyle(
+            fontFamily: font,
+            color: bg1,
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+          ),
+          titleSmall: TextStyle(
+            fontFamily: font,
+            color: primary,
+            fontWeight: FontWeight.bold,
+          ),
+          titleMedium: TextStyle(
+            // also use by textinputfield
+            // this is conflict between report list view and textinputfield
+            fontFamily: font,
+            color: sub1,
+            fontWeight: FontWeight.normal,
+          ),
+          titleLarge: TextStyle(
+            fontFamily: font,
+            color: primary,
+            fontWeight: FontWeight.w700,
           ),
         ),
-      ),
-      bottomNavigationBarTheme: defaultTheme.bottomNavigationBarTheme.copyWith(
-        selectedItemColor: bg1,
-        selectedIconTheme: IconThemeData(color: primary),
-        backgroundColor: Colors.white,
-        unselectedIconTheme: IconThemeData(color: sub2),
-        unselectedItemColor: sub3,
-      ),
-      tabBarTheme: defaultTheme.tabBarTheme.copyWith(
-        labelColor: bg1,
-        unselectedLabelColor: sub3,
-        labelStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-          fontFamily: font,
+        inputDecorationTheme: defaultTheme.inputDecorationTheme.copyWith(
+          fillColor: bg2,
+          filled: true,
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: sub3),
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: primary),
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: primary),
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: warn),
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: warn),
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 12,
+          ),
+          labelStyle: TextStyle(
+            fontFamily: font,
+            color: sub2,
+          ),
+          hintStyle: TextStyle(
+            fontFamily: font,
+            color: sub2,
+          ),
+          errorStyle: TextStyle(
+            fontFamily: font,
+            color: warn,
+          ),
         ),
-        unselectedLabelStyle: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: primary,
+            textStyle: TextStyle(
+              fontFamily: font,
+              color: Colors.white,
+            ),
+          ),
         ),
-        indicator: UnderlineTabIndicator(
-          borderSide: BorderSide(color: warn, width: 3),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: primary,
+            textStyle: TextStyle(
+              fontFamily: font,
+            ),
+          ),
         ),
-      ));
+        bottomNavigationBarTheme:
+            defaultTheme.bottomNavigationBarTheme.copyWith(
+          selectedItemColor: bg1,
+          selectedIconTheme: IconThemeData(color: primary),
+          backgroundColor: Colors.white,
+          unselectedIconTheme: IconThemeData(color: sub2),
+          unselectedItemColor: sub3,
+        ),
+        tabBarTheme: defaultTheme.tabBarTheme.copyWith(
+          labelColor: bg1,
+          unselectedLabelColor: sub3,
+          labelStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            fontFamily: font,
+          ),
+          unselectedLabelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+          indicator: UnderlineTabIndicator(
+            borderSide: BorderSide(color: warn, width: 3),
+          ),
+        ),
+        radioTheme: RadioThemeData(
+          fillColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primary;
+            }
+            return null;
+          }),
+        ),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primary;
+            }
+            return null;
+          }),
+        ),
+      );
 }
