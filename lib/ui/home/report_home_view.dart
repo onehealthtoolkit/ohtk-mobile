@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/locator.dart';
@@ -36,11 +37,11 @@ class ReportHomeView extends HookWidget {
           ),
         ),
         floatingActionButton: CircleAvatar(
-          radius: 40,
+          radius: 30.r,
           backgroundColor: Theme.of(context).primaryColor,
           foregroundColor: Colors.white,
           child: IconButton(
-            iconSize: 50,
+            iconSize: 33.w,
             onPressed: () {
               Navigator.push(
                 context,

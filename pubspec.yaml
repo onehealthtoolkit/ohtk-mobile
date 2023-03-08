@@ -77,6 +77,7 @@ dependencies:
   jwt_decode: ^0.3.1
   dotted_border: ^2.0.0+1
   flutter_svg: ^0.23.0
+  flutter_screenutil: ^5.6.1
 
 # Fix build release issue: Error unsupported class file major version 59
 # https://stackoverflow.com/questions/72506950/flutter-error-could-not-resolve-all-artifacts-for-configuration-image-picker

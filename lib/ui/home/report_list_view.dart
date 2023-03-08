@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/incident_report_tag.dart';
@@ -97,16 +98,18 @@ class IncidentReportItem extends StatelessWidget {
       children: [
         Text(
           report.reportTypeName,
-          textScaleFactor: 1.2,
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w600,
+                color: appTheme.primary,
+              ),
         ),
         Text(
           formatter.format(report.createdAt.toLocal()),
-          textScaleFactor: .9,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(fontWeight: FontWeight.w100),
+          style: TextStyle(
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w300,
+          ),
         ),
       ],
     );
@@ -122,6 +125,10 @@ class IncidentReportItem extends StatelessWidget {
             report.trimWhitespaceDescription,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 11.sp,
+              color: appTheme.sub1,
+            ),
           ),
         ),
         const SizedBox(width: 20),
@@ -155,9 +162,6 @@ class IncidentReportItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var imageRatio = 0.23;
-    var imageWidth = MediaQuery.of(context).size.width * imageRatio;
-
     return InkWell(
       onTap: onTap,
       child: Card(
@@ -173,10 +177,10 @@ class IncidentReportItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4.0),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    minWidth: imageWidth,
-                    maxWidth: imageWidth,
-                    minHeight: imageWidth,
-                    maxHeight: imageWidth,
+                    minWidth: 80.w,
+                    maxWidth: 80.w,
+                    minHeight: 75.w,
+                    maxHeight: 75.w,
                   ),
                   child: leading,
                 ),

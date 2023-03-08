@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -61,38 +62,44 @@ class MyApp extends StatelessWidget {
             return const MaterialApp(home: _WaitingScreen());
           }
           return OverlaySupport.global(
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'OHTK Mobile',
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: const [
-                Locale('en', ''), // English, no country code
-                Locale('th', ''), // Thai, no country code
-                Locale('km', ''), // Cambodia
-                Locale('lo', ''), // Lao
-                Locale('hi', ''), // India
-              ],
-              localeResolutionCallback: (deviceLocale, supportedLocales) {
-                String? languageCode = snapshot.data[1];
-                if (languageCode != null) {
-                  return Locale(languageCode, '');
-                }
-                if (supportedLocales
-                    .map((e) => e.languageCode)
-                    .contains(deviceLocale?.languageCode)) {
-                  return deviceLocale;
-                } else {
-                  return const Locale('en', '');
-                }
-              },
-              theme: locator<AppTheme>().themeData,
-              home: snapshot.hasData ? _App() : const _WaitingScreen(),
-            ),
+            child: ScreenUtilInit(
+                designSize: const Size(360, 640),
+                minTextAdapt: true,
+                splitScreenMode: true,
+                builder: (context, child) {
+                  return MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    title: 'OHTK Mobile',
+                    localizationsDelegates: const [
+                      AppLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: const [
+                      Locale('en', ''), // English, no country code
+                      Locale('th', ''), // Thai, no country code
+                      Locale('km', ''), // Cambodia
+                      Locale('lo', ''), // Lao
+                      Locale('hi', ''), // India
+                    ],
+                    localeResolutionCallback: (deviceLocale, supportedLocales) {
+                      String? languageCode = snapshot.data[1];
+                      if (languageCode != null) {
+                        return Locale(languageCode, '');
+                      }
+                      if (supportedLocales
+                          .map((e) => e.languageCode)
+                          .contains(deviceLocale?.languageCode)) {
+                        return deviceLocale;
+                      } else {
+                        return const Locale('en', '');
+                      }
+                    },
+                    theme: locator<AppTheme>().themeData,
+                    home: snapshot.hasData ? _App() : const _WaitingScreen(),
+                  );
+                }),
           );
         });
   }

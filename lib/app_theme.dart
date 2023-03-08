@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTheme {
   // teal color
@@ -42,8 +43,8 @@ class AppTheme {
           iconTheme: IconThemeData(
             color: primary,
           ),
-          titleTextStyle: const TextStyle(
-            fontSize: 28,
+          titleTextStyle: TextStyle(
+            fontSize: 22.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -51,19 +52,19 @@ class AppTheme {
           bodySmall: TextStyle(
             fontFamily: font,
             color: bg1,
-            fontSize: 12,
+            fontSize: 10.sp,
             fontWeight: FontWeight.w200,
           ),
           bodyMedium: TextStyle(
             fontFamily: font,
             color: bg1,
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.normal,
           ),
           bodyLarge: TextStyle(
             fontFamily: font,
             color: bg1,
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.normal,
           ),
           titleSmall: TextStyle(
@@ -148,18 +149,27 @@ class AppTheme {
           backgroundColor: Colors.white,
           unselectedIconTheme: IconThemeData(color: sub2),
           unselectedItemColor: sub3,
+          selectedLabelStyle: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 11.sp,
+            fontFamily: font,
+          ),
+          unselectedLabelStyle: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 11.sp,
+          ),
         ),
         tabBarTheme: defaultTheme.tabBarTheme.copyWith(
           labelColor: bg1,
           unselectedLabelColor: sub3,
           labelStyle: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 13.sp,
             fontFamily: font,
           ),
-          unselectedLabelStyle: const TextStyle(
+          unselectedLabelStyle: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 13.sp,
           ),
           indicator: UnderlineTabIndicator(
             borderSide: BorderSide(color: warn, width: 3),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -158,13 +159,16 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
         children: [
           Text(
             incident.reportTypeName,
-            textScaleFactor: 1.3,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontSize: 20.sp,
+                ),
           ),
           Text(
             formatter.format(incident.createdAt.toLocal()),
-            textScaleFactor: 1.5,
-            style: Theme.of(context).textTheme.bodySmall,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w300,
+                ),
           ),
         ],
       ),
@@ -178,8 +182,10 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
         incident.description.isEmpty
             ? "no description"
             : incident.trimWhitespaceDescription,
-        style:
-            Theme.of(context).textTheme.bodyMedium!.apply(fontSizeFactor: 1.2),
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+            ),
       ),
     );
   }
@@ -205,7 +211,7 @@ class _Data extends HookViewModelWidget<IncidentReportViewModel> {
     IncidentReportViewModel viewModel,
   ) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(28, 0, 28, 20),
+      padding: const EdgeInsets.fromLTRB(28, 10, 28, 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -214,12 +220,11 @@ class _Data extends HookViewModelWidget<IncidentReportViewModel> {
             children: [
               Text(
                 AppLocalizations.of(context)?.authorityLabel ?? "Authority",
-                style: TextStyle(color: appTheme.sub2),
-                textScaleFactor: 1.5,
+                style: TextStyle(color: appTheme.sub2, fontSize: 14.sp),
               ),
               Text(
                 viewModel.data!.authorityName ?? "-",
-                textScaleFactor: 1.5,
+                style: TextStyle(fontSize: 16.sp),
               ),
             ],
           ),
@@ -228,12 +233,13 @@ class _Data extends HookViewModelWidget<IncidentReportViewModel> {
             children: [
               Text(
                 AppLocalizations.of(context)?.incidentDate ?? "Incident Date",
-                style: TextStyle(color: appTheme.sub2),
-                textScaleFactor: 1.5,
+                style: TextStyle(color: appTheme.sub2, fontSize: 14.sp),
               ),
               Text(
-                noTimeFormatter.format(viewModel.data!.incidentDate.toLocal()),
-                textScaleFactor: 1.5,
+                noTimeFormatter.format(
+                  viewModel.data!.incidentDate.toLocal(),
+                ),
+                style: TextStyle(fontSize: 16.sp),
               ),
             ],
           ),
