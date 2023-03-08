@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:podd_app/components/display_field.dart';
+import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/main.dart';
 import 'package:podd_app/ui/profile/change_password_view.dart';
 import 'package:podd_app/ui/profile/profile_view_model.dart';
@@ -47,9 +48,11 @@ class ProfileView extends StatelessWidget {
                               _Language(),
                               const SizedBox(height: 8),
                               DisplayField(
-                                  label: AppLocalizations.of(context)!
-                                      .authorityNameLabel,
-                                  value: viewModel.authorityName),
+                                label: AppLocalizations.of(context)!
+                                    .authorityNameLabel,
+                                value: viewModel.authorityName,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                              ),
                             ],
                           ),
                           Divider(
@@ -81,10 +84,7 @@ class ProfileView extends StatelessWidget {
                           const SizedBox(height: 20),
                           SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size.fromHeight(40),
-                              ),
+                            child: FlatButton.primary(
                               onPressed: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
@@ -118,10 +118,7 @@ class ProfileView extends StatelessWidget {
                           ),
                           SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size.fromHeight(40),
-                              ),
+                            child: FlatButton.primary(
                               onPressed: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
@@ -155,11 +152,8 @@ class ProfileView extends StatelessWidget {
                           ),
                           SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size.fromHeight(40),
-                                primary: Colors.red[600],
-                              ),
+                            child: FlatButton.primary(
+                              backgroundColor: Colors.red[600],
                               onPressed: () async {
                                 await viewModel.logout();
                                 Navigator.pushNamedAndRemoveUntil(

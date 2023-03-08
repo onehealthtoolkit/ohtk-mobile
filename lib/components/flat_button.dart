@@ -9,6 +9,7 @@ class FlatButton extends StatelessWidget {
   final Color backgroundColor;
   final Color forgroundColor;
   final Color borderColor;
+  final double borderRadius;
 
   const FlatButton(
       {required this.onPressed,
@@ -16,6 +17,7 @@ class FlatButton extends StatelessWidget {
       required this.backgroundColor,
       required this.forgroundColor,
       required this.borderColor,
+      required this.borderRadius,
       this.padding,
       Key? key})
       : super(key: key);
@@ -25,6 +27,7 @@ class FlatButton extends StatelessWidget {
     required Widget child,
     EdgeInsets? padding,
     Key? key,
+    Color? backgroundColor,
   }) {
     final AppTheme apptheme = locator<AppTheme>();
     return FlatButton(
@@ -32,9 +35,10 @@ class FlatButton extends StatelessWidget {
       child: child,
       padding: padding,
       key: key,
-      backgroundColor: apptheme.primary,
+      backgroundColor: backgroundColor ?? apptheme.primary,
       forgroundColor: Colors.white,
-      borderColor: apptheme.primary,
+      borderColor: backgroundColor ?? apptheme.primary,
+      borderRadius: apptheme.borderRadius,
     );
   }
 
@@ -53,6 +57,7 @@ class FlatButton extends StatelessWidget {
       backgroundColor: Colors.white,
       forgroundColor: apptheme.primary,
       borderColor: apptheme.primary,
+      borderRadius: apptheme.borderRadius,
     );
   }
 
@@ -69,7 +74,7 @@ class FlatButton extends StatelessWidget {
           backgroundColor: MaterialStateProperty.all<Color>(backgroundColor),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6.0),
+              borderRadius: BorderRadius.circular(borderRadius),
               side: BorderSide(color: borderColor),
             ),
           ),
