@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
@@ -75,9 +76,14 @@ class _CommentList extends HookViewModelWidget<ReportCommentViewModel> {
         ),
       );
     }
-    return const Align(
-      alignment: Alignment.topCenter,
-      child: Text("No comments"),
+    return Center(
+      child: Text(
+        AppLocalizations.of(context)!.noComment,
+        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w300,
+            ),
+      ),
     );
   }
 

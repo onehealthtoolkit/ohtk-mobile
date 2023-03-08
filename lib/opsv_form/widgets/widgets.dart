@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:decimal/decimal.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';

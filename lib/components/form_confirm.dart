@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:podd_app/components/flat_button.dart';
 
@@ -37,7 +38,12 @@ class FormConfirmSubmit extends StatelessWidget {
                 onSubmit();
               },
               child: Text(
-                  submitText ?? AppLocalizations.of(context)!.submitButton),
+                submitText ?? AppLocalizations.of(context)!.submitButton,
+                style: TextStyle(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ),
           const SizedBox(
@@ -50,8 +56,13 @@ class FormConfirmSubmit extends StatelessWidget {
             onPressed: () {
               onBack();
             },
-            child:
-                Text(backText ?? AppLocalizations.of(context)!.formBackButton),
+            child: Text(
+              backText ?? AppLocalizations.of(context)!.formBackButton,
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
           const SizedBox(
             height: 60,

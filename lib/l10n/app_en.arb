@@ -47,6 +47,8 @@
   "commentTabLabel": "Comment",
   "followupTabLabel": "Followup",
   "authorityNameLabel": "Authority Name",
+  "noFollowupReport": "No followup report",
+  "noComment": "No comment",
   "zeroReportLabel": "Zero report",
   "zeroReportLastReportedMessage": "Last reported at {datetime}",
   "@zeroReportLastReportedMessage": {

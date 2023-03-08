@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -272,7 +273,8 @@ class _Map extends HookViewModelWidget<ObservationSubjectViewModel> {
                 },
                 markers: markers,
               )
-            : const Text("No gps location provided"),
+            : Text("No gps location provided",
+                style: TextStyle(fontSize: 14.sp)),
       ),
     );
   }

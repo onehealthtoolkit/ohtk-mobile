@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/locator.dart';
+
+const tagLTRB = EdgeInsets.fromLTRB(8, 0, 8, 0);
 
 class IncidentReportTestTag extends StatelessWidget {
   final AppTheme appTheme = locator<AppTheme>();
@@ -15,7 +19,7 @@ class IncidentReportTestTag extends StatelessWidget {
         color: appTheme.tag2,
       ),
       margin: const EdgeInsets.only(top: 4),
-      padding: const EdgeInsets.fromLTRB(8, 2, 8, 0),
+      padding: tagLTRB,
       child: Text(
         "Test",
         style: TextStyle(
@@ -40,13 +44,13 @@ class IncidentReportCaseTag extends StatelessWidget {
         color: appTheme.tag1,
       ),
       margin: const EdgeInsets.only(top: 4),
-      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+      padding: tagLTRB,
       child: Text(
         "Case",
         style: TextStyle(
           color: appTheme.bg1,
+          fontSize: 10.sp,
         ),
-        textScaleFactor: 0.7,
       ),
     );
   }

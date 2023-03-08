@@ -64,7 +64,7 @@ class AppTheme {
           bodyLarge: TextStyle(
             fontFamily: font,
             color: bg1,
-            fontSize: 16.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.normal,
           ),
           titleSmall: TextStyle(

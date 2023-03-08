@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide Form;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/components/form_confirm.dart';
@@ -98,11 +99,12 @@ class _ConfirmIncidentArea extends HookViewModelWidget<ReportFormViewModel> {
       BuildContext context, ReportFormViewModel viewModel) {
     return Column(
       children: [
-        const Align(
-          alignment: Alignment.center,
+        Center(
           child: Text(
             "Did this incident occur in your own authority?",
-            textScaleFactor: 1.1,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  fontSize: 13.sp,
+                ),
           ),
         ),
         const SizedBox(
@@ -157,8 +159,7 @@ class _RadioOption extends StatelessWidget {
           groupValue: groupValue,
           title: Text(
             title,
-            style: TextStyle(
-                color: appTheme.inputTextColor, fontWeight: FontWeight.w500),
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
           contentPadding: const EdgeInsets.all(0),
           activeColor: apptheme.primary,

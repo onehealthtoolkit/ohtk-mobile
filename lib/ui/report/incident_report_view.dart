@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -220,11 +219,11 @@ class _Data extends HookViewModelWidget<IncidentReportViewModel> {
             children: [
               Text(
                 AppLocalizations.of(context)?.authorityLabel ?? "Authority",
-                style: TextStyle(color: appTheme.sub2, fontSize: 14.sp),
+                style: TextStyle(color: appTheme.sub2, fontSize: 13.sp),
               ),
               Text(
                 viewModel.data!.authorityName ?? "-",
-                style: TextStyle(fontSize: 16.sp),
+                style: TextStyle(fontSize: 14.sp),
               ),
             ],
           ),
@@ -233,13 +232,13 @@ class _Data extends HookViewModelWidget<IncidentReportViewModel> {
             children: [
               Text(
                 AppLocalizations.of(context)?.incidentDate ?? "Incident Date",
-                style: TextStyle(color: appTheme.sub2, fontSize: 14.sp),
+                style: TextStyle(color: appTheme.sub2, fontSize: 13.sp),
               ),
               Text(
                 noTimeFormatter.format(
                   viewModel.data!.incidentDate.toLocal(),
                 ),
-                style: TextStyle(fontSize: 16.sp),
+                style: TextStyle(fontSize: 14.sp),
               ),
             ],
           ),
@@ -298,7 +297,26 @@ class _Images extends HookViewModelWidget<IncidentReportViewModel> {
                   enableInfiniteScroll: false,
                 ),
               )
-            : const Center(child: Text("No images uploaded")),
+            : ColoredBox(
+                color: appTheme.sub4,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "No Images",
+                        style: TextStyle(
+                          color: appTheme.sub2,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                      Image.asset(
+                        "assets/images/OHTK.png",
+                      )
+                    ],
+                  ),
+                ),
+              ),
       ),
     );
   }
@@ -342,9 +360,15 @@ class _Map extends HookViewModelWidget<IncidentReportViewModel> {
                 },
                 markers: markers,
               )
-            : const Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Text("No gps location provided"),
+            : Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  "No gps location provided",
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w300,
+                      ),
+                ),
               ),
       ),
     );

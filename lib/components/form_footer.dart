@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/confirm.dart';
@@ -54,7 +55,10 @@ class FormFooter extends StatelessWidget {
                     index: 0, duration: const Duration(milliseconds: 100));
               }
             },
-            child: Text(AppLocalizations.of(context)!.formBackButton),
+            child: Text(
+              AppLocalizations.of(context)!.formBackButton,
+              style: TextStyle(fontSize: 13.sp),
+            ),
           ),
           const Spacer(flex: 1),
           FlatButton.primary(
@@ -76,7 +80,8 @@ class FormFooter extends StatelessWidget {
             },
             child: Row(
               children: [
-                Text(AppLocalizations.of(context)!.formNextButton),
+                Text(AppLocalizations.of(context)!.formNextButton,
+                    style: TextStyle(fontSize: 13.sp)),
                 const Icon(
                   Icons.navigate_next,
                 )
