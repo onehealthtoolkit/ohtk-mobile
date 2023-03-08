@@ -48,13 +48,21 @@ class _DetailCodeForm
     return SingleChildScrollView(
       child: Column(
         children: [
-          const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              AppLocalizations.of(context)!.forgotPasswordSubTitle,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
+          const SizedBox(height: 20),
           TextField(
             controller: email,
             textInputAction: TextInputAction.next,
             onChanged: viewModel.setEmail,
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context)!.emailLabel,
+              hintText: AppLocalizations.of(context)!.emailHint,
               errorText: viewModel.error("email"),
             ),
           ),
@@ -87,7 +95,7 @@ class _DetailCodeForm
                       width: 20,
                       child: CircularProgressIndicator(),
                     )
-                  : Text(AppLocalizations.of(context)!.submitButton),
+                  : Text(AppLocalizations.of(context)!.confirmButton),
             ),
           ),
         ],

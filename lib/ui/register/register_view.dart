@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podd_app/components/confirm.dart';
+import 'package:podd_app/components/display_field.dart';
 import 'package:podd_app/models/register_result.dart';
 import 'package:podd_app/ui/register/register_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -47,6 +48,14 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
     var code = useTextEditingController();
     return Column(
       children: <Widget>[
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            AppLocalizations.of(context)!.signupSubTitle,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+        ),
+        const SizedBox(height: 20),
         TextField(
           controller: code,
           onChanged: viewModel.setInvitationCode,
@@ -73,7 +82,7 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
                     width: 20,
                     child: CircularProgressIndicator(),
                   )
-                : Text(AppLocalizations.of(context)!.nextButton),
+                : Text(AppLocalizations.of(context)!.confirmButton),
           ),
         ),
       ],
@@ -94,7 +103,21 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Text("Authoirty: ${viewModel.authorityName ?? ""}"),
+          Column(
+            children: [
+              DisplayField(
+                  label: AppLocalizations.of(context)!.authorityNameLabel,
+                  value: viewModel.authorityName),
+            ],
+          ),
+          Divider(
+            height: 20,
+            thickness: 1,
+            indent: 0,
+            endIndent: 0,
+            color: Colors.red.shade400,
+          ),
+          const SizedBox(height: 20),
           TextField(
             controller: username,
             textInputAction: TextInputAction.next,
@@ -165,7 +188,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
                       width: 20,
                       child: CircularProgressIndicator(),
                     )
-                  : Text(AppLocalizations.of(context)!.submitButton),
+                  : Text(AppLocalizations.of(context)!.confirmRegisterButton),
             ),
           ),
         ],
