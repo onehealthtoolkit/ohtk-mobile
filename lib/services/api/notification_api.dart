@@ -66,6 +66,7 @@ class NotificationApi extends GraphQlBaseApi {
         "limit": limit,
         "offset": offset,
       },
+      fetchPolicy: FetchPolicy.cacheAndNetwork,
       typeConverter: (resp) => UserMessageQueryResult.fromJson(resp),
     );
   }

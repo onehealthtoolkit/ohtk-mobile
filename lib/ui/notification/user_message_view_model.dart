@@ -16,6 +16,15 @@ class UserMessageListViewModel extends ReactiveViewModel {
     setBusy(false);
   }
 
+  markSeen(UserMessage message) async {
+    if (message.isSeen) {
+      return;
+    } else {
+      message.isSeen = true;
+      notifyListeners();
+    }
+  }
+
   @override
   List<ReactiveServiceMixin> get reactiveServices => [notificationService];
 

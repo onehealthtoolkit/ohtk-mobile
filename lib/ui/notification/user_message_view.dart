@@ -19,19 +19,27 @@ class UserMessageView extends StatelessWidget {
             ? const Center(
                 child: OhtkProgressIndicator(size: 100),
               )
-            : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: !viewModel.hasError
-                      ? [
-                          _title(viewModel),
-                          const SizedBox(height: 10),
-                          _body(viewModel),
-                        ]
-                      : [
-                          const Text("Message not found"),
-                        ],
-                ),
+            : Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: !viewModel.hasError
+                        ? Card(
+                            // round border
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Column(
+                              children: [
+                                _title(viewModel),
+                                const SizedBox(height: 10),
+                                _body(viewModel),
+                              ],
+                            ),
+                          )
+                        : const Text("Message not found"),
+                  ),
+                ],
               ),
       ),
     );
