@@ -274,7 +274,7 @@ class _Images extends HookViewModelWidget<IncidentReportViewModel> {
         ));
 
     return Container(
-      color: appTheme.bg1,
+      color: images != null && images.isNotEmpty ? appTheme.bg1 : null,
       constraints:
           const BoxConstraints(minWidth: double.infinity, minHeight: 200),
       child: SizedBox(
@@ -292,7 +292,7 @@ class _Images extends HookViewModelWidget<IncidentReportViewModel> {
                   enableInfiniteScroll: false,
                 ),
               )
-            : const Text("No images uploaded"),
+            : const Center(child: Text("No images uploaded")),
       ),
     );
   }
@@ -315,12 +315,11 @@ class _Map extends HookViewModelWidget<IncidentReportViewModel> {
     }
 
     return Container(
-      color: Colors.white,
       constraints: const BoxConstraints(
         minWidth: double.infinity,
         minHeight: 250,
       ),
-      padding: const EdgeInsets.only(top: 20, bottom: 20),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
       child: SizedBox(
         height: 250,
         width: MediaQuery.of(context).size.width,
