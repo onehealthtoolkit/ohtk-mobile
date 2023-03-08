@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
@@ -91,15 +92,16 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
         padding: const EdgeInsets.fromLTRB(8, 3, 8, 3),
         child: Row(
           children: [
-            const Icon(
+            Icon(
               Icons.file_open_outlined,
-              size: 22,
+              size: 15.w,
               color: Colors.white,
             ),
             const SizedBox(width: 8),
             Text(
               AppLocalizations.of(context)!.followupTitle,
-              style: const TextStyle(
+              style: TextStyle(
+                fontSize: 10.sp,
                 color: Colors.white,
               ),
             ),
