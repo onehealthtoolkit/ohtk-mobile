@@ -42,7 +42,7 @@ class IncidentReportView extends HookWidget {
               icon: Icon(
                 Icons.arrow_back,
                 color: appTheme.primary,
-                size: 28,
+                size: 17.w,
               ),
               onPressed: () => Navigator.of(context).pop(),
             ),

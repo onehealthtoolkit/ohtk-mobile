@@ -126,6 +126,8 @@ flutter:
     - assets/images/map_pin_icon.png
     - assets/images/OHTK.png
     - assets/images/add_image_comment_icon.svg
+    - assets/images/doc_fill_icon.svg
+    - assets/images/check_icon.svg
     - assets/animations/waiting.json
     - assets/images/default-avatar-profile.png
   #   - images/a_dot_ham.jpeg

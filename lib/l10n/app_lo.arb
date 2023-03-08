@@ -57,5 +57,6 @@
   "fieldUseCurrentLocation": "ໃຊ້ສະຖານທີ່ປະຈຸບັນ",
   "authorityLabel": "ອົງການ",
   "incidentDate": "ວັນທີເກີດເຫດ",
-  "testFlag": "Test"
+  "testFlag": "Test",
+  "testModeOn": "Test mode is on"
 }

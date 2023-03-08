@@ -46,7 +46,7 @@ class ReportHomeView extends HookWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ReportTypeView(),
+                  builder: (context) => ReportTypeView(),
                 ),
               );
             },

@@ -6,6 +6,8 @@ class AppTheme {
   Color primary = const Color.fromRGBO(0, 173, 181, 1);
   // soft teal color
   Color secondary = const Color.fromRGBO(170, 216, 211, 1);
+  // lighter teal color
+  Color tertiary = const Color.fromRGBO(208, 242, 238, 1);
   // dark almost black
   Color bg1 = const Color.fromRGBO(57, 62, 70, 1);
   // soft white
@@ -20,6 +22,8 @@ class AppTheme {
   Color sub4 = const Color(0xFFe3e7ed);
   // orange
   Color warn = const Color.fromRGBO(243, 149, 95, 1);
+  // seashell soft white yellow
+  Color hilight = const Color.fromRGBO(255, 244, 224, 1);
   // pastel red
   Color tag1 = const Color.fromRGBO(255, 181, 181, 1);
   // pastel yellow

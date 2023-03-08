@@ -67,5 +67,6 @@
   "dateFieldMinErrorMsg": "{name} ต้องมากกว่า {min}",
   "testFlag": "ทดสอบ",
   "yes": "ใช่",
-  "no": "ไม่ใช่"
+  "no": "ไม่ใช่",
+  "testModeOn": "กำลังเปิดใช้งานโหมดทดสอบ"
 }

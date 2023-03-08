@@ -78,5 +78,6 @@
   "dateFieldMinErrorMsg": "{name} must be equal or more than {min}",
   "testFlag": "Test",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "testModeOn": "Test mode is on"
 }
