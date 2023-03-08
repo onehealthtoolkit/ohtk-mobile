@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:podd_app/components/form_footer.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
@@ -15,13 +17,23 @@ class FormInput extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var appbarHeight = AppBar().preferredSize.height;
+    var top = MediaQuery.of(context).padding.top;
+    var bottom = MediaQuery.of(context).padding.bottom;
+    var footerHeight = 50.h;
+    var stepperHeight = viewModel.formStore.numberOfSections > 1 ? 60.h : 0;
 
     return Observer(
       builder: (_) => Stack(
         children: [
           SingleChildScrollView(
             child: SizedBox(
-              height: height - appbarHeight - 70 - 160,
+              height: height -
+                  appbarHeight -
+                  top -
+                  bottom -
+                  stepperHeight -
+                  footerHeight -
+                  100,
               child: ScrollablePositionedList.builder(
                 itemScrollController: _scrollController,
                 itemBuilder: (context, index) {
@@ -37,7 +49,7 @@ class FormInput extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: SizedBox(
-              height: 70,
+              height: 50.h,
               child: FormFooter(
                 viewModel: viewModel,
                 scrollController: _scrollController,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:podd_app/app_theme.dart';
@@ -13,49 +15,53 @@ class FormStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Observer(
-      builder: (_) => Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
-                child: Center(
-                  child: Column(
-                    children: [
-                      Text(
-                        form.currentSection.label,
-                        style: TextStyle(
-                            color: appTheme.primary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                      DotStepper(
-                        dotCount: form.numberOfSections,
-                        spacing: 10,
-                        dotRadius: 12,
-                        activeStep: form.currentSectionIdx,
-                        tappingEnabled: true,
-                        indicatorDecoration:
-                            IndicatorDecoration(color: appTheme.primary),
-                        shape: Shape.pipe3,
-                        indicator: Indicator.jump,
-                        onDotTapped: (tappedDotIndex) {
-                          if (tappedDotIndex > form.currentSectionIdx) {
-                            form.next();
-                          } else if (tappedDotIndex < form.currentSectionIdx) {
-                            form.previous();
-                          }
-                        },
-                      ),
-                    ],
+      builder: (_) => SizedBox(
+        height: 60.h,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          form.currentSection.label,
+                          style: TextStyle(
+                              color: appTheme.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12.sp),
+                        ),
+                        DotStepper(
+                          dotCount: form.numberOfSections,
+                          spacing: 10,
+                          dotRadius: 12,
+                          activeStep: form.currentSectionIdx,
+                          tappingEnabled: true,
+                          indicatorDecoration:
+                              IndicatorDecoration(color: appTheme.primary),
+                          shape: Shape.pipe3,
+                          indicator: Indicator.jump,
+                          onDotTapped: (tappedDotIndex) {
+                            if (tappedDotIndex > form.currentSectionIdx) {
+                              form.next();
+                            } else if (tappedDotIndex <
+                                form.currentSectionIdx) {
+                              form.previous();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
