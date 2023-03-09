@@ -48,6 +48,9 @@ class ObservationMonitoringRecordFormViewModel extends FormBaseViewModel {
     notifyListeners();
   }
 
+  @override
+  bool get isTestMode => false;
+
   Future<MonitoringRecordSubmitResult> submit() async {
     setBusy(true);
 

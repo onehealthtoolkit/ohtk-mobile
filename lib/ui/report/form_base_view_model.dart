@@ -18,6 +18,8 @@ abstract class FormBaseViewModel extends BaseViewModel {
 
   bool isReady = false;
 
+  bool get isTestMode;
+
   BackAction back() {
     if (state == ReportFormState.formInput) {
       if (formStore.couldGoToPreviousSection) {

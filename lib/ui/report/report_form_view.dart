@@ -5,6 +5,7 @@ import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/components/form_confirm.dart';
 import 'package:podd_app/components/form_input.dart';
 import 'package:podd_app/components/form_stepper.dart';
+import 'package:podd_app/components/form_test_banner.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/report_submit_result.dart';
@@ -16,10 +17,10 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportFormView extends StatelessWidget {
+  final AppTheme apptheme = locator<AppTheme>();
   final ReportType reportType;
   final bool testFlag;
-  const ReportFormView(this.testFlag, this.reportType, {Key? key})
-      : super(key: key);
+  ReportFormView(this.testFlag, this.reportType, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +37,11 @@ class ReportFormView extends StatelessWidget {
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             child: Scaffold(
-              resizeToAvoidBottomInset: true,
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 title: Text(AppLocalizations.of(context)!.reportTitle +
                     " ${reportType.name}"),
-                backgroundColor: testFlag
-                    ? Colors.yellow.shade500
-                    : Theme.of(context).appBarTheme.backgroundColor,
+                backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
                 foregroundColor: testFlag
                     ? Colors.black87
                     : Theme.of(context).appBarTheme.foregroundColor,
@@ -50,6 +49,7 @@ class ReportFormView extends StatelessWidget {
               body: SafeArea(
                 child: Column(
                   children: [
+                    FormTestBanner(testFlag: testFlag),
                     if (viewModel.state == ReportFormState.formInput &&
                         viewModel.formStore.numberOfSections > 1)
                       FormStepper(form: viewModel.formStore),

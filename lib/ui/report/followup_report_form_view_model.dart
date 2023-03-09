@@ -42,6 +42,9 @@ class FollowupReportFormViewModel extends FormBaseViewModel {
   @override
   Form get formStore => _formStore;
 
+  @override
+  bool get isTestMode => false;
+
   Future<FollowupSubmitResult> submit() async {
     setBusy(true);
     var data = formStore.toJsonValue();

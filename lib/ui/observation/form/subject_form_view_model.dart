@@ -44,6 +44,9 @@ class ObservationSubjectFormViewModel extends FormBaseViewModel {
     notifyListeners();
   }
 
+  @override
+  bool get isTestMode => false;
+
   Future<SubjectRecordSubmitResult> submit() async {
     setBusy(true);
     String? gpsLocation = _findFirstLocationValue(_formStore);

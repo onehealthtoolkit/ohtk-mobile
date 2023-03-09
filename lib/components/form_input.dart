@@ -21,6 +21,8 @@ class FormInput extends StatelessWidget {
     var bottom = MediaQuery.of(context).padding.bottom;
     var footerHeight = 50.h;
     var stepperHeight = viewModel.formStore.numberOfSections > 1 ? 60.h : 0;
+    var testBannerHeight = viewModel.isTestMode ? 30.h : 0;
+    var spare = MediaQuery.of(context).viewInsets.bottom == 0 ? 0 : 170.h;
 
     return Observer(
       builder: (_) => Stack(
@@ -33,6 +35,8 @@ class FormInput extends StatelessWidget {
                   bottom -
                   stepperHeight -
                   footerHeight -
+                  testBannerHeight -
+                  spare -
                   100,
               child: ScrollablePositionedList.builder(
                 itemScrollController: _scrollController,

@@ -42,6 +42,7 @@ class AppTheme {
         fontFamily: font,
         colorScheme: defaultTheme.colorScheme,
         primaryColor: primary,
+        highlightColor: hilight,
         appBarTheme: defaultTheme.appBarTheme.copyWith(
           backgroundColor: bg1,
           iconTheme: IconThemeData(
@@ -119,6 +120,7 @@ class AppTheme {
           labelStyle: TextStyle(
             fontFamily: font,
             color: sub2,
+            fontSize: 13.sp,
           ),
           hintStyle: TextStyle(
             fontFamily: font,

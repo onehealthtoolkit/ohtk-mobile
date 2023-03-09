@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/flat_button.dart';
+import 'package:podd_app/components/form_test_banner.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_type.dart';
@@ -24,7 +25,7 @@ class ReportTypeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<ReportTypeViewModel>.nonReactive(
+    return ViewModelBuilder<ReportTypeViewModel>.reactive(
       viewModelBuilder: () => ReportTypeViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
@@ -37,37 +38,42 @@ class ReportTypeView extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
           ),
           automaticallyImplyLeading: false,
+          centerTitle: true,
           title: Text(AppLocalizations.of(context)!.reportTypeTitle),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.qr_code_scanner),
-              tooltip: 'Simulate report form',
-              onPressed: () async {
-                var result = await Navigator.push<ReportType>(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const QrReportTypeView(),
-                  ),
-                );
-
-                if (result != null) {
-                  Navigator.push(
+            CircleAvatar(
+              backgroundColor: Theme.of(context).primaryColor,
+              child: IconButton(
+                icon: const Icon(Icons.qr_code_scanner, color: Colors.white),
+                tooltip: 'Simulate report form',
+                onPressed: () async {
+                  var result = await Navigator.push<ReportType>(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => FormSimulatorView(result),
+                      builder: (context) => const QrReportTypeView(),
                     ),
                   );
-                } else {
-                  var errorMessage = SnackBar(
-                    content: Text(
-                        AppLocalizations.of(context)?.invalidReportTypeQrcode ??
-                            'Invalid report type qrcode'),
-                    backgroundColor: Colors.red,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(errorMessage);
-                }
-              },
+
+                  if (result != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FormSimulatorView(result),
+                      ),
+                    );
+                  } else {
+                    var errorMessage = SnackBar(
+                      content: Text(AppLocalizations.of(context)
+                              ?.invalidReportTypeQrcode ??
+                          'Invalid report type qrcode'),
+                      backgroundColor: Colors.red,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(errorMessage);
+                  }
+                },
+              ),
             ),
+            SizedBox(width: 15.w),
           ],
         ),
         body: RefreshIndicator(
@@ -77,7 +83,7 @@ class ReportTypeView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _TestBanner(),
+              FormTestBanner(testFlag: viewModel.testFlag),
               Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 16.67.h, 20.w, 0),
                 child: Row(
@@ -102,31 +108,6 @@ class ReportTypeView extends StatelessWidget {
   }
 }
 
-class _TestBanner extends HookViewModelWidget<ReportTypeViewModel> {
-  final AppTheme appTheme = locator<AppTheme>();
-
-  @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportTypeViewModel viewModel) {
-    return viewModel.testFlag
-        ? Container(
-            padding: const EdgeInsets.all(10),
-            color: appTheme.warn,
-            child: Center(
-              child: Text(
-                AppLocalizations.of(context)?.testModeOn ?? 'Test mode is on',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          )
-        : const SizedBox.shrink();
-  }
-}
-
 class _TestFlag extends HookViewModelWidget<ReportTypeViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
@@ -141,13 +122,13 @@ class _TestFlag extends HookViewModelWidget<ReportTypeViewModel> {
         fit: StackFit.passthrough,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(left: 6),
             child: FlatButton(
-              padding: const EdgeInsets.fromLTRB(15, 6, 20, 6),
+              padding: const EdgeInsets.fromLTRB(10, 6, 10, 10),
               onPressed: () {
                 viewModel.testFlag = !viewModel.testFlag;
               },
-              borderRadius: appTheme.borderRadius,
+              borderRadius: 8.r,
               backgroundColor:
                   viewModel.testFlag ? appTheme.tag2 : appTheme.sub4,
               borderColor: viewModel.testFlag ? appTheme.tag2 : appTheme.sub4,
@@ -222,7 +203,7 @@ class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
                       .showSnackBar(showSuccessMessage);
                 },
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 35.0),
+                  padding: const EdgeInsets.only(left: 28.0),
                   child: Text(
                     AppLocalizations.of(context)?.zeroReportLabel ??
                         "รายงานไม่พบเหตูผิดปกติ",
@@ -334,7 +315,6 @@ class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
     return Column(
       children: [
         InkWell(
-          highlightColor: appTheme.hilight,
           onTap: () async {
             var allow = await viewModel.createReport(reportType.id);
             if (allow) {

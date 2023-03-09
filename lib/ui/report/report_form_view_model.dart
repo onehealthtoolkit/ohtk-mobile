@@ -37,6 +37,9 @@ class ReportFormViewModel extends FormBaseViewModel {
   @override
   Form get formStore => _formStore;
 
+  @override
+  bool get isTestMode => _testFlag;
+
   bool? get incidentInAuthority => _incidentInAuthority;
 
   set incidentInAuthority(bool? value) {

@@ -31,6 +31,7 @@ class FormQuestion extends StatelessWidget {
                       question.label,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: apptheme.warn,
+                            fontSize: 14.sp,
                           ),
                     ),
                     ListView.separated(
