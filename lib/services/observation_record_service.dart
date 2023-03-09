@@ -251,8 +251,6 @@ class ObservationRecordService extends IObservationRecordService {
       double topLeftY,
       double bottomRightX,
       double bottomRightY) async {
-    print(
-        "topLeftX: $topLeftX, topLeftY: $topLeftY, bottomRightX: $bottomRightX, bottomRightY: $bottomRightY");
     var result = await _observationApi.fetchSubjectRecordsInBounded(
         definitionId, topLeftX, topLeftY, bottomRightX, bottomRightY);
     return result;

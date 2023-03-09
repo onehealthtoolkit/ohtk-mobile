@@ -107,6 +107,7 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
           break;
         default:
       }
+      return null;
     });
   }
 

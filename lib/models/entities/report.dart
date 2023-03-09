@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:intl/intl.dart';
 import 'dart:convert';
 
@@ -53,5 +51,5 @@ class Report {
   }
 
   @override
-  int get hashCode => hashValues(id, data, reportTypeId, incidentDate);
+  int get hashCode => Object.hash(id, data, reportTypeId, incidentDate);
 }
