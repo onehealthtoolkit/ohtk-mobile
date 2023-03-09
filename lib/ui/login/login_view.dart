@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/main.dart';
 import 'package:podd_app/ui/forgot_password/reset_password_request_view.dart';
 import 'package:podd_app/ui/login/login_view_model.dart';
@@ -8,9 +11,8 @@ import 'package:podd_app/ui/register/register_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../components/flat_button.dart';
-import '../../components/language_dropdown.dart';
+import 'package:podd_app/components/flat_button.dart';
+import 'package:podd_app/components/language_dropdown.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -53,23 +55,28 @@ class LoginView extends StatelessWidget {
 class _LoginForm extends HookViewModelWidget<LoginViewModel> {
   @override
   Widget buildViewModelWidget(BuildContext context, LoginViewModel viewModel) {
+    final AppTheme appTheme = locator<AppTheme>();
     var username = useTextEditingController();
     var password = useTextEditingController();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
+        Container(
           padding: const EdgeInsets.fromLTRB(50, 30, 50, 30),
-          child: Image.asset('assets/images/logo.png'),
+          alignment: Alignment.center,
+          child: SizedBox(
+              width: 240.w, child: Image.asset('assets/images/logo.png')),
         ),
         Expanded(
           child: Container(
             width: double.infinity,
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20))),
+            decoration: BoxDecoration(
+              color: appTheme.bg2,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(30),
@@ -77,8 +84,8 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 200,
-                      height: 30,
+                      width: 150.w,
+                      height: 25.w,
                       child: _languageDropdown(viewModel, context),
                     ),
                     const SizedBox(height: 10),
@@ -134,8 +141,13 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
                                   ),
                                 );
                               },
-                              child: Text(AppLocalizations.of(context)!
-                                  .forgotPasswordButton),
+                              child: Text(
+                                AppLocalizations.of(context)!
+                                    .forgotPasswordButton,
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -150,19 +162,21 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
                       ),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(40),
-                        ),
+                      child: FlatButton.primary(
                         onPressed:
                             viewModel.isBusy ? null : viewModel.authenticate,
                         child: viewModel.isBusy
                             ? const SizedBox(
                                 height: 20,
                                 width: 20,
-                                child: CircularProgressIndicator(),
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
                               )
-                            : Text(AppLocalizations.of(context)!.loginButton),
+                            : Text(
+                                AppLocalizations.of(context)!.loginButton,
+                                style: TextStyle(fontSize: 15.sp),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -171,6 +185,7 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
                     SizedBox(
                       width: double.infinity,
                       child: FlatButton.outline(
+                        backgroundColor: appTheme.bg2,
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -181,10 +196,14 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.grid_view_outlined, size: 24),
+                              Icon(Icons.grid_view_outlined, size: 16.w),
                               const SizedBox(width: 4),
                               Text(
-                                  AppLocalizations.of(context)!.registerButton),
+                                AppLocalizations.of(context)!.registerButton,
+                                style: TextStyle(
+                                  fontSize: 15.sp,
+                                ),
+                              ),
                             ]),
                       ),
                     ),
@@ -219,11 +238,16 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
           Icon(
             Icons.qr_code_scanner,
             color: Theme.of(context).primaryColor,
-            size: 24,
+            size: 16.w,
           ),
           const SizedBox(width: 4),
-          Text(AppLocalizations.of(context)!.qrCodeLoginButton,
-              style: TextStyle(color: Theme.of(context).primaryColor)),
+          Text(
+            AppLocalizations.of(context)!.qrCodeLoginButton,
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 15.sp,
+            ),
+          ),
         ],
       ),
     );
@@ -285,10 +309,12 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
 
   Widget _languageDropdown(LoginViewModel viewModel, BuildContext context) {
     if (viewModel.busy("tenants")) {
-      return const SizedBox(
-        height: 20,
-        width: 20,
-        child: CircularProgressIndicator(),
+      return Container(
+        alignment: Alignment.center,
+        child: Text(
+          AppLocalizations.of(context)!.loading,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
       );
     }
     return LanguageDropdown(

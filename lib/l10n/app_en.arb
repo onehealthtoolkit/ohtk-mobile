@@ -79,5 +79,6 @@
   "testFlag": "Test",
   "yes": "Yes",
   "no": "No",
-  "testModeOn": "Test mode is on"
+  "testModeOn": "Test mode is on",
+  "loading": "Loading..."
 }

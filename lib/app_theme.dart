@@ -3,31 +3,31 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTheme {
   // teal color
-  Color primary = const Color.fromRGBO(0, 173, 181, 1);
+  Color primary = const Color(0xFF00ADB5);
   // soft teal color
-  Color secondary = const Color.fromRGBO(170, 216, 211, 1);
+  Color secondary = const Color(0xFFAAD8D3);
   // lighter teal color
-  Color tertiary = const Color.fromRGBO(208, 242, 238, 1);
+  Color tertiary = const Color(0xFFD0F2EE);
   // dark almost black
-  Color bg1 = const Color.fromRGBO(57, 62, 70, 1);
+  Color bg1 = const Color(0xFF393E46);
   // soft white
   Color bg2 = const Color(0xFFF9F9F9);
   // gray 1
-  Color sub1 = const Color.fromRGBO(57, 62, 70, 1);
+  Color sub1 = const Color(0xFF393E46);
   // light gray 2
-  Color sub2 = const Color.fromRGBO(173, 181, 194, 1);
+  Color sub2 = const Color(0xFFADB5C2);
   // lighter gray 3
-  Color sub3 = const Color.fromRGBO(200, 205, 212, 1);
+  Color sub3 = const Color(0xFFC8CDC4);
   // lightest gray (placeholder)
   Color sub4 = const Color(0xFFe3e7ed);
   // orange
-  Color warn = const Color.fromRGBO(243, 149, 95, 1);
+  Color warn = const Color(0xFFF3955F);
   // seashell soft white yellow
-  Color hilight = const Color.fromRGBO(255, 244, 224, 1);
+  Color hilight = const Color(0xFFFFF0E0);
   // pastel red
-  Color tag1 = const Color.fromRGBO(255, 181, 181, 1);
+  Color tag1 = const Color(0xFFFFB5B5);
   // pastel yellow
-  Color tag2 = const Color.fromRGBO(255, 224, 164, 1);
+  Color tag2 = const Color(0xFFFFE0A4);
 
   double borderRadius = 6;
 

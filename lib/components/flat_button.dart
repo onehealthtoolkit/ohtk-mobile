@@ -3,7 +3,7 @@ import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/locator.dart';
 
 class FlatButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Widget child;
   final EdgeInsets? padding;
   final Color backgroundColor;
@@ -12,18 +12,18 @@ class FlatButton extends StatelessWidget {
   final double borderRadius;
 
   const FlatButton(
-      {required this.onPressed,
-      required this.child,
+      {required this.child,
       required this.backgroundColor,
       required this.forgroundColor,
       required this.borderColor,
       required this.borderRadius,
+      this.onPressed,
       this.padding,
       Key? key})
       : super(key: key);
 
   factory FlatButton.primary({
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
     required Widget child,
     EdgeInsets? padding,
     Key? key,
@@ -46,6 +46,7 @@ class FlatButton extends StatelessWidget {
     required VoidCallback onPressed,
     required Widget child,
     EdgeInsets? padding,
+    Color? backgroundColor,
     Key? key,
   }) {
     final AppTheme apptheme = locator<AppTheme>();
@@ -54,7 +55,7 @@ class FlatButton extends StatelessWidget {
       child: child,
       padding: padding,
       key: key,
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor ?? Colors.transparent,
       forgroundColor: apptheme.primary,
       borderColor: apptheme.primary,
       borderRadius: apptheme.borderRadius,
