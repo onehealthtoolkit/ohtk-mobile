@@ -37,7 +37,7 @@ class FormInput extends StatelessWidget {
                   footerHeight -
                   testBannerHeight -
                   spare -
-                  100,
+                  80.w,
               child: ScrollablePositionedList.builder(
                 itemScrollController: _scrollController,
                 itemBuilder: (context, index) {
@@ -53,7 +53,6 @@ class FormInput extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: SizedBox(
-              height: 50.h,
               child: FormFooter(
                 viewModel: viewModel,
                 scrollController: _scrollController,

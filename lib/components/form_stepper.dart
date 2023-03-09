@@ -16,7 +16,6 @@ class FormStepper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => SizedBox(
-        height: 60.h,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
           child: Row(

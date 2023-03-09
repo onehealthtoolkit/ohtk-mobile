@@ -67,7 +67,7 @@ class UserMessageView extends StatelessWidget {
       constraints:
           const BoxConstraints(minWidth: double.infinity, minHeight: 100),
       child: Card(
-        shadowColor: Colors.transparent,
+        elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
