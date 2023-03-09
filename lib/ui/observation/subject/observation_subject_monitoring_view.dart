@@ -1,8 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
+import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
+import 'package:podd_app/opsv_form/widgets/widgets.dart';
 import 'package:podd_app/ui/observation/form/monitoring_record_form_view.dart';
 import 'package:podd_app/ui/observation/monitoring/observation_monitoring_view.dart';
 import 'package:podd_app/ui/observation/subject/observation_subject_monitoring_view_model.dart';
@@ -33,6 +38,8 @@ class ObservationSubjectMonitoringView extends StatelessWidget {
 
 class _MonitoringDefinitionListing
     extends HookViewModelWidget<ObservationSubjectMonitoringViewModel> {
+  final AppTheme appTheme = locator<AppTheme>();
+
   @override
   Widget buildViewModelWidget(
       BuildContext context, ObservationSubjectMonitoringViewModel viewModel) {
@@ -49,7 +56,12 @@ class _MonitoringDefinitionListing
             contentPadding: const EdgeInsets.all(0),
           );
         },
-        separatorBuilder: (context, index) => const Divider(),
+        separatorBuilder: (context, index) => CustomPaint(
+          painter: DashedLinePainter(backgroundColor: appTheme.primary),
+          child: Container(
+            height: 1.h,
+          ),
+        ),
         itemCount: viewModel.observationMonitoringDefinitions.length,
       ),
     );
@@ -61,15 +73,21 @@ class _MonitoringDefinitionListing
     ObservationMonitoringDefinition monitoringDefinition,
   ) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.blue[50],
-        borderRadius: BorderRadius.circular(8),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(monitoringDefinition.name),
+          Expanded(
+            child: Text(
+              monitoringDefinition.name,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 13.sp,
+                color: appTheme.warn,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
           ElevatedButton(
             child: const Icon(Icons.add),
             style: ElevatedButton.styleFrom(
@@ -96,9 +114,10 @@ class _MonitoringDefinitionListing
 
 class _MonitoringRecordListing
     extends HookViewModelWidget<ObservationSubjectMonitoringViewModel> {
+  final AppTheme appTheme = locator<AppTheme>();
   final ObservationMonitoringDefinition monitoringDefinition;
 
-  const _MonitoringRecordListing(this.monitoringDefinition);
+  _MonitoringRecordListing(this.monitoringDefinition);
 
   @override
   Widget buildViewModelWidget(
@@ -106,7 +125,7 @@ class _MonitoringRecordListing
     var items = viewModel.getSortedMonitoringRecords(monitoringDefinition.id);
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
       child: ListView.builder(
         itemBuilder: (context, index) {
           var monitoring = items[index];
@@ -114,31 +133,21 @@ class _MonitoringRecordListing
           var leading = monitoring.imageUrl != null
               ? CachedNetworkImage(
                   imageUrl: monitoring.imageUrl!,
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                  fit: BoxFit.fill,
-                )
-              : Container(
-                  color: Colors.grey.shade300,
-                  width: 80,
-                );
-
-          return ListTile(
-              contentPadding: const EdgeInsets.all(4),
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(4.0),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minWidth: 50,
-                    maxWidth: 50,
+                  placeholder: (context, url) => const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: CircularProgressIndicator(),
                   ),
-                  child: leading,
-                ),
-              ),
-              title: Text(monitoring.title),
-              subtitle: Text(monitoring.description),
-              dense: false,
-              visualDensity: const VisualDensity(vertical: -3),
+                  fit: BoxFit.cover,
+                )
+              : ColoredBox(
+                  color: appTheme.sub4,
+                  child: Image.asset(
+                    "assets/images/OHTK.png",
+                  ),
+                );
+          return MonitoringRecordItem(
+              monitoring: monitoring,
+              leading: leading,
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -154,6 +163,110 @@ class _MonitoringRecordListing
         itemCount: items.length,
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
+      ),
+    );
+  }
+}
+
+class MonitoringRecordItem extends StatelessWidget {
+  final ObservationMonitoringRecord monitoring;
+  final void Function() onTap;
+  final Widget? leading;
+
+  final AppTheme appTheme = locator<AppTheme>();
+
+  MonitoringRecordItem({
+    Key? key,
+    required this.monitoring,
+    required this.onTap,
+    this.leading,
+  }) : super(key: key);
+
+  _title(BuildContext context, ObservationMonitoringRecord report) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            report.title,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w600,
+                  color: appTheme.primary,
+                ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  _description() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Text(
+            monitoring.description,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 11.sp,
+              color: appTheme.sub1,
+            ),
+          ),
+        ),
+        const SizedBox(width: 20),
+        Icon(
+          Icons.arrow_forward_ios_sharp,
+          size: 14,
+          color: appTheme.secondary,
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        color: appTheme.bg2,
+        elevation: 0,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 8, 8, 0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4.0),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: 80.w,
+                    maxWidth: 80.w,
+                    minHeight: 75.w,
+                    maxHeight: 75.w,
+                  ),
+                  child: leading,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 8, 8, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _title(context, monitoring),
+                    _description(),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -200,7 +200,7 @@ class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
                   padding: const EdgeInsets.only(left: 28.0),
                   child: Text(
                     AppLocalizations.of(context)?.zeroReportLabel ??
-                        "รายงานไม่พบเหตูผิดปกติ",
+                        "Zero report",
                     style: TextStyle(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w500,

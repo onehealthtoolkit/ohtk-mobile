@@ -96,13 +96,16 @@ class IncidentReportItem extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          report.reportTypeName,
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w600,
-                color: appTheme.primary,
-              ),
+        Expanded(
+          child: Text(
+            report.reportTypeName,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w600,
+                  color: appTheme.primary,
+                ),
+          ),
         ),
         Text(
           formatter.format(report.createdAt.toLocal()),
