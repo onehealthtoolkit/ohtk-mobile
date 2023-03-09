@@ -5,11 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:podd_app/components/notification_appbar_action.dart';
 import 'package:podd_app/ui/home/consent_view.dart';
 import 'package:podd_app/ui/home/home_view_model.dart';
 import 'package:podd_app/ui/home/observation/observation_home_view.dart';
 import 'package:podd_app/ui/home/report_home_view.dart';
-import 'package:podd_app/ui/notification/user_message_list.dart';
 import 'package:podd_app/ui/notification/user_message_view.dart';
 import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
@@ -117,24 +117,7 @@ class HomeView extends HookWidget {
             centerTitle: true,
             title: Text(AppLocalizations.of(context)!.appName),
             actions: [
-              CircleAvatar(
-                backgroundColor: Theme.of(context).primaryColor,
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.notifications_outlined,
-                    color: Colors.white,
-                  ),
-                  tooltip: 'Messages',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const UserMessageList(),
-                      ),
-                    );
-                  },
-                ),
-              ),
+              NotificationAppBarAction(),
               SizedBox(
                 width: 15.w,
               )

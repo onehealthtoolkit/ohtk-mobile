@@ -132,7 +132,9 @@ void setupLocator(String environment) {
     locator.unregister<INotificationService>();
   }
   locator.registerSingletonAsync<INotificationService>(() async {
-    return NotificationService();
+    final service = NotificationService();
+    service.fetchMyMessages(true);
+    return service;
   }, dependsOn: [
     NotificationApi,
   ]);

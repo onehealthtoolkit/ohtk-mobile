@@ -29,6 +29,8 @@ class UserMessageListViewModel extends ReactiveViewModel {
   List<ReactiveServiceMixin> get reactiveServices => [notificationService];
 
   List<UserMessage> get userMessages => notificationService.userMessages;
+
+  bool get hasUnseenMessages => notificationService.hasUnseenMessages;
 }
 
 class UserMessageViewViewModel extends FutureViewModel<UserMessage> {

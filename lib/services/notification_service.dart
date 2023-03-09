@@ -31,7 +31,10 @@ abstract class INotificationService with ReactiveServiceMixin {
   });
 
   fetchMyMessages(bool resetFlag);
+
   Future<UserMessage> getMyMessage(String id);
+
+  bool get hasUnseenMessages;
 }
 
 class NotificationService extends INotificationService {
@@ -39,16 +42,21 @@ class NotificationService extends INotificationService {
 
   final ReactiveList<UserMessage> _userMessages = ReactiveList<UserMessage>();
 
+  final ReactiveValue<bool> _hasUnseenMessages = ReactiveValue<bool>(false);
+
   int userMessageLimit = 20;
   bool hasMoreUserMessages = false;
   int currentUserMessageNextOffset = 0;
 
   NotificationService() {
-    listenToReactiveValues([_userMessages]);
+    listenToReactiveValues([_userMessages, _hasUnseenMessages]);
   }
 
   @override
   List<UserMessage> get userMessages => _userMessages;
+
+  @override
+  bool get hasUnseenMessages => _hasUnseenMessages.value;
 
   @override
   setupFirebaseMessaging(
@@ -151,6 +159,11 @@ class NotificationService extends INotificationService {
     }
   }
 
+  _updateHasMoreUnseenMessages() {
+    var unSeen = _userMessages.any((message) => !message.isSeen);
+    _hasUnseenMessages.value = unSeen;
+  }
+
   @override
   fetchMyMessages(bool resetFlag) async {
     if (resetFlag) {
@@ -162,6 +175,8 @@ class NotificationService extends INotificationService {
       limit: userMessageLimit,
     );
     _userMessages.addAll(result.data);
+    _updateHasMoreUnseenMessages();
+
     hasMoreUserMessages = result.hasNextPage;
     currentUserMessageNextOffset =
         currentUserMessageNextOffset + userMessageLimit;
@@ -170,6 +185,9 @@ class NotificationService extends INotificationService {
   @override
   Future<UserMessage> getMyMessage(String id) async {
     final result = await _notificationApi.getMyMessage(id);
+    // imply than this message should be seen
+    _userMessages.firstWhere((message) => message.id == id).isSeen = true;
+    _updateHasMoreUnseenMessages();
     return result.data;
   }
 }
