@@ -36,6 +36,8 @@ abstract class IAuthService {
   Future<AuthResult> verifyQrToken(String token);
 
   updateConfirmedConsent();
+
+  updateAvatarUrl(String avatarUrl);
 }
 
 class AuthService with ReactiveServiceMixin implements IAuthService {
@@ -202,6 +204,14 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
   updateConfirmedConsent() {
     if (_userProfile != null) {
       _userProfile!.consent = true;
+      _secureStorageService.setUserProfile(_userProfile!);
+    }
+  }
+
+  @override
+  updateAvatarUrl(String avatarUrl) {
+    if (_userProfile != null) {
+      _userProfile!.avatarUrl = avatarUrl;
       _secureStorageService.setUserProfile(_userProfile!);
     }
   }

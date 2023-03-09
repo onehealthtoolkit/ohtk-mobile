@@ -87,6 +87,7 @@ class _ChangePasswordForm extends HookViewModelWidget<ProfileViewModel> {
                           );
                           ScaffoldMessenger.of(context)
                               .showSnackBar(showSuccessMessage);
+                          Navigator.pop(context, true);
                         }
                       },
                 child: viewModel.isBusy

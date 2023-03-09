@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:podd_app/components/display_field.dart';
@@ -44,6 +42,13 @@ class ProfileView extends StatelessWidget {
                           Column(
                             children: [
                               _Avatar(),
+                              if (viewModel.hasErrorForKey("uploadFail"))
+                                Text(
+                                  viewModel.error("uploadFail"),
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                ),
                               const SizedBox(height: 8),
                               _Language(),
                               const SizedBox(height: 8),
@@ -200,24 +205,17 @@ class _Avatar extends HookViewModelWidget<ProfileViewModel> {
     return SizedBox(
       height: 115,
       width: 115,
-      child: Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.expand,
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.white,
-            //backgroundColor: Color(0xFF7c3f96),
-            child: viewModel.photo != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: Image.file(
-                      File(viewModel.photo!.path),
-                      width: 115,
-                      height: 115,
-                      fit: BoxFit.fill,
-                    ),
-                  )
-                : ClipRRect(
+      child: viewModel.isBusy
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Stack(
+              clipBehavior: Clip.none,
+              fit: StackFit.expand,
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: ClipRRect(
                     borderRadius: BorderRadius.circular(50),
                     child: viewModel.avatarUrl == null
                         ? Image.asset(
@@ -233,30 +231,29 @@ class _Avatar extends HookViewModelWidget<ProfileViewModel> {
                             fit: BoxFit.fill,
                           ),
                   ),
-            //Text('เลือกรูปภาพ'),
-            radius: 55,
-          ),
-          Positioned(
-            bottom: 0,
-            right: -25,
-            child: RawMaterialButton(
-              onPressed: () {
-                _showAddImageModal(context, viewModel);
-              },
-              elevation: 2.0,
-              fillColor: Colors.white,
-              child: Icon(
-                Icons.camera_alt,
-                color: Theme.of(context).primaryColor,
-              ),
-              padding: const EdgeInsets.all(10.0),
-              shape: CircleBorder(
-                  side: BorderSide(
-                      width: 2, color: Theme.of(context).primaryColor)),
+                  radius: 55,
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: -25,
+                  child: RawMaterialButton(
+                    onPressed: () {
+                      _showAddImageModal(context, viewModel);
+                    },
+                    elevation: 2.0,
+                    fillColor: Colors.white,
+                    child: Icon(
+                      Icons.camera_alt,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    padding: const EdgeInsets.all(10.0),
+                    shape: CircleBorder(
+                        side: BorderSide(
+                            width: 2, color: Theme.of(context).primaryColor)),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -273,7 +270,7 @@ class _Avatar extends HookViewModelWidget<ProfileViewModel> {
               onTap: () async {
                 var image = await _pickImage(ImageSource.gallery);
                 if (image != null) {
-                  viewModel.photo = image;
+                  await viewModel.setPhoto(image);
                 }
                 Navigator.pop(context);
               },
@@ -284,7 +281,7 @@ class _Avatar extends HookViewModelWidget<ProfileViewModel> {
               onTap: () async {
                 var image = await _pickImage(ImageSource.camera);
                 if (image != null) {
-                  viewModel.photo = image;
+                  viewModel.setPhoto(image);
                 }
                 Navigator.pop(context);
               },

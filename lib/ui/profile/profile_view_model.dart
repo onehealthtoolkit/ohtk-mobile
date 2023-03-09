@@ -72,6 +72,12 @@ class ProfileViewModel extends BaseViewModel {
     _clearErrorForKey('confirmPassword');
   }
 
+  Future<void> setPhoto(XFile value) async {
+    photo = value;
+    await uploadAvatar();
+    notifyListeners();
+  }
+
   _clearErrorForKey(String key) {
     if (hasErrorForKey(key)) {
       setErrorForObject(key, null);
@@ -147,6 +153,22 @@ class ProfileViewModel extends BaseViewModel {
       }
     } else if (result is ProfileFailure) {
       setErrorForObject("generalChangePassword", result.messages.join(','));
+    }
+    setBusy(false);
+    return result;
+  }
+
+  Future<ProfileResult> uploadAvatar() async {
+    setBusy(true);
+    var result = await profileService.uploadAvatar(photo!);
+
+    if (result is ProfileUploadSuccess) {
+      if (result.success) avatarUrl = authService.userProfile?.avatarUrl;
+      if (!result.success) {
+        setErrorForObject("uploadFail", "Update avatar not success!!!");
+      }
+    } else if (result is ProfileFailure) {
+      setErrorForObject("uploadFail", result.messages.join(','));
     }
     setBusy(false);
     return result;

@@ -8,6 +8,14 @@ class ProfileSuccess extends ProfileResult {
   ProfileSuccess({required this.success, this.message});
 }
 
+class ProfileUploadSuccess extends ProfileResult {
+  bool success;
+  String? message;
+  String? avatarUrl;
+
+  ProfileUploadSuccess({required this.success, this.message, this.avatarUrl});
+}
+
 class ProfileFailure extends OperationExceptionFailure with ProfileResult {
   ProfileFailure(e) : super(e);
 }
