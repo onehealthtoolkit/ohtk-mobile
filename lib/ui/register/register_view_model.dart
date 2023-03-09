@@ -100,6 +100,12 @@ class RegisterViewModel extends BaseViewModel {
       setErrorForObject("phone", localize.fieldRequired);
       isValidData = false;
     }
+    // test email regexp
+    if (email != null &&
+        !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email!)) {
+      setErrorForObject("email", "Email is invalid");
+      isValidData = false;
+    }
 
     if (!isValidData) {
       setBusy(false);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:podd_app/components/display_field.dart';
 import 'package:podd_app/components/flat_button.dart';
@@ -104,7 +105,9 @@ class ProfileView extends StatelessWidget {
                                   ? const SizedBox(
                                       height: 20,
                                       width: 20,
-                                      child: CircularProgressIndicator(),
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
                                     )
                                   : Row(
                                       mainAxisAlignment:
@@ -116,9 +119,9 @@ class ProfileView extends StatelessWidget {
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .updateProfileButton,
-                                        ),
+                                            AppLocalizations.of(context)!
+                                                .updateProfileButton,
+                                            style: TextStyle(fontSize: 15.sp)),
                                       ],
                                     ),
                             ),
@@ -139,7 +142,9 @@ class ProfileView extends StatelessWidget {
                                   ? const SizedBox(
                                       height: 20,
                                       width: 20,
-                                      child: CircularProgressIndicator(),
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
                                     )
                                   : Row(
                                       mainAxisAlignment:
@@ -153,6 +158,7 @@ class ProfileView extends StatelessWidget {
                                         Text(
                                           AppLocalizations.of(context)!
                                               .changePasswordButton,
+                                          style: TextStyle(fontSize: 15.sp),
                                         ),
                                       ],
                                     ),
@@ -169,7 +175,9 @@ class ProfileView extends StatelessWidget {
                                     context, '/', (route) => false);
                               },
                               child: Text(
-                                  AppLocalizations.of(context)!.logoutButton),
+                                AppLocalizations.of(context)!.logoutButton,
+                                style: TextStyle(fontSize: 15.sp),
+                              ),
                             ),
                           ),
                         ],

@@ -54,7 +54,7 @@ class _FormLocationFieldState extends State<FormLocationField> {
                         ),
                         Text(AppLocalizations.of(context)!
                             .fieldUndefinedLocation),
-                        ElevatedButton(
+                        FlatButton.primary(
                           onPressed: () async {
                             bool serviceEnabled =
                                 await Geolocator.isLocationServiceEnabled();
@@ -75,8 +75,13 @@ class _FormLocationFieldState extends State<FormLocationField> {
                               _logger.e("location is disable");
                             }
                           },
-                          child: Text(AppLocalizations.of(context)!
-                              .fieldUseCurrentLocation),
+                          child: Text(
+                            AppLocalizations.of(context)!
+                                .fieldUseCurrentLocation,
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                            ),
+                          ),
                         ),
                       ],
                     ),

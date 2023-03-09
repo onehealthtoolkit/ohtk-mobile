@@ -23,6 +23,7 @@ class RegisterApi extends GraphQlBaseApi {
       final result = await runGqlQuery<InvitationCodeSuccess>(
         query: query,
         variables: {'code': code},
+        fetchPolicy: FetchPolicy.networkOnly,
         typeConverter: (resp) {
           return InvitationCodeSuccess(resp['authority']['name']);
         },

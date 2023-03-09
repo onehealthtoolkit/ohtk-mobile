@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/models/profile_result.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -18,6 +19,7 @@ class ChangePasswordView extends StatelessWidget {
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.changePasswordTitle),
+          leading: const BackAppBarAction(),
         ),
         body: _ChangePasswordForm(),
       ),

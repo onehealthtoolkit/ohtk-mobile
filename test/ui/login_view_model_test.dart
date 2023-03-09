@@ -63,6 +63,12 @@ class AuthServiceMock implements IAuthService {
     // TODO: implement updateConfirmedConsent
     throw UnimplementedError();
   }
+
+  @override
+  updateAvatarUrl(String avatarUrl) {
+    // TODO: implement updateAvatarUrl
+    throw UnimplementedError();
+  }
 }
 
 void main() {

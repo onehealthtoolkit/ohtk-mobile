@@ -50,6 +50,7 @@ class AppTheme {
           ),
           titleTextStyle: TextStyle(
             fontSize: 22.sp,
+            fontFamily: font,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -106,7 +107,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: warn),
+            borderSide: const BorderSide(color: Colors.red),
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           focusedErrorBorder: OutlineInputBorder(
@@ -128,7 +129,8 @@ class AppTheme {
           ),
           errorStyle: TextStyle(
             fontFamily: font,
-            color: warn,
+            color: Colors.red,
+            fontSize: 10.sp,
           ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
@@ -176,6 +178,7 @@ class AppTheme {
           unselectedLabelStyle: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 13.sp,
+            fontFamily: font,
           ),
           indicator: UnderlineTabIndicator(
             borderSide: BorderSide(color: warn, width: 3),

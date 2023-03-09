@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/components/display_field.dart';
+import 'package:podd_app/components/flat_button.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/register_result.dart';
 import 'package:podd_app/ui/register/register_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -24,6 +29,7 @@ class RegisterView extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.signupTitle),
+            leading: const BackAppBarAction(),
           ),
           body: Padding(
             padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
@@ -71,18 +77,16 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
         const SizedBox(height: 30),
         SizedBox(
           width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(40),
-            ),
+          child: FlatButton.primary(
             onPressed: viewModel.checkInvitationCode,
             child: viewModel.isBusy
                 ? const SizedBox(
                     height: 20,
                     width: 20,
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Colors.white),
                   )
-                : Text(AppLocalizations.of(context)!.confirmButton),
+                : Text(AppLocalizations.of(context)!.confirmButton,
+                    style: TextStyle(fontSize: 15.sp)),
           ),
         ),
       ],
@@ -91,6 +95,7 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
 }
 
 class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
+  final AppTheme appTheme = locator<AppTheme>();
   @override
   Widget buildViewModelWidget(
       BuildContext context, RegisterViewModel viewModel) {
@@ -106,8 +111,10 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
           Column(
             children: [
               DisplayField(
-                  label: AppLocalizations.of(context)!.authorityNameLabel,
-                  value: viewModel.authorityName),
+                label: AppLocalizations.of(context)!.authorityNameLabel,
+                value: viewModel.authorityName,
+                crossAxisAlignment: CrossAxisAlignment.center,
+              ),
             ],
           ),
           Divider(
@@ -115,7 +122,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
             thickness: 1,
             indent: 0,
             endIndent: 0,
-            color: Colors.red.shade400,
+            color: appTheme.warn,
           ),
           const SizedBox(height: 20),
           TextField(
@@ -170,10 +177,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
           const SizedBox(height: 30),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
+            child: FlatButton.primary(
               onPressed: viewModel.isBusy
                   ? null
                   : () async {
@@ -188,7 +192,8 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
                       width: 20,
                       child: CircularProgressIndicator(),
                     )
-                  : Text(AppLocalizations.of(context)!.confirmRegisterButton),
+                  : Text(AppLocalizations.of(context)!.confirmRegisterButton,
+                      style: TextStyle(fontSize: 15.sp)),
             ),
           ),
         ],
