@@ -34,6 +34,7 @@
   "serverLabel": "Server",
   "usernameLabel": "Username",
   "passwordLabel": "Password",
+  "newPasswordLabel": "New Password",
   "confirmPasswordLabel": "Confirm password",
   "invitationCodeLabel": "Invitation Code",
   "firstNameLabel": "First Name",
@@ -80,5 +81,7 @@
   "yes": "Yes",
   "no": "No",
   "testModeOn": "Test mode is on",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "fieldRequired": "field is required.",
+  "passwordMismatch": "Password does not match confirm password"
 }

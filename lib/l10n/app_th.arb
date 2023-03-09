@@ -33,6 +33,7 @@
   "serverLabel": "เซิร์ฟเวอร์",
   "usernameLabel": "ชื่อผู้ใช้",
   "passwordLabel": "รหัสผ่าน",
+  "newPasswordLabel": "รหัสผ่านใหม่",
   "confirmPasswordLabel": "ยืนยันรหัสผ่าน",
   "invitationCodeLabel": "กรอกรหัสสำหรับลงทะเบียน",
   "firstNameLabel": "ชื่อจริง",
@@ -68,5 +69,7 @@
   "testFlag": "ทดสอบ",
   "yes": "ใช่",
   "no": "ไม่ใช่",
-  "testModeOn": "กำลังเปิดใช้งานโหมดทดสอบ"
+  "testModeOn": "กำลังเปิดใช้งานโหมดทดสอบ",
+  "fieldRequired": "กรุณากรอกข้อมูล",
+  "passwordMismatch": "รหัสผ่านไม่ถูกต้อง"
 }

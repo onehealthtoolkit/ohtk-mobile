@@ -25,7 +25,7 @@ class ResetPasswordRequestView extends StatelessWidget {
             title: Text(AppLocalizations.of(context)!.forgotPasswordTitle),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
             child: _DetailCodeForm(),
           ),
         ),
@@ -52,7 +52,7 @@ class _DetailCodeForm
             alignment: Alignment.centerLeft,
             child: Text(
               AppLocalizations.of(context)!.forgotPasswordSubTitle,
-              style: Theme.of(context).textTheme.titleSmall,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),
           const SizedBox(height: 20),
@@ -74,7 +74,7 @@ class _DetailCodeForm
                 color: Colors.red,
               ),
             ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(

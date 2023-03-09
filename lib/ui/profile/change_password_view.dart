@@ -4,8 +4,7 @@ import 'package:podd_app/models/profile_result.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
-import 'profile_view.dart';
-import 'profile_view_model.dart';
+import 'change_password_view_model.dart';
 
 class ChangePasswordView extends StatelessWidget {
   static const String route = '/register';
@@ -14,60 +13,81 @@ class ChangePasswordView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<ProfileViewModel>.reactive(
-      viewModelBuilder: () => ProfileViewModel(),
+    return ViewModelBuilder<ChangePasswordViewModel>.reactive(
+      viewModelBuilder: () => ChangePasswordViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.changePasswordTitle),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: _ChangePasswordForm(),
-        ),
+        body: _ChangePasswordForm(),
       ),
     );
   }
 }
 
-class _ChangePasswordForm extends HookViewModelWidget<ProfileViewModel> {
+class _ChangePasswordForm extends HookViewModelWidget<ChangePasswordViewModel> {
   @override
   Widget buildViewModelWidget(
-      BuildContext context, ProfileViewModel viewModel) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(4, 2, 4, 2),
-      decoration: decoration,
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
+      BuildContext context, ChangePasswordViewModel viewModel) {
+    return Column(children: [
+      if (viewModel.hasErrorForKey("generalChangePassword"))
+        Container(
+          padding: const EdgeInsets.all(10),
+          width: double.infinity,
+          color: Colors.red,
+          child: Text(
+            viewModel.error("generalChangePassword"),
+            textAlign: TextAlign.center,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             TextField(
               textInputAction: TextInputAction.next,
-              obscureText: true,
+              obscureText: viewModel.obscurePassword,
               onChanged: viewModel.setPassword,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.passwordLabel,
+                labelText: AppLocalizations.of(context)!.newPasswordLabel,
                 errorText: viewModel.error("password"),
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    viewModel.setObscurePassword(!viewModel.obscurePassword);
+                  },
+                  hoverColor: Colors.transparent,
+                  icon: viewModel.obscurePassword
+                      ? const Icon(Icons.visibility)
+                      : const Icon(Icons.visibility_off),
+                ),
               ),
             ),
             const SizedBox(height: 10),
             TextField(
               textInputAction: TextInputAction.next,
-              obscureText: true,
+              obscureText: viewModel.obscureConfirmPassword,
               onChanged: viewModel.setConfirmPassword,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.confirmPasswordLabel,
                 errorText: viewModel.error("confirmPassword"),
-              ),
-            ),
-            const SizedBox(height: 10),
-            if (viewModel.hasErrorForKey("generalChangePassword"))
-              Text(
-                viewModel.error("generalChangePassword"),
-                style: const TextStyle(
-                  color: Colors.red,
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    viewModel.setObscureConfirmPassword(
+                        !viewModel.obscureConfirmPassword);
+                  },
+                  hoverColor: Colors.transparent,
+                  icon: viewModel.obscureConfirmPassword
+                      ? const Icon(Icons.visibility)
+                      : const Icon(Icons.visibility_off),
                 ),
               ),
+            ),
+            const SizedBox(height: 30),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -101,7 +121,7 @@ class _ChangePasswordForm extends HookViewModelWidget<ProfileViewModel> {
             ),
           ],
         ),
-      ),
-    );
+      )
+    ]);
   }
 }

@@ -26,7 +26,7 @@ class RegisterView extends StatelessWidget {
             title: Text(AppLocalizations.of(context)!.signupTitle),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
             child: viewModel.state == RegisterState.invitation
                 ? _InvitationCodeForm()
                 : _DetailCodeForm(),
@@ -52,7 +52,7 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
           alignment: Alignment.centerLeft,
           child: Text(
             AppLocalizations.of(context)!.signupSubTitle,
-            style: Theme.of(context).textTheme.titleSmall,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
         ),
         const SizedBox(height: 20),
@@ -68,7 +68,7 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
               labelText: AppLocalizations.of(context)!.invitationCodeLabel,
               errorText: viewModel.error('invitationCode')),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 30),
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
@@ -167,7 +167,7 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
               errorText: viewModel.error("phone"),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 30),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(

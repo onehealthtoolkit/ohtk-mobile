@@ -31,13 +31,11 @@ class ProfileView extends StatelessWidget {
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
                 child: Column(
                   children: [
                     Expanded(
                       child: ListView(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 20),
                         children: [
                           Column(
                             children: [
@@ -49,7 +47,7 @@ class ProfileView extends StatelessWidget {
                                     color: Colors.red,
                                   ),
                                 ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 20),
                               _Language(),
                               const SizedBox(height: 8),
                               DisplayField(
@@ -71,22 +69,26 @@ class ProfileView extends StatelessWidget {
                               label:
                                   AppLocalizations.of(context)!.usernameLabel,
                               value: viewModel.username),
+                          const SizedBox(height: 15),
                           DisplayField(
                               label:
                                   AppLocalizations.of(context)!.firstNameLabel,
                               value: viewModel.firstName),
+                          const SizedBox(height: 15),
                           DisplayField(
                               label:
                                   AppLocalizations.of(context)!.lastNameLabel,
                               value: viewModel.lastName),
+                          const SizedBox(height: 15),
                           DisplayField(
                               label: AppLocalizations.of(context)!.emailLabel,
                               value: viewModel.email),
+                          const SizedBox(height: 15),
                           DisplayField(
                               label:
                                   AppLocalizations.of(context)!.telephoneLabel,
                               value: viewModel.telephone),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 30),
                           SizedBox(
                             width: double.infinity,
                             child: FlatButton.primary(
@@ -121,6 +123,7 @@ class ProfileView extends StatelessWidget {
                                     ),
                             ),
                           ),
+                          const SizedBox(height: 10),
                           SizedBox(
                             width: double.infinity,
                             child: FlatButton.primary(
@@ -155,6 +158,7 @@ class ProfileView extends StatelessWidget {
                                     ),
                             ),
                           ),
+                          const SizedBox(height: 10),
                           SizedBox(
                             width: double.infinity,
                             child: FlatButton.primary(

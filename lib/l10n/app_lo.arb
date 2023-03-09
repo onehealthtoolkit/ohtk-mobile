@@ -33,6 +33,7 @@
   "serverLabel": "ເຊີບເວີ",
   "usernameLabel": "ຊື່ຜູ້ໃຊ້",
   "passwordLabel": "ລະຫັດຜ່ານ",
+  "newPasswordLabel": "ລະຫັດຜ່ານ",
   "confirmPasswordLabel": "ຢືນ​ຢັນ​ລະ​ຫັດ​ຜ່ານ",
   "invitationCodeLabel": "ລະ​ຫັດ​ການ​ຈົດ​ທະ​ບຽນ",
   "firstNameLabel": "ຊື່​ແທ້",
@@ -58,5 +59,7 @@
   "authorityLabel": "ອົງການ",
   "incidentDate": "ວັນທີເກີດເຫດ",
   "testFlag": "Test",
-  "testModeOn": "Test mode is on"
+  "testModeOn": "Test mode is on",
+  "fieldRequired": "Field is required.",
+  "passwordMismatch": "Password does not match confirm password"
 }
