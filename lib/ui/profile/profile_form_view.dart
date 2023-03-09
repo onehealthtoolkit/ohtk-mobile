@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podd_app/components/back_appbar_action.dart';
+import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/models/profile_result.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -83,10 +85,7 @@ class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
           const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
+            child: FlatButton.primary(
               onPressed: viewModel.isBusy
                   ? null
                   : () async {
@@ -107,9 +106,12 @@ class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
                   ? const SizedBox(
                       height: 20,
                       width: 20,
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(color: Colors.white),
                     )
-                  : Text(AppLocalizations.of(context)!.confirmUpdate),
+                  : Text(
+                      AppLocalizations.of(context)!.confirmUpdate,
+                      style: TextStyle(fontSize: 16.sp),
+                    ),
             ),
           ),
         ],

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:podd_app/components/back_appbar_action.dart';
+import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/models/profile_result.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -92,10 +94,7 @@ class _ChangePasswordForm extends HookViewModelWidget<ChangePasswordViewModel> {
             const SizedBox(height: 30),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(40),
-                ),
+              child: FlatButton.primary(
                 onPressed: viewModel.isBusy
                     ? null
                     : () async {
@@ -118,7 +117,12 @@ class _ChangePasswordForm extends HookViewModelWidget<ChangePasswordViewModel> {
                         width: 20,
                         child: CircularProgressIndicator(),
                       )
-                    : Text(AppLocalizations.of(context)!.confirmUpdate),
+                    : Text(
+                        AppLocalizations.of(context)!.confirmUpdate,
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                        ),
+                      ),
               ),
             ),
           ],
