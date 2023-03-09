@@ -46,35 +46,25 @@ class _DateTimeDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // we use locale from GetIt, so we need to wait for it to be ready
-    // Note: in dev mode only. In production, this is not needed
-    return FutureBuilder(
-        builder: ((context, snapshot) {
-          if (snapshot.hasData) {
-            return Observer(builder: (BuildContext context) {
-              return Row(
-                children: [
-                  Expanded(child: _dayDropdown(field), flex: 1),
-                  const SizedBox(width: 10, child: null),
-                  Expanded(child: _monthDropdown(field), flex: 2),
-                  const SizedBox(width: 10, child: null),
-                  Expanded(child: _yearDropdown(field), flex: 1),
-                  if (field.withTime)
-                    const Text(
-                      ": ",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                      textScaleFactor: 1.2,
-                    ),
-                  if (field.withTime) Expanded(child: _hourDropdown(field)),
-                  if (field.withTime) Expanded(child: _minuteDropdown(field)),
-                ],
-              );
-            });
-          } else {
-            return const SizedBox();
-          }
-        }),
-        future: locator.allReady());
+    return Observer(builder: (BuildContext context) {
+      return Row(
+        children: [
+          Expanded(child: _dayDropdown(field), flex: 1),
+          const SizedBox(width: 10, child: null),
+          Expanded(child: _monthDropdown(field, context), flex: 2),
+          const SizedBox(width: 10, child: null),
+          Expanded(child: _yearDropdown(field), flex: 1),
+          if (field.withTime)
+            const Text(
+              ": ",
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textScaleFactor: 1.2,
+            ),
+          if (field.withTime) Expanded(child: _hourDropdown(field)),
+          if (field.withTime) Expanded(child: _minuteDropdown(field)),
+        ],
+      );
+    });
   }
 
   bool _isLeapYear(int? year) {
@@ -124,8 +114,8 @@ class _DateTimeDropdown extends StatelessWidget {
   }
 
   // month value is between 1-12
-  _monthDropdown(opsv.DateField field) {
-    final locale = locator<Locale>();
+  _monthDropdown(opsv.DateField field, BuildContext context) {
+    final locale = Localizations.localeOf(context);
 
     var formatter = DateFormat.MMMM(locale.toString());
     final items = List<int>.generate(12, (int index) => index).map((e) {
