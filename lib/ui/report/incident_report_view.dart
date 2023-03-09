@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/incident_report_tag.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
@@ -38,14 +39,7 @@ class IncidentReportView extends HookWidget {
       builder: (context, viewModel, child) {
         return Scaffold(
           appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: appTheme.primary,
-                size: 17.w,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+            leading: const BackAppBarAction(),
             automaticallyImplyLeading: false,
             shadowColor: Colors.transparent,
             bottom: PreferredSize(

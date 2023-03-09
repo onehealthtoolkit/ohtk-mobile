@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/components/form_test_banner.dart';
 import 'package:podd_app/components/progress_indicator.dart';
@@ -29,14 +30,7 @@ class ReportTypeView extends StatelessWidget {
       viewModelBuilder: () => ReportTypeViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: appTheme.primary,
-              size: 17.w,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
+          leading: const BackAppBarAction(),
           automaticallyImplyLeading: false,
           centerTitle: true,
           title: Text(AppLocalizations.of(context)!.reportTypeTitle),

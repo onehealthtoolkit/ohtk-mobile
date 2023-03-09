@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Form;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/components/form_confirm.dart';
 import 'package:podd_app/components/form_input.dart';
@@ -39,6 +40,7 @@ class ReportFormView extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
+                leading: const BackAppBarAction(),
                 title: Text(AppLocalizations.of(context)!.reportTitle +
                     " ${reportType.name}"),
                 backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
