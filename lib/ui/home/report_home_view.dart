@@ -41,7 +41,7 @@ class ReportHomeView extends HookWidget {
           backgroundColor: Theme.of(context).primaryColor,
           foregroundColor: Colors.white,
           child: IconButton(
-            iconSize: 33.w,
+            iconSize: 38.w,
             onPressed: () {
               Navigator.push(
                 context,

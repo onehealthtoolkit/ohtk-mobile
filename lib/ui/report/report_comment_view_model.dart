@@ -37,13 +37,15 @@ class ReportCommentViewModel extends ReactiveViewModel {
   saveComment() async {
     if (body != null && body!.isNotEmpty) {
       setBusy(true);
-      await commentService.submitComment(body!, threadId, images);
+      try {
+        await commentService.submitComment(body!, threadId, images);
 
-      body = null;
-      images.clear();
-      scrollController.jumpTo(index: comments.length - 1);
-
-      setBusy(false);
+        body = null;
+        images.clear();
+        scrollController.jumpTo(index: comments.length - 1);
+      } finally {
+        setBusy(false);
+      }
     }
   }
 

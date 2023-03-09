@@ -24,7 +24,7 @@
   "submitButton": "Submit",
   "confirmButton": "ยืนยัน",
   "confirmRegisterButton": "ยืนยันลงทะเบียน",
-  "sendButton": "Send",
+  "sendButton": "ส่ง",
   "updateProfileButton": "แก้ไขโปรไฟล์",
   "profileUpdateSuccess": "แก้ไขโปรไฟล์สำเร็จ",
   "changePasswordButton": "แก้ไขรหัสผ่าน",

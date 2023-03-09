@@ -25,19 +25,21 @@ class ReportCommentView extends StatelessWidget {
       viewModelBuilder: () => ReportCommentViewModel(threadId),
       builder: (context, viewModel, child) => GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: Scaffold(
-          body: Column(
-            children: [
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    await viewModel.fetchComments();
-                  },
-                  child: _CommentList(),
+        child: SafeArea(
+          child: Scaffold(
+            body: Column(
+              children: [
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await viewModel.fetchComments();
+                    },
+                    child: _CommentList(),
+                  ),
                 ),
-              ),
-              _CommentForm(),
-            ],
+                _CommentForm(),
+              ],
+            ),
           ),
         ),
       ),
@@ -150,14 +152,13 @@ class _CommentList extends HookViewModelWidget<ReportCommentViewModel> {
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium!
-                .apply(fontSizeFactor: .8, color: appTheme.sub2),
+                .copyWith(fontSize: 10.sp, color: appTheme.sub2),
           ),
           Text(
             comment.body,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .apply(fontSizeFactor: 1.1),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  fontSize: 12.sp,
+                ),
           ),
           const SizedBox(height: 8),
           _attachmentList(viewModel, comment),
@@ -194,20 +195,26 @@ class _CommentList extends HookViewModelWidget<ReportCommentViewModel> {
 }
 
 class _CommentForm extends HookViewModelWidget<ReportCommentViewModel> {
+  final AppTheme apptheme = locator<AppTheme>();
+
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportCommentViewModel viewModel) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(
+          const BoxShadow(
             color: Colors.black38,
             blurRadius: 5.0,
             offset: Offset(0.0, 0.75),
-          )
+          ),
+          BoxShadow(
+            color: apptheme.bg2,
+            offset: const Offset(0.0, 8),
+          ),
         ],
-        color: Colors.white,
+        color: apptheme.bg2,
       ),
       width: MediaQuery.of(context).size.width,
       child: Row(
@@ -326,12 +333,13 @@ class _CommentForm extends HookViewModelWidget<ReportCommentViewModel> {
           ? const SizedBox(
               height: 20,
               width: 20,
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
             )
           : Text(
               AppLocalizations.of(context)!.sendButton,
-              textScaleFactor: 1.3,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.sp),
             ),
     );
   }
