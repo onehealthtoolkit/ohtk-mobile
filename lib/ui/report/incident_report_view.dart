@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,17 +8,16 @@ import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/incident_report_tag.dart';
 import 'package:podd_app/components/progress_indicator.dart';
+import 'package:podd_app/components/report_image_carousel.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/report/followup_list_view.dart';
-import 'package:podd_app/ui/report/full_screen_view.dart';
 import 'package:podd_app/ui/report/incident_report_view_model.dart';
 import 'package:podd_app/ui/report/report_comment_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 var formatter = DateFormat("dd/MM/yyyy HH:mm");
 var noTimeFormatter = DateFormat("dd/MM/yyyy");
@@ -133,7 +131,7 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
               _tags(incident),
               _description(incident, context),
               _Data(),
-              _Images(),
+              ReportImagesCarousel(viewModel.data!.images),
               const SizedBox(height: 8),
               _Map(),
             ],
@@ -237,80 +235,6 @@ class _Data extends HookViewModelWidget<IncidentReportViewModel> {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _Images extends HookViewModelWidget<IncidentReportViewModel> {
-  final AppTheme appTheme = locator<AppTheme>();
-
-  @override
-  Widget buildViewModelWidget(
-      BuildContext context, IncidentReportViewModel viewModel) {
-    final images = viewModel.data!.images;
-
-    var imageWidgets = images?.map((image) => Container(
-          margin: const EdgeInsets.all(0),
-          child: FullScreenWidget(
-            fullscreenChild: CachedNetworkImage(
-              imageUrl: image.imageUrl,
-              fit: BoxFit.contain,
-              placeholder: (context, url) => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
-            child: CachedNetworkImage(
-              imageUrl: image.thumbnailPath,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
-          ),
-        ));
-
-    return Container(
-      color: images != null && images.isNotEmpty ? appTheme.bg1 : null,
-      constraints:
-          const BoxConstraints(minWidth: double.infinity, minHeight: 200),
-      child: SizedBox(
-        height: 240,
-        child: (images != null && images.isNotEmpty)
-            ? CarouselSlider(
-                items: imageWidgets?.toList() ?? [],
-                options: CarouselOptions(
-                  height: 240,
-                  enlargeCenterPage: true,
-                  aspectRatio: 1,
-                  viewportFraction: 0.8,
-                  autoPlay: true,
-                  disableCenter: true,
-                  enableInfiniteScroll: false,
-                ),
-              )
-            : ColoredBox(
-                color: appTheme.sub4,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "No Images",
-                        style: TextStyle(
-                          color: appTheme.sub2,
-                          fontSize: 16.sp,
-                        ),
-                      ),
-                      Image.asset(
-                        "assets/images/OHTK.png",
-                      )
-                    ],
-                  ),
-                ),
-              ),
       ),
     );
   }
