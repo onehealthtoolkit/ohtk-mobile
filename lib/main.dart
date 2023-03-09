@@ -45,6 +45,15 @@ void main() async {
   );
 }
 
+/*
+  To get local from SharedPreferences if exists
+   */
+Future<Locale> fetchLocaleFromPreference() async {
+  var prefs = await SharedPreferences.getInstance();
+  var languageCode = prefs.getString(languageKey) ?? "en";
+  return Locale(languageCode, '');
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -54,7 +63,7 @@ class MyApp extends StatelessWidget {
     return FutureBuilder(
         future: Future.wait([
           locator.allReady(),
-          _fetchLocale(),
+          fetchLocaleFromPreference(),
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           setupAppLocalization();
@@ -81,20 +90,10 @@ class MyApp extends StatelessWidget {
                       Locale('th', ''), // Thai, no country code
                       Locale('km', ''), // Cambodia
                       Locale('lo', ''), // Lao
-                      Locale('hi', ''), // India
                     ],
                     localeResolutionCallback: (deviceLocale, supportedLocales) {
-                      String? languageCode = snapshot.data[1];
-                      if (languageCode != null) {
-                        return Locale(languageCode, '');
-                      }
-                      if (supportedLocales
-                          .map((e) => e.languageCode)
-                          .contains(deviceLocale?.languageCode)) {
-                        return deviceLocale;
-                      } else {
-                        return const Locale('en', '');
-                      }
+                      Locale locale = snapshot.data[1];
+                      return locale;
                     },
                     theme: locator<AppTheme>().themeData,
                     home: snapshot.hasData ? _App() : const _WaitingScreen(),
@@ -102,14 +101,6 @@ class MyApp extends StatelessWidget {
                 }),
           );
         });
-  }
-
-/*
-  To get local from SharedPreferences if exists
-   */
-  Future<String?> _fetchLocale() async {
-    var prefs = await SharedPreferences.getInstance();
-    return prefs.getString(languageKey) ?? "en";
   }
 }
 
