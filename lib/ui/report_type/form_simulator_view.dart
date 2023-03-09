@@ -42,8 +42,7 @@ class FormSimulatorView extends StatelessWidget {
               body: SafeArea(
                 child: Column(
                   children: [
-                    if (viewModel.state == ReportFormState.formInput &&
-                        viewModel.formStore.numberOfSections > 1)
+                    if (viewModel.state == ReportFormState.formInput)
                       _DotStepper(),
                     if (viewModel.state == ReportFormState.confirmation)
                       Expanded(
@@ -262,24 +261,26 @@ class _DotStepper extends HookViewModelWidget<FormSimulatorViewModel> {
                   child: Column(
                     children: [
                       Text(store.currentSection.label),
-                      DotStepper(
-                        dotCount: store.numberOfSections,
-                        spacing: 10,
-                        dotRadius: 12,
-                        activeStep: store.currentSectionIdx,
-                        tappingEnabled: true,
-                        indicatorDecoration:
-                            const IndicatorDecoration(color: Colors.blue),
-                        shape: Shape.pipe,
-                        indicator: Indicator.jump,
-                        onDotTapped: (tappedDotIndex) {
-                          if (tappedDotIndex > store.currentSectionIdx) {
-                            viewModel.next();
-                          } else if (tappedDotIndex < store.currentSectionIdx) {
-                            viewModel.back();
-                          }
-                        },
-                      ),
+                      if (store.numberOfSections > 1)
+                        DotStepper(
+                          dotCount: store.numberOfSections,
+                          spacing: 10,
+                          dotRadius: 12,
+                          activeStep: store.currentSectionIdx,
+                          tappingEnabled: true,
+                          indicatorDecoration:
+                              const IndicatorDecoration(color: Colors.blue),
+                          shape: Shape.pipe,
+                          indicator: Indicator.jump,
+                          onDotTapped: (tappedDotIndex) {
+                            if (tappedDotIndex > store.currentSectionIdx) {
+                              viewModel.next();
+                            } else if (tappedDotIndex <
+                                store.currentSectionIdx) {
+                              viewModel.back();
+                            }
+                          },
+                        ),
                     ],
                   ),
                 ),

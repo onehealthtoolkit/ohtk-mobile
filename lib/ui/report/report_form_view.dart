@@ -52,8 +52,7 @@ class ReportFormView extends StatelessWidget {
                 child: Column(
                   children: [
                     FormTestBanner(testFlag: testFlag),
-                    if (viewModel.state == ReportFormState.formInput &&
-                        viewModel.formStore.numberOfSections > 1)
+                    if (viewModel.state == ReportFormState.formInput)
                       FormStepper(form: viewModel.formStore),
                     if (viewModel.state == ReportFormState.confirmation)
                       Expanded(

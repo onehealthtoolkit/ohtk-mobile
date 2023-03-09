@@ -35,25 +35,26 @@ class FormStepper extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               fontSize: 12.sp),
                         ),
-                        DotStepper(
-                          dotCount: form.numberOfSections,
-                          spacing: 10,
-                          dotRadius: 12,
-                          activeStep: form.currentSectionIdx,
-                          tappingEnabled: true,
-                          indicatorDecoration:
-                              IndicatorDecoration(color: appTheme.primary),
-                          shape: Shape.pipe3,
-                          indicator: Indicator.jump,
-                          onDotTapped: (tappedDotIndex) {
-                            if (tappedDotIndex > form.currentSectionIdx) {
-                              form.next();
-                            } else if (tappedDotIndex <
-                                form.currentSectionIdx) {
-                              form.previous();
-                            }
-                          },
-                        ),
+                        if (form.numberOfSections > 1)
+                          DotStepper(
+                            dotCount: form.numberOfSections,
+                            spacing: 10,
+                            dotRadius: 12,
+                            activeStep: form.currentSectionIdx,
+                            tappingEnabled: true,
+                            indicatorDecoration:
+                                IndicatorDecoration(color: appTheme.primary),
+                            shape: Shape.pipe3,
+                            indicator: Indicator.jump,
+                            onDotTapped: (tappedDotIndex) {
+                              if (tappedDotIndex > form.currentSectionIdx) {
+                                form.next();
+                              } else if (tappedDotIndex <
+                                  form.currentSectionIdx) {
+                                form.previous();
+                              }
+                            },
+                          ),
                       ],
                     ),
                   ),
