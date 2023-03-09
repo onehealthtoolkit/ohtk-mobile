@@ -3,6 +3,7 @@ import 'package:podd_app/models/inviation_code_result.dart';
 import 'package:podd_app/models/register_result.dart';
 import 'package:podd_app/services/register_service.dart';
 import 'package:stacked/stacked.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum RegisterState { invitation, detail }
 
@@ -10,6 +11,7 @@ class RegisterViewModel extends BaseViewModel {
   IRegisterService registerService = locator<IRegisterService>();
 
   RegisterState state = RegisterState.invitation;
+  final localize = locator<AppLocalizations>();
 
   String? invitationCode;
   String? authorityName;
@@ -79,19 +81,23 @@ class RegisterViewModel extends BaseViewModel {
     setBusy(true);
     var isValidData = true;
     if (username == null || username!.isEmpty) {
-      setErrorForObject("username", "Username is required");
+      setErrorForObject("username", localize.fieldRequired);
       isValidData = false;
     }
     if (firstName == null || firstName!.isEmpty) {
-      setErrorForObject("firstName", "First name is required");
+      setErrorForObject("firstName", localize.fieldRequired);
       isValidData = false;
     }
     if (lastName == null || lastName!.isEmpty) {
-      setErrorForObject("lastName", "Last name is required");
+      setErrorForObject("lastName", localize.fieldRequired);
       isValidData = false;
     }
     if (email == null || email!.isEmpty) {
-      setErrorForObject("email", "Email is required");
+      setErrorForObject("email", localize.fieldRequired);
+      isValidData = false;
+    }
+    if (phone == null || phone!.isEmpty) {
+      setErrorForObject("phone", localize.fieldRequired);
       isValidData = false;
     }
 
