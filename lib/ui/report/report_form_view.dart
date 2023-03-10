@@ -59,6 +59,7 @@ class ReportFormView extends StatelessWidget {
                         flex: 1,
                         child: FormConfirmSubmit(
                           child: _ConfirmIncidentArea(),
+                          busy: viewModel.isBusy,
                           onSubmit: () async {
                             var result = await viewModel.submit();
                             if (result is ReportSubmitSuccess ||

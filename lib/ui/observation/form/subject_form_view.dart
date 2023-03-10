@@ -52,6 +52,7 @@ class ObservationSubjectFormView extends StatelessWidget {
                       Expanded(
                         flex: 1,
                         child: FormConfirmSubmit(
+                          busy: viewModel.isBusy,
                           child: const Text(
                               "Press the submit button to submit your report"),
                           onSubmit: () async {
