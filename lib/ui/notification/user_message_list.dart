@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/ui/notification/user_message_view_model.dart';
@@ -18,6 +19,7 @@ class UserMessageList extends StatelessWidget {
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title: const Text("Messages"),
+          leading: const BackAppBarAction(),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),

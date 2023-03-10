@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/ui/notification/user_message_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -14,6 +15,7 @@ class UserMessageView extends StatelessWidget {
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title: const Text("Message"),
+          leading: const BackAppBarAction(),
         ),
         body: viewModel.isBusy
             ? const Center(
