@@ -34,13 +34,12 @@ class LanguageDropdown extends StatelessWidget {
         ),
       ),
       child: SizedBox(
-        height: 24,
+        height: 24.w,
         child: DropdownButtonFormField<String>(
             isExpanded: true,
             decoration: InputDecoration(
               // labelText: AppLocalizations.of(context)!.laguageLabel,
               contentPadding: const EdgeInsets.symmetric(vertical: 4.5),
-
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(60.0),
               ),
@@ -61,7 +60,6 @@ class LanguageDropdown extends StatelessWidget {
                           e[0],
                           style: TextStyle(
                               color: appTheme.sub1,
-                              fontSize: 13.sp,
                               fontWeight: FontWeight.w600),
                         ),
                       ))

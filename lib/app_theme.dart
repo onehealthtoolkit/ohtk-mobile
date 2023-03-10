@@ -48,6 +48,7 @@ class AppTheme {
           iconTheme: IconThemeData(
             color: primary,
           ),
+          centerTitle: true,
           titleTextStyle: TextStyle(
             fontSize: 22.sp,
             fontFamily: font,

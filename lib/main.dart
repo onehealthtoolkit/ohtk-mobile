@@ -54,6 +54,22 @@ Future<Locale> fetchLocaleFromPreference() async {
   return Locale(languageCode, '');
 }
 
+enum DeviceType { Phone, Tablet }
+
+DeviceType getDeviceType() {
+  final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
+  return data.size.shortestSide < 550 ? DeviceType.Phone : DeviceType.Tablet;
+}
+
+Size getScreenSize() {
+  switch (getDeviceType()) {
+    case DeviceType.Phone:
+      return const Size(360, 640);
+    case DeviceType.Tablet:
+      return const Size(768, 1024);
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -72,7 +88,7 @@ class MyApp extends StatelessWidget {
           }
           return OverlaySupport.global(
             child: ScreenUtilInit(
-                designSize: const Size(360, 640),
+                designSize: getScreenSize(),
                 minTextAdapt: true,
                 splitScreenMode: true,
                 builder: (context, child) {

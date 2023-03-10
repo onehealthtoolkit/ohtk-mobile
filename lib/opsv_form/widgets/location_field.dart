@@ -42,7 +42,7 @@ class _FormLocationFieldState extends State<FormLocationField> {
                   color: appTheme.sub4,
                 ),
                 child: SizedBox(
-                  height: 300,
+                  height: 300.w,
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

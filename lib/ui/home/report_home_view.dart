@@ -30,7 +30,7 @@ class ReportHomeView extends HookWidget {
       viewModelBuilder: () => ReportHomeViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
+          preferredSize: Size.fromHeight(56.w),
           child: ColoredBox(
             color: appTheme.bg2,
             child: _tabBar,

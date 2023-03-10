@@ -28,12 +28,12 @@ class ReportImagesCarousel<T extends BaseReportImage> extends StatelessWidget {
       constraints:
           const BoxConstraints(minWidth: double.infinity, minHeight: 200),
       child: SizedBox(
-        height: 240,
+        height: 240.w,
         child: (images != null && images!.isNotEmpty)
             ? CarouselSlider(
                 items: imageWidgets?.toList() ?? [],
                 options: CarouselOptions(
-                  height: 240,
+                  height: 240.w,
                   enlargeCenterPage: true,
                   aspectRatio: 1,
                   viewportFraction: 0.8,

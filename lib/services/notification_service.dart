@@ -170,16 +170,19 @@ class NotificationService extends INotificationService {
       currentUserMessageNextOffset = 0;
       _userMessages.clear();
     }
-    final result = await _notificationApi.fetchMyMessages(
-      offset: currentUserMessageNextOffset,
-      limit: userMessageLimit,
-    );
-    _userMessages.addAll(result.data);
-    _updateHasMoreUnseenMessages();
-
-    hasMoreUserMessages = result.hasNextPage;
-    currentUserMessageNextOffset =
-        currentUserMessageNextOffset + userMessageLimit;
+    try {
+      final result = await _notificationApi.fetchMyMessages(
+        offset: currentUserMessageNextOffset,
+        limit: userMessageLimit,
+      );
+      _userMessages.addAll(result.data);
+      _updateHasMoreUnseenMessages();
+      hasMoreUserMessages = result.hasNextPage;
+      currentUserMessageNextOffset =
+          currentUserMessageNextOffset + userMessageLimit;
+    } catch (e) {
+      // do nothing
+    }
   }
 
   @override

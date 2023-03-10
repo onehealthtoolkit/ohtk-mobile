@@ -83,8 +83,8 @@ class _FormImagesFieldState extends State<FormImagesField> {
   Future<Image> _getImage(String imageId) async {
     var reportImage = await _imageService.getImage(imageId);
     return Image.memory(
-      width: 200,
-      height: 200,
+      width: 200.w,
+      height: 200.w,
       reportImage.image,
       fit: BoxFit.cover,
     );
@@ -208,20 +208,3 @@ class RemoveableImage extends StatelessWidget {
     );
   }
 }
-
-/*
-CircleAvatar(
-            radius: 12,
-            backgroundColor: Colors.white,
-            child: IconButton(
-              icon: Icon(
-                Icons.cancel,
-                color: apptheme.primary,
-                size: 18,
-              ),
-              onPressed: () {
-                onRemove(imageId);
-              },
-            ),
-          ),
-          */

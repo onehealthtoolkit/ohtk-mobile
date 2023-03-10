@@ -143,7 +143,7 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
 
   _title(BuildContext context, IncidentReport incident) {
     return Container(
-      height: 45,
+      height: 45.w,
       padding: const EdgeInsets.fromLTRB(28, 10, 28, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -263,7 +263,7 @@ class _Map extends HookViewModelWidget<IncidentReportViewModel> {
       ),
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
       child: SizedBox(
-        height: 250,
+        height: 250.w,
         width: MediaQuery.of(context).size.width,
         child: (latlng != null)
             ? GoogleMap(

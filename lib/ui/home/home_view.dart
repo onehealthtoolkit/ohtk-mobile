@@ -118,9 +118,6 @@ class HomeView extends HookWidget {
             title: Text(AppLocalizations.of(context)!.appName),
             actions: [
               NotificationAppBarAction(),
-              SizedBox(
-                width: 15.w,
-              )
             ],
             bottom: PreferredSize(
               preferredSize: viewModel.numberOfPendingSubmissions > 0
