@@ -50,9 +50,9 @@ class _DateTimeDropdown extends StatelessWidget {
       return Row(
         children: [
           Expanded(child: _dayDropdown(field), flex: 1),
-          const SizedBox(width: 10, child: null),
+          const SizedBox(width: 6, child: null),
           Expanded(child: _monthDropdown(field, context), flex: 2),
-          const SizedBox(width: 10, child: null),
+          const SizedBox(width: 6, child: null),
           Expanded(child: _yearDropdown(field), flex: 1),
           if (field.withTime)
             const Text(
@@ -261,7 +261,9 @@ class _DateTimePicker extends StatelessWidget {
               datetime != null
                   ? '${datetime.day}/${datetime.month}/${datetime.year}'
                   : 'DD/MM/YYYY',
-              textScaleFactor: 1.2,
+              style: TextStyle(
+                fontSize: 15.sp,
+              ),
             ),
           ),
           if (field.withTime)
@@ -275,7 +277,9 @@ class _DateTimePicker extends StatelessWidget {
                   datetime != null
                       ? '${datetime.hour}:${datetime.minute}'
                       : 'HH:MM',
-                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                  ),
                 ),
               ),
             )
