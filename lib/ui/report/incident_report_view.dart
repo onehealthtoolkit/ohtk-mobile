@@ -30,39 +30,50 @@ class IncidentReportView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    TabController _tabController = useTabController(initialLength: 3);
-
-    return ViewModelBuilder<IncidentReportViewModel>.reactive(
+    return ViewModelBuilder<IncidentReportViewModel>.nonReactive(
       viewModelBuilder: () => IncidentReportViewModel(id),
       builder: (context, viewModel, child) {
         return Scaffold(
           appBar: AppBar(
             leading: const BackAppBarAction(),
-            automaticallyImplyLeading: false,
-            shadowColor: Colors.transparent,
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight),
-              child: ColoredBox(
-                color: appTheme.bg2,
-                child: TabBar(
-                  controller: _tabController,
-                  tabs: [
-                    _tabItem(AppLocalizations.of(context)!.detailTabLabel),
-                    _tabItem(AppLocalizations.of(context)!.commentTabLabel),
-                    _tabItem(AppLocalizations.of(context)!.followupTabLabel),
-                  ],
-                ),
-              ),
-            ),
+            elevation: 0,
             title: Text(AppLocalizations.of(context)!.reportDetailTitle),
           ),
-          body: viewModel.isBusy
-              ? const Center(child: OhtkProgressIndicator(size: 100))
-              : !viewModel.hasError
-                  ? _content(_tabController, viewModel)
-                  : const Text("Incident report not found"),
+          body: _TabView(),
         );
       },
+    );
+  }
+}
+
+class _TabView extends HookViewModelWidget<IncidentReportViewModel> {
+  final AppTheme appTheme = locator<AppTheme>();
+
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context, IncidentReportViewModel viewModel) {
+    final TabController _tabController = useTabController(initialLength: 3);
+
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(56.w),
+        child: ColoredBox(
+          color: appTheme.bg2,
+          child: TabBar(
+            controller: _tabController,
+            tabs: [
+              _tabItem(AppLocalizations.of(context)!.detailTabLabel),
+              _tabItem(AppLocalizations.of(context)!.commentTabLabel),
+              _tabItem(AppLocalizations.of(context)!.followupTabLabel),
+            ],
+          ),
+        ),
+      ),
+      body: viewModel.isBusy
+          ? const Center(child: OhtkProgressIndicator(size: 100))
+          : !viewModel.hasError
+              ? _content(_tabController, viewModel)
+              : const Text("Incident report not found"),
     );
   }
 
