@@ -325,7 +325,8 @@ class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
             padding: const EdgeInsets.only(top: 9, bottom: 5),
             child: Row(
               children: [
-                _categoryIcon(categoryReportType.category.icon),
+                _categoryIcon(categoryReportType.category.id,
+                    categoryReportType.category.icon),
                 SizedBox(width: 8.w),
                 Expanded(
                   child: Text(
@@ -355,9 +356,10 @@ class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
     );
   }
 
-  _categoryIcon(String iconUrl) {
+  _categoryIcon(int id, String iconUrl) {
     var icon = iconUrl.isNotEmpty
         ? CachedNetworkImage(
+            cacheKey: 'categoryIcon-$id',
             imageUrl: iconUrl,
             placeholder: (context, url) => const Padding(
               padding: EdgeInsets.all(9),

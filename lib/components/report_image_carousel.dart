@@ -79,6 +79,7 @@ class ReportImageDisplay<T extends BaseReportImage> extends StatelessWidget {
   Widget build(BuildContext context) {
     return FullScreenWidget(
       fullscreenChild: CachedNetworkImage(
+        cacheKey: image.id,
         imageUrl: image.imageUrl,
         fit: BoxFit.contain,
         placeholder: (context, url) => const Center(
@@ -87,6 +88,7 @@ class ReportImageDisplay<T extends BaseReportImage> extends StatelessWidget {
         errorWidget: (context, url, error) => const Icon(Icons.error),
       ),
       child: CachedNetworkImage(
+        cacheKey: 'thumbnail-${image.id}',
         imageUrl: image.thumbnailPath,
         fit: BoxFit.cover,
         placeholder: (context, url) => const Center(

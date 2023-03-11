@@ -63,6 +63,7 @@ class _FollowupList extends HookViewModelWidget<FollowupListViewModel> {
                 }
                 var leading = image != null
                     ? CachedNetworkImage(
+                        cacheKey: 'thumbnail-${image.id}',
                         imageUrl:
                             viewModel.resolveImagePath(image.thumbnailPath),
                         placeholder: (context, url) => const Padding(

@@ -99,6 +99,7 @@ class _CommentList extends HookViewModelWidget<ReportCommentViewModel> {
           borderRadius: BorderRadius.circular(40),
           child: comment.user.avatarUrl != null
               ? CachedNetworkImage(
+                  cacheKey: 'user-avatar-${comment.user.id}',
                   width: 30,
                   imageUrl: viewModel.resolveImagePath(comment.user.avatarUrl!),
                   placeholder: (context, url) =>
