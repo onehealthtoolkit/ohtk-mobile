@@ -14,13 +14,23 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 
 import 'report_list_view.dart';
 
-class MyReportsView extends StatelessWidget {
+class MyReportsView extends StatefulWidget {
+  const MyReportsView({Key? key}) : super(key: key);
+
+  @override
+  State<MyReportsView> createState() => _MyReportsViewState();
+}
+
+class _MyReportsViewState extends State<MyReportsView>
+    with AutomaticKeepAliveClientMixin {
   final viewModel = locator<MyReportsViewModel>();
 
-  MyReportsView({Key? key}) : super(key: key);
+  @override
+  bool wantKeepAlive = true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ViewModelBuilder<MyReportsViewModel>.reactive(
         viewModelBuilder: () => viewModel,
         disposeViewModel: false,
@@ -36,13 +46,6 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, MyReportsViewModel viewModel) {
-    final isMounted = useIsMounted();
-    useEffect(() {
-      if (isMounted()) {
-        viewModel.refetchIncidentReports();
-      }
-      return null;
-    }, []);
     return RefreshIndicator(
       onRefresh: () async {
         await viewModel.refetchIncidentReports();

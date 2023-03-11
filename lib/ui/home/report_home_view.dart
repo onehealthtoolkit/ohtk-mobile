@@ -58,7 +58,7 @@ class ReportHomeView extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                child: TabBarView(controller: _tabController, children: [
+                child: TabBarView(controller: _tabController, children: const [
                   AllReportsView(),
                   MyReportsView(),
                 ]),

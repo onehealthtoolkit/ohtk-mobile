@@ -27,6 +27,9 @@ class AllReportsViewModel extends ReactiveViewModel
   Future<void> refetchIncidentReports() async {
     setBusy(true);
     await reportService.fetchIncidents(true);
+    // prefetch my reports to prevent delay when user switch to my reports tab
+    // and prevent bug that happend when user report incident and switch to my reports tab
+    await reportService.fetchMyIncidents(true);
     setBusy(false);
   }
 }
