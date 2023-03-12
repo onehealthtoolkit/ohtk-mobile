@@ -129,6 +129,7 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
   @override
   Future<void> logout() async {
     _isLogin.value = false;
+    _token = null;
     await _secureStorageService.deleteAll();
     await _reportService.removeAllPendingReports();
     await _observationRecordService.removeAllPendingRecords();
