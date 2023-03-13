@@ -39,7 +39,7 @@ class LanguageDropdown extends StatelessWidget {
             isExpanded: true,
             decoration: InputDecoration(
               // labelText: AppLocalizations.of(context)!.laguageLabel,
-              contentPadding: const EdgeInsets.symmetric(vertical: 5.0),
+              contentPadding: const EdgeInsets.symmetric(vertical: 4.5),
 
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(60.0),
