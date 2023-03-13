@@ -230,8 +230,7 @@ class _Avatar extends HookViewModelWidget<ProfileViewModel> {
               children: [
                 CircleAvatar(
                   backgroundColor: Colors.white,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
+                  child: ClipOval(
                     child: viewModel.avatarUrl == null
                         ? Image.asset(
                             'assets/images/default-avatar-profile.png')
