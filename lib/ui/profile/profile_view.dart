@@ -94,12 +94,15 @@ class ProfileView extends StatelessWidget {
                             width: double.infinity,
                             child: FlatButton.primary(
                               onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ProfileFormView(),
-                                  ),
-                                );
+                                Navigator.of(context)
+                                    .push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ProfileFormView(),
+                                      ),
+                                    )
+                                    .then((value) =>
+                                        value ? viewModel.initValue() : null);
                               },
                               child: viewModel.isBusy
                                   ? const SizedBox(

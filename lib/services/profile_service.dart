@@ -33,7 +33,7 @@ class ProfileService extends IProfileService {
     );
 
     if (result is ProfileSuccess && result.success) {
-      _authService.fetchProfile();
+      await _authService.fetchProfile();
     }
     return result;
   }

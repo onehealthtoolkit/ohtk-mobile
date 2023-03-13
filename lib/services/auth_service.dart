@@ -187,7 +187,7 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
 
   @override
   Future<void> fetchProfile() async {
-    _fetchProfile();
+    await _fetchProfile();
   }
 
   @override

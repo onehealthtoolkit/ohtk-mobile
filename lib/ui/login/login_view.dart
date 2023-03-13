@@ -23,26 +23,24 @@ class LoginView extends StatelessWidget {
       viewModelBuilder: () => LoginViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         resizeToAvoidBottomInset: true,
-        body: SafeArea(
-          child: GestureDetector(
-            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-            child: Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  colors: [
-                    Color(0xFF393E46),
-                    Color(0xFF393E46),
-                    Color(0xFF393E46),
-                  ],
-                ),
+        body: GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                colors: [
+                  Color(0xFF393E46),
+                  Color(0xFF393E46),
+                  Color(0xFF393E46),
+                ],
               ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Center(
-                  child: _LoginForm(),
-                ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+              child: Center(
+                child: _LoginForm(),
               ),
             ),
           ),
