@@ -67,8 +67,10 @@
   "dateFieldMaxErrorMsg": "{name} ต้องน้อยกว่า {max}",
   "dateFieldMinErrorMsg": "{name} ต้องมากกว่า {min}",
   "testFlag": "ทดสอบ",
-  "yes": "ใช่",
-  "no": "ไม่ใช่",
+  "confirm": "ต้องการออกจากหน้ารายงานหรือไม่",
+  "confirmExit": "ต้องการออกจากหน้าจอหรือไม่",
+  "yes": "ตกลง",
+  "no": "ยกเลิก",
   "testModeOn": "กำลังเปิดใช้งานโหมดทดสอบ",
   "fieldRequired": "กรุณากรอกข้อมูล",
   "passwordMismatch": "รหัสผ่านไม่ถูกต้อง"

@@ -43,7 +43,11 @@ class RegisterView extends StatelessWidget {
   }
 
   Future<bool> _willPop(BuildContext context) {
-    return confirm(context);
+    return confirm(context,
+        content: Text(
+          AppLocalizations.of(context)!.confirmExit,
+          textAlign: TextAlign.center,
+        ));
   }
 }
 

@@ -78,6 +78,8 @@
   "dateFieldMaxErrorMsg": "{name} must be equal or less than {max}",
   "dateFieldMinErrorMsg": "{name} must be equal or more than {min}",
   "testFlag": "Test",
+  "confirm": "Are you sure to continue?",
+  "confirmExit": "Are you sure to continue?",
   "yes": "Yes",
   "no": "No",
   "testModeOn": "Test mode is on",

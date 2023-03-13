@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:podd_app/components/flat_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// credit to https://github.com/gtgalone/confirm_dialog
 Future<bool> confirm(
@@ -15,8 +16,8 @@ Future<bool> confirm(
       child: AlertDialog(
         title: title,
         content: content ??
-            const Text(
-              'Are you sure to continue?',
+            Text(
+              AppLocalizations.of(context)!.confirm,
               textAlign: TextAlign.center,
             ),
         contentTextStyle: const TextStyle(
@@ -29,9 +30,9 @@ Future<bool> confirm(
         actions: <Widget>[
           FlatButton.outline(
               onPressed: () => Navigator.pop(context, false),
-              child: textCancel ?? const Text('No')),
+              child: textCancel ?? Text(AppLocalizations.of(context)!.no)),
           FlatButton.primary(
-            child: textOK ?? const Text('Yes'),
+            child: textOK ?? Text(AppLocalizations.of(context)!.yes),
             onPressed: () => Navigator.pop(context, true),
           )
         ],
