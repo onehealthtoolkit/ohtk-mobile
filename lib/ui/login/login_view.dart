@@ -83,7 +83,6 @@ class _LoginForm extends HookViewModelWidget<LoginViewModel> {
                   children: [
                     SizedBox(
                       width: 150.w,
-                      height: 25.w,
                       child: _languageDropdown(viewModel, context),
                     ),
                     const SizedBox(height: 10),
