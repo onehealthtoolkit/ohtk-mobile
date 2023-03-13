@@ -101,8 +101,9 @@ class ProfileView extends StatelessWidget {
                                             const ProfileFormView(),
                                       ),
                                     )
-                                    .then((value) =>
-                                        value ? viewModel.initValue() : null);
+                                    .then((value) => value == true
+                                        ? viewModel.initValue()
+                                        : null);
                               },
                               child: viewModel.isBusy
                                   ? const SizedBox(
@@ -205,8 +206,33 @@ class _Language extends HookViewModelWidget<ProfileViewModel> {
       child: LanguageDropdown(
         value: viewModel.language,
         onChanged: (String? value) async {
-          await viewModel.changeLanguage(value ?? "en");
-          RestartWidget.restartApp(context);
+          await showDialog<bool>(
+            barrierDismissible: false,
+            context: context,
+            builder: (_) => AlertDialog(
+              content: Text(
+                AppLocalizations.of(context)!.restartApp,
+                textAlign: TextAlign.center,
+              ),
+              contentTextStyle: const TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+              ),
+              contentPadding: const EdgeInsets.fromLTRB(24, 40, 24, 24),
+              actionsAlignment: MainAxisAlignment.center,
+              actionsPadding:
+                  const EdgeInsets.only(right: 20, left: 20, bottom: 20),
+              actions: <Widget>[
+                FlatButton.primary(
+                  child: Text(AppLocalizations.of(context)!.ok),
+                  onPressed: () async {
+                    await viewModel.changeLanguage(value ?? "en");
+                    RestartWidget.restartApp(context);
+                  },
+                )
+              ],
+            ),
+          );
         },
       ),
     );

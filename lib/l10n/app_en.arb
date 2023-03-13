@@ -80,10 +80,12 @@
   "testFlag": "Test",
   "confirm": "Are you sure to continue?",
   "confirmExit": "Are you sure to continue?",
+  "ok": "ok",
   "yes": "Yes",
   "no": "No",
   "testModeOn": "Test mode is on",
   "loading": "Loading...",
   "fieldRequired": "field is required.",
-  "passwordMismatch": "Password does not match confirm password"
+  "passwordMismatch": "Password does not match confirm password",
+  "restartApp": "Application will be start."
 }
