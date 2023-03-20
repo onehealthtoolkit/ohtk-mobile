@@ -186,7 +186,7 @@ class DateField extends Field {
             formatWithMap(
               localize.dateFieldMinErrorMsg.toString(),
               {
-                "name": name,
+                "name": displayName,
                 "min": (withTime
                     ? DateFormat("yMd HH:mm", locale.toLanguageTag())
                         .format(minDate)
@@ -224,17 +224,13 @@ class DateField extends Field {
           final localize = locator<AppLocalizations>();
           final locale = locator<Locale>();
           markError(
-            formatWithMap(
-              localize.dateFieldMaxErrorMsg.toString(),
-              {
-                "name": name,
-                "max": (withTime
+            localize.dateFieldMaxErrorMsg(
+                displayName,
+                (withTime
                     ? DateFormat("yMd HH:mm", locale.toLanguageTag())
                         .format(maxDate)
                     : DateFormat("yMd", locale.toLanguageTag())
-                        .format(maxDate)),
-              },
-            ),
+                        .format(maxDate))),
           );
           return false;
         }

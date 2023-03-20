@@ -103,8 +103,7 @@ abstract class Field implements ConiditionSource {
   bool _validateRequired() {
     if (required == true && value == null) {
       final localize = locator<AppLocalizations>();
-      markError(formatWithMap(
-          requiredMessage ?? localize.validateRequiredMsg, {"name": name}));
+      markError(localize.validateRequiredMsg);
       return false;
     }
     return true;
@@ -120,4 +119,8 @@ abstract class Field implements ConiditionSource {
   }
 
   bool evaluate(ConditionOperator operator, String targetValue);
+
+  String get displayName {
+    return label != "" && label != null ? label! : parent!.label;
+  }
 }

@@ -76,7 +76,57 @@
   "observationSubjectMonitoringViewTitle": "Subject monitoring",
   "validateRequiredMsg": "This field is required",
   "dateFieldMaxErrorMsg": "{name} must be equal or less than {max}",
+  "@dateFieldMaxErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Incident Date"
+      },
+      "max": {
+        "type": "String",
+        "example": "17/10/2022"
+      }
+    }
+  },
   "dateFieldMinErrorMsg": "{name} must be equal or more than {min}",
+  "@dateFieldMinErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Incident Date"
+      },
+      "min": {
+        "type": "String",
+        "example": "17/10/2022"
+      }
+    }
+  },
+  "integerFieldMaxErrorMsg": "{name} must be equal or less than {max}",
+  "@integerFieldMaxErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "max": {
+        "type": "String",
+        "example": "100"
+      }
+    }
+  },
+  "integerFieldMinErrorMsg": "{name} must be equal or more than {min}",
+  "@integerFieldMinErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "min": {
+        "type": "String",
+        "example": "0"
+      }
+    }
+  },
   "testFlag": "Test",
   "confirm": "Are you sure to continue?",
   "confirmExit": "Are you sure to continue?",
@@ -87,5 +137,5 @@
   "loading": "Loading...",
   "fieldRequired": "field is required.",
   "passwordMismatch": "Password does not match confirm password",
-  "restartApp": "Application will be start."
+  "restartApp": "Application needs to be restarted."
 }

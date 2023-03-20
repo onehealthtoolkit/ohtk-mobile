@@ -74,13 +74,11 @@ class IntegerField extends PrimitiveField<int> {
     if (min != null) {
       var valid = value != null && value! >= min!;
       if (!valid) {
+        final localize = locator<AppLocalizations>();
         markError(
-          formatWithMap(
-            minMessage ?? "{name} must be equal or more than {min}",
-            {
-              "name": name,
-              "min": min!.toString(),
-            },
+          localize.integerFieldMinErrorMsg(
+            displayName,
+            min!.toString(),
           ),
         );
         return false;
@@ -96,13 +94,11 @@ class IntegerField extends PrimitiveField<int> {
     if (max != null) {
       var valid = value! <= max!;
       if (!valid) {
+        final localize = locator<AppLocalizations>();
         markError(
-          formatWithMap(
-            maxMessage ?? "{name} must be equal or lesser than {max}",
-            {
-              "name": name,
-              "max": max!.toString(),
-            },
+          localize.integerFieldMaxErrorMsg(
+            displayName,
+            max!.toString(),
           ),
         );
         return false;

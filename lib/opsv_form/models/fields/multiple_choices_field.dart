@@ -104,7 +104,8 @@ class MultipleChoicesField extends Field {
         return valueFor(option.value);
       });
       if (!hasTick) {
-        markError("This field is required");
+        final localize = locator<AppLocalizations>();
+        markError(requiredMessage ?? localize.validateRequiredMsg);
         return false;
       } else {
         bool found = false;

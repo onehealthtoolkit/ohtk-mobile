@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.1+38
+version: 1.0.1+40
 
 environment:
   sdk: ">=2.18.0 <3.0.0"
@@ -78,6 +78,8 @@ dependencies:
   dotted_border: ^2.0.0+1
   flutter_svg: ^0.23.0
   flutter_screenutil: ^5.6.1
+  firebase_analytics: ^9.3.8
+  firebase_remote_config: ^2.0.20
 
 # Fix build release issue: Error unsupported class file major version 59
 # https://stackoverflow.com/questions/72506950/flutter-error-could-not-resolve-all-artifacts-for-configuration-image-picker

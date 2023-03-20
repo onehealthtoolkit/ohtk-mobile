@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:lottie/lottie.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,7 @@ void main() async {
     'ENVIRONMENT',
     defaultValue: Environment.dev,
   );
+  setupRemoteConfig(environment);
   setupLocator(environment);
   setupTheme();
   runApp(
@@ -67,6 +69,18 @@ Size getScreenSize() {
       return const Size(360, 640);
     case DeviceType.Tablet:
       return const Size(768, 1024);
+  }
+}
+
+setupRemoteConfig(String environment) async {
+  final remoteConfig = FirebaseRemoteConfig.instance;
+  if (environment == 'dev') {
+    await remoteConfig.setConfigSettings(RemoteConfigSettings(
+      fetchTimeout: const Duration(seconds: 1),
+      minimumFetchInterval: const Duration(minutes: 5),
+    ));
+  } else {
+    // do nothing use default remote config settings
   }
 }
 

@@ -11,9 +11,80 @@
       "args": []
     },
     {
-      "name": "ohtk_mobile [ohtk.org]",
+      "name": "ohtk [ohtk.org]",
       "request": "launch",
       "type": "dart",
+      "args": [
+        "--dart-define",
+        "GRAPHQL_ENDPOINT=https://backend.ohtk.org/graphql/",
+        "--dart-define",
+        "TENANT_API_ENDPOINT=https://admin.ohtk.org/api/servers/",
+      ]
+    },
+    {
+      "name": "poddlaos_mobile [poddlaos.org]",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--dart-define",
+        "GRAPHQL_ENDPOINT=https://backend.poddlaos.org/graphql/",
+        "--dart-define",
+        "TENANT_API_ENDPOINT=https://admin.poddlaos.org/api/servers/",
+      ]
+    },
+    {
+      "name": "iphone",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "BB4B942C-583C-45EE-9D51-7C65243D2C4F",
+      "args": [
+        "--dart-define",
+        "GRAPHQL_ENDPOINT=https://backend.ohtk.org/graphql/",
+        "--dart-define",
+        "TENANT_API_ENDPOINT=https://admin.ohtk.org/api/servers/",
+      ]
+    },
+    {
+      "name": "ipad",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "8793A212-C4CA-456C-A7EE-30DE09F4A216",
+      "args": [
+        "--dart-define",
+        "GRAPHQL_ENDPOINT=https://backend.ohtk.org/graphql/",
+        "--dart-define",
+        "TENANT_API_ENDPOINT=https://admin.ohtk.org/api/servers/",
+      ]
+    },
+    {
+      "name": "iphone 8plus [ohtk.org]",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "BBB1FA8E-B4CE-4D92-AE9D-EA1519241385",
+      "args": [
+        "--dart-define",
+        "GRAPHQL_ENDPOINT=https://backend.ohtk.org/graphql/",
+        "--dart-define",
+        "TENANT_API_ENDPOINT=https://admin.ohtk.org/api/servers/",
+      ]
+    },
+    {
+      "name": "android",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "emulator-5554",
+      "args": [
+        "--dart-define",
+        "GRAPHQL_ENDPOINT=https://backend.ohtk.org/graphql/",
+        "--dart-define",
+        "TENANT_API_ENDPOINT=https://admin.ohtk.org/api/servers/",
+      ]
+    },
+    {
+      "name": "tablet (nexus7)",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "emulator-5556",
       "args": [
         "--dart-define",
         "GRAPHQL_ENDPOINT=https://backend.ohtk.org/graphql/",
