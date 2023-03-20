@@ -11,6 +11,7 @@ class FormMultipleChoicesField extends StatefulWidget {
 }
 
 class _FormMultipleChoicesFieldState extends State<FormMultipleChoicesField> {
+  final AppTheme appTheme = locator<AppTheme>();
   @override
   Widget build(BuildContext context) {
     return Observer(
@@ -28,12 +29,11 @@ class _FormMultipleChoicesFieldState extends State<FormMultipleChoicesField> {
             children: [
               if (widget.field.label != null && widget.field.label != "")
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0, bottom: 8, top: 8),
+                  padding: const EdgeInsets.only(left: 8.0, bottom: 0, top: 0),
                   child: Text(
                     widget.field.label!,
-                    textScaleFactor: 1.1,
-                    style: const TextStyle(
-                      color: Colors.black,
+                    style: TextStyle(
+                      color: appTheme.warn,
                     ),
                   ),
                 ),
@@ -52,6 +52,7 @@ class _OptionWidget extends StatelessWidget {
   final opsv.MultipleChoicesField field;
   final opsv.ChoiceOption option;
   final TextEditingController _controller = TextEditingController();
+  final AppTheme apptheme = locator<AppTheme>();
 
   _OptionWidget(this.field, this.option, {Key? key}) : super(key: key);
 
@@ -69,37 +70,54 @@ class _OptionWidget extends StatelessWidget {
               text: _text,
               selection: TextSelection.collapsed(offset: _text.length));
         }
-        return Row(
+        return Column(
           children: [
-            Checkbox(
-                value: _checkValue,
-                onChanged: (value) {
-                  field.setSelectedFor(option.value, value ?? false);
-                }),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InkWell(
-                    child: Text(
-                      option.label,
-                      textScaleFactor: 1.1,
+            const SizedBox(
+              height: 4,
+            ),
+            Material(
+              child: InkWell(
+                onTap: () {
+                  field.setSelectedFor(option.value, !_checkValue);
+                },
+                child: Row(
+                  children: [
+                    Checkbox(
+                        value: _checkValue,
+                        activeColor: apptheme.primary,
+                        onChanged: (value) {
+                          field.setSelectedFor(option.value, value ?? false);
+                        }),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            option.label,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          if (option.textInput && _checkValue)
+                            TextField(
+                              controller: _controller,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                              onChanged: (val) {
+                                field.setTextValueFor(option.value, val);
+                              },
+                              decoration: InputDecoration(
+                                  border: const OutlineInputBorder(),
+                                  errorText: _invalidTextMessage),
+                            ),
+                        ],
+                      ),
                     ),
-                    onTap: () {
-                      field.setSelectedFor(option.value, !_checkValue);
-                    },
-                  ),
-                  if (option.textInput && _checkValue)
-                    TextField(
-                      controller: _controller,
-                      onChanged: (val) {
-                        field.setTextValueFor(option.value, val);
-                      },
-                      decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          errorText: _invalidTextMessage),
-                    ),
-                ],
+                  ],
+                ),
+              ),
+            ),
+            CustomPaint(
+              painter: DashedLinePainter(backgroundColor: apptheme.primary),
+              child: Container(
+                height: 1,
               ),
             ),
           ],

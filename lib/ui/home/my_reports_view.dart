@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -12,13 +14,23 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 
 import 'report_list_view.dart';
 
-class MyReportsView extends StatelessWidget {
+class MyReportsView extends StatefulWidget {
+  const MyReportsView({Key? key}) : super(key: key);
+
+  @override
+  State<MyReportsView> createState() => _MyReportsViewState();
+}
+
+class _MyReportsViewState extends State<MyReportsView>
+    with AutomaticKeepAliveClientMixin {
   final viewModel = locator<MyReportsViewModel>();
 
-  MyReportsView({Key? key}) : super(key: key);
+  @override
+  bool wantKeepAlive = true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ViewModelBuilder<MyReportsViewModel>.reactive(
         viewModelBuilder: () => viewModel,
         disposeViewModel: false,
@@ -34,13 +46,6 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, MyReportsViewModel viewModel) {
-    final isMounted = useIsMounted();
-    useEffect(() {
-      if (isMounted()) {
-        viewModel.refetchIncidentReports();
-      }
-      return null;
-    }, []);
     return RefreshIndicator(
       onRefresh: () async {
         await viewModel.refetchIncidentReports();
@@ -85,18 +90,25 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
       },
       child: Ink(
         decoration: BoxDecoration(
-          color: Colors.blue,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: const Padding(
-          padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
-          child: Text(
-            "Follow",
-            style: TextStyle(
+            borderRadius: BorderRadius.circular(4),
+            color: Theme.of(context).primaryColor),
+        padding: const EdgeInsets.fromLTRB(8, 3, 8, 3),
+        child: Row(
+          children: [
+            Icon(
+              Icons.file_open_outlined,
+              size: 15.w,
               color: Colors.white,
             ),
-            textScaleFactor: 0.8,
-          ),
+            const SizedBox(width: 8),
+            Text(
+              AppLocalizations.of(context)!.followupTitle,
+              style: TextStyle(
+                fontSize: 10.sp,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
       ),
     );

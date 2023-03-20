@@ -27,20 +27,9 @@ class _FormDateFieldState extends State<FormDateField> {
                     style: TextStyle(color: Colors.grey.shade700),
                   ),
                 ),
-              DecoratedBox(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  border: Border.fromBorderSide(
-                    BorderSide(
-                      color: Colors.black45,
-                      width: 1.0,
-                    ),
-                  ),
-                ),
-                child: widget.field.separatedFields
-                    ? _DateTimeDropdown(widget.field)
-                    : _DateTimePicker(widget.field),
-              )
+              widget.field.separatedFields
+                  ? _DateTimeDropdown(widget.field)
+                  : _DateTimePicker(widget.field)
             ],
           ),
         );
@@ -57,41 +46,25 @@ class _DateTimeDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-
-    // we use locale from GetIt, so we need to wait for it to be ready
-    // Note: in dev mode only. In production, this is not needed
-    return FutureBuilder(
-        builder: ((context, snapshot) {
-          if (snapshot.hasData) {
-            return Observer(builder: (BuildContext context) {
-              return Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-                child: Row(
-                  children: [
-                    Expanded(child: _dayDropdown(field), flex: 1),
-                    SizedBox(width: width * 0.05),
-                    Expanded(child: _monthDropdown(field), flex: 2),
-                    SizedBox(width: width * 0.05),
-                    Expanded(child: _yearDropdown(field), flex: 1),
-                    if (field.withTime)
-                      const Text(
-                        ": ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                        textScaleFactor: 1.2,
-                      ),
-                    if (field.withTime) Expanded(child: _hourDropdown(field)),
-                    if (field.withTime) Expanded(child: _minuteDropdown(field)),
-                  ],
-                ),
-              );
-            });
-          } else {
-            return const SizedBox();
-          }
-        }),
-        future: locator.allReady());
+    return Observer(builder: (BuildContext context) {
+      return Row(
+        children: [
+          Expanded(child: _dayDropdown(field), flex: 1),
+          const SizedBox(width: 6, child: null),
+          Expanded(child: _monthDropdown(field, context), flex: 2),
+          const SizedBox(width: 6, child: null),
+          Expanded(child: _yearDropdown(field), flex: 1),
+          if (field.withTime)
+            const Text(
+              ": ",
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textScaleFactor: 1.2,
+            ),
+          if (field.withTime) Expanded(child: _hourDropdown(field)),
+          if (field.withTime) Expanded(child: _minuteDropdown(field)),
+        ],
+      );
+    });
   }
 
   bool _isLeapYear(int? year) {
@@ -141,8 +114,8 @@ class _DateTimeDropdown extends StatelessWidget {
   }
 
   // month value is between 1-12
-  _monthDropdown(opsv.DateField field) {
-    final locale = locator<Locale>();
+  _monthDropdown(opsv.DateField field, BuildContext context) {
+    final locale = Localizations.localeOf(context);
 
     var formatter = DateFormat.MMMM(locale.toString());
     final items = List<int>.generate(12, (int index) => index).map((e) {
@@ -288,7 +261,9 @@ class _DateTimePicker extends StatelessWidget {
               datetime != null
                   ? '${datetime.day}/${datetime.month}/${datetime.year}'
                   : 'DD/MM/YYYY',
-              textScaleFactor: 1.2,
+              style: TextStyle(
+                fontSize: 15.sp,
+              ),
             ),
           ),
           if (field.withTime)
@@ -302,7 +277,9 @@ class _DateTimePicker extends StatelessWidget {
                   datetime != null
                       ? '${datetime.hour}:${datetime.minute}'
                       : 'HH:MM',
-                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                  ),
                 ),
               ),
             )

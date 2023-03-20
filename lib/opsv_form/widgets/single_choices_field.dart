@@ -11,6 +11,7 @@ class FormSingleChoicesField extends StatefulWidget {
 
 class _FormSingleChoicesFieldState extends State<FormSingleChoicesField> {
   final TextEditingController _controller = TextEditingController();
+  final AppTheme appTheme = locator<AppTheme>();
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +54,13 @@ class _FormSingleChoicesFieldState extends State<FormSingleChoicesField> {
           children: [
             if (widget.field.label != null && widget.field.label != "")
               Padding(
-                padding: const EdgeInsets.only(left: 8.0),
+                padding: const EdgeInsets.only(left: 8.0, bottom: 0, top: 0),
                 child: Text(
                   widget.field.label!,
-                  style: TextStyle(color: Colors.grey.shade700),
+                  textScaleFactor: 1.1,
+                  style: TextStyle(
+                    color: appTheme.warn,
+                  ),
                 ),
               ),
             ...tiles.toList(),
@@ -76,48 +80,70 @@ class _RadioOption extends StatelessWidget {
   final TextEditingController? currentText;
   final OnSelectFunction onSelect;
   final OnSetInputValue onSetInputValue;
+  final AppTheme apptheme = locator<AppTheme>();
 
-  const _RadioOption(this.option, this.field, this.currentText, this.onSelect,
+  _RadioOption(this.option, this.field, this.currentText, this.onSelect,
       this.onSetInputValue,
       {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Column(
       children: [
-        Radio<String>(
-          groupValue: field.value,
-          value: option.value,
-          onChanged: onSelect,
+        const SizedBox(
+          height: 4,
         ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InkWell(
-                child: Text(
-                  option.label,
-                  textScaleFactor: 1.1,
+        Material(
+          child: InkWell(
+            onTap: () {
+              onSelect(option.value);
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Radio<String>(
+                  groupValue: field.value,
+                  activeColor: apptheme.primary,
+                  value: option.value,
+                  onChanged: onSelect,
                 ),
-                onTap: () {
-                  onSelect(option.value);
-                },
-              ),
-              if (option.textInput && field.value == option.value)
-                TextField(
-                  controller: currentText,
-                  onTap: () {
-                    field.clearError();
-                  },
-                  onChanged: onSetInputValue,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    errorText: field.invalidTextInputMessage,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        option.label,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      if (option.textInput && field.value == option.value)
+                        TextField(
+                          controller: currentText,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          onTap: () {
+                            field.clearError();
+                          },
+                          onChanged: onSetInputValue,
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            errorText: field.invalidTextInputMessage,
+                          ),
+                        )
+                    ],
                   ),
-                )
-            ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (option.textInput && field.value == option.value)
+          const SizedBox(
+            height: 4,
+          ),
+        CustomPaint(
+          painter: DashedLinePainter(backgroundColor: apptheme.primary),
+          child: Container(
+            height: 1,
           ),
         ),
       ],

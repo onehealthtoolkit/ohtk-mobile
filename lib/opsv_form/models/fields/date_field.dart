@@ -184,7 +184,7 @@ class DateField extends Field {
           final locale = locator<Locale>();
           markError(
             formatWithMap(
-              localize.dateFieldMinErrorMsg,
+              localize.dateFieldMinErrorMsg.toString(),
               {
                 "name": name,
                 "min": (withTime
@@ -225,7 +225,7 @@ class DateField extends Field {
           final locale = locator<Locale>();
           markError(
             formatWithMap(
-              localize.dateFieldMaxErrorMsg,
+              localize.dateFieldMaxErrorMsg.toString(),
               {
                 "name": name,
                 "max": (withTime

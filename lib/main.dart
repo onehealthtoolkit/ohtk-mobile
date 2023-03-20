@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/httpclient.dart';
+import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/ui/home/home_view.dart';
 import 'package:podd_app/ui/login/login_view.dart';
 import 'package:podd_app/ui/login/login_view_model.dart';
@@ -35,11 +37,37 @@ void main() async {
     defaultValue: Environment.dev,
   );
   setupLocator(environment);
+  setupTheme();
   runApp(
     const RestartWidget(
       child: MyApp(),
     ),
   );
+}
+
+/*
+  To get local from SharedPreferences if exists
+   */
+Future<Locale> fetchLocaleFromPreference() async {
+  var prefs = await SharedPreferences.getInstance();
+  var languageCode = prefs.getString(languageKey) ?? "en";
+  return Locale(languageCode, '');
+}
+
+enum DeviceType { Phone, Tablet }
+
+DeviceType getDeviceType() {
+  final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
+  return data.size.shortestSide < 550 ? DeviceType.Phone : DeviceType.Tablet;
+}
+
+Size getScreenSize() {
+  switch (getDeviceType()) {
+    case DeviceType.Phone:
+      return const Size(360, 640);
+    case DeviceType.Tablet:
+      return const Size(768, 1024);
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -51,7 +79,7 @@ class MyApp extends StatelessWidget {
     return FutureBuilder(
         future: Future.wait([
           locator.allReady(),
-          _fetchLocale(),
+          fetchLocaleFromPreference(),
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           setupAppLocalization();
@@ -59,59 +87,36 @@ class MyApp extends StatelessWidget {
             return const MaterialApp(home: _WaitingScreen());
           }
           return OverlaySupport.global(
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'OHTK Mobile',
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: const [
-                Locale('en', ''), // English, no country code
-                Locale('th', ''), // Thai, no country code
-                Locale('km', ''), // Cambodia
-                Locale('lo', ''), // Lao
-                Locale('hi', ''), // India
-              ],
-              localeResolutionCallback: (deviceLocale, supportedLocales) {
-                String? languageCode = snapshot.data[1];
-                if (languageCode != null) {
-                  return Locale(languageCode, '');
-                }
-                if (supportedLocales
-                    .map((e) => e.languageCode)
-                    .contains(deviceLocale?.languageCode)) {
-                  return deviceLocale;
-                } else {
-                  return const Locale('en', '');
-                }
-              },
-              theme: ThemeData(
-                // This is the theme of your application.
-                //
-                // Try running your application with "flutter run". You'll see the
-                // application has a blue toolbar. Then, without quitting the app, try
-                // changing the primarySwatch below to Colors.green and then invoke
-                // "hot reload" (press "r" in the console where you ran "flutter run",
-                // or simply save your changes to "hot reload" in a Flutter IDE).
-                // Notice that the counter didn't reset back to zero; the application
-                // is not restarted.
-                primarySwatch: Colors.blue,
-              ),
-              home: snapshot.hasData ? _App() : const _WaitingScreen(),
-            ),
+            child: ScreenUtilInit(
+                designSize: getScreenSize(),
+                minTextAdapt: true,
+                splitScreenMode: true,
+                builder: (context, child) {
+                  return MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    title: 'OHTK Mobile',
+                    localizationsDelegates: const [
+                      AppLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: const [
+                      Locale('en', ''), // English, no country code
+                      Locale('th', ''), // Thai, no country code
+                      Locale('km', ''), // Cambodia
+                      Locale('lo', ''), // Lao
+                    ],
+                    localeResolutionCallback: (deviceLocale, supportedLocales) {
+                      Locale locale = snapshot.data[1];
+                      return locale;
+                    },
+                    theme: locator<AppTheme>().themeData,
+                    home: snapshot.hasData ? _App() : const _WaitingScreen(),
+                  );
+                }),
           );
         });
-  }
-
-/*
-  To get local from SharedPreferences if exists
-   */
-  Future<String?> _fetchLocale() async {
-    var prefs = await SharedPreferences.getInstance();
-    return prefs.getString(languageKey) ?? "en";
   }
 }
 

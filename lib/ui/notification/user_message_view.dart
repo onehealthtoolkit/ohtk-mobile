@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/ui/notification/user_message_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -14,24 +15,33 @@ class UserMessageView extends StatelessWidget {
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title: const Text("Message"),
+          leading: const BackAppBarAction(),
         ),
         body: viewModel.isBusy
             ? const Center(
                 child: OhtkProgressIndicator(size: 100),
               )
-            : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: !viewModel.hasError
-                      ? [
-                          _title(viewModel),
-                          const SizedBox(height: 10),
-                          _body(viewModel),
-                        ]
-                      : [
-                          const Text("Message not found"),
-                        ],
-                ),
+            : Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: !viewModel.hasError
+                        ? Card(
+                            // round border
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Column(
+                              children: [
+                                _title(viewModel),
+                                const SizedBox(height: 10),
+                                _body(viewModel),
+                              ],
+                            ),
+                          )
+                        : const Text("Message not found"),
+                  ),
+                ],
               ),
       ),
     );
@@ -59,7 +69,7 @@ class UserMessageView extends StatelessWidget {
       constraints:
           const BoxConstraints(minWidth: double.infinity, minHeight: 100),
       child: Card(
-        shadowColor: Colors.transparent,
+        elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(

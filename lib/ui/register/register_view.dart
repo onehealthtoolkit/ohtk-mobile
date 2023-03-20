@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/confirm.dart';
+import 'package:podd_app/components/display_field.dart';
+import 'package:podd_app/components/flat_button.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/register_result.dart';
 import 'package:podd_app/ui/register/register_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -23,9 +29,10 @@ class RegisterView extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.signupTitle),
+            leading: const BackAppBarAction(),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
             child: viewModel.state == RegisterState.invitation
                 ? _InvitationCodeForm()
                 : _DetailCodeForm(),
@@ -36,7 +43,11 @@ class RegisterView extends StatelessWidget {
   }
 
   Future<bool> _willPop(BuildContext context) {
-    return confirm(context);
+    return confirm(context,
+        content: Text(
+          AppLocalizations.of(context)!.confirmExit,
+          textAlign: TextAlign.center,
+        ));
   }
 }
 
@@ -47,6 +58,14 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
     var code = useTextEditingController();
     return Column(
       children: <Widget>[
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            AppLocalizations.of(context)!.signupSubTitle,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ),
+        const SizedBox(height: 20),
         TextField(
           controller: code,
           onChanged: viewModel.setInvitationCode,
@@ -59,21 +78,19 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
               labelText: AppLocalizations.of(context)!.invitationCodeLabel,
               errorText: viewModel.error('invitationCode')),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 30),
         SizedBox(
           width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(40),
-            ),
+          child: FlatButton.primary(
             onPressed: viewModel.checkInvitationCode,
             child: viewModel.isBusy
                 ? const SizedBox(
                     height: 20,
                     width: 20,
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Colors.white),
                   )
-                : Text(AppLocalizations.of(context)!.nextButton),
+                : Text(AppLocalizations.of(context)!.confirmButton,
+                    style: TextStyle(fontSize: 15.sp)),
           ),
         ),
       ],
@@ -82,6 +99,7 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
 }
 
 class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
+  final AppTheme appTheme = locator<AppTheme>();
   @override
   Widget buildViewModelWidget(
       BuildContext context, RegisterViewModel viewModel) {
@@ -94,7 +112,23 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Text("Authoirty: ${viewModel.authorityName ?? ""}"),
+          Column(
+            children: [
+              DisplayField(
+                label: AppLocalizations.of(context)!.authorityNameLabel,
+                value: viewModel.authorityName,
+                crossAxisAlignment: CrossAxisAlignment.center,
+              ),
+            ],
+          ),
+          Divider(
+            height: 20,
+            thickness: 1,
+            indent: 0,
+            endIndent: 0,
+            color: appTheme.warn,
+          ),
+          const SizedBox(height: 20),
           TextField(
             controller: username,
             textInputAction: TextInputAction.next,
@@ -144,13 +178,10 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
               errorText: viewModel.error("phone"),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 30),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
+            child: FlatButton.primary(
               onPressed: viewModel.isBusy
                   ? null
                   : () async {
@@ -165,7 +196,8 @@ class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
                       width: 20,
                       child: CircularProgressIndicator(),
                     )
-                  : Text(AppLocalizations.of(context)!.submitButton),
+                  : Text(AppLocalizations.of(context)!.confirmRegisterButton,
+                      style: TextStyle(fontSize: 15.sp)),
             ),
           ),
         ],

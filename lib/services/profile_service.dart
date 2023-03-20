@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/consent_result.dart';
 import 'package:podd_app/models/profile_result.dart';
@@ -12,6 +13,7 @@ abstract class IProfileService {
   });
   Future<ProfileResult> changePassword(String newPassword);
   Future<bool> confirmConsent();
+  Future<ProfileResult> uploadAvatar(XFile image);
 }
 
 class ProfileService extends IProfileService {
@@ -31,7 +33,7 @@ class ProfileService extends IProfileService {
     );
 
     if (result is ProfileSuccess && result.success) {
-      _authService.fetchProfile();
+      await _authService.fetchProfile();
     }
     return result;
   }
@@ -51,5 +53,19 @@ class ProfileService extends IProfileService {
       return true;
     }
     return false;
+  }
+
+  @override
+  Future<ProfileResult> uploadAvatar(XFile image) async {
+    var result = await _profileApi.uploadAvatar(
+      image,
+    );
+
+    if (result is ProfileUploadSuccess && result.success) {
+      if (result.avatarUrl != null) {
+        _authService.updateAvatarUrl(result.avatarUrl!);
+      }
+    }
+    return result;
   }
 }

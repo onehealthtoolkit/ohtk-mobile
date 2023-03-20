@@ -1,7 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
+import 'package:podd_app/components/report_image_carousel.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
@@ -35,14 +40,15 @@ class ObservationMonitoringRecordView extends StatelessWidget {
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!
               .observationSubjectMonitoringViewTitle),
+          leading: const BackAppBarAction(),
+          automaticallyImplyLeading: false,
+          shadowColor: Colors.transparent,
         ),
-        body: Padding(
-            padding: const EdgeInsets.all(8),
-            child: viewModel.isBusy
-                ? const Center(child: CircularProgressIndicator())
-                : !viewModel.hasError
-                    ? _bodyView(context)
-                    : const Text("Monitoring record not found")),
+        body: viewModel.isBusy
+            ? const Center(child: CircularProgressIndicator())
+            : !viewModel.hasError
+                ? _bodyView(context)
+                : const Text("Monitoring record not found"),
       ),
     );
   }
@@ -55,7 +61,7 @@ class ObservationMonitoringRecordView extends StatelessWidget {
           child: Column(
             children: [
               _MonitoringRecordDetail(),
-              _Images(),
+              ReportImagesCarousel(monitoringRecord.images),
             ],
           ),
         ),
@@ -64,126 +70,59 @@ class ObservationMonitoringRecordView extends StatelessWidget {
   }
 }
 
-class _Images
-    extends HookViewModelWidget<ObservationMonitoringRecordViewModel> {
-  @override
-  Widget buildViewModelWidget(
-      BuildContext context, ObservationMonitoringRecordViewModel viewModel) {
-    final images = viewModel.data!.images;
-
-    var imageWidgets = images?.map((image) => Container(
-          margin: const EdgeInsets.all(0),
-          child: FullScreenWidget(
-            fullscreenChild: CachedNetworkImage(
-              imageUrl: image.imageUrl,
-              fit: BoxFit.contain,
-              placeholder: (context, url) => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
-            child: CachedNetworkImage(
-              imageUrl: image.thumbnailPath,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
-          ),
-        ));
-
-    return Container(
-      color: Colors.white,
-      constraints:
-          const BoxConstraints(minWidth: double.infinity, minHeight: 150),
-      padding: const EdgeInsets.all(12.0),
-      child: SizedBox(
-        height: 200,
-        child: (images != null && images.isNotEmpty)
-            ? CarouselSlider(
-                items: imageWidgets?.toList() ?? [],
-                options: CarouselOptions(
-                  height: 200,
-                  enlargeCenterPage: true,
-                  aspectRatio: 1,
-                  viewportFraction: 0.8,
-                  autoPlay: true,
-                  disableCenter: true,
-                  enableInfiniteScroll: false,
-                ),
-              )
-            : const Text("No images uploaded"),
-      ),
-    );
-  }
-}
-
 class _MonitoringRecordDetail
     extends HookViewModelWidget<ObservationMonitoringRecordViewModel> {
+  final AppTheme appTheme = locator<AppTheme>();
+
   @override
   Widget buildViewModelWidget(
       BuildContext context, ObservationMonitoringRecordViewModel viewModel) {
     var monitoringRecord = viewModel.data!;
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 10),
-          Text(
-            monitoringRecord.title.isNotEmpty
-                ? monitoringRecord.title
-                : "no title",
-            textScaleFactor: 1.5,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 15),
+        _title(context, monitoringRecord),
+        _description(context, monitoringRecord),
+        _data(context, viewModel.subject, monitoringRecord,
+            viewModel.monitoringDefinition),
+      ],
+    );
+  }
+
+  _title(BuildContext context, ObservationMonitoringRecord subject) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(28, 10, 28, 0),
+      child: Text(
+        subject.title.isNotEmpty ? subject.title : "No title",
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+              fontSize: 20.sp,
             ),
-          ),
-          const SizedBox(height: 16),
-          Container(
-            color: Colors.white,
-            constraints:
-                const BoxConstraints(minHeight: 80, minWidth: double.infinity),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text(monitoringRecord.description.isNotEmpty
-                  ? monitoringRecord.description
-                  : "no description"),
-            ),
-          ),
-          const SizedBox(height: 8),
-          GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ObservationMonitoringRecordFormView(
-                  monitoringDefinition: viewModel.monitoringDefinition,
-                  subject: viewModel.subject,
-                  monitoringRecord: monitoringRecord,
-                ),
-              ),
-            ),
-            child: const Align(
-              alignment: Alignment.centerRight,
-              child: Icon(Icons.edit_note),
-            ),
-          ),
-          _data(monitoringRecord),
-          const SizedBox(height: 8),
-        ],
       ),
     );
   }
 
-  _data(ObservationMonitoringRecord monitoringRecord) {
+  _description(BuildContext context, ObservationMonitoringRecord subject) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(28, 20, 28, 10),
+      child: Text(
+        subject.description.isEmpty ? "No description" : subject.description,
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+            ),
+      ),
+    );
+  }
+
+  _data(
+      BuildContext context,
+      ObservationSubjectRecord subject,
+      ObservationMonitoringRecord monitoringRecord,
+      ObservationMonitoringDefinition monitoringDefinition) {
     var dataTable = Table(
-        border: TableBorder.all(
-          color: Colors.grey.shade400,
-          width: 1,
-        ),
         columnWidths: const <int, TableColumnWidth>{
           0: FlexColumnWidth(1),
           1: FlexColumnWidth(2),
@@ -192,6 +131,14 @@ class _MonitoringRecordDetail
           return entry.key.contains("__value")
               ? const TableRow(children: [SizedBox.shrink(), SizedBox.shrink()])
               : TableRow(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: appTheme.secondary,
+                        width: 1,
+                      ),
+                    ),
+                  ),
                   children: [
                     TableCell(
                         verticalAlignment: TableCellVerticalAlignment.middle,
@@ -209,8 +156,33 @@ class _MonitoringRecordDetail
                 );
         }).toList());
 
-    return monitoringRecord.formData != null
-        ? dataTable
-        : const Text("no data");
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(28, 20, 28, 10),
+      child: monitoringRecord.formData != null
+          ? Stack(
+              children: [
+                dataTable,
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ObservationMonitoringRecordFormView(
+                        monitoringDefinition: monitoringDefinition,
+                        subject: subject,
+                        monitoringRecord: monitoringRecord,
+                      ),
+                    ),
+                  ),
+                  child: const Align(
+                    alignment: Alignment.centerRight,
+                    child: Icon(Icons.edit_note),
+                  ),
+                )
+              ],
+            )
+          : const Center(
+              child: Text("No data"),
+            ),
+    );
   }
 }

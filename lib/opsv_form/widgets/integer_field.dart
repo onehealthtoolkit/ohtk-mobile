@@ -12,6 +12,7 @@ class FormIntegerField extends StatefulWidget {
 class _FormIntegerFieldState extends State<FormIntegerField> {
   final TextEditingController _controller = TextEditingController();
   final _logger = locator<Logger>();
+  final AppTheme appTheme = locator<AppTheme>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,11 @@ class _FormIntegerFieldState extends State<FormIntegerField> {
 
       return TextField(
         controller: _controller,
+        style: TextStyle(
+          color: appTheme.inputTextColor,
+          fontFamily: appTheme.font,
+          fontWeight: FontWeight.w400,
+        ),
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],

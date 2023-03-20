@@ -12,6 +12,7 @@ class FormLocationField extends StatefulWidget {
 class _FormLocationFieldState extends State<FormLocationField> {
   final Completer<GoogleMapController> _controller = Completer();
   final _logger = locator<Logger>();
+  final AppTheme appTheme = locator<AppTheme>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,18 +37,24 @@ class _FormLocationFieldState extends State<FormLocationField> {
             if (latitude == null || longitude == null)
               Container(
                 decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.grey.shade100),
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(appTheme.borderRadius),
+                  color: appTheme.sub4,
+                ),
                 child: SizedBox(
-                  height: 300,
+                  height: 300.w,
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        const Icon(
+                          Icons.location_on_sharp,
+                          size: 60,
+                          color: Color(0xFFD9D9D9),
+                        ),
                         Text(AppLocalizations.of(context)!
                             .fieldUndefinedLocation),
-                        ElevatedButton(
+                        FlatButton.primary(
                           onPressed: () async {
                             bool serviceEnabled =
                                 await Geolocator.isLocationServiceEnabled();
@@ -68,8 +75,13 @@ class _FormLocationFieldState extends State<FormLocationField> {
                               _logger.e("location is disable");
                             }
                           },
-                          child: Text(AppLocalizations.of(context)!
-                              .fieldUseCurrentLocation),
+                          child: Text(
+                            AppLocalizations.of(context)!
+                                .fieldUseCurrentLocation,
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                            ),
+                          ),
                         ),
                       ],
                     ),

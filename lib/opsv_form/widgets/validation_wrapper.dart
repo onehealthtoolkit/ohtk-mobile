@@ -12,6 +12,8 @@ class ValidationWrapper extends StatefulWidget {
 }
 
 class _ValidationWrapperState extends State<ValidationWrapper> {
+  final AppTheme apptheme = locator<AppTheme>();
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (BuildContext context) {
@@ -25,22 +27,21 @@ class _ValidationWrapperState extends State<ValidationWrapper> {
                       color: Colors.red,
                       width: 1,
                     ),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(apptheme.borderRadius),
                   )
-                : BoxDecoration(
-                    border: Border.all(
-                      color: const Color.fromRGBO(100, 100, 100, 0.7),
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+                : null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 widget.child,
                 if (!widget.field.isValid)
-                  Text(widget.field.invalidMessage ?? "",
-                      style: const TextStyle(color: Colors.red)),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: Text(
+                      widget.field.invalidMessage ?? "",
+                      style: TextStyle(color: Colors.red, fontSize: 12.sp),
+                    ),
+                  ),
               ],
             ),
           ),

@@ -36,6 +36,8 @@ abstract class IAuthService {
   Future<AuthResult> verifyQrToken(String token);
 
   updateConfirmedConsent();
+
+  updateAvatarUrl(String avatarUrl);
 }
 
 class AuthService with ReactiveServiceMixin implements IAuthService {
@@ -107,6 +109,7 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
           break;
         default:
       }
+      return null;
     });
   }
 
@@ -126,6 +129,7 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
   @override
   Future<void> logout() async {
     _isLogin.value = false;
+    _token = null;
     await _secureStorageService.deleteAll();
     await _reportService.removeAllPendingReports();
     await _observationRecordService.removeAllPendingRecords();
@@ -184,7 +188,7 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
 
   @override
   Future<void> fetchProfile() async {
-    _fetchProfile();
+    await _fetchProfile();
   }
 
   @override
@@ -201,6 +205,14 @@ class AuthService with ReactiveServiceMixin implements IAuthService {
   updateConfirmedConsent() {
     if (_userProfile != null) {
       _userProfile!.consent = true;
+      _secureStorageService.setUserProfile(_userProfile!);
+    }
+  }
+
+  @override
+  updateAvatarUrl(String avatarUrl) {
+    if (_userProfile != null) {
+      _userProfile!.avatarUrl = avatarUrl;
       _secureStorageService.setUserProfile(_userProfile!);
     }
   }

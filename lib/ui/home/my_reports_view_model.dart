@@ -35,8 +35,6 @@ class MyReportsViewModel extends ReactiveViewModel
 
   Future<void> refetchIncidentReports() async {
     setBusy(true);
-    await reportTypeService.sync();
-    await refetchReportTypes();
     await reportService.fetchMyIncidents(true);
     setBusy(false);
   }

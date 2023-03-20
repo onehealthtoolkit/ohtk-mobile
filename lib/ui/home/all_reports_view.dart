@@ -6,19 +6,29 @@ import 'package:podd_app/ui/home/report_list_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
-class AllReportsView extends StatelessWidget {
-  final viewModel = locator<AllReportsViewModel>();
+class AllReportsView extends StatefulWidget {
+  const AllReportsView({Key? key}) : super(key: key);
 
-  AllReportsView({Key? key}) : super(key: key);
+  @override
+  State<AllReportsView> createState() => _AllReportsViewState();
+}
+
+class _AllReportsViewState extends State<AllReportsView>
+    with AutomaticKeepAliveClientMixin {
+  final viewModel = locator<AllReportsViewModel>();
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ViewModelBuilder<AllReportsViewModel>.nonReactive(
         viewModelBuilder: () => viewModel,
         disposeViewModel: false,
         initialiseSpecialViewModelsOnce: true,
         builder: (context, viewModel, child) => _ReportList());
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _ReportList extends HookViewModelWidget<AllReportsViewModel> {

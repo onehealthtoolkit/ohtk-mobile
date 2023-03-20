@@ -1,14 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:podd_app/components/notification_appbar_action.dart';
 import 'package:podd_app/ui/home/consent_view.dart';
 import 'package:podd_app/ui/home/home_view_model.dart';
 import 'package:podd_app/ui/home/observation/observation_home_view.dart';
 import 'package:podd_app/ui/home/report_home_view.dart';
-import 'package:podd_app/ui/notification/user_message_list.dart';
 import 'package:podd_app/ui/notification/user_message_view.dart';
 import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
@@ -116,18 +117,7 @@ class HomeView extends HookWidget {
             centerTitle: true,
             title: Text(AppLocalizations.of(context)!.appName),
             actions: [
-              IconButton(
-                icon: const Icon(Icons.notifications),
-                tooltip: 'Messages',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const UserMessageList(),
-                    ),
-                  );
-                },
-              ),
+              NotificationAppBarAction(),
             ],
             bottom: PreferredSize(
               preferredSize: viewModel.numberOfPendingSubmissions > 0
@@ -138,8 +128,6 @@ class HomeView extends HookWidget {
           ),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
-            selectedItemColor: Colors.blue[700],
             currentIndex: viewModel.currentIndex,
             onTap: viewModel.setIndex,
             items: navigationBarItems,
@@ -153,7 +141,7 @@ class HomeView extends HookWidget {
   Widget getViewForIndex(HomeViewModel viewModel) {
     int index = viewModel.currentIndex;
     if (index == 0) {
-      return const ReportHomeView();
+      return ReportHomeView();
     } else if (index == 1) {
       if (viewModel.hasObservationFeature) {
         return const ObservationHomeView();
@@ -163,7 +151,7 @@ class HomeView extends HookWidget {
     } else if (index == 2) {
       return const ProfileView();
     } else {
-      return const ReportHomeView();
+      return ReportHomeView();
     }
   }
 }

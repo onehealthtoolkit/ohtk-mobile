@@ -14,6 +14,7 @@ class FormImagesField extends StatefulWidget {
 class _FormImagesFieldState extends State<FormImagesField> {
   final IImageService _imageService = locator<IImageService>();
   final _logger = locator<Logger>();
+  final AppTheme apptheme = locator<AppTheme>();
 
   @override
   Widget build(BuildContext context) {
@@ -33,38 +34,45 @@ class _FormImagesFieldState extends State<FormImagesField> {
                   style: TextStyle(color: Colors.grey.shade700),
                 ),
               ),
-            GridView.builder(
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                // width / height: fixed for *all* items
-                childAspectRatio: 1,
+            DottedBorder(
+              color: apptheme.sub3,
+              dashPattern: const [6, 6],
+              borderType: BorderType.RRect,
+              radius: Radius.circular(apptheme.borderRadius),
+              padding: const EdgeInsets.all(8),
+              child: GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  // width / height: fixed for *all* items
+                  childAspectRatio: 1,
+                ),
+                itemCount: numberOfCurrentImages + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return _buildAddImageBox();
+                  }
+
+                  var imageId = widget.field.value[index -
+                      1]; // minus 1 because of dummy image is the first.
+
+                  return FutureBuilder<Image>(
+                      future: _getImage(imageId),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return RemoveableImage(
+                            image: snapshot.data!,
+                            imageId: widget.field.value[index -
+                                1], // because index 0 alway be dummy image
+                            onRemove: _removeImage,
+                          );
+                        }
+                        return const CircularProgressIndicator();
+                      });
+                },
               ),
-              itemCount: numberOfCurrentImages + 1,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return _buildAddImageBox();
-                }
-
-                var imageId = widget.field.value[
-                    index - 1]; // minus 1 because of dummy image is the first.
-
-                return FutureBuilder<Image>(
-                    future: _getImage(imageId),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return RemoveableImage(
-                          image: snapshot.data!,
-                          imageId: widget.field.value[index -
-                              1], // because index 0 alway be dummy image
-                          onRemove: _removeImage,
-                        );
-                      }
-                      return const CircularProgressIndicator();
-                    });
-              },
             ),
           ],
         ),
@@ -74,15 +82,20 @@ class _FormImagesFieldState extends State<FormImagesField> {
 
   Future<Image> _getImage(String imageId) async {
     var reportImage = await _imageService.getImage(imageId);
-    return Image.memory(reportImage.image);
+    return Image.memory(
+      width: 200.w,
+      height: 200.w,
+      reportImage.image,
+      fit: BoxFit.cover,
+    );
   }
 
   _buildAddImageBox() {
-    return InkWell(
-      onTap: _showAddImageModal,
-      child: Container(
-        color: Colors.grey.shade300,
-        child: const Icon(Icons.add_a_photo),
+    return CircleAvatar(
+      backgroundColor: apptheme.sub4,
+      child: IconButton(
+        icon: Icon(Icons.add_a_photo, color: apptheme.primary),
+        onPressed: _showAddImageModal,
       ),
     );
   }
@@ -155,7 +168,9 @@ class RemoveableImage extends StatelessWidget {
   final Image image;
   final String imageId;
   final RemoveCallback onRemove;
-  const RemoveableImage(
+  final AppTheme apptheme = locator<AppTheme>();
+
+  RemoveableImage(
       {required this.image,
       required this.imageId,
       required this.onRemove,
@@ -166,19 +181,27 @@ class RemoveableImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        image,
+        Container(
+          padding: const EdgeInsets.all(4),
+          child: DottedBorder(
+            color: apptheme.sub3,
+            radius: const Radius.circular(12),
+            dashPattern: const [4, 4],
+            child: image,
+            padding: const EdgeInsets.all(4),
+          ),
+        ),
         Positioned(
-          right: -14,
-          top: -14,
-          child: IconButton(
-            icon: Icon(
-              Icons.cancel,
-              color: Colors.red.shade500,
-              size: 18,
-            ),
-            onPressed: () {
+          top: 0,
+          right: 0,
+          child: GestureDetector(
+            onTap: () {
               onRemove(imageId);
             },
+            child: CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 9,
+                child: Icon(Icons.cancel, color: apptheme.primary, size: 18)),
           ),
         ),
       ],

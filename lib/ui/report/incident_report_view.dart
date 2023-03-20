@@ -1,61 +1,88 @@
 import 'dart:async';
 import 'dart:math' as math;
-
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
+import 'package:podd_app/components/incident_report_tag.dart';
 import 'package:podd_app/components/progress_indicator.dart';
+import 'package:podd_app/components/report_image_carousel.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/ui/report/followup_list_view.dart';
-import 'package:podd_app/ui/report/full_screen_view.dart';
 import 'package:podd_app/ui/report/incident_report_view_model.dart';
 import 'package:podd_app/ui/report/report_comment_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 var formatter = DateFormat("dd/MM/yyyy HH:mm");
 var noTimeFormatter = DateFormat("dd/MM/yyyy");
 
 class IncidentReportView extends HookWidget {
   final String id;
-  const IncidentReportView({Key? key, required this.id}) : super(key: key);
+  final AppTheme appTheme = locator<AppTheme>();
+
+  IncidentReportView({Key? key, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    TabController _tabController = useTabController(initialLength: 3);
-
-    return ViewModelBuilder<IncidentReportViewModel>.reactive(
+    return ViewModelBuilder<IncidentReportViewModel>.nonReactive(
       viewModelBuilder: () => IncidentReportViewModel(id),
       builder: (context, viewModel, child) {
         return Scaffold(
           appBar: AppBar(
-            bottom: TabBar(
-              controller: _tabController,
-              tabs: [
-                Tab(child: Text(AppLocalizations.of(context)!.detailTabLabel)),
-                Tab(child: Text(AppLocalizations.of(context)!.commentTabLabel)),
-                Tab(
-                    child:
-                        Text(AppLocalizations.of(context)!.followupTabLabel)),
-              ],
-            ),
+            leading: const BackAppBarAction(),
+            elevation: 0,
             title: Text(AppLocalizations.of(context)!.reportDetailTitle),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(8),
-            child: viewModel.isBusy
-                ? const Center(child: OhtkProgressIndicator(size: 100))
-                : !viewModel.hasError
-                    ? _content(_tabController, viewModel)
-                    : const Text("Incident report not found"),
-          ),
+          body: _TabView(),
         );
       },
     );
+  }
+}
+
+class _TabView extends HookViewModelWidget<IncidentReportViewModel> {
+  final AppTheme appTheme = locator<AppTheme>();
+
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context, IncidentReportViewModel viewModel) {
+    final TabController _tabController = useTabController(initialLength: 3);
+
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(56.w),
+        child: ColoredBox(
+          color: appTheme.bg2,
+          child: TabBar(
+            controller: _tabController,
+            tabs: [
+              _tabItem(AppLocalizations.of(context)!.detailTabLabel),
+              _tabItem(AppLocalizations.of(context)!.commentTabLabel),
+              _tabItem(AppLocalizations.of(context)!.followupTabLabel),
+            ],
+          ),
+        ),
+      ),
+      body: viewModel.isBusy
+          ? const Center(child: OhtkProgressIndicator(size: 100))
+          : !viewModel.hasError
+              ? _content(_tabController, viewModel)
+              : const Text("Incident report not found"),
+    );
+  }
+
+  Tab _tabItem(String label) {
+    return Tab(
+        child: Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: Text(label),
+    ));
   }
 
   Widget _content(
@@ -95,6 +122,8 @@ class IncidentReportView extends HookWidget {
 }
 
 class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
+  final AppTheme appTheme = locator<AppTheme>();
+
   @override
   Widget buildViewModelWidget(
       BuildContext context, IncidentReportViewModel viewModel) {
@@ -108,32 +137,12 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
               _title(context, incident),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                child: Text(
-                  formatter.format(incident.createdAt.toLocal()),
-                  textScaleFactor: .75,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Container(
-                  color: Colors.white,
-                  constraints: const BoxConstraints(
-                      minHeight: 80, minWidth: double.infinity),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text(incident.description.isEmpty
-                        ? "no description"
-                        : incident.trimWhitespaceDescription),
-                  ),
-                ),
-              ),
+              _tags(incident),
+              _description(incident, context),
               _Data(),
-              _Images(),
+              ReportImagesCarousel(viewModel.data!.images),
               const SizedBox(height: 8),
               _Map(),
             ],
@@ -144,153 +153,99 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
   }
 
   _title(BuildContext context, IncidentReport incident) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+    return Container(
+      height: 45.w,
+      padding: const EdgeInsets.fromLTRB(28, 10, 28, 0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             incident.reportTypeName,
-            textScaleFactor: 1.5,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontSize: 20.sp,
+                ),
           ),
-          const SizedBox(width: 10),
-          if (incident.caseId != null)
-            Container(
-              color: Colors.red,
-              padding: const EdgeInsets.fromLTRB(4, 2, 4, 2),
-              child: const Text(
-                "Case",
-                style: TextStyle(
-                  color: Colors.white,
+          Text(
+            formatter.format(incident.createdAt.toLocal()),
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w300,
                 ),
-                textScaleFactor: 0.8,
-              ),
-            ),
-          if (incident.testFlag)
-            Container(
-              color: Colors.yellow[700],
-              padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-              child: const Text(
-                "Test",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-                textScaleFactor: 0.8,
-              ),
-            ),
+          ),
         ],
       ),
     );
   }
+
+  _description(IncidentReport incident, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(28, 20, 28, 10),
+      child: Text(
+        incident.description.isEmpty
+            ? "no description"
+            : incident.trimWhitespaceDescription,
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+            ),
+      ),
+    );
+  }
+
+  _tags(IncidentReport incident) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(28, 0, 28, 0),
+        child: Row(
+          children: [
+            if (incident.caseId != null) IncidentReportCaseTag(),
+            if (incident.testFlag) IncidentReportTestTag()
+          ],
+        ));
+  }
 }
 
 class _Data extends HookViewModelWidget<IncidentReportViewModel> {
+  final AppTheme appTheme = locator<AppTheme>();
+
   @override
   Widget buildViewModelWidget(
     BuildContext context,
     IncidentReportViewModel viewModel,
   ) {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.all(8.0),
-      child: Table(
-        border: TableBorder.all(
-          color: Colors.grey.shade400,
-          width: 1,
-        ),
-        columnWidths: const <int, TableColumnWidth>{
-          0: FlexColumnWidth(1),
-          1: FlexColumnWidth(2),
-        },
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(28, 10, 28, 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          TableRow(children: [
-            TableCell(
-                verticalAlignment: TableCellVerticalAlignment.middle,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(AppLocalizations.of(context)?.authorityLabel ??
-                      "Authority"),
-                )),
-            TableCell(
-                verticalAlignment: TableCellVerticalAlignment.middle,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(viewModel.data!.authorityName ?? "-"),
-                )),
-          ]),
-          TableRow(children: [
-            TableCell(
-                verticalAlignment: TableCellVerticalAlignment.middle,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(AppLocalizations.of(context)?.incidentDate ??
-                      "Incident Date"),
-                )),
-            TableCell(
-                verticalAlignment: TableCellVerticalAlignment.middle,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(noTimeFormatter
-                      .format(viewModel.data!.incidentDate.toLocal())),
-                )),
-          ]),
-        ],
-      ),
-    );
-  }
-}
-
-class _Images extends HookViewModelWidget<IncidentReportViewModel> {
-  @override
-  Widget buildViewModelWidget(
-      BuildContext context, IncidentReportViewModel viewModel) {
-    final images = viewModel.data!.images;
-
-    var imageWidgets = images?.map((image) => Container(
-          margin: const EdgeInsets.all(0),
-          child: FullScreenWidget(
-            fullscreenChild: CachedNetworkImage(
-              imageUrl: image.imageUrl,
-              fit: BoxFit.contain,
-              placeholder: (context, url) => const Center(
-                child: CircularProgressIndicator(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                AppLocalizations.of(context)?.authorityLabel ?? "Authority",
+                style: TextStyle(color: appTheme.sub2, fontSize: 13.sp),
               ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
-            child: CachedNetworkImage(
-              imageUrl: image.thumbnailPath,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => const Center(
-                child: CircularProgressIndicator(),
+              Text(
+                viewModel.data!.authorityName ?? "-",
+                style: TextStyle(fontSize: 14.sp),
               ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
+            ],
           ),
-        ));
-
-    return Container(
-      color: Colors.white,
-      constraints:
-          const BoxConstraints(minWidth: double.infinity, minHeight: 150),
-      padding: const EdgeInsets.all(12.0),
-      child: SizedBox(
-        height: 200,
-        child: (images != null && images.isNotEmpty)
-            ? CarouselSlider(
-                items: imageWidgets?.toList() ?? [],
-                options: CarouselOptions(
-                  height: 200,
-                  enlargeCenterPage: true,
-                  aspectRatio: 1,
-                  viewportFraction: 0.8,
-                  autoPlay: true,
-                  disableCenter: true,
-                  enableInfiniteScroll: false,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                AppLocalizations.of(context)?.incidentDate ?? "Incident Date",
+                style: TextStyle(color: appTheme.sub2, fontSize: 13.sp),
+              ),
+              Text(
+                noTimeFormatter.format(
+                  viewModel.data!.incidentDate.toLocal(),
                 ),
-              )
-            : const Text("No images uploaded"),
+                style: TextStyle(fontSize: 14.sp),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -313,14 +268,13 @@ class _Map extends HookViewModelWidget<IncidentReportViewModel> {
     }
 
     return Container(
-      color: Colors.white,
       constraints: const BoxConstraints(
         minWidth: double.infinity,
         minHeight: 250,
       ),
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
       child: SizedBox(
-        height: 250,
+        height: 250.w,
         width: MediaQuery.of(context).size.width,
         child: (latlng != null)
             ? GoogleMap(
@@ -335,7 +289,16 @@ class _Map extends HookViewModelWidget<IncidentReportViewModel> {
                 },
                 markers: markers,
               )
-            : const Text("No gps location provided"),
+            : Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  "No gps location provided",
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w300,
+                      ),
+                ),
+              ),
       ),
     );
   }

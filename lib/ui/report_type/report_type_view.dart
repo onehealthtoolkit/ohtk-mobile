@@ -1,57 +1,73 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
+import 'package:podd_app/components/flat_button.dart';
+import 'package:podd_app/components/form_test_banner.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_type.dart';
+import 'package:podd_app/opsv_form/widgets/widgets.dart';
 import 'package:podd_app/ui/report/report_form_view.dart';
 import 'package:podd_app/ui/report_type/form_simulator_view.dart';
 import 'package:podd_app/ui/report_type/qr_report_type_view.dart';
 import 'package:podd_app/ui/report_type/report_type_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportTypeView extends StatelessWidget {
-  const ReportTypeView({Key? key}) : super(key: key);
+  final AppTheme appTheme = locator<AppTheme>();
+  ReportTypeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<ReportTypeViewModel>.nonReactive(
+    return ViewModelBuilder<ReportTypeViewModel>.reactive(
       viewModelBuilder: () => ReportTypeViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
+          leading: const BackAppBarAction(),
+          automaticallyImplyLeading: false,
+          centerTitle: true,
           title: Text(AppLocalizations.of(context)!.reportTypeTitle),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.qr_code_scanner),
-              tooltip: 'Simulate report form',
-              onPressed: () async {
-                var result = await Navigator.push<ReportType>(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const QrReportTypeView(),
-                  ),
-                );
-
-                if (result != null) {
-                  Navigator.push(
+            CircleAvatar(
+              backgroundColor: Theme.of(context).primaryColor,
+              child: IconButton(
+                icon: const Icon(Icons.qr_code_scanner, color: Colors.white),
+                tooltip: 'Simulate report form',
+                onPressed: () async {
+                  var result = await Navigator.push<ReportType>(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => FormSimulatorView(result),
+                      builder: (context) => const QrReportTypeView(),
                     ),
                   );
-                } else {
-                  var errorMessage = SnackBar(
-                    content: Text(
-                        AppLocalizations.of(context)?.invalidReportTypeQrcode ??
-                            'Invalid report type qrcode'),
-                    backgroundColor: Colors.red,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(errorMessage);
-                }
-              },
+
+                  if (result != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FormSimulatorView(result),
+                      ),
+                    );
+                  } else {
+                    var errorMessage = SnackBar(
+                      content: Text(AppLocalizations.of(context)
+                              ?.invalidReportTypeQrcode ??
+                          'Invalid report type qrcode'),
+                      backgroundColor: Colors.red,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(errorMessage);
+                  }
+                },
+              ),
             ),
+            SizedBox(width: 15.w),
           ],
         ),
         body: RefreshIndicator(
@@ -61,12 +77,23 @@ class ReportTypeView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              FormTestBanner(testFlag: viewModel.testFlag),
               Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: _ZeroReport(),
+                padding: EdgeInsets.fromLTRB(20.w, 16.67.h, 20.w, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: _ZeroReport()),
+                    _TestFlag(),
+                  ],
+                ),
               ),
-              _TestFlag(),
-              Expanded(child: _Listing()),
+              Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.fromLTRB(30, 0, 30, 20),
+                    child: _Listing()),
+              ),
             ],
           ),
         ),
@@ -76,24 +103,71 @@ class ReportTypeView extends StatelessWidget {
 }
 
 class _TestFlag extends HookViewModelWidget<ReportTypeViewModel> {
+  final AppTheme appTheme = locator<AppTheme>();
+
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportTypeViewModel viewModel) {
-    return CheckboxListTile(
-      value: viewModel.testFlag,
-      title: Text(AppLocalizations.of(context)?.testFlag ?? "Test"),
-      controlAffinity: ListTileControlAffinity.leading,
-      onChanged: (value) {
-        viewModel.testFlag = value ?? false;
+    return GestureDetector(
+      onTap: () {
+        viewModel.testFlag = !viewModel.testFlag;
       },
-      activeColor: Colors.black87,
-      checkColor: Colors.yellow.shade500,
-      tileColor: viewModel.testFlag ? Colors.yellow.shade500 : Colors.white,
+      child: Stack(
+        fit: StackFit.passthrough,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 6),
+            child: FlatButton(
+              padding: const EdgeInsets.fromLTRB(10, 6, 10, 10),
+              onPressed: () {
+                viewModel.testFlag = !viewModel.testFlag;
+              },
+              borderRadius: 8.r,
+              backgroundColor:
+                  viewModel.testFlag ? appTheme.tag2 : appTheme.sub4,
+              borderColor: viewModel.testFlag ? appTheme.tag2 : appTheme.sub4,
+              forgroundColor:
+                  viewModel.testFlag ? appTheme.warn : appTheme.sub2,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 35.0),
+                child: Text(
+                  AppLocalizations.of(context)?.testFlag ?? "Test",
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            width: 40.w,
+            height: 40.w,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: viewModel.testFlag ? appTheme.tag2 : appTheme.sub4,
+                    width: 3),
+                borderRadius: BorderRadius.circular(33.33.r),
+                color: Colors.white,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(9, 12, 9, 12),
+                child: SvgPicture.asset(
+                  "assets/images/check_icon.svg",
+                  color: viewModel.testFlag ? appTheme.warn : Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
+  final AppTheme appTheme = locator<AppTheme>();
   final formatter = DateFormat('dd/MM/yyyy HH:mm');
 
   _ZeroReport({Key? key}) : super(key: key);
@@ -101,120 +175,213 @@ class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportTypeViewModel viewModel) {
-    return InkWell(
-      onTap: () async {
-        await viewModel.submitZeroReport();
-        var showSuccessMessage = SnackBar(
-          content: Text(AppLocalizations.of(context)?.zeroReportSubmitSuccess ??
-              'Zero report submit success'),
-          backgroundColor: Colors.green,
-        );
-        ScaffoldMessenger.of(context).showSnackBar(showSuccessMessage);
-      },
-      child: Ink(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.green.shade400,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 10.0),
-        child: Column(
-          children: [
-            Text(AppLocalizations.of(context)?.zeroReportLabel ?? "Zero report",
-                style: const TextStyle(color: Colors.white)),
-            const SizedBox(height: 4),
-            FutureBuilder<DateTime?>(
-              future: viewModel.getLatestZeroReport(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasData) {
-                    var dateTimeString =
-                        formatter.format(snapshot.data!.toLocal());
-                    return Text(
-                      AppLocalizations.of(context)!
-                          .zeroReportLastReportedMessage(dateTimeString),
-                      textScaleFactor: 0.8,
-                      style: const TextStyle(color: Colors.white),
-                    );
-                  } else {
-                    return const SizedBox.shrink();
+    return Stack(
+      fit: StackFit.passthrough,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FlatButton.primary(
+                padding: const EdgeInsets.fromLTRB(15, 6, 20, 6),
+                onPressed: () async {
+                  await viewModel.submitZeroReport();
+                  var showSuccessMessage = SnackBar(
+                    content: Text(
+                        AppLocalizations.of(context)?.zeroReportSubmitSuccess ??
+                            'Zero report submit success'),
+                    backgroundColor: Colors.green,
+                  );
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(showSuccessMessage);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 28.0),
+                  child: Text(
+                    AppLocalizations.of(context)?.zeroReportLabel ??
+                        "Zero report",
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 4.h),
+              FutureBuilder<DateTime?>(
+                future: viewModel.getLatestZeroReport(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
+                      var dateTimeString =
+                          formatter.format(snapshot.data!.toLocal());
+                      return Text(
+                        AppLocalizations.of(context)!
+                            .zeroReportLastReportedMessage(dateTimeString),
+                        textScaleFactor: 0.8,
+                        style: TextStyle(color: appTheme.warn),
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
                   }
-                }
-                return const OhtkProgressIndicator(size: 100);
-              },
-            ),
-          ],
+                  return const OhtkProgressIndicator(size: 50);
+                },
+              ),
+            ],
+          ),
         ),
-      ),
+        Positioned(
+          width: 40.w,
+          height: 40.w,
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: appTheme.primary, width: 2.w),
+              borderRadius: BorderRadius.circular(33.33).r,
+              color: Colors.white,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+              child: SvgPicture.asset(
+                "assets/images/doc_fill_icon.svg",
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 }
 
 class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
   final Logger logger = locator<Logger>();
+  final AppTheme appTheme = locator<AppTheme>();
 
   @override
   Widget buildViewModelWidget(
       BuildContext context, ReportTypeViewModel viewModel) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView.builder(
-        itemBuilder: (context, categoryIndex) =>
-            viewModel.categories[categoryIndex].reportTypes.isNotEmpty
-                ? _category(context, viewModel, categoryIndex)
-                : Container(),
-        itemCount: viewModel.categories.length,
-      ),
+    return ListView.builder(
+      itemBuilder: (context, categoryIndex) =>
+          viewModel.categories[categoryIndex].reportTypes.isNotEmpty
+              ? _category(context, viewModel, categoryIndex)
+              : Container(),
+      itemCount: viewModel.categories.length,
     );
   }
 
   _category(
       BuildContext context, ReportTypeViewModel viewModel, int categoryIndex) {
-    double width = MediaQuery.of(context).size.width;
+    var categoryReportType = viewModel.categories[categoryIndex];
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          width: width,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              viewModel.categories[categoryIndex].category.name,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+        Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 5),
+          child: Text(
+            categoryReportType.category.name,
+            style: TextStyle(
+              fontSize: 13.sp,
+              color: appTheme.warn,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),
-        ListView.separated(
-          separatorBuilder: (context, index) => const Divider(),
+        ListView.builder(
           itemBuilder: (context, reportTypeIndex) {
-            var reportType = viewModel
-                .categories[categoryIndex].reportTypes[reportTypeIndex];
-            return ListTile(
-              title: Text(reportType.name),
-              onTap: () async {
-                var allow = await viewModel.createReport(reportType.id);
-                if (allow) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ReportFormView(viewModel.testFlag, reportType),
-                    ),
-                  ).then((value) => {logger.d("back from from $value")});
-                }
-              },
-              trailing: const Icon(Icons.arrow_forward_ios),
-            );
+            return _item(
+                viewModel, context, categoryReportType, reportTypeIndex);
           },
-          itemCount: viewModel.categories[categoryIndex].reportTypes.length,
+          itemCount: categoryReportType.reportTypes.length,
           shrinkWrap: true,
           physics: const ClampingScrollPhysics(),
         )
       ],
+    );
+  }
+
+  _item(ReportTypeViewModel viewModel, BuildContext context,
+      CategoryAndReportType categoryReportType, int reportTypeIndex) {
+    var reportType = categoryReportType.reportTypes[reportTypeIndex];
+    return Column(
+      children: [
+        InkWell(
+          onTap: () async {
+            var allow = await viewModel.createReport(reportType.id);
+            if (allow) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ReportFormView(viewModel.testFlag, reportType),
+                ),
+              ).then((value) => {logger.d("back from from $value")});
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(top: 9, bottom: 5),
+            child: Row(
+              children: [
+                _categoryIcon(categoryReportType.category.id,
+                    categoryReportType.category.icon),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Text(
+                    reportType.name,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: appTheme.secondary,
+                  size: 13.h,
+                ),
+              ],
+            ),
+          ),
+        ),
+        CustomPaint(
+          painter: DashedLinePainter(backgroundColor: appTheme.primary),
+          child: Container(
+            height: 1.h,
+          ),
+        )
+      ],
+    );
+  }
+
+  _categoryIcon(int id, String iconUrl) {
+    var icon = iconUrl.isNotEmpty
+        ? CachedNetworkImage(
+            cacheKey: 'categoryIcon-$id',
+            imageUrl: iconUrl,
+            placeholder: (context, url) => const Padding(
+              padding: EdgeInsets.all(9),
+              child: CircularProgressIndicator(),
+            ),
+            fit: BoxFit.cover,
+          )
+        : Image.asset(
+            "assets/images/OHTK.png",
+            color: appTheme.bg1,
+          );
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(33.33.r),
+      child: ConstrainedBox(
+        constraints: BoxConstraints.expand(width: 33.33.w, height: 33.33.w),
+        child: Container(
+          padding: const EdgeInsets.all(9),
+          color: appTheme.tertiary,
+          child: icon,
+        ),
+      ),
     );
   }
 }

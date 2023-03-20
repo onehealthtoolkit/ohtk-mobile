@@ -1,4 +1,3 @@
-import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/services/api/observation_api.dart';

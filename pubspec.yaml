@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.1+32
+version: 1.0.1+38
 
 environment:
   sdk: ">=2.18.0 <3.0.0"
@@ -58,25 +58,32 @@ dependencies:
   flutter_html: ^2.2.1
   google_maps_flutter: ^2.1.4
   geolocator: ^9.0.1
-  cross_file: ^0.3.3
+  cross_file: ^0.3.3+4
   image_picker: ^0.8.5+3
   date_field: ^3.0.1
-  cached_network_image: ^3.2.2
+  cached_network_image: ^3.2.3
   shared_preferences: ^2.0.15
   firebase_core: ^1.21.1
   firebase_messaging: ^13.0.0
   dartz: ^0.10.1
-  im_stepper: ^1.0.1+1
+  im_stepper:
+    git:
+      url: https://github.com/onehealthtoolkit/package_im_stepper
+      ref: f071159d2815dfe978a63d7175ca823a218b72cb
   connectivity_plus: ^2.3.6+1
   scrollable_positioned_list: ^0.3.2
   flutter_native_timezone: ^2.0.0
   mobile_scanner: ^2.0.0
   jwt_decode: ^0.3.1
+  dotted_border: ^2.0.0+1
+  flutter_svg: ^0.23.0
+  flutter_screenutil: ^5.6.1
 
 # Fix build release issue: Error unsupported class file major version 59
 # https://stackoverflow.com/questions/72506950/flutter-error-could-not-resolve-all-artifacts-for-configuration-image-picker
 dependency_overrides:
   image_picker_android: 0.8.4+13
+  file:  6.1.4
 
 dev_dependencies:
   flutter_test:
@@ -118,7 +125,12 @@ flutter:
   assets:
     - assets/images/logo.png
     - assets/images/map_pin_icon.png
+    - assets/images/OHTK.png
+    - assets/images/add_image_comment_icon.svg
+    - assets/images/doc_fill_icon.svg
+    - assets/images/check_icon.svg
     - assets/animations/waiting.json
+    - assets/images/default-avatar-profile.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -132,17 +144,14 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+  fonts:
+    - family: NotoSansThai
+      fonts:
+        - asset: assets/fonts/NotoSansThai-Light.ttf
+          weight: 100
+        - asset: assets/fonts/NotoSansThai-Regular.ttf
+        - asset: assets/fonts/NotoSansThai-Bold.ttf
+          weight: 700
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -1,27 +1,37 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
+import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/progress_indicator.dart';
+import 'package:podd_app/components/report_image_carousel.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/ui/report/followup_report_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-// View that creates and provides the viewmodel
+var formatter = DateFormat("dd/MM/yyyy HH:mm");
+
 class FollowupReportView extends StatelessWidget {
   final String id;
   const FollowupReportView({Key? key, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<FollowupReportViewModel>.nonReactive(
-      builder: (context, model, child) => Scaffold(
-          body: Center(
-        child: _FollowupReportView(),
-      )),
+    return ViewModelBuilder<FollowupReportViewModel>.reactive(
       viewModelBuilder: () => FollowupReportViewModel(id),
+      builder: (context, viewModel, child) => Scaffold(
+        appBar: AppBar(
+          leading: const BackAppBarAction(),
+          automaticallyImplyLeading: false,
+          title: Text(AppLocalizations.of(context)!.followupDetailTitle),
+        ),
+        body: viewModel.isBusy
+            ? const Center(child: OhtkProgressIndicator(size: 100))
+            : !viewModel.hasError
+                ? _FollowupReportView()
+                : const Text("Incident report not found"),
+      ),
     );
   }
 }
@@ -32,97 +42,64 @@ class _FollowupReportView extends HookViewModelWidget<FollowupReportViewModel> {
       BuildContext context, FollowupReportViewModel viewModel) {
     final followup = viewModel.data;
     if (followup == null) {
-      return const OhtkProgressIndicator(size: 100);
+      return const Center(child: OhtkProgressIndicator(size: 100));
     } else {
-      var formatter = DateFormat("dd/MM/yyyy HH:mm");
-
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.followupDetailTitle),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10),
-              _title(context, followup),
-              const SizedBox(height: 10),
-              Text(
-                formatter.format(followup.createdAt.toLocal()),
-                textScaleFactor: .75,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Container(
-                  color: Colors.white,
-                  constraints: const BoxConstraints(
-                      minHeight: 100, minWidth: double.infinity),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text(followup.description.isEmpty
-                        ? "no description"
-                        : followup.trimWhitespaceDescription),
-                  ),
-                ),
-              ),
-              _Images(),
-            ],
+      return LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 15),
+                _title(context, followup),
+                _description(context, followup),
+                ReportImagesCarousel(followup.images)
+              ],
+            ),
           ),
-        ),
-      );
+        );
+      });
     }
   }
 
-  _title(BuildContext context, FollowupReport incident) {
-    return Row(
-      children: [
-        Text(
-          incident.reportTypeName,
-          textScaleFactor: 1.5,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
+  _title(BuildContext context, FollowupReport followup) {
+    return Container(
+      height: 45,
+      padding: const EdgeInsets.fromLTRB(28, 10, 28, 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            followup.reportTypeName,
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontSize: 20.sp,
+                ),
           ),
-        )
-      ],
+          Text(
+            formatter.format(followup.createdAt.toLocal()),
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w300,
+                ),
+          ),
+        ],
+      ),
     );
   }
-}
 
-class _Images extends HookViewModelWidget<FollowupReportViewModel> {
-  @override
-  Widget buildViewModelWidget(
-      BuildContext context, FollowupReportViewModel viewModel) {
-    final images = viewModel.data!.images;
-    var _pageController = usePageController(viewportFraction: .5);
-
-    return Container(
-      color: Colors.white,
-      constraints:
-          const BoxConstraints(minWidth: double.infinity, minHeight: 150),
-      padding: const EdgeInsets.all(12.0),
-      child: SizedBox(
-        height: 150,
-        child: (images != null && images.isNotEmpty)
-            ? PageView.builder(
-                itemCount: images.length,
-                pageSnapping: true,
-                controller: _pageController,
-                itemBuilder: (context, pagePosition) {
-                  return Container(
-                    margin: const EdgeInsets.all(10),
-                    child: CachedNetworkImage(
-                      imageUrl: viewModel
-                          .resolveImagePath(images[pagePosition].thumbnailPath),
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      fit: BoxFit.cover,
-                    ),
-                  );
-                },
-              )
-            : const Text("No images uploaded"),
+  _description(BuildContext context, FollowupReport followup) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(28, 20, 28, 10),
+      child: Text(
+        followup.description.isEmpty
+            ? "no description"
+            : followup.trimWhitespaceDescription,
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+            ),
       ),
     );
   }

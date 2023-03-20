@@ -41,7 +41,7 @@ class AuthServiceMock implements IAuthService {
   }
 
   @override
-  Future<void> requestAccessTokenIfExpired() {
+  Future<bool> requestAccessTokenIfExpired() {
     // TODO: implement requestAccessTokenIfExpired
     throw UnimplementedError();
   }
@@ -61,6 +61,12 @@ class AuthServiceMock implements IAuthService {
   @override
   updateConfirmedConsent() {
     // TODO: implement updateConfirmedConsent
+    throw UnimplementedError();
+  }
+
+  @override
+  updateAvatarUrl(String avatarUrl) {
+    // TODO: implement updateAvatarUrl
     throw UnimplementedError();
   }
 }

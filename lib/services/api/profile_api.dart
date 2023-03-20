@@ -1,4 +1,6 @@
+import "package:dio/dio.dart" as dio;
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:podd_app/models/consent_result.dart';
 import 'package:podd_app/models/profile_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
@@ -89,6 +91,36 @@ class ProfileApi extends GraphQlBaseApi {
       return result;
     } on OperationException catch (e) {
       return ConsentSubmitFailure(e);
+    }
+  }
+
+  Future<ProfileResult> uploadAvatar(XFile image) async {
+    String mutation = r'''
+    mutation userUploadAvatar($image: Upload!) {
+      adminUserUploadAvatar(image: $image) {
+        success
+        avatarUrl
+      }
+    }
+    ''';
+
+    var bytes = await image.readAsBytes();
+    var file = dio.MultipartFile.fromBytes(
+      bytes,
+      filename: "test",
+    );
+
+    try {
+      final result = await runGqlMutation(
+          mutation: mutation,
+          variables: {
+            "image": file,
+          },
+          parseData: (resp) => ProfileUploadSuccess(
+              success: resp?["success"], avatarUrl: resp?["avatarUrl"]));
+      return result;
+    } on OperationException catch (e) {
+      return ProfileFailure(e);
     }
   }
 }

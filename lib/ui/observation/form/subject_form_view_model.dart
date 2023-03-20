@@ -8,32 +8,21 @@ import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/services/observation_record_service.dart';
-import 'package:stacked/stacked.dart';
+import 'package:podd_app/ui/report/form_base_view_model.dart';
 import 'package:uuid/uuid.dart';
-
-enum ObservationSubjectFormState {
-  formInput,
-  confirmation,
-}
-
-enum BackAction {
-  navigationPop,
-  doNothing,
-}
 
 var _uuid = const Uuid();
 
-class ObservationSubjectFormViewModel extends BaseViewModel {
+class ObservationSubjectFormViewModel extends FormBaseViewModel {
   final IObservationRecordService _observationService =
       locator<IObservationRecordService>();
 
   final ObservationDefinition _definition;
   final ObservationSubjectRecord? _subject;
-  bool isReady = false;
   String _subjectId = "";
   Form _formStore = Form.fromJson({}, "");
-  ObservationSubjectFormState state = ObservationSubjectFormState.formInput;
 
+  @override
   Form get formStore => _formStore;
 
   ObservationSubjectFormViewModel(this._definition, [this._subject]) {
@@ -55,32 +44,8 @@ class ObservationSubjectFormViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  BackAction back() {
-    if (state == ObservationSubjectFormState.formInput) {
-      if (formStore.couldGoToPreviousSection) {
-        formStore.previous();
-      } else {
-        return BackAction.navigationPop;
-      }
-    } else if (state == ObservationSubjectFormState.confirmation) {
-      state = ObservationSubjectFormState.formInput;
-      notifyListeners();
-    }
-    return BackAction.doNothing;
-  }
-
-  next() {
-    if (state == ObservationSubjectFormState.formInput) {
-      if (formStore.couldGoToNextSection) {
-        formStore.next();
-      } else {
-        if (formStore.currentSection.validate()) {
-          state = ObservationSubjectFormState.confirmation;
-          notifyListeners();
-        }
-      }
-    } else {}
-  }
+  @override
+  bool get isTestMode => false;
 
   Future<SubjectRecordSubmitResult> submit() async {
     setBusy(true);
