@@ -52,7 +52,7 @@ class ReportTypeApi extends GraphQlBaseApi {
               .map((e) => ReportType.fromJson(e))
               .toList(),
           removedList: (resp['removedList'] as List)
-              .map((e) => ReportType.fromJson(e))
+              .map((e) => e['id'] as String)
               .toList(),
           categoryList: (resp['categoryList'] as List)
               .map((e) => Category.fromJson(e))
@@ -76,7 +76,7 @@ class ReportTypeSyncInputType {
 
 class ReportTypeSyncOutputType {
   List<ReportType> updatedList;
-  List<ReportType> removedList;
+  List<String> removedList;
   List<Category> categoryList;
 
   ReportTypeSyncOutputType({

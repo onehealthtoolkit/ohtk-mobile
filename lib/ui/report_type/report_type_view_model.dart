@@ -85,6 +85,7 @@ class ReportTypeViewModel extends BaseViewModel {
   syncReportTypes() async {
     setBusy(true);
     await _reportTypeService.sync();
+    // retrieve from local database
     await fetch();
     setBusy(false);
   }
