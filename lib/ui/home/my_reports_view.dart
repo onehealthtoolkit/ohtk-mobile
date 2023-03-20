@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/components/progress_indicator.dart';
@@ -31,7 +30,7 @@ class _MyReportsViewState extends State<MyReportsView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ViewModelBuilder<MyReportsViewModel>.reactive(
+    return ViewModelBuilder<MyReportsViewModel>.nonReactive(
         viewModelBuilder: () => viewModel,
         disposeViewModel: false,
         initialiseSpecialViewModelsOnce: true,
@@ -56,8 +55,7 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
               key: const PageStorageKey('my-reports-storage-key'),
               trailingFn: (report) {
                 var children = <Widget>[];
-                if (viewModel.canFollow(report.reportTypeId) &&
-                    !report.testFlag) {
+                if (report.reportTypeFollowable && !report.testFlag) {
                   children.insert(0, _followLink(context, report, viewModel));
                 }
                 return Row(

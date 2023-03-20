@@ -96,6 +96,7 @@ class ReportService extends IReportService {
     var result = await _reportApi.fetchIncidentReports(
       offset: currentIncidentReportNextOffset,
       limit: incidentReportLimit,
+      resetFlag: resetFlag,
     );
     if (resetFlag) {
       _incidents.clear();
@@ -114,6 +115,7 @@ class ReportService extends IReportService {
     var result = await _reportApi.fetchMyIncidentReports(
       offset: currentMyIncidentReportNextOffset,
       limit: myIncidentReportLimit,
+      resetFlag: resetFlag,
     );
     if (resetFlag) {
       _myIncidents.clear();

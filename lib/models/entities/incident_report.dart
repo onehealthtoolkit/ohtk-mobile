@@ -14,6 +14,7 @@ class IncidentReport {
   String description;
   String reportTypeId;
   String reportTypeName;
+  bool reportTypeFollowable;
   DateTime incidentDate;
   DateTime createdAt;
   DateTime updatedAt;
@@ -39,9 +40,17 @@ class IncidentReport {
     this.threadId,
     this.authorityName,
     this.testFlag = false,
+    this.reportTypeFollowable = false,
   });
 
   factory IncidentReport.fromJson(Map<String, dynamic> json) {
+    var reportTypeFollowable = false;
+    if (json["reportType"] != null) {
+      var reportTypeMap = json["reportType"] as Map;
+      if (reportTypeMap["isFollowable"] != null) {
+        reportTypeFollowable = reportTypeMap["isFollowable"] as bool;
+      }
+    }
     return IncidentReport(
       id: json["id"],
       description: json["rendererData"],
@@ -65,6 +74,7 @@ class IncidentReport {
               .map((authority) => authority["name"])
               .join(",")
           : "",
+      reportTypeFollowable: reportTypeFollowable,
     );
   }
 

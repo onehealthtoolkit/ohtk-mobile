@@ -38,6 +38,7 @@ class ReportApi extends GraphQlBaseApi {
             reportType {
               id
               name
+              isFollowable
             }
             reportedBy {
               id
@@ -94,6 +95,7 @@ class ReportApi extends GraphQlBaseApi {
   Future<IncidentReportQueryResult> fetchIncidentReports({
     limit = 20,
     offset = 0,
+    resetFlag = false,
   }) async {
     // By default, test reports are included
     const query = r'''
@@ -136,7 +138,8 @@ class ReportApi extends GraphQlBaseApi {
         "offset": offset,
         "testFlag": false,
       },
-      fetchPolicy: FetchPolicy.cacheAndNetwork,
+      fetchPolicy:
+          resetFlag ? FetchPolicy.networkOnly : FetchPolicy.cacheAndNetwork,
       typeConverter: (resp) => IncidentReportQueryResult.fromJson(resp),
     );
   }
@@ -183,6 +186,7 @@ class ReportApi extends GraphQlBaseApi {
   Future<IncidentReportQueryResult> fetchMyIncidentReports({
     limit = 20,
     offset = 0,
+    resetFlag = false,
   }) async {
     // By default, test reports are included
     const query = r'''
@@ -201,6 +205,7 @@ class ReportApi extends GraphQlBaseApi {
             reportType {
               id
               name
+              isFollowable
             }
             reportedBy {
               id
@@ -213,7 +218,7 @@ class ReportApi extends GraphQlBaseApi {
               thumbnail
             }    
             caseId
-            testFlag
+            testFlag            
           }          
         }
       }
@@ -225,7 +230,8 @@ class ReportApi extends GraphQlBaseApi {
         "offset": offset,
         "testFlag": false,
       },
-      fetchPolicy: FetchPolicy.cacheAndNetwork,
+      fetchPolicy:
+          resetFlag ? FetchPolicy.networkOnly : FetchPolicy.cacheAndNetwork,
       typeConverter: (resp) => IncidentReportQueryResult.fromJson(resp),
     );
   }
