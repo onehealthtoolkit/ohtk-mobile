@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/components/progress_indicator.dart';
@@ -76,15 +77,10 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
       MyReportsViewModel viewModel) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FollowupReportFormView(
-              incidentId: report.id,
-              reportType: viewModel.getReportType(report.reportTypeId)!,
-            ),
-          ),
-        ).then((value) => {_logger.d("back from from $value")});
+        GoRouter.of(context).goNamed('followupReportForm', params: {
+          "reportTypeId": report.reportTypeId,
+          "incidentId": report.id
+        });
       },
       child: Ink(
         decoration: BoxDecoration(

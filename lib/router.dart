@@ -9,6 +9,9 @@ import 'package:podd_app/ui/home/observation/observation_home_view.dart';
 import 'package:podd_app/ui/home/report_home_view.dart';
 import 'package:podd_app/ui/login/login_view.dart';
 import 'package:podd_app/ui/profile/profile_view.dart';
+import 'package:podd_app/ui/report/followup_report_form_view.dart';
+import 'package:podd_app/ui/report/followup_report_view.dart';
+import 'package:podd_app/ui/report/incident_report_view.dart';
 import 'package:podd_app/ui/report/report_form_view.dart';
 import 'package:podd_app/ui/report_type/report_type_view.dart';
 import 'package:stacked/stacked.dart';
@@ -42,6 +45,26 @@ class OhtkRouter {
                 builder: (context, state) => ReportHomeView(),
                 routes: <RouteBase>[
                   GoRoute(
+                    name: 'incidentDetail',
+                    path: 'incident/:incidentId',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (context, state) {
+                      var incidentId = state.params['incidentId'];
+                      return IncidentReportView(id: incidentId!);
+                    },
+                    routes: [
+                      GoRoute(
+                        name: 'incidentFollowup',
+                        path: 'followup/:followupId',
+                        parentNavigatorKey: _rootNavigatorKey,
+                        builder: (context, state) {
+                          var followupId = state.params['followupId'];
+                          return FollowupReportView(id: followupId!);
+                        },
+                      ),
+                    ],
+                  ),
+                  GoRoute(
                     name: 'reportTypes',
                     path: 'types',
                     parentNavigatorKey: _rootNavigatorKey,
@@ -56,7 +79,20 @@ class OhtkRouter {
                       var testFlag = state.queryParams['test'] == '1';
                       return ReportFormView(testFlag, reportTypeId!);
                     },
-                  )
+                  ),
+                  GoRoute(
+                    name: 'followupReportForm',
+                    path: 'incident/:incidentId/types/:reportTypeId/form',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (context, state) {
+                      var incidentId = state.params['incidentId'];
+                      var reportTypeId = state.params['reportTypeId'];
+                      return FollowupReportFormView(
+                        incidentId: incidentId!,
+                        reportTypeId: reportTypeId!,
+                      );
+                    },
+                  ),
                 ],
               ),
               GoRoute(
