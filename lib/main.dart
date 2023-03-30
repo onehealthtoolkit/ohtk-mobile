@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:podd_app/router.dart';
 import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/httpclient.dart';
 import 'package:podd_app/app_theme.dart';
@@ -106,7 +107,7 @@ class MyApp extends StatelessWidget {
                 minTextAdapt: true,
                 splitScreenMode: true,
                 builder: (context, child) {
-                  return MaterialApp(
+                  return MaterialApp.router(
                     debugShowCheckedModeBanner: false,
                     title: 'OHTK Mobile',
                     localizationsDelegates: const [
@@ -126,7 +127,7 @@ class MyApp extends StatelessWidget {
                       return locale;
                     },
                     theme: locator<AppTheme>().themeData,
-                    home: snapshot.hasData ? _App() : const _WaitingScreen(),
+                    routerConfig: OhtkRouter().getRouter('/reports'),
                   );
                 }),
           );
@@ -158,34 +159,6 @@ class _WaitingScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class _App extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ViewModelBuilder<_AppViewModel>.reactive(
-      viewModelBuilder: () => _AppViewModel(),
-      builder: (context, viewModel, child) =>
-          viewModel.isLogin == true ? const HomeView() : const LoginView(),
-    );
-  }
-}
-
-class _AppViewModel extends ReactiveViewModel {
-  final IAuthService authService = locator<IAuthService>();
-  bool? get isLogin => authService.isLogin;
-
-  late Timer timer;
-
-  _AppViewModel() : super() {
-    timer = Timer.periodic(const Duration(minutes: 1), (timer) {
-      authService.requestAccessTokenIfExpired();
-    });
-  }
-
-  @override
-  List<ReactiveServiceMixin> get reactiveServices =>
-      [authService as AuthService];
 }
 
 class RestartWidget extends StatefulWidget {

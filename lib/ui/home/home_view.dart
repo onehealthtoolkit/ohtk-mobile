@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:podd_app/components/notification_appbar_action.dart';
 import 'package:podd_app/ui/home/consent_view.dart';
@@ -18,7 +18,9 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 import '../profile/profile_view.dart';
 
 class HomeView extends HookWidget {
-  const HomeView({Key? key}) : super(key: key);
+  final Widget child;
+
+  const HomeView({Key? key, required this.child}) : super(key: key);
 
   _viewUserMessage(BuildContext context, String userMessageId) {
     Navigator.push(
@@ -94,7 +96,7 @@ class HomeView extends HookWidget {
           }
         });
       },
-      builder: (context, viewModel, child) {
+      builder: (context, viewModel, _) {
         var navigationBarItems = [
           const BottomNavigationBarItem(
             label: 'Incidents',
@@ -128,30 +130,47 @@ class HomeView extends HookWidget {
           ),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            currentIndex: viewModel.currentIndex,
-            onTap: viewModel.setIndex,
+            currentIndex: _calculateSelectedIndex(context, viewModel),
+            onTap: (int index) => _onItemTapped(index, context, viewModel),
             items: navigationBarItems,
           ),
-          body: getViewForIndex(viewModel),
+          body: child,
         );
       },
     );
   }
 
-  Widget getViewForIndex(HomeViewModel viewModel) {
-    int index = viewModel.currentIndex;
-    if (index == 0) {
-      return ReportHomeView();
-    } else if (index == 1) {
-      if (viewModel.hasObservationFeature) {
-        return const ObservationHomeView();
-      } else {
-        return const ProfileView();
-      }
-    } else if (index == 2) {
-      return const ProfileView();
-    } else {
-      return ReportHomeView();
+  static int _calculateSelectedIndex(
+      BuildContext context, HomeViewModel viewModel) {
+    final String location = GoRouterState.of(context).location;
+    if (location.startsWith('/reports')) {
+      return 0;
+    }
+    if (location.startsWith('/observations') &&
+        viewModel.hasObservationFeature) {
+      return 1;
+    }
+    if (location.startsWith('/profile')) {
+      return viewModel.hasObservationFeature ? 2 : 1;
+    }
+    return 0;
+  }
+
+  void _onItemTapped(int index, BuildContext context, HomeViewModel viewModel) {
+    switch (index) {
+      case 0:
+        GoRouter.of(context).go('/reports');
+        break;
+      case 1:
+        if (viewModel.hasObservationFeature) {
+          GoRouter.of(context).go('/observations');
+        } else {
+          GoRouter.of(context).go('/profile');
+        }
+        break;
+      case 2:
+        GoRouter.of(context).go('/profile');
+        break;
     }
   }
 }
