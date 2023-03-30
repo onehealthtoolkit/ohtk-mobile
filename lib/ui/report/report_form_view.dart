@@ -8,7 +8,6 @@ import 'package:podd_app/components/form_input.dart';
 import 'package:podd_app/components/form_stepper.dart';
 import 'package:podd_app/components/form_test_banner.dart';
 import 'package:podd_app/locator.dart';
-import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
@@ -19,14 +18,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportFormView extends StatelessWidget {
   final AppTheme apptheme = locator<AppTheme>();
-  final ReportType reportType;
+  final String reportTypeId;
   final bool testFlag;
-  ReportFormView(this.testFlag, this.reportType, {Key? key}) : super(key: key);
+  ReportFormView(this.testFlag, this.reportTypeId, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ReportFormViewModel>.reactive(
-      viewModelBuilder: () => ReportFormViewModel(testFlag, reportType),
+      viewModelBuilder: () => ReportFormViewModel(testFlag, reportTypeId),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
           return const Center(child: CircularProgressIndicator());
@@ -42,7 +42,7 @@ class ReportFormView extends StatelessWidget {
               appBar: AppBar(
                 leading: const BackAppBarAction(),
                 title: Text(AppLocalizations.of(context)!.reportTitle +
-                    " ${reportType.name}"),
+                    " ${viewModel.reportType?.name}"),
                 backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
                 foregroundColor: testFlag
                     ? Colors.black87

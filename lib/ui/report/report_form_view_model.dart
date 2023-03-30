@@ -7,6 +7,7 @@ import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/services/report_service.dart';
+import 'package:podd_app/services/report_type_service.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -14,24 +15,30 @@ var _uuid = const Uuid();
 
 class ReportFormViewModel extends FormBaseViewModel {
   final IReportService _reportService = locator<IReportService>();
+  final IReportTypeService _reportTypeService = locator<IReportTypeService>();
 
-  final ReportType _reportType;
+  final String _reportTypeId;
   final bool _testFlag;
   String _reportId = "";
   Form _formStore = Form.fromJson({}, "");
   bool? _incidentInAuthority = true;
+  ReportType? reportType;
 
-  ReportFormViewModel(this._testFlag, this._reportType) : super() {
+  ReportFormViewModel(this._testFlag, this._reportTypeId) : super() {
     init();
   }
 
   init() async {
-    final String _timezone = await FlutterNativeTimezone.getLocalTimezone();
-    _reportId = _uuid.v4();
-    _formStore = Form.fromJson(json.decode(_reportType.definition), _reportId);
-    _formStore.setTimezone(_timezone);
-    isReady = true;
-    notifyListeners();
+    reportType = await _reportTypeService.getReportType(_reportTypeId);
+    if (reportType != null) {
+      final String _timezone = await FlutterNativeTimezone.getLocalTimezone();
+      _reportId = _uuid.v4();
+      _formStore =
+          Form.fromJson(json.decode(reportType!.definition), _reportId);
+      _formStore.setTimezone(_timezone);
+      isReady = true;
+      notifyListeners();
+    }
   }
 
   @override
@@ -55,8 +62,8 @@ class ReportFormViewModel extends FormBaseViewModel {
     var report = Report(
       id: _reportId,
       data: formStore.toJsonValue(),
-      reportTypeId: _reportType.id,
-      reportTypeName: _reportType.name,
+      reportTypeId: reportType!.id,
+      reportTypeName: reportType!.name,
       incidentDate: incidentDate ?? DateTime.now(),
       gpsLocation: gpsLocation,
       incidentInAuthority: _incidentInAuthority,

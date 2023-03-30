@@ -9,6 +9,8 @@ import 'package:podd_app/ui/home/observation/observation_home_view.dart';
 import 'package:podd_app/ui/home/report_home_view.dart';
 import 'package:podd_app/ui/login/login_view.dart';
 import 'package:podd_app/ui/profile/profile_view.dart';
+import 'package:podd_app/ui/report/report_form_view.dart';
+import 'package:podd_app/ui/report_type/report_type_view.dart';
 import 'package:stacked/stacked.dart';
 
 class OhtkRouter {
@@ -38,6 +40,24 @@ class OhtkRouter {
               GoRoute(
                 path: '/reports',
                 builder: (context, state) => ReportHomeView(),
+                routes: <RouteBase>[
+                  GoRoute(
+                    name: 'reportTypes',
+                    path: 'types',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (context, state) => ReportTypeView(),
+                  ),
+                  GoRoute(
+                    name: 'reportForm',
+                    path: 'types/:reportTypeId/form',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (context, state) {
+                      var reportTypeId = state.params['reportTypeId'];
+                      var testFlag = state.queryParams['test'] == '1';
+                      return ReportFormView(testFlag, reportTypeId!);
+                    },
+                  )
+                ],
               ),
               GoRoute(
                 path: '/observations',

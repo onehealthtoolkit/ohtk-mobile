@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/app_theme.dart';
@@ -118,7 +119,7 @@ class _TestFlag extends HookViewModelWidget<ReportTypeViewModel> {
           Padding(
             padding: const EdgeInsets.only(left: 6),
             child: FlatButton(
-              padding: const EdgeInsets.fromLTRB(10, 6, 10, 10),
+              padding: const EdgeInsets.fromLTRB(15, 6, 20, 6),
               onPressed: () {
                 viewModel.testFlag = !viewModel.testFlag;
               },
@@ -312,13 +313,11 @@ class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
           onTap: () async {
             var allow = await viewModel.createReport(reportType.id);
             if (allow) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ReportFormView(viewModel.testFlag, reportType),
-                ),
-              ).then((value) => {logger.d("back from from $value")});
+              GoRouter.of(context).pushReplacementNamed(
+                'reportForm',
+                params: {"reportTypeId": reportType.id},
+                queryParams: {"test": viewModel.testFlag ? '1' : '0'},
+              );
             }
           },
           child: Padding(
