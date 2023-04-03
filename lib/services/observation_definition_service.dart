@@ -7,6 +7,7 @@ import 'package:stacked/stacked.dart';
 
 abstract class IObservationDefinitionService with ReactiveServiceMixin {
   Future<List<ObservationDefinition>> fetchAllObservationDefinitions();
+  Future<ObservationDefinition?> getObservationDefinition(int id);
 
   Future<void> sync();
 
@@ -36,6 +37,24 @@ class ObservationDefinitionService extends IObservationDefinitionService {
           ),
         )
         .toList();
+  }
+
+  @override
+  Future<ObservationDefinition?> getObservationDefinition(int id) async {
+    var _db = _dbService.db;
+    var monitoringDefinitionResults = await _db.query('monitoring_definition',
+        where: 'definition_id = ?', whereArgs: [id]);
+
+    var result = await _db
+        .query('observation_definition', where: 'id = ?', whereArgs: [id]);
+
+    if (result.isNotEmpty) {
+      return result
+          .map((definition) => ObservationDefinition.fromMap(
+              definition, monitoringDefinitionResults))
+          .toList()[0];
+    }
+    return null;
   }
 
   @override

@@ -8,6 +8,7 @@ import 'package:podd_app/ui/home/home_view.dart';
 import 'package:podd_app/ui/home/observation/observation_home_view.dart';
 import 'package:podd_app/ui/home/report_home_view.dart';
 import 'package:podd_app/ui/login/login_view.dart';
+import 'package:podd_app/ui/observation/observation_view.dart';
 import 'package:podd_app/ui/profile/profile_view.dart';
 import 'package:podd_app/ui/report/followup_report_form_view.dart';
 import 'package:podd_app/ui/report/followup_report_view.dart';
@@ -96,9 +97,19 @@ class OhtkRouter {
                 ],
               ),
               GoRoute(
-                path: '/observations',
-                builder: (context, state) => const ObservationHomeView(),
-              ),
+                  path: '/observations',
+                  builder: (context, state) => const ObservationHomeView(),
+                  routes: [
+                    GoRoute(
+                      name: 'observationSubjects',
+                      path: ':definitionId/subjects',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) {
+                        var definitionId = state.params['definitionId'];
+                        return ObservationView(definitionId!);
+                      },
+                    ),
+                  ]),
               GoRoute(
                 path: '/profile',
                 builder: (context, state) => const ProfileView(),
