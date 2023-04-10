@@ -10,14 +10,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:podd_app/router.dart';
-import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/httpclient.dart';
 import 'package:podd_app/app_theme.dart';
-import 'package:podd_app/ui/home/home_view.dart';
-import 'package:podd_app/ui/login/login_view.dart';
 import 'package:podd_app/ui/login/login_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
 
 import 'firebase_options.dart';
@@ -88,7 +84,6 @@ setupRemoteConfig(String environment) async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -101,13 +96,17 @@ class MyApp extends StatelessWidget {
           if (!snapshot.hasData) {
             return const MaterialApp(home: _WaitingScreen());
           }
+          final appViewModel = AppViewModel();
+
           return OverlaySupport.global(
             child: ScreenUtilInit(
-                designSize: getScreenSize(),
-                minTextAdapt: true,
-                splitScreenMode: true,
-                builder: (context, child) {
-                  return MaterialApp.router(
+              designSize: getScreenSize(),
+              minTextAdapt: true,
+              splitScreenMode: true,
+              builder: (context, child) {
+                return AnimatedBuilder(
+                  animation: appViewModel,
+                  builder: (context, child) => MaterialApp.router(
                     debugShowCheckedModeBanner: false,
                     title: 'OHTK Mobile',
                     localizationsDelegates: const [
@@ -127,9 +126,12 @@ class MyApp extends StatelessWidget {
                       return locale;
                     },
                     theme: locator<AppTheme>().themeData,
-                    routerConfig: OhtkRouter().getRouter('/reports'),
-                  );
-                }),
+                    routerConfig:
+                        OhtkRouter().getRouter('/reports', appViewModel),
+                  ),
+                );
+              },
+            ),
           );
         });
   }

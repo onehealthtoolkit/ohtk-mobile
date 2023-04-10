@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:podd_app/components/display_field.dart';
 import 'package:podd_app/components/flat_button.dart';
@@ -94,14 +95,8 @@ class ProfileView extends StatelessWidget {
                             width: double.infinity,
                             child: FlatButton.primary(
                               onPressed: () {
-                                Navigator.of(context)
-                                    .push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ProfileFormView(),
-                                      ),
-                                    )
-                                    .then((value) => value == true
+                                GoRouter.of(context).push('/profile/form').then(
+                                    (value) => value == true
                                         ? viewModel.initValue()
                                         : null);
                               },
@@ -135,12 +130,7 @@ class ProfileView extends StatelessWidget {
                             width: double.infinity,
                             child: FlatButton.primary(
                               onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ChangePasswordView(),
-                                  ),
-                                );
+                                GoRouter.of(context).push('/profile/password');
                               },
                               child: viewModel.isBusy
                                   ? const SizedBox(
@@ -175,8 +165,7 @@ class ProfileView extends StatelessWidget {
                               backgroundColor: Colors.red[600],
                               onPressed: () async {
                                 await viewModel.logout();
-                                Navigator.pushNamedAndRemoveUntil(
-                                    context, '/', (route) => false);
+                                GoRouter.of(context).go('/login');
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.logoutButton,
