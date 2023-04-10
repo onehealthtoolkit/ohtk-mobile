@@ -1,5 +1,6 @@
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
+import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
 import 'package:podd_app/services/api/observation_api.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:sqflite/sql.dart';
@@ -7,7 +8,11 @@ import 'package:stacked/stacked.dart';
 
 abstract class IObservationDefinitionService with ReactiveServiceMixin {
   Future<List<ObservationDefinition>> fetchAllObservationDefinitions();
+
   Future<ObservationDefinition?> getObservationDefinition(int id);
+
+  Future<ObservationMonitoringDefinition?> getObservationMonitoringDefinition(
+      int id);
 
   Future<void> sync();
 
@@ -53,6 +58,19 @@ class ObservationDefinitionService extends IObservationDefinitionService {
           .map((definition) => ObservationDefinition.fromMap(
               definition, monitoringDefinitionResults))
           .toList()[0];
+    }
+    return null;
+  }
+
+  @override
+  Future<ObservationMonitoringDefinition?> getObservationMonitoringDefinition(
+      int id) async {
+    var _db = _dbService.db;
+    var result = await _db
+        .query('monitoring_definition', where: 'id = ?', whereArgs: [id]);
+
+    if (result.isNotEmpty) {
+      return ObservationMonitoringDefinition.fromMap(result[0]);
     }
     return null;
   }

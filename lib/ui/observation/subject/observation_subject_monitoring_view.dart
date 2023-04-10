@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
@@ -95,14 +96,13 @@ class _MonitoringDefinitionListing
               shape: const CircleBorder(),
             ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ObservationMonitoringRecordFormView(
-                    monitoringDefinition: monitoringDefinition,
-                    subject: viewModel.subject,
-                  ),
-                ),
+              GoRouter.of(context).goNamed(
+                'observationMonitoringForm',
+                params: {
+                  "definitionId": viewModel.definition.id.toString(),
+                  "subjectId": viewModel.subject.id,
+                  "monitoringDefinitionId": monitoringDefinition.id.toString(),
+                },
               );
             },
           ),
@@ -149,14 +149,13 @@ class _MonitoringRecordListing
               monitoring: monitoring,
               leading: leading,
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ObservationMonitoringRecordView(
-                      monitoringDefinition: monitoringDefinition,
-                      subject: viewModel.subject,
-                      monitoringRecord: monitoring,
-                    ),
-                  ),
+                GoRouter.of(context).goNamed(
+                  'observationMonitoringDetail',
+                  params: {
+                    "definitionId": viewModel.definition.id.toString(),
+                    "subjectId": viewModel.subject.id,
+                    "monitoringId": monitoring.id,
+                  },
                 );
               });
         },

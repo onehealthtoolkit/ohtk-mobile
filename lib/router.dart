@@ -8,7 +8,11 @@ import 'package:podd_app/ui/home/home_view.dart';
 import 'package:podd_app/ui/home/observation/observation_home_view.dart';
 import 'package:podd_app/ui/home/report_home_view.dart';
 import 'package:podd_app/ui/login/login_view.dart';
+import 'package:podd_app/ui/observation/form/monitoring_record_form_view.dart';
+import 'package:podd_app/ui/observation/form/subject_form_view.dart';
+import 'package:podd_app/ui/observation/monitoring/observation_monitoring_view.dart';
 import 'package:podd_app/ui/observation/observation_view.dart';
+import 'package:podd_app/ui/observation/subject/observation_subject_view.dart';
 import 'package:podd_app/ui/profile/profile_view.dart';
 import 'package:podd_app/ui/report/followup_report_form_view.dart';
 import 'package:podd_app/ui/report/followup_report_view.dart';
@@ -97,19 +101,74 @@ class OhtkRouter {
                 ],
               ),
               GoRoute(
-                  path: '/observations',
-                  builder: (context, state) => const ObservationHomeView(),
-                  routes: [
-                    GoRoute(
-                      name: 'observationSubjects',
-                      path: ':definitionId/subjects',
-                      parentNavigatorKey: _rootNavigatorKey,
-                      builder: (context, state) {
-                        var definitionId = state.params['definitionId'];
-                        return ObservationView(definitionId!);
-                      },
-                    ),
-                  ]),
+                path: '/observations',
+                builder: (context, state) => const ObservationHomeView(),
+                routes: [
+                  GoRoute(
+                    name: 'observationSubjects',
+                    path: ':definitionId/subjects',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (context, state) {
+                      var definitionId = state.params['definitionId'];
+                      return ObservationView(definitionId!);
+                    },
+                    routes: [
+                      GoRoute(
+                        name: 'observationSubjectForm',
+                        path: 'form',
+                        parentNavigatorKey: _rootNavigatorKey,
+                        builder: (context, state) {
+                          var definitionId = state.params['definitionId'];
+                          return ObservationSubjectFormView(
+                            definitionId: definitionId!,
+                          );
+                        },
+                      ),
+                      GoRoute(
+                        name: 'observationSubjectDetail',
+                        path: ':subjectId',
+                        parentNavigatorKey: _rootNavigatorKey,
+                        builder: (context, state) {
+                          var definitionId = state.params['definitionId'];
+                          var subjectId = state.params['subjectId'];
+                          return ObservationSubjectView(
+                            definitionId: definitionId!,
+                            subjectId: subjectId!,
+                          );
+                        },
+                        routes: [
+                          GoRoute(
+                            name: 'observationMonitoringForm',
+                            path:
+                                'monitoringDefinition/:monitoringDefinitionId/form',
+                            parentNavigatorKey: _rootNavigatorKey,
+                            builder: (context, state) {
+                              var subjectId = state.params['subjectId'];
+                              var monitoringDefinitionId =
+                                  state.params['monitoringDefinitionId'];
+                              return ObservationMonitoringRecordFormView(
+                                monitoringDefinitionId: monitoringDefinitionId!,
+                                subjectId: subjectId!,
+                              );
+                            },
+                          ),
+                          GoRoute(
+                            name: 'observationMonitoringDetail',
+                            path: 'monitoringRecords/:monitoringId',
+                            parentNavigatorKey: _rootNavigatorKey,
+                            builder: (context, state) {
+                              var monitoringId = state.params['monitoringId'];
+                              return ObservationMonitoringRecordView(
+                                monitoringRecordId: monitoringId!,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
               GoRoute(
                 path: '/profile',
                 builder: (context, state) => const ProfileView(),

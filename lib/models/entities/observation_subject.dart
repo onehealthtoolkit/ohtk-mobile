@@ -1,4 +1,5 @@
 import 'package:podd_app/models/entities/base_report_image.dart';
+import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/models/entities/utils.dart';
 
@@ -19,8 +20,8 @@ class ObservationSubjectRecord {
   String description;
   String identity;
   bool isActive;
+  ObservationDefinition? definition;
   List<ObservationRecordImage>? images;
-
   List<ObservationMonitoringRecord> monitoringRecords;
 
   ObservationSubjectRecord({

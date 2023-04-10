@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/ui/observation/observation_subject_list_view_model.dart';
-import 'package:podd_app/ui/observation/subject/observation_subject_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
@@ -60,18 +60,18 @@ class _SubjectListing
                   );
 
             return SubjectRecordItem(
-                subject: subject,
-                leading: leading,
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ObservationSubjectView(
-                        definition: viewModel.definition,
-                        subject: subject,
-                      ),
-                    ),
-                  );
-                });
+              subject: subject,
+              leading: leading,
+              onTap: () {
+                GoRouter.of(context).goNamed(
+                  'observationSubjectDetail',
+                  params: {
+                    "definitionId": viewModel.definition.id.toString(),
+                    "subjectId": subject.id,
+                  },
+                );
+              },
+            );
           },
           itemCount: viewModel.observationSubjects.length,
         ),

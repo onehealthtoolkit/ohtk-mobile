@@ -23,12 +23,12 @@ class ObservationViewModel extends BaseViewModel {
     definition =
         await observationDefinitionService.getObservationDefinition(id);
     if (definition != null) {
-      fetchObservationSubjects();
+      await fetchObservationSubjects();
     }
+    setBusy(false);
   }
 
   Future<void> fetchObservationSubjects() async {
     await observationService.fetchAllSubjectRecords(true, definition!.id);
-    setBusy(false);
   }
 }
