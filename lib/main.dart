@@ -9,14 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:podd_app/services/auth_service.dart';
+import 'package:podd_app/router.dart';
 import 'package:podd_app/services/httpclient.dart';
 import 'package:podd_app/app_theme.dart';
-import 'package:podd_app/ui/home/home_view.dart';
-import 'package:podd_app/ui/login/login_view.dart';
 import 'package:podd_app/ui/login/login_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
 
 import 'firebase_options.dart';
@@ -87,7 +84,6 @@ setupRemoteConfig(String environment) async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -100,13 +96,17 @@ class MyApp extends StatelessWidget {
           if (!snapshot.hasData) {
             return const MaterialApp(home: _WaitingScreen());
           }
+          final appViewModel = AppViewModel();
+
           return OverlaySupport.global(
             child: ScreenUtilInit(
-                designSize: getScreenSize(),
-                minTextAdapt: true,
-                splitScreenMode: true,
-                builder: (context, child) {
-                  return MaterialApp(
+              designSize: getScreenSize(),
+              minTextAdapt: true,
+              splitScreenMode: true,
+              builder: (context, child) {
+                return AnimatedBuilder(
+                  animation: appViewModel,
+                  builder: (context, child) => MaterialApp.router(
                     debugShowCheckedModeBanner: false,
                     title: 'OHTK Mobile',
                     localizationsDelegates: const [
@@ -126,9 +126,12 @@ class MyApp extends StatelessWidget {
                       return locale;
                     },
                     theme: locator<AppTheme>().themeData,
-                    home: snapshot.hasData ? _App() : const _WaitingScreen(),
-                  );
-                }),
+                    routerConfig:
+                        OhtkRouter().getRouter('/reports', appViewModel),
+                  ),
+                );
+              },
+            ),
           );
         });
   }
@@ -158,34 +161,6 @@ class _WaitingScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class _App extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ViewModelBuilder<_AppViewModel>.reactive(
-      viewModelBuilder: () => _AppViewModel(),
-      builder: (context, viewModel, child) =>
-          viewModel.isLogin == true ? const HomeView() : const LoginView(),
-    );
-  }
-}
-
-class _AppViewModel extends ReactiveViewModel {
-  final IAuthService authService = locator<IAuthService>();
-  bool? get isLogin => authService.isLogin;
-
-  late Timer timer;
-
-  _AppViewModel() : super() {
-    timer = Timer.periodic(const Duration(minutes: 1), (timer) {
-      authService.requestAccessTokenIfExpired();
-    });
-  }
-
-  @override
-  List<ReactiveServiceMixin> get reactiveServices =>
-      [authService as AuthService];
 }
 
 class RestartWidget extends StatefulWidget {

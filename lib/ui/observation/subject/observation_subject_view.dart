@@ -19,15 +19,15 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ObservationSubjectView extends HookWidget {
-  final ObservationDefinition definition;
-  final ObservationSubjectRecord subject;
+  final String definitionId;
+  final String subjectId;
 
   final AppTheme appTheme = locator<AppTheme>();
 
   ObservationSubjectView({
     Key? key,
-    required this.definition,
-    required this.subject,
+    required this.definitionId,
+    required this.subjectId,
   }) : super(key: key);
 
   @override
@@ -35,7 +35,8 @@ class ObservationSubjectView extends HookWidget {
     TabController _tabController = useTabController(initialLength: 2);
 
     return ViewModelBuilder<ObservationSubjectViewModel>.reactive(
-      viewModelBuilder: () => ObservationSubjectViewModel(definition, subject),
+      viewModelBuilder: () =>
+          ObservationSubjectViewModel(definitionId, subjectId),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title:
@@ -66,19 +67,22 @@ class ObservationSubjectView extends HookWidget {
         body: viewModel.isBusy
             ? const Center(child: OhtkProgressIndicator(size: 100))
             : !viewModel.hasError
-                ? _bodyView(_tabController, context)
+                ? _bodyView(_tabController, context, viewModel)
                 : const Text("Observation subject not found"),
       ),
     );
   }
 
-  Widget _bodyView(TabController _tabController, BuildContext context) {
+  Widget _bodyView(TabController _tabController, BuildContext context,
+      ObservationSubjectViewModel viewModel) {
     return TabBarView(
       controller: _tabController,
       children: [
         _SubjectDetail(),
         ObservationSubjectMonitoringView(
-            definition: definition, subject: subject),
+          definition: viewModel.data!.definition!,
+          subject: viewModel.data!,
+        ),
       ],
     );
   }
@@ -105,7 +109,7 @@ class _SubjectDetail extends HookViewModelWidget<ObservationSubjectViewModel> {
               _title(context, subject),
               _identity(subject),
               _description(context, subject),
-              _data(context, subject, viewModel.definition),
+              _data(context, subject, subject.definition!),
               ReportImagesCarousel(subject.images),
               const SizedBox(height: 8),
               _Map(),
@@ -214,7 +218,7 @@ class _SubjectDetail extends HookViewModelWidget<ObservationSubjectViewModel> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ObservationSubjectFormView(
-                        definition: definition,
+                        definitionId: definition.id.toString(),
                         subject: subject,
                       ),
                     ),

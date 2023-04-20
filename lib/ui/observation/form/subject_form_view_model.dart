@@ -7,6 +7,7 @@ import 'package:podd_app/models/entities/observation_report_subject.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
+import 'package:podd_app/services/observation_definition_service.dart';
 import 'package:podd_app/services/observation_record_service.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
 import 'package:uuid/uuid.dart';
@@ -16,32 +17,41 @@ var _uuid = const Uuid();
 class ObservationSubjectFormViewModel extends FormBaseViewModel {
   final IObservationRecordService _observationService =
       locator<IObservationRecordService>();
+  final IObservationDefinitionService _observationDefinitionService =
+      locator<IObservationDefinitionService>();
 
-  final ObservationDefinition _definition;
+  final String _definitionId;
   final ObservationSubjectRecord? _subject;
   String _subjectId = "";
   Form _formStore = Form.fromJson({}, "");
+  ObservationDefinition? definition;
 
   @override
   Form get formStore => _formStore;
 
-  ObservationSubjectFormViewModel(this._definition, [this._subject]) {
+  ObservationSubjectFormViewModel(this._definitionId, [this._subject]) {
     init();
   }
 
   init() async {
-    _subjectId = _uuid.v4();
-    _formStore = Form.fromJson(
-        json.decode(_definition.registerFormDefinition), _subjectId);
+    var definitionId = int.parse(_definitionId);
+    definition = await _observationDefinitionService
+        .getObservationDefinition(definitionId);
 
-    final String _timezone = await FlutterNativeTimezone.getLocalTimezone();
-    _formStore.setTimezone(_timezone);
+    if (definition != null) {
+      _subjectId = _uuid.v4();
+      _formStore = Form.fromJson(
+          json.decode(definition!.registerFormDefinition), _subjectId);
 
-    if (_subject != null) {
-      _formStore.loadJsonValue(_subject!.formData ?? {});
+      final String _timezone = await FlutterNativeTimezone.getLocalTimezone();
+      _formStore.setTimezone(_timezone);
+
+      if (_subject != null) {
+        _formStore.loadJsonValue(_subject!.formData ?? {});
+      }
+      isReady = true;
+      notifyListeners();
     }
-    isReady = true;
-    notifyListeners();
   }
 
   @override
@@ -54,8 +64,8 @@ class ObservationSubjectFormViewModel extends FormBaseViewModel {
     var report = SubjectRecord(
       id: _subjectId,
       data: _formStore.toJsonValue(),
-      definitionId: _definition.id,
-      definitionName: _definition.name,
+      definitionId: definition!.id,
+      definitionName: definition!.name,
       gpsLocation: gpsLocation,
       recordDate: DateTime.now(),
     );

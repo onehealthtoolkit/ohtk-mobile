@@ -14,14 +14,14 @@ import 'package:podd_app/ui/report/form_base_view_model.dart';
 import 'package:stacked/stacked.dart';
 
 class ObservationMonitoringRecordFormView extends StatelessWidget {
-  final ObservationMonitoringDefinition monitoringDefinition;
-  final ObservationSubjectRecord subject;
+  final String monitoringDefinitionId;
+  final String subjectId;
   final ObservationMonitoringRecord? monitoringRecord;
 
   const ObservationMonitoringRecordFormView({
     Key? key,
-    required this.monitoringDefinition,
-    required this.subject,
+    required this.monitoringDefinitionId,
+    required this.subjectId,
     this.monitoringRecord,
   }) : super(key: key);
 
@@ -29,7 +29,7 @@ class ObservationMonitoringRecordFormView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<ObservationMonitoringRecordFormViewModel>.reactive(
       viewModelBuilder: () => ObservationMonitoringRecordFormViewModel(
-          monitoringDefinition, subject, monitoringRecord),
+          monitoringDefinitionId, subjectId, monitoringRecord),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
           return const Center(child: OhtkProgressIndicator(size: 100));
@@ -44,7 +44,7 @@ class ObservationMonitoringRecordFormView extends StatelessWidget {
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
                 title: Text(AppLocalizations.of(context)!.reportTitle +
-                    " ${monitoringDefinition.name}"),
+                    " ${viewModel.definition != null ? viewModel.definition!.name : ''}"),
               ),
               body: SafeArea(
                 child: Column(

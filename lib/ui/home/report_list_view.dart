@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/incident_report_tag.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:intl/intl.dart';
-import 'package:podd_app/ui/report/incident_report_view.dart';
 
 import 'all_reports_view_model.dart';
 
@@ -64,11 +64,9 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
             leading: leading,
             trailing: trailing,
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => IncidentReportView(id: report.id),
-                ),
-              );
+              GoRouter.of(context).goNamed('incidentDetail', params: {
+                "incidentId": report.id,
+              });
             },
           );
         },

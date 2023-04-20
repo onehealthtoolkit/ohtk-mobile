@@ -51,8 +51,8 @@ class _SubjectMap extends HookViewModelWidget<ObservationSubjectMapViewModel> {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => ObservationSubjectView(
-                definition: viewModel.definition,
-                subject: subject,
+                definitionId: viewModel.definition.id.toString(),
+                subjectId: subject.id,
               ),
             ),
           );

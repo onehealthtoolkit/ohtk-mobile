@@ -17,24 +17,18 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ObservationMonitoringRecordView extends StatelessWidget {
-  final ObservationMonitoringDefinition monitoringDefinition;
-  final ObservationSubjectRecord subject;
-  final ObservationMonitoringRecord monitoringRecord;
+  final String monitoringRecordId;
 
   const ObservationMonitoringRecordView({
     Key? key,
-    required this.monitoringDefinition,
-    required this.subject,
-    required this.monitoringRecord,
+    required this.monitoringRecordId,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ObservationMonitoringRecordViewModel>.reactive(
       viewModelBuilder: () => ObservationMonitoringRecordViewModel(
-        monitoringDefinition: monitoringDefinition,
-        subject: subject,
-        monitoringRecord: monitoringRecord,
+        monitoringRecordId: monitoringRecordId,
       ),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
@@ -47,13 +41,14 @@ class ObservationMonitoringRecordView extends StatelessWidget {
         body: viewModel.isBusy
             ? const Center(child: CircularProgressIndicator())
             : !viewModel.hasError
-                ? _bodyView(context)
+                ? _bodyView(context, viewModel)
                 : const Text("Monitoring record not found"),
       ),
     );
   }
 
-  Widget _bodyView(BuildContext context) {
+  Widget _bodyView(
+      BuildContext context, ObservationMonitoringRecordViewModel viewModel) {
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
         child: ConstrainedBox(
@@ -61,7 +56,7 @@ class ObservationMonitoringRecordView extends StatelessWidget {
           child: Column(
             children: [
               _MonitoringRecordDetail(),
-              ReportImagesCarousel(monitoringRecord.images),
+              ReportImagesCarousel(viewModel.data!.images),
             ],
           ),
         ),
@@ -86,8 +81,8 @@ class _MonitoringRecordDetail
         const SizedBox(height: 15),
         _title(context, monitoringRecord),
         _description(context, monitoringRecord),
-        _data(context, viewModel.subject, monitoringRecord,
-            viewModel.monitoringDefinition),
+        _data(context, monitoringRecord.subjectId, monitoringRecord,
+            monitoringRecord.monitoringDefinitionId),
       ],
     );
   }
@@ -119,9 +114,9 @@ class _MonitoringRecordDetail
 
   _data(
       BuildContext context,
-      ObservationSubjectRecord subject,
+      String subjectId,
       ObservationMonitoringRecord monitoringRecord,
-      ObservationMonitoringDefinition monitoringDefinition) {
+      int monitoringDefinitionId) {
     var dataTable = Table(
         columnWidths: const <int, TableColumnWidth>{
           0: FlexColumnWidth(1),
@@ -167,8 +162,9 @@ class _MonitoringRecordDetail
                     context,
                     MaterialPageRoute(
                       builder: (context) => ObservationMonitoringRecordFormView(
-                        monitoringDefinition: monitoringDefinition,
-                        subject: subject,
+                        monitoringDefinitionId:
+                            monitoringDefinitionId.toString(),
+                        subjectId: subjectId,
                         monitoringRecord: monitoringRecord,
                       ),
                     ),

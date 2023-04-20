@@ -4,7 +4,6 @@ import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/components/form_confirm.dart';
 import 'package:podd_app/components/form_input.dart';
 import 'package:podd_app/components/form_stepper.dart';
-import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/followup_submit_result.dart';
 import 'package:podd_app/ui/report/followup_report_form_view_model.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
@@ -12,11 +11,11 @@ import 'package:stacked/stacked.dart';
 
 class FollowupReportFormView extends StatelessWidget {
   final String incidentId;
-  final ReportType reportType;
+  final String reportTypeId;
 
   const FollowupReportFormView({
     Key? key,
-    required this.reportType,
+    required this.reportTypeId,
     required this.incidentId,
   }) : super(key: key);
 
@@ -25,7 +24,7 @@ class FollowupReportFormView extends StatelessWidget {
     return ViewModelBuilder<FollowupReportFormViewModel>.reactive(
       viewModelBuilder: () => FollowupReportFormViewModel(
         incidentId: incidentId,
-        reportType: reportType,
+        reportTypeId: reportTypeId,
       ),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {

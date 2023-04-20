@@ -2,12 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
-import 'package:podd_app/ui/report/followup_report_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
@@ -83,12 +83,10 @@ class _FollowupList extends HookViewModelWidget<FollowupListViewModel> {
                   report: followup,
                   leading: leading,
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            FollowupReportView(id: followup.id),
-                      ),
-                    );
+                    GoRouter.of(context).goNamed('incidentFollowup', params: {
+                      "incidentId": viewModel.incidentId,
+                      "followupId": followup.id,
+                    });
                   },
                 );
               },

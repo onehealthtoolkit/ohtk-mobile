@@ -45,10 +45,8 @@ class FormFooter extends StatelessWidget {
           TextButton(
             onPressed: () async {
               if (viewModel.back() == BackAction.navigationPop) {
-                if (await confirm(context)) {
-                  logger.d("back using pop");
-                  Navigator.popUntil(context, ModalRoute.withName("/"));
-                }
+                logger.d("back using pop");
+                Navigator.maybePop(context);
               } else {
                 logger.d("back but do nothing");
                 scrollController.scrollTo(

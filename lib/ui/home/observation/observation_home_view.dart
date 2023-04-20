@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
@@ -63,12 +64,10 @@ class _Listing extends HookViewModelWidget<ObservationHomeViewModel> {
                         ),
                   ),
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ObservationView(observationDefinition),
-                      ),
-                    );
+                    GoRouter.of(context).goNamed('observationSubjects',
+                        params: {
+                          "definitionId": observationDefinition.id.toString()
+                        });
                   },
                   trailing: Icon(
                     Icons.arrow_forward_ios,
