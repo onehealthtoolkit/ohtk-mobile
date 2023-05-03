@@ -8,14 +8,10 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:podd_app/components/notification_appbar_action.dart';
 import 'package:podd_app/ui/home/consent_view.dart';
 import 'package:podd_app/ui/home/home_view_model.dart';
-import 'package:podd_app/ui/home/observation/observation_home_view.dart';
-import 'package:podd_app/ui/home/report_home_view.dart';
 import 'package:podd_app/ui/notification/user_message_view.dart';
 import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
-
-import '../profile/profile_view.dart';
 
 class HomeView extends HookWidget {
   final Widget child;
@@ -142,16 +138,20 @@ class HomeView extends HookWidget {
 
   static int _calculateSelectedIndex(
       BuildContext context, HomeViewModel viewModel) {
-    final String location = GoRouterState.of(context).location;
-    if (location.startsWith('/reports')) {
-      return 0;
-    }
-    if (location.startsWith('/observations') &&
-        viewModel.hasObservationFeature) {
-      return 1;
-    }
-    if (location.startsWith('/profile')) {
-      return viewModel.hasObservationFeature ? 2 : 1;
+    try {
+      final String location = GoRouterState.of(context).location;
+      if (location.startsWith('/reports')) {
+        return 0;
+      }
+      if (location.startsWith('/observations') &&
+          viewModel.hasObservationFeature) {
+        return 1;
+      }
+      if (location.startsWith('/profile')) {
+        return viewModel.hasObservationFeature ? 2 : 1;
+      }
+    } on AssertionError catch (e) {
+      debugPrint(e.toString());
     }
     return 0;
   }

@@ -165,7 +165,6 @@ class ProfileView extends StatelessWidget {
                               backgroundColor: Colors.red[600],
                               onPressed: () async {
                                 await viewModel.logout();
-                                GoRouter.of(context).go('/login');
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.logoutButton,
