@@ -14,7 +14,7 @@ class DbService extends IDbService {
     // follow this migration pattern https://github.com/tekartik/sqflite/blob/master/sqflite/doc/migration_example.md
     _db = await openDatabase(
       'podd.db',
-      version: 10,
+      version: 11,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onDowngrade: onDatabaseDowngradeDelete,
@@ -31,6 +31,7 @@ class DbService extends IDbService {
     _createTableMonitoringDefinitionV1(batch);
     _createTableSubjectRecordV1(batch);
     _createTableMonitoringRecordV2(batch);
+    _createTableReportFileV1(batch);
     await batch.commit();
   }
 
@@ -66,6 +67,9 @@ class DbService extends IDbService {
     if (oldVersion == 9) {
       await _alterTableReportV6(batch);
     }
+    if (oldVersion == 10) {
+      await _createTableReportFileV1(batch);
+    }
     await batch.commit();
   }
 
@@ -98,6 +102,20 @@ class DbService extends IDbService {
       id TEXT PRIMARY KEY,
       reportId TEXT,
       image BLOB,
+      submitted INT
+    )''');
+  }
+
+  _createTableReportFileV1(Batch batch) {
+    batch.execute("DROP TABLE IF EXISTS report_file");
+    batch.execute('''CREATE TABLE report_file (
+      id TEXT PRIMARY KEY,
+      uuid TEXT,
+      report_id TEXT,
+      name TEXT,
+      file_path TEXT,
+      file_extension TEXT,
+      file_type TEXT,
       submitted INT
     )''');
   }

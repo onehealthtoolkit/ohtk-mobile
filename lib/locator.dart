@@ -17,6 +17,7 @@ import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/comment_service.dart';
 import 'package:podd_app/services/config_service.dart';
 import 'package:podd_app/services/db_service.dart';
+import 'package:podd_app/services/file_service.dart';
 import 'package:podd_app/services/forgot_password_service.dart';
 import 'package:podd_app/services/gql_service.dart';
 import 'package:podd_app/services/image_service.dart';
@@ -108,6 +109,15 @@ void setupLocator(String environment) {
     IDbService,
   ]);
 
+  if (locator.isRegistered<IFileService>()) {
+    locator.unregister<IFileService>();
+  }
+  locator.registerSingletonAsync<IFileService>(() async {
+    return FileService();
+  }, dependsOn: [
+    IDbService,
+  ]);
+
   if (locator.isRegistered<IReportTypeService>()) {
     locator.unregister<IReportTypeService>();
   }
@@ -148,6 +158,7 @@ void setupLocator(String environment) {
     ReportApi,
     ImageApi,
     IImageService,
+    IFileService,
     IDbService,
   ]);
 
