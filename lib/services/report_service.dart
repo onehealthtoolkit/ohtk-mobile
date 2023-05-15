@@ -4,12 +4,15 @@ import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/entities/report.dart';
+import 'package:podd_app/models/file_submit_result.dart';
 import 'package:podd_app/models/followup_submit_result.dart';
 import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/models/report_submit_result.dart';
+import 'package:podd_app/services/api/file_api.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/report_api.dart';
 import 'package:podd_app/services/db_service.dart';
+import 'package:podd_app/services/file_service.dart';
 import 'package:podd_app/services/image_service.dart';
 import 'package:podd_app/ui/report_type/report_type_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,6 +52,8 @@ class ReportService extends IReportService {
   final _reportApi = locator<ReportApi>();
   final _imageApi = locator<ImageApi>();
   final _imageService = locator<IImageService>();
+  final _fileApi = locator<FileApi>();
+  final _fileService = locator<IFileService>();
   final _dbService = locator<IDbService>();
 
   final ReactiveList<Report> _pendingReports = ReactiveList<Report>();
@@ -149,6 +154,20 @@ class ReportService extends IReportService {
           if (submitImageResult is ImageSubmitSuccess) {
             result.incidentReport.images!
                 .add(submitImageResult.image as IncidentReportImage);
+            // remove image from local db
+            await _imageService.removeImage(img.id);
+          }
+        }
+
+        // submit files
+        var localFiles = await _fileService.findByReportId(report.id);
+        for (var file in localFiles) {
+          var submitFileResult = await _fileApi.submit(file);
+          if (submitFileResult is FileSubmitSuccess) {
+            result.incidentReport.files!
+                .add(submitFileResult.file as IncidentReportFile);
+            // remove file from local db and file system
+            await _fileService.removeFile(file.id);
           }
         }
 

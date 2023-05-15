@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:podd_app/models/entities/base_report_file.dart';
 import 'package:podd_app/models/entities/base_report_image.dart';
 
 class IncidentReportImage extends BaseReportImage {
@@ -6,6 +7,13 @@ class IncidentReportImage extends BaseReportImage {
 
   factory IncidentReportImage.fromJson(Map<String, dynamic> json) =>
       IncidentReportImage(json);
+}
+
+class IncidentReportFile extends BaseReportFile {
+  IncidentReportFile(Map<String, dynamic> json) : super(json);
+
+  factory IncidentReportFile.fromJson(Map<String, dynamic> json) =>
+      IncidentReportFile(json);
 }
 
 class IncidentReport {
@@ -20,6 +28,7 @@ class IncidentReport {
   DateTime updatedAt;
   String? gpsLocation;
   List<IncidentReportImage>? images;
+  List<IncidentReportFile>? files;
   String? caseId;
   int? threadId;
   String? authorityName;
@@ -36,6 +45,7 @@ class IncidentReport {
     required this.updatedAt,
     this.gpsLocation,
     this.images,
+    this.files,
     this.caseId,
     this.threadId,
     this.authorityName,
@@ -67,6 +77,11 @@ class IncidentReport {
       images: json["images"] != null
           ? (json["images"] as List)
               .map((image) => IncidentReportImage.fromJson(image))
+              .toList()
+          : [],
+      files: json["uploadFiles"] != null
+          ? (json["uploadFiles"] as List)
+              .map((file) => IncidentReportFile.fromJson(file))
               .toList()
           : [],
       authorityName: json["authorities"] != null

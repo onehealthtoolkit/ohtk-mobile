@@ -79,14 +79,13 @@ class FileService extends IFileService {
 
   @override
   Future<void> removeFile(String id) async {
-    var _db = _dbService.db;
-    await _db.delete("report_file", where: "id = ?", whereArgs: [id]);
-
     var reportFile = await getFile(id);
     final file = reportFile.localFile;
     if (file != null) {
       await file.delete();
     }
+    var _db = _dbService.db;
+    await _db.delete("report_file", where: "id = ?", whereArgs: [id]);
   }
 
   @override

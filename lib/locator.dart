@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 import 'package:podd_app/services/api/auth_api.dart';
 import 'package:podd_app/services/api/comment_api.dart';
 import 'package:podd_app/services/api/configuration_api.dart';
+import 'package:podd_app/services/api/file_api.dart';
 import 'package:podd_app/services/api/forgot_password_api.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/notification_api.dart';
@@ -310,6 +311,14 @@ registerApiLocators() {
   locator.registerSingletonAsync<ImageApi>(() async {
     var gqlService = locator<GqlService>();
     return ImageApi(gqlService.resolveClientFunction);
+  }, dependsOn: [GqlService]);
+
+  if (locator.isRegistered<FileApi>()) {
+    locator.unregister<FileApi>();
+  }
+  locator.registerSingletonAsync<FileApi>(() async {
+    var gqlService = locator<GqlService>();
+    return FileApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
   if (locator.isRegistered<NotificationApi>()) {
