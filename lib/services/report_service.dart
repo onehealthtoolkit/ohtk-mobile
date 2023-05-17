@@ -157,6 +157,9 @@ class ReportService extends IReportService {
             // remove image from local db
             await _imageService.removeImage(img.id);
           }
+          if (submitImageResult is ImageSubmitFailure) {
+            _logger.e("Failed to submit image", submitImageResult.exception);
+          }
         }
 
         // submit files
@@ -169,6 +172,9 @@ class ReportService extends IReportService {
             // remove file from local db and file system
             await _fileService.removeFile(file.id);
           }
+          if (submitFileResult is FileSubmitFailure) {
+            _logger.e("Failed to submit file", submitFileResult.exception);
+          }
         }
 
         _incidents.insert(0, result.incidentReport);
@@ -176,6 +182,7 @@ class ReportService extends IReportService {
       }
 
       if (result is ReportSubmitFailure) {
+        _logger.e(result.messages);
         _saveToLocalDB(report);
         return ReportSubmitPending();
       }

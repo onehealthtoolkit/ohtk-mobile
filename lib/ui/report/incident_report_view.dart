@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/incident_report_tag.dart';
 import 'package:podd_app/components/progress_indicator.dart';
+import 'package:podd_app/components/report_file_grid_view.dart';
 import 'package:podd_app/components/report_image_carousel.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
@@ -16,8 +20,6 @@ import 'package:podd_app/ui/report/incident_report_view_model.dart';
 import 'package:podd_app/ui/report/report_comment_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 var formatter = DateFormat("dd/MM/yyyy HH:mm");
 var noTimeFormatter = DateFormat("dd/MM/yyyy");
@@ -143,7 +145,7 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
               _description(incident, context),
               _Data(),
               ReportImagesCarousel(viewModel.data!.images),
-              const SizedBox(height: 8),
+              ReportFileGridView(viewModel.data!.files),
               _Map(),
             ],
           ),
