@@ -37,6 +37,8 @@ abstract class Field implements ConiditionSource {
         return DecimalField.fromJson(json);
       case "images":
         return ImagesField.fromJson(json);
+      case "files":
+        return FilesField.fromJson(json);
       case "location":
         return LocationField.fromJson(json);
       case "multiplechoices":

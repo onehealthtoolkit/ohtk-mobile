@@ -127,6 +127,62 @@
       }
     }
   },
+  "filesFieldMaxErrorMsg": "Number of {name} must be equal or lesser than {max}",
+  "@filesFieldMaxErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "max": {
+        "type": "String",
+        "example": "100"
+      }
+    }
+  },
+  "filesFieldMinErrorMsg": "Number of {name} must be equal or more than {min}",
+  "@filesFieldMinErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "min": {
+        "type": "String",
+        "example": "0"
+      }
+    }
+  },
+  "filesFieldMaxSizeErrorMsg": "Size of file: #{index} in {name} must be equal or less than {maxSize} bytes",
+  "@filesFieldMaxSizeErrorMsg": {
+    "placeholders": {
+      "index": {
+        "type": "String",
+        "example": "1,2"
+      },
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "maxSize": {
+        "type": "String",
+        "example": "0"
+      }
+    }
+  },
+  "filesFieldSupportedTypeErrorMsg": "Type of file: #{index} in {name} are not supported",
+  "@filesFieldMaxSizeErrorMsg": {
+    "placeholders": {
+      "index": {
+        "type": "String",
+        "example": "1,2"
+      },
+      "name": {
+        "type": "String",
+        "example": "Age"
+      }
+    }
+  },
   "testFlag": "Test",
   "confirm": "Are you sure to continue?",
   "confirmExit": "Are you sure to continue?",

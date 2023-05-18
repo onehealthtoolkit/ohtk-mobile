@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <base-config cleartextTrafficPermitted="true">
+    <domain-config>
+        <domain includeSubdomains="true">opensur.test</domain>
         <trust-anchors>
+            <certificates src="@raw/opensur_test_ca" />
             <certificates src="system" />
         </trust-anchors>
-    </base-config>
+    </domain-config>
 </network-security-config>

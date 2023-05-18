@@ -21,6 +21,8 @@ class FormField extends StatelessWidget {
       return FormDateField(field as opsv.DateField);
     } else if (field is opsv.ImagesField) {
       return FormImagesField(field as opsv.ImagesField);
+    } else if (field is opsv.FilesField) {
+      return FormFilesField(field as opsv.FilesField);
     } else if (field is opsv.LocationField) {
       return FormLocationField(field as opsv.LocationField);
     } else if (field is opsv.SingleChoicesField) {

@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 import 'package:podd_app/services/api/auth_api.dart';
 import 'package:podd_app/services/api/comment_api.dart';
 import 'package:podd_app/services/api/configuration_api.dart';
+import 'package:podd_app/services/api/file_api.dart';
 import 'package:podd_app/services/api/forgot_password_api.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/notification_api.dart';
@@ -17,6 +18,7 @@ import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/comment_service.dart';
 import 'package:podd_app/services/config_service.dart';
 import 'package:podd_app/services/db_service.dart';
+import 'package:podd_app/services/file_service.dart';
 import 'package:podd_app/services/forgot_password_service.dart';
 import 'package:podd_app/services/gql_service.dart';
 import 'package:podd_app/services/image_service.dart';
@@ -108,6 +110,15 @@ void setupLocator(String environment) {
     IDbService,
   ]);
 
+  if (locator.isRegistered<IFileService>()) {
+    locator.unregister<IFileService>();
+  }
+  locator.registerSingletonAsync<IFileService>(() async {
+    return FileService();
+  }, dependsOn: [
+    IDbService,
+  ]);
+
   if (locator.isRegistered<IReportTypeService>()) {
     locator.unregister<IReportTypeService>();
   }
@@ -148,6 +159,7 @@ void setupLocator(String environment) {
     ReportApi,
     ImageApi,
     IImageService,
+    IFileService,
     IDbService,
   ]);
 
@@ -299,6 +311,14 @@ registerApiLocators() {
   locator.registerSingletonAsync<ImageApi>(() async {
     var gqlService = locator<GqlService>();
     return ImageApi(gqlService.resolveClientFunction);
+  }, dependsOn: [GqlService]);
+
+  if (locator.isRegistered<FileApi>()) {
+    locator.unregister<FileApi>();
+  }
+  locator.registerSingletonAsync<FileApi>(() async {
+    var gqlService = locator<GqlService>();
+    return FileApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
   if (locator.isRegistered<NotificationApi>()) {
