@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/progress_indicator.dart';
+import 'package:podd_app/components/report_file_grid_view.dart';
 import 'package:podd_app/components/report_image_carousel.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
@@ -111,7 +112,7 @@ class _SubjectDetail extends HookViewModelWidget<ObservationSubjectViewModel> {
               _description(context, subject),
               _data(context, subject, subject.definition!),
               ReportImagesCarousel(subject.images),
-              const SizedBox(height: 8),
+              ReportFileGridView(subject.files),
               _Map(),
             ],
           ),

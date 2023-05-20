@@ -6,12 +6,15 @@ import 'package:podd_app/models/entities/observation_report_subject.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/models/entities/observation_subject_report.dart';
+import 'package:podd_app/models/file_submit_result.dart';
 import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
+import 'package:podd_app/services/api/file_api.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/observation_api.dart';
 import 'package:podd_app/services/db_service.dart';
+import 'package:podd_app/services/file_service.dart';
 import 'package:podd_app/services/image_service.dart';
 import 'package:stacked/stacked.dart';
 
@@ -57,6 +60,8 @@ class ObservationRecordService extends IObservationRecordService {
   final _dbService = locator<IDbService>();
   final _imageApi = locator<ImageApi>();
   final _imageService = locator<IImageService>();
+  final _fileApi = locator<FileApi>();
+  final _fileService = locator<IFileService>();
   final _observationApi = locator<ObservationApi>();
 
   final ReactiveList<SubjectRecord> _pendingSubjectRecords =
@@ -162,8 +167,6 @@ class ObservationRecordService extends IObservationRecordService {
   @override
   Future<void> fetchAllObservationSubjectReports(int subjectId) async {
     // TODO call fetchSubjectReports api
-    // _observationSubjectReports.clear();
-    // _observationSubjectReports.addAll(result.data);
   }
 
   @override
@@ -184,16 +187,38 @@ class ObservationRecordService extends IObservationRecordService {
           if (submitImageResult is ImageSubmitSuccess) {
             result.subject.images!
                 .add(submitImageResult.image as ObservationRecordImage);
+
+            // remove image from local db
+            await _imageService.removeImage(img.id);
           }
 
           if (submitImageResult is ImageSubmitFailure) {
             _logger.e("Submit image error: ${submitImageResult.messages}");
           }
         }
+
+        // submit files
+        var localFiles = await _fileService.findByReportId(record.id);
+        for (var file in localFiles) {
+          var submitFileResult = await _fileApi.submitObservationRecordFile(
+              file, result.subject.id);
+          if (submitFileResult is FileSubmitSuccess) {
+            result.subject.files!
+                .add(submitFileResult.file as ObservationRecordFile);
+
+            // remove file from local db and file system
+            await _fileService.removeFile(file.id);
+          }
+
+          if (submitFileResult is FileSubmitFailure) {
+            _logger.e("Submit file error: ${submitFileResult.messages}");
+          }
+        }
         _subjectRecords.insert(0, result.subject);
       }
 
       if (result is SubjectRecordSubmitFailure) {
+        _logger.e("Submit subject record error: ${result.messages}");
         _saveSubjectRecordToLocalDB(record);
         return SubjectRecordSubmitPending();
       }
@@ -223,16 +248,38 @@ class ObservationRecordService extends IObservationRecordService {
           if (submitImageResult is ImageSubmitSuccess) {
             result.monitoringRecord.images!
                 .add(submitImageResult.image as ObservationRecordImage);
+
+            // remove image from local db
+            await _imageService.removeImage(img.id);
           }
 
           if (submitImageResult is ImageSubmitFailure) {
             _logger.e("Submit image error: ${submitImageResult.messages}");
           }
         }
+
+        // submit files
+        var localFiles = await _fileService.findByReportId(record.id);
+        for (var file in localFiles) {
+          var submitFileResult = await _fileApi.submitObservationRecordFile(
+              file, result.monitoringRecord.id);
+          if (submitFileResult is FileSubmitSuccess) {
+            result.monitoringRecord.files!
+                .add(submitFileResult.file as ObservationRecordFile);
+
+            // remove file from local db and file system
+            await _fileService.removeFile(file.id);
+          }
+
+          if (submitFileResult is FileSubmitFailure) {
+            _logger.e("Submit file error: ${submitFileResult.messages}");
+          }
+        }
         _monitoringRecords.insert(0, result.monitoringRecord);
       }
 
       if (result is MonitoringRecordSubmitFailure) {
+        _logger.e("Submit monitoring record error: ${result.messages}");
         _saveMonitoringRecordToLocalDB(record);
         return MonitoringRecordSubmitPending();
       }

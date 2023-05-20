@@ -47,6 +47,8 @@ class ReportFileGridView<T extends BaseReportFile> extends StatelessWidget {
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
           childAspectRatio: 1,
         ),
         itemCount: files!.length,

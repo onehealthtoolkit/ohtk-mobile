@@ -5,8 +5,6 @@ import 'package:podd_app/components/form_confirm.dart';
 import 'package:podd_app/components/form_input.dart';
 import 'package:podd_app/components/form_stepper.dart';
 import 'package:podd_app/components/progress_indicator.dart';
-import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
-import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
 import 'package:podd_app/ui/observation/form/monitoring_record_form_view_model.dart';

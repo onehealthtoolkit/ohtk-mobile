@@ -10,6 +10,7 @@ class ObservationMonitoringRecord {
   bool isActive;
 
   List<ObservationRecordImage>? images;
+  List<ObservationRecordFile>? files;
 
   ObservationMonitoringRecord({
     required this.id,
@@ -20,6 +21,7 @@ class ObservationMonitoringRecord {
     required this.isActive,
     this.formData,
     this.images,
+    this.files,
   });
 
   String? get imageUrl {
@@ -37,6 +39,11 @@ class ObservationMonitoringRecord {
         images = json["images"] != null
             ? (json["images"] as List)
                 .map((image) => ObservationRecordImage.fromJson(image))
+                .toList()
+            : [],
+        files = json["uploadFiles"] != null
+            ? (json["uploadFiles"] as List)
+                .map((file) => ObservationRecordFile.fromJson(file))
                 .toList()
             : [];
 }

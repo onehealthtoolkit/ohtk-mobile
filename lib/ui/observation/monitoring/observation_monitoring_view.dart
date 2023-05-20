@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/back_appbar_action.dart';
+import 'package:podd_app/components/report_file_grid_view.dart';
 import 'package:podd_app/components/report_image_carousel.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_monitoring_definition.dart';
@@ -57,6 +58,8 @@ class ObservationMonitoringRecordView extends StatelessWidget {
             children: [
               _MonitoringRecordDetail(),
               ReportImagesCarousel(viewModel.data!.images),
+              ReportFileGridView(viewModel.data!.files),
+              const SizedBox(height: 20),
             ],
           ),
         ),

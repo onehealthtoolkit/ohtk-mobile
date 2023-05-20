@@ -1,3 +1,4 @@
+import 'package:podd_app/models/entities/base_report_file.dart';
 import 'package:podd_app/models/entities/base_report_image.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
@@ -8,6 +9,13 @@ class ObservationRecordImage extends BaseReportImage {
 
   factory ObservationRecordImage.fromJson(Map<String, dynamic> json) =>
       ObservationRecordImage(json);
+}
+
+class ObservationRecordFile extends BaseReportFile {
+  ObservationRecordFile(Map<String, dynamic> json) : super(json);
+
+  factory ObservationRecordFile.fromJson(Map<String, dynamic> json) =>
+      ObservationRecordFile(json);
 }
 
 class ObservationSubjectRecord {
@@ -22,6 +30,7 @@ class ObservationSubjectRecord {
   bool isActive;
   ObservationDefinition? definition;
   List<ObservationRecordImage>? images;
+  List<ObservationRecordFile>? files;
   List<ObservationMonitoringRecord> monitoringRecords;
 
   ObservationSubjectRecord({
@@ -36,6 +45,7 @@ class ObservationSubjectRecord {
     this.gpsLocation,
     this.monitoringRecords = const [],
     this.images,
+    this.files,
   });
 
   String? get imageUrl {
@@ -55,6 +65,11 @@ class ObservationSubjectRecord {
         images = json["images"] != null
             ? (json["images"] as List)
                 .map((image) => ObservationRecordImage.fromJson(image))
+                .toList()
+            : [],
+        files = json["uploadFiles"] != null
+            ? (json["uploadFiles"] as List)
+                .map((file) => ObservationRecordFile.fromJson(file))
                 .toList()
             : [],
         monitoringRecords = json['monitoringRecords'] != null
