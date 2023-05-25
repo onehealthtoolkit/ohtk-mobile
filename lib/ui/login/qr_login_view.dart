@@ -16,16 +16,20 @@ class QrLoginView extends StatelessWidget {
         body: Stack(
           children: [
             MobileScanner(
-              allowDuplicates: false,
               controller: MobileScannerController(
                   facing: CameraFacing.back, torchEnabled: false),
-              onDetect: (barcode, args) async {
-                if (barcode.rawValue == null) {
+              onDetect: (barcodeCapture) async {
+                // check barcodeCapture.barcodes length
+                if (barcodeCapture.barcodes.isEmpty) {
                   Navigator.pop(context, 'Failed to scan QRCode');
                 } else {
-                  final String code = barcode.rawValue!;
-                  final error = await viewModel.authenticate(code);
-                  Navigator.pop(context, error);
+                  final String? code = barcodeCapture.barcodes.first.rawValue;
+                  if (code == null) {
+                    Navigator.pop(context, 'Failed to scan QRCode');
+                  } else {
+                    final error = await viewModel.authenticate(code);
+                    Navigator.pop(context, error);
+                  }
                 }
               },
             ),

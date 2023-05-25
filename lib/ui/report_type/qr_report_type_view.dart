@@ -16,13 +16,15 @@ class QrReportTypeView extends StatelessWidget {
         body: Stack(
           children: [
             MobileScanner(
-              allowDuplicates: false,
               controller: MobileScannerController(
                   facing: CameraFacing.back, torchEnabled: false),
-              onDetect: (barcode, args) async {
+              onDetect: (barcodeCapture) async {
                 ReportType? reportType;
-                if (barcode.rawValue != null) {
-                  reportType = await viewModel.getReportType(barcode.rawValue!);
+                if (barcodeCapture.barcodes.isNotEmpty) {
+                  final String? code = barcodeCapture.barcodes.first.rawValue;
+                  if (code != null) {
+                    reportType = await viewModel.getReportType(code);
+                  }
                 }
                 Navigator.pop(context, reportType);
               },
