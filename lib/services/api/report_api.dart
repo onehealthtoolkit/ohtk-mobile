@@ -97,7 +97,6 @@ class ReportApi extends GraphQlBaseApi {
     offset = 0,
     resetFlag = false,
   }) async {
-    // By default, test reports are included
     const query = r'''
       query incidentReports($limit: Int, $offset: Int, $testFlag: Boolean) {
         incidentReports(limit: $limit, offset: $offset, testFlag: $testFlag) {
@@ -274,6 +273,12 @@ class ReportApi extends GraphQlBaseApi {
             thumbnail
             imageUrl
           }
+          uploadFiles {
+            id
+            file 
+            fileUrl
+            fileType
+          }  
           reportedBy {
             id
             username
@@ -321,6 +326,12 @@ class ReportApi extends GraphQlBaseApi {
             thumbnail
             imageUrl
           }   
+          uploadFiles {
+            id
+            file 
+            fileUrl
+            fileType
+          }  
           reportedBy {
             id
             username

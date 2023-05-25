@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/progress_indicator.dart';
+import 'package:podd_app/components/report_file_grid_view.dart';
 import 'package:podd_app/components/report_image_carousel.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/ui/report/followup_report_view_model.dart';
@@ -55,7 +56,8 @@ class _FollowupReportView extends HookViewModelWidget<FollowupReportViewModel> {
                 const SizedBox(height: 15),
                 _title(context, followup),
                 _description(context, followup),
-                ReportImagesCarousel(followup.images)
+                ReportImagesCarousel(followup.images),
+                ReportFileGridView(followup.files),
               ],
             ),
           ),

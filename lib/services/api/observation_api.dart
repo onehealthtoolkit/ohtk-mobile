@@ -88,6 +88,12 @@ class ObservationApi extends GraphQlBaseApi {
               thumbnail
               imageUrl
             }
+            uploadFiles {
+              id
+              file 
+              fileUrl
+              fileType
+            }  
           }
           pageInfo {
             hasNextPage
@@ -134,6 +140,12 @@ class ObservationApi extends GraphQlBaseApi {
               thumbnail
               imageUrl
             }
+            uploadFiles {
+              id
+              file 
+              fileUrl
+              fileType
+            }  
           }
           images {
             id
@@ -141,6 +153,12 @@ class ObservationApi extends GraphQlBaseApi {
             thumbnail
             imageUrl
           }
+          uploadFiles {
+            id
+            file 
+            fileUrl
+            fileType
+          }  
         }
       }
     ''';
@@ -248,6 +266,12 @@ class ObservationApi extends GraphQlBaseApi {
               thumbnail
               imageUrl
             }
+            uploadFiles {
+              id
+              file 
+              fileUrl
+              fileType
+            }  
           }
           pageInfo {
             hasNextPage
@@ -279,11 +303,17 @@ class ObservationApi extends GraphQlBaseApi {
           isActive
           formData
           images {
-              id
-              file
-              thumbnail
-              imageUrl
-            }
+            id
+            file
+            thumbnail
+            imageUrl
+          }
+          uploadFiles {
+            id
+            file 
+            fileUrl
+            fileType
+          }
         }
       }
     ''';

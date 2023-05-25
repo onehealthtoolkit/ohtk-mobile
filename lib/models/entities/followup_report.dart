@@ -12,6 +12,7 @@ class FollowupReport {
   Map<String, dynamic>? data;
   String? gpsLocation;
   List<IncidentReportImage>? images;
+  List<IncidentReportFile>? files;
   User? user;
 
   FollowupReport({
@@ -25,6 +26,7 @@ class FollowupReport {
     this.data,
     this.gpsLocation,
     this.images,
+    this.files,
     this.user,
   });
 
@@ -42,6 +44,11 @@ class FollowupReport {
       images: json["images"] != null
           ? (json["images"] as List)
               .map((image) => IncidentReportImage.fromJson(image))
+              .toList()
+          : [],
+      files: json["uploadFiles"] != null
+          ? (json["uploadFiles"] as List)
+              .map((file) => IncidentReportFile.fromJson(file))
               .toList()
           : [],
       user:

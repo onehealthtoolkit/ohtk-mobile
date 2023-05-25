@@ -215,12 +215,35 @@ class ReportService extends IReportService {
           if (submitImageResult is ImageSubmitSuccess) {
             result.followupReport.images!
                 .add(submitImageResult.image as IncidentReportImage);
+
+            // remove image from local db
+            await _imageService.removeImage(img.id);
+          }
+        }
+
+        // submit files
+        var localFiles =
+            await _fileService.findByReportId(result.followupReport.id);
+        for (var file in localFiles) {
+          var submitFileResult = await _fileApi.submit(file);
+          if (submitFileResult is FileSubmitSuccess) {
+            result.followupReport.files!
+                .add(submitFileResult.file as IncidentReportFile);
+
+            // remove file from local db and file system
+            await _fileService.removeFile(file.id);
+          }
+          if (submitFileResult is FileSubmitFailure) {
+            _logger.e("Failed to submit file", submitFileResult.exception);
           }
         }
 
         _followups.insert(0, result.followupReport);
       }
 
+      if (result is FollowupSubmitFailure) {
+        _logger.e("Submit followup report error: ${result.messages}");
+      }
       return result;
     } on LinkException catch (_e) {
       return FollowupSubmitFailure(_e);
