@@ -77,7 +77,7 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
       MyReportsViewModel viewModel) {
     return InkWell(
       onTap: () {
-        GoRouter.of(context).goNamed('followupReportForm', params: {
+        GoRouter.of(context).goNamed('followupReportForm', queryParameters: {
           "reportTypeId": report.reportTypeId,
           "incidentId": report.id
         });

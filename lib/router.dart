@@ -62,7 +62,7 @@ class OhtkRouter {
       redirect: (BuildContext context, GoRouterState state) {
         // if the user is not logged in, they need to login
         final bool loggedIn = viewModel.isLogin ?? false;
-        final bool loggingIn = state.subloc == '/login';
+        final bool loggingIn = state.location == '/login';
         if (!loggedIn) {
           return '/login';
         }
@@ -99,7 +99,7 @@ class OhtkRouter {
                   path: 'incident/:incidentId',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
-                    var incidentId = state.params['incidentId'];
+                    var incidentId = state.queryParameters['incidentId'];
                     return IncidentReportView(id: incidentId!);
                   },
                   routes: [
@@ -108,7 +108,7 @@ class OhtkRouter {
                       path: 'followup/:followupId',
                       parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
-                        var followupId = state.params['followupId'];
+                        var followupId = state.queryParameters['followupId'];
                         return FollowupReportView(id: followupId!);
                       },
                     ),
@@ -125,8 +125,8 @@ class OhtkRouter {
                   path: 'types/:reportTypeId/form',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
-                    var reportTypeId = state.params['reportTypeId'];
-                    var testFlag = state.queryParams['test'] == '1';
+                    var reportTypeId = state.queryParameters['reportTypeId'];
+                    var testFlag = state.queryParameters['test'] == '1';
                     return ReportFormView(testFlag, reportTypeId!);
                   },
                 ),
@@ -135,8 +135,8 @@ class OhtkRouter {
                   path: 'incident/:incidentId/types/:reportTypeId/form',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
-                    var incidentId = state.params['incidentId'];
-                    var reportTypeId = state.params['reportTypeId'];
+                    var incidentId = state.queryParameters['incidentId'];
+                    var reportTypeId = state.queryParameters['reportTypeId'];
                     return FollowupReportFormView(
                       incidentId: incidentId!,
                       reportTypeId: reportTypeId!,
@@ -154,7 +154,7 @@ class OhtkRouter {
                   path: ':definitionId/subjects',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
-                    var definitionId = state.params['definitionId'];
+                    var definitionId = state.queryParameters['definitionId'];
                     return ObservationView(definitionId!);
                   },
                   routes: [
@@ -163,7 +163,8 @@ class OhtkRouter {
                       path: 'form',
                       parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
-                        var definitionId = state.params['definitionId'];
+                        var definitionId =
+                            state.queryParameters['definitionId'];
                         return ObservationSubjectFormView(
                           definitionId: definitionId!,
                         );
@@ -174,8 +175,9 @@ class OhtkRouter {
                       path: ':subjectId',
                       parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
-                        var definitionId = state.params['definitionId'];
-                        var subjectId = state.params['subjectId'];
+                        var definitionId =
+                            state.queryParameters['definitionId'];
+                        var subjectId = state.queryParameters['subjectId'];
                         return ObservationSubjectView(
                           definitionId: definitionId!,
                           subjectId: subjectId!,
@@ -188,9 +190,9 @@ class OhtkRouter {
                               'monitoringDefinition/:monitoringDefinitionId/form',
                           parentNavigatorKey: _rootNavigatorKey,
                           builder: (context, state) {
-                            var subjectId = state.params['subjectId'];
+                            var subjectId = state.queryParameters['subjectId'];
                             var monitoringDefinitionId =
-                                state.params['monitoringDefinitionId'];
+                                state.queryParameters['monitoringDefinitionId'];
                             return ObservationMonitoringRecordFormView(
                               monitoringDefinitionId: monitoringDefinitionId!,
                               subjectId: subjectId!,
@@ -202,7 +204,8 @@ class OhtkRouter {
                           path: 'monitoringRecords/:monitoringId',
                           parentNavigatorKey: _rootNavigatorKey,
                           builder: (context, state) {
-                            var monitoringId = state.params['monitoringId'];
+                            var monitoringId =
+                                state.queryParameters['monitoringId'];
                             return ObservationMonitoringRecordView(
                               monitoringRecordId: monitoringId!,
                             );

@@ -65,7 +65,7 @@ class _SubjectListing
               onTap: () {
                 GoRouter.of(context).goNamed(
                   'observationSubjectDetail',
-                  params: {
+                  queryParameters: {
                     "definitionId": viewModel.definition.id.toString(),
                     "subjectId": subject.id,
                   },

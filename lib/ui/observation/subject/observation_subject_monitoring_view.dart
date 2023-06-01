@@ -98,7 +98,7 @@ class _MonitoringDefinitionListing
             onPressed: () {
               GoRouter.of(context).goNamed(
                 'observationMonitoringForm',
-                params: {
+                queryParameters: {
                   "definitionId": viewModel.definition.id.toString(),
                   "subjectId": viewModel.subject.id,
                   "monitoringDefinitionId": monitoringDefinition.id.toString(),
@@ -151,7 +151,7 @@ class _MonitoringRecordListing
               onTap: () {
                 GoRouter.of(context).goNamed(
                   'observationMonitoringDetail',
-                  params: {
+                  queryParameters: {
                     "definitionId": viewModel.definition.id.toString(),
                     "subjectId": viewModel.subject.id,
                     "monitoringId": monitoring.id,

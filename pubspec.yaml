@@ -31,12 +31,12 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.17.0
-  stacked: ^2.3.3
+  intl: ^0.18.0
+  stacked: ^3.4.0
   stacked_hooks: ^0.2.2
   get_it: ^7.2.0
-  overlay_support: 2.0.1
-  flutter_secure_storage: ^6.0.0
+  overlay_support: ^2.1.0
+  flutter_secure_storage: ^8.0.0
   flutter_hooks: ^0.18.5+1
   graphql_flutter: ^5.1.0
   logger: ^1.1.0
@@ -52,15 +52,15 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  dio: ^4.0.6
-  dio_cookie_manager: ^2.0.0
-  gql_dio_link: ^0.2.2
+  dio: ^5.1.2
+  dio_cookie_manager: ^3.0.0
+  gql_dio_link: ^0.3.0
   sqflite:
   flutter_mobx: ^2.0.5
-  uuid: 3.0.5
+  uuid: ^3.0.7
   mobx:
-  decimal: 2.1.0
-  flutter_html: ^2.2.1
+  decimal: ^2.3.2
+  flutter_html: ^3.0.0-beta.2
   google_maps_flutter: ^2.1.4
   geolocator: ^9.0.1
   cross_file: ^0.3.3+4
@@ -75,17 +75,18 @@ dependencies:
     git:
       url: https://github.com/onehealthtoolkit/package_im_stepper
       ref: f071159d2815dfe978a63d7175ca823a218b72cb
-  connectivity_plus: ^2.3.6+1
+  connectivity_plus: ^3.0.6
   scrollable_positioned_list: ^0.3.2
   flutter_native_timezone: ^2.0.0
   mobile_scanner: ^3.2.0
   jwt_decode: ^0.3.1
   dotted_border: ^2.0.0+1
-  flutter_svg: ^0.23.0
+  flutter_svg: ^2.0.6
   flutter_screenutil: ^5.6.1
   firebase_analytics: ^10.4.1
   firebase_remote_config: ^4.2.1
-  go_router: ^6.5.0
+  go_router: ^7.1.1
+  cookie_jar: ^4.0.3
 
 # Fix build release issue: Error unsupported class file major version 59
 # https://stackoverflow.com/questions/72506950/flutter-error-could-not-resolve-all-artifacts-for-configuration-image-picker
@@ -102,10 +103,10 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^1.0.0
+  flutter_lints: ^2.0.1
   build_runner: ^2.1.10
   mobx_codegen:
-  flutter_launcher_icons: "^0.10.0"
+  flutter_launcher_icons: ^0.13.1
 
 flutter_icons:
   android: "launcher_icon"

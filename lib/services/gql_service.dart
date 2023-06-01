@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dio/adapter.dart';
+import 'package:dio/io.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
@@ -54,7 +54,7 @@ class GqlService {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String appDocPath = appDocDir.path;
     _cookieJar =
-        PersistCookieJar(storage: FileStorage(appDocPath + "/.cookies/"));
+        PersistCookieJar(storage: FileStorage("$appDocPath/.cookies/"));
 
     _dio.interceptors.add(CookieManager(_cookieJar!));
     _dio.interceptors.add(
