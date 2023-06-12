@@ -78,7 +78,7 @@ class _FormFilesFieldState extends State<FormFilesField> {
 
   Future<ReportFile> _getFile(String fileIdExt) async {
     final id = fileIdExt.split('.')[0];
-    var reportFile = await _fileService.getFile(id);
+    var reportFile = await _fileService.getReportFile(id);
     return reportFile;
   }
 
@@ -103,7 +103,8 @@ class _FormFilesFieldState extends State<FormFilesField> {
 
   _removeFile(String id, String idExt) {
     widget.field.remove(idExt);
-    _fileService.removeFile(id);
+    _fileService.removeLocalFileFromAppDirectory(id);
+    _fileService.removeReportFile(id);
   }
 
   Future<ReportFile?> _pickFile() async {
@@ -134,22 +135,21 @@ class _FormFilesFieldState extends State<FormFilesField> {
     if (result != null) {
       var path = result.files.first.path;
       var name = result.files.first.name;
-      var extension = result.files.first.extension;
+      var extension = result.files.first.extension ?? '';
 
-      var mimeType = lookupMimeType(path!);
+      var mimeType = lookupMimeType(path!) ?? '';
       var cacheFile = File(path);
       var fileBytes = await cacheFile.readAsBytes();
       var uuid = const Uuid().v4();
 
-      reportFile = await _fileService.newFile(
-        uuid,
-        widget.field.form.id,
-        name,
-        extension ?? '',
-        fileBytes,
-        mimeType,
-      );
-      await _fileService.saveFile(reportFile);
+      final file = await _fileService.createLocalFileInAppDirectory(
+          uuid, widget.field.form.id, extension);
+      await file.writeAsBytes(fileBytes);
+
+      reportFile = ReportFile(
+          uuid, widget.field.form.id, name, file.path, extension, mimeType);
+
+      await _fileService.saveReportFile(reportFile);
       // Remove picker's cache file after report file was saved to appData
       await cacheFile.delete();
     } else {
