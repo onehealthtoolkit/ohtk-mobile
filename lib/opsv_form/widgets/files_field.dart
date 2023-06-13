@@ -90,15 +90,15 @@ class _FormFilesFieldState extends State<FormFilesField> {
         onPressed: () async {
           var reportFile = await _pickFile();
           if (reportFile != null) {
-            _addFile(reportFile.idExt);
+            _addFile(reportFile.idExt, reportFile.name);
           }
         },
       ),
     );
   }
 
-  _addFile(String idExt) {
-    widget.field.add(idExt);
+  _addFile(String idExt, String nameExt) {
+    widget.field.add(idExt, nameExt);
   }
 
   _removeFile(String id, String idExt) {
@@ -109,28 +109,7 @@ class _FormFilesFieldState extends State<FormFilesField> {
 
   Future<ReportFile?> _pickFile() async {
     ReportFile? reportFile;
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: [
-        'mp3',
-        'mp4',
-        'ogg',
-        'webm',
-        'wav',
-        'mpeg',
-        'avi',
-        'mov',
-        'wmv',
-        'xls',
-        'ppt',
-        'pdf',
-        'doc',
-        'xlsx',
-        'pptx',
-        'docx',
-        'txt',
-      ],
-    );
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
       var path = result.files.first.path;

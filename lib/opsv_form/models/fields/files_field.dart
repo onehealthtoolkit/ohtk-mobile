@@ -2,6 +2,8 @@ part of opensurveillance_form;
 
 class FilesField extends Field {
   final _value = ObservableList<String>.of([]);
+  final _fileNames = ObservableList<String>.of([]);
+
   int? min;
   int? max;
   int? maxSize; // max size per file in bytes, null for unlimit size
@@ -59,17 +61,20 @@ class FilesField extends Field {
     );
   }
 
-  add(String fileId) {
+  add(String fileId, String fileName) {
     runInAction(() {
       clearError();
       _value.add(fileId);
+      _fileNames.add(fileName);
     });
   }
 
   remove(String fileId) {
     runInAction(() {
       clearError();
-      _value.remove(fileId);
+      var idx = _value.indexWhere((element) => element == fileId);
+      _value.removeAt(idx);
+      _fileNames.removeAt(idx);
     });
   }
 
@@ -79,6 +84,14 @@ class FilesField extends Field {
     runInAction(() {
       _value.clear();
       _value.addAll(ary);
+    });
+  }
+
+  List<String> get fileNames => _fileNames;
+  set fileNames(List<String> ary) {
+    runInAction(() {
+      _fileNames.clear();
+      _fileNames.addAll(ary);
     });
   }
 
@@ -222,17 +235,33 @@ class FilesField extends Field {
 
   @override
   void loadJsonValue(Map<String, dynamic> json) {
-    ilist(json[name] as List<dynamic>).forEach((element) {
-      add(element);
-    });
+    if (json[name] != null) {
+      (json[name] as Map<String, dynamic>).entries.toList().forEach((element) {
+        add(element.value, element.key);
+      });
+    }
   }
 
   @override
   void toJsonValue(Map<String, dynamic> aggregateResult) {
-    aggregateResult[name] = value.toList();
+    Map<String, dynamic> json = {};
+    int i = 0;
+    for (var id in value) {
+      json[fileNames[i]] = id;
+      i++;
+    }
+    aggregateResult[name] = json;
     aggregateResult["${name}__value"] = renderedValue;
   }
 
   @override
-  String get renderedValue => value.join(", ");
+  String get renderedValue {
+    var result = [];
+    int i = 0;
+    for (var e in value) {
+      result.add("${fileNames[i]} ($e)");
+      i++;
+    }
+    return result.join(", ");
+  }
 }
