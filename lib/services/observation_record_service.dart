@@ -198,7 +198,8 @@ class ObservationRecordService extends IObservationRecordService {
         }
 
         // submit files
-        var localFiles = await _fileService.findByReportId(record.id);
+        var localFiles =
+            await _fileService.findAllReportFilesByReportId(record.id);
         for (var file in localFiles) {
           var submitFileResult = await _fileApi.submitObservationRecordFile(
               file, result.subject.id);
@@ -206,8 +207,9 @@ class ObservationRecordService extends IObservationRecordService {
             result.subject.files!
                 .add(submitFileResult.file as ObservationRecordFile);
 
-            // remove file from local db and file system
-            await _fileService.removeFile(file.id);
+            // remove file from db and local file system
+            await _fileService.removeLocalFileFromAppDirectory(file.id);
+            await _fileService.removeReportFile(file.id);
           }
 
           if (submitFileResult is FileSubmitFailure) {
@@ -259,7 +261,8 @@ class ObservationRecordService extends IObservationRecordService {
         }
 
         // submit files
-        var localFiles = await _fileService.findByReportId(record.id);
+        var localFiles =
+            await _fileService.findAllReportFilesByReportId(record.id);
         for (var file in localFiles) {
           var submitFileResult = await _fileApi.submitObservationRecordFile(
               file, result.monitoringRecord.id);
@@ -267,8 +270,9 @@ class ObservationRecordService extends IObservationRecordService {
             result.monitoringRecord.files!
                 .add(submitFileResult.file as ObservationRecordFile);
 
-            // remove file from local db and file system
-            await _fileService.removeFile(file.id);
+            // remove file from db and local file system
+            await _fileService.removeLocalFileFromAppDirectory(file.id);
+            await _fileService.removeReportFile(file.id);
           }
 
           if (submitFileResult is FileSubmitFailure) {

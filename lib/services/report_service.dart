@@ -163,14 +163,17 @@ class ReportService extends IReportService {
         }
 
         // submit files
-        var localFiles = await _fileService.findByReportId(report.id);
+        var localFiles =
+            await _fileService.findAllReportFilesByReportId(report.id);
         for (var file in localFiles) {
           var submitFileResult = await _fileApi.submit(file);
           if (submitFileResult is FileSubmitSuccess) {
             result.incidentReport.files!
                 .add(submitFileResult.file as IncidentReportFile);
-            // remove file from local db and file system
-            await _fileService.removeFile(file.id);
+
+            // remove file from db and local file system
+            await _fileService.removeLocalFileFromAppDirectory(file.id);
+            await _fileService.removeReportFile(file.id);
           }
           if (submitFileResult is FileSubmitFailure) {
             _logger.e("Failed to submit file", submitFileResult.exception);
@@ -222,16 +225,17 @@ class ReportService extends IReportService {
         }
 
         // submit files
-        var localFiles =
-            await _fileService.findByReportId(result.followupReport.id);
+        var localFiles = await _fileService
+            .findAllReportFilesByReportId(result.followupReport.id);
         for (var file in localFiles) {
           var submitFileResult = await _fileApi.submit(file);
           if (submitFileResult is FileSubmitSuccess) {
             result.followupReport.files!
                 .add(submitFileResult.file as IncidentReportFile);
 
-            // remove file from local db and file system
-            await _fileService.removeFile(file.id);
+            // remove file from db and local file system
+            await _fileService.removeLocalFileFromAppDirectory(file.id);
+            await _fileService.removeReportFile(file.id);
           }
           if (submitFileResult is FileSubmitFailure) {
             _logger.e("Failed to submit file", submitFileResult.exception);
