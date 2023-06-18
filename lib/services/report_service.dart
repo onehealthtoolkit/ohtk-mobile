@@ -50,9 +50,7 @@ abstract class IReportService with ReactiveServiceMixin {
 
 class ReportService extends IReportService {
   final _reportApi = locator<ReportApi>();
-  final _imageApi = locator<ImageApi>();
   final _imageService = locator<IImageService>();
-  final _fileApi = locator<FileApi>();
   final _fileService = locator<IFileService>();
   final _dbService = locator<IDbService>();
 
@@ -150,12 +148,10 @@ class ReportService extends IReportService {
         // submit images
         var localImages = await _imageService.findByReportId(report.id);
         for (var img in localImages) {
-          var submitImageResult = await _imageApi.submit(img);
+          var submitImageResult = await _imageService.submit(img);
           if (submitImageResult is ImageSubmitSuccess) {
             result.incidentReport.images!
                 .add(submitImageResult.image as IncidentReportImage);
-            // remove image from local db
-            await _imageService.removeImage(img.id);
           }
           if (submitImageResult is ImageSubmitFailure) {
             _logger.e("Failed to submit image", submitImageResult.exception);
@@ -166,14 +162,10 @@ class ReportService extends IReportService {
         var localFiles =
             await _fileService.findAllReportFilesByReportId(report.id);
         for (var file in localFiles) {
-          var submitFileResult = await _fileApi.submit(file);
+          var submitFileResult = await _fileService.submit(file);
           if (submitFileResult is FileSubmitSuccess) {
             result.incidentReport.files!
                 .add(submitFileResult.file as IncidentReportFile);
-
-            // remove file from db and local file system
-            await _fileService.removeLocalFileFromAppDirectory(file.id);
-            await _fileService.removeReportFile(file.id);
           }
           if (submitFileResult is FileSubmitFailure) {
             _logger.e("Failed to submit file", submitFileResult.exception);
@@ -214,13 +206,10 @@ class ReportService extends IReportService {
         var localImages =
             await _imageService.findByReportId(result.followupReport.id);
         for (var img in localImages) {
-          var submitImageResult = await _imageApi.submit(img);
+          var submitImageResult = await _imageService.submit(img);
           if (submitImageResult is ImageSubmitSuccess) {
             result.followupReport.images!
                 .add(submitImageResult.image as IncidentReportImage);
-
-            // remove image from local db
-            await _imageService.removeImage(img.id);
           }
         }
 
@@ -228,14 +217,10 @@ class ReportService extends IReportService {
         var localFiles = await _fileService
             .findAllReportFilesByReportId(result.followupReport.id);
         for (var file in localFiles) {
-          var submitFileResult = await _fileApi.submit(file);
+          var submitFileResult = await _fileService.submit(file);
           if (submitFileResult is FileSubmitSuccess) {
             result.followupReport.files!
                 .add(submitFileResult.file as IncidentReportFile);
-
-            // remove file from db and local file system
-            await _fileService.removeLocalFileFromAppDirectory(file.id);
-            await _fileService.removeReportFile(file.id);
           }
           if (submitFileResult is FileSubmitFailure) {
             _logger.e("Failed to submit file", submitFileResult.exception);
