@@ -64,7 +64,7 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
             leading: leading,
             trailing: trailing,
             onTap: () {
-              GoRouter.of(context).goNamed('incidentDetail', queryParameters: {
+              GoRouter.of(context).goNamed('incidentDetail', pathParameters: {
                 "incidentId": report.id,
               });
             },

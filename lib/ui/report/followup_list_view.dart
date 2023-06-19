@@ -84,7 +84,7 @@ class _FollowupList extends HookViewModelWidget<FollowupListViewModel> {
                   leading: leading,
                   onTap: () {
                     GoRouter.of(context)
-                        .goNamed('incidentFollowup', queryParameters: {
+                        .goNamed('incidentFollowup', pathParameters: {
                       "incidentId": viewModel.incidentId,
                       "followupId": followup.id,
                     });

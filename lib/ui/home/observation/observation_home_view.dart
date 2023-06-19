@@ -65,7 +65,7 @@ class _Listing extends HookViewModelWidget<ObservationHomeViewModel> {
                   ),
                   onTap: () {
                     GoRouter.of(context).goNamed('observationSubjects',
-                        queryParameters: {
+                        pathParameters: {
                           "definitionId": observationDefinition.id.toString()
                         });
                   },
