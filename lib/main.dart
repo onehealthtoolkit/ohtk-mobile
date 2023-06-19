@@ -37,6 +37,7 @@ void main() async {
   setupRemoteConfig(environment);
   setupLocator(environment);
   setupTheme();
+  await ScreenUtil.ensureScreenSize();
   runApp(
     const RestartWidget(
       child: MyApp(),
@@ -99,38 +100,30 @@ class MyApp extends StatelessWidget {
           final appViewModel = AppViewModel();
 
           return OverlaySupport.global(
-            child: ScreenUtilInit(
-              designSize: getScreenSize(),
-              minTextAdapt: true,
-              splitScreenMode: true,
-              builder: (context, child) {
-                return AnimatedBuilder(
-                  animation: appViewModel,
-                  builder: (context, child) => MaterialApp.router(
-                    debugShowCheckedModeBanner: false,
-                    title: 'OHTK Mobile',
-                    localizationsDelegates: const [
-                      AppLocalizations.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    supportedLocales: const [
-                      Locale('en', ''), // English, no country code
-                      Locale('th', ''), // Thai, no country code
-                      Locale('km', ''), // Cambodia
-                      Locale('lo', ''), // Lao
-                    ],
-                    localeResolutionCallback: (deviceLocale, supportedLocales) {
-                      Locale locale = snapshot.data[1];
-                      return locale;
-                    },
-                    theme: locator<AppTheme>().themeData,
-                    routerConfig:
-                        OhtkRouter().getRouter('/reports', appViewModel),
-                  ),
-                );
-              },
+            child: AnimatedBuilder(
+              animation: appViewModel,
+              builder: (context, child) => MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                title: 'OHTK Mobile',
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: const [
+                  Locale('en', ''), // English, no country code
+                  Locale('th', ''), // Thai, no country code
+                  Locale('km', ''), // Cambodia
+                  Locale('lo', ''), // Lao
+                ],
+                localeResolutionCallback: (deviceLocale, supportedLocales) {
+                  Locale locale = snapshot.data[1];
+                  return locale;
+                },
+                theme: locator<AppTheme>().themeData,
+                routerConfig: OhtkRouter().getRouter('/reports', appViewModel),
+              ),
             ),
           );
         });

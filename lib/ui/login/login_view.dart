@@ -14,45 +14,48 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/components/language_dropdown.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StackedView<LoginViewModel> {
   const LoginView({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return ViewModelBuilder<LoginViewModel>.nonReactive(
-      viewModelBuilder: () => LoginViewModel(),
-      builder: (context, viewModel, child) => Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: GestureDetector(
-          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-          child: Container(
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                colors: [
-                  Color(0xFF393E46),
-                  Color(0xFF393E46),
-                  Color(0xFF393E46),
-                ],
-              ),
+  Widget builder(
+      BuildContext context, LoginViewModel viewModel, Widget? child) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              colors: [
+                Color(0xFF393E46),
+                Color(0xFF393E46),
+                Color(0xFF393E46),
+              ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              child: Center(
-                child: _LoginForm(),
-              ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Center(
+              child: _LoginForm(),
             ),
           ),
         ),
       ),
     );
   }
+
+  @override
+  LoginViewModel viewModelBuilder(BuildContext context) {
+    return LoginViewModel();
+  }
 }
 
-class _LoginForm extends HookViewModelWidget<LoginViewModel> {
+class _LoginForm extends StackedHookView<LoginViewModel> {
   @override
-  Widget buildViewModelWidget(BuildContext context, LoginViewModel viewModel) {
+  Widget builder(BuildContext context, LoginViewModel viewModel) {
     final AppTheme appTheme = locator<AppTheme>();
     var username = useTextEditingController();
     var password = useTextEditingController();

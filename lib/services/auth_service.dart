@@ -40,7 +40,7 @@ abstract class IAuthService {
   updateAvatarUrl(String avatarUrl);
 }
 
-class AuthService with ReactiveServiceMixin implements IAuthService {
+class AuthService with ListenableServiceMixin implements IAuthService {
   final ISecureStorageService _secureStorageService =
       locator<ISecureStorageService>();
 
