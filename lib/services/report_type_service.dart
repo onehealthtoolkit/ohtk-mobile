@@ -88,7 +88,7 @@ class ReportTypeService extends IReportTypeService {
       await _db.delete(
         'report_type',
         where: 'id in (?)',
-        whereArgs: result.removedList,
+        whereArgs: [result.removedList],
       );
     }
 
