@@ -68,7 +68,7 @@ class ObservationView extends HookWidget {
                   ? () {
                       GoRouter.of(context).goNamed(
                         'observationSubjectForm',
-                        params: {
+                        queryParameters: {
                           "definitionId": viewModel.definitionId,
                         },
                       );
