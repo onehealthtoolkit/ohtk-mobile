@@ -1,39 +1,110 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_file.dart';
+import 'package:podd_app/models/file_submit_result.dart';
+import 'package:podd_app/services/api/file_api.dart';
 import 'package:podd_app/services/db_service.dart';
+import 'package:stacked/stacked.dart';
 
-abstract class IFileService {
-  Future<ReportFile> newFile(String id, String reportId, String name,
-      String extension, Uint8List bytes, String? mimeType);
+abstract class IFileService with ReactiveServiceMixin {
+  List<ReportFile> get pendingReportFiles;
 
-  Future<void> saveFile(ReportFile reportFile);
+  Future<File> createLocalFileInAppDirectory(
+      String reportId, String id, String extension);
 
-  Future<ReportFile> getFile(String id);
+  Future<void> removeLocalFileFromAppDirectory(String id);
 
-  Future<void> removeFile(String id);
+  Future<void> saveReportFile(ReportFile reportFile);
 
-  Future<List<ReportFile>> findByReportId(String reportId);
+  Future<ReportFile> getReportFile(String id);
+
+  Future<void> removeReportFile(String id);
+
+  Future<List<ReportFile>> findAllReportFilesByReportId(String reportId);
 
   Future<void> removeAll();
 
   Future<void> remove(String reportId);
+
+  Future<FileSubmitResult> submit(ReportFile file);
+
+  Future<FileSubmitResult> submitObservationRecordFile(
+      ReportFile file, String recordId);
+
+  Future<void> removeAllPendingFiles();
+
+  Future<void> removePendingFile(String id);
 }
 
 class FileService extends IFileService {
   final IDbService _dbService = locator<IDbService>();
+  final _fileApi = locator<FileApi>();
 
-  Future<String> get _localPath async {
+  final _pendingReportFiles = ReactiveList<ReportFile>();
+
+  FileService() {
+    listenToReactiveValues([_pendingReportFiles]);
+    _init();
+  }
+
+  _init() async {
+    var rows = await _dbService.db.query("report_file");
+    rows.map((row) => ReportFile.fromMap(row)).forEach((file) {
+      _pendingReportFiles.add(file);
+    });
+  }
+
+  @override
+  List<ReportFile> get pendingReportFiles => _pendingReportFiles;
+
+  @override
+  Future<FileSubmitResult> submit(ReportFile file) async {
+    var result = await _fileApi.submit(file);
+    if (result is FileSubmitSuccess) {
+      await removeLocalFileFromAppDirectory(file.id);
+      await removeReportFile(file.id);
+      _pendingReportFiles.remove(file);
+    }
+    if (result is FileSubmitFailure) {
+      _pendingReportFiles.addIf(
+        _pendingReportFiles.indexWhere((element) => element.id == file.id) ==
+            -1,
+        file,
+      );
+    }
+    return result;
+  }
+
+  @override
+  Future<FileSubmitResult> submitObservationRecordFile(
+      ReportFile file, String recordId) async {
+    var result = await _fileApi.submitObservationRecordFile(file, recordId);
+    if (result is FileSubmitSuccess) {
+      await removeLocalFileFromAppDirectory(file.id);
+      await removeReportFile(file.id);
+      _pendingReportFiles.remove(file);
+    }
+    if (result is FileSubmitFailure) {
+      _pendingReportFiles.addIf(
+        _pendingReportFiles.indexWhere((element) => element.id == file.id) ==
+            -1,
+        file,
+      );
+    }
+    return result;
+  }
+
+  Future<String> get _localFilePath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
 
-  Future<File> _createLocalFile(
+  @override
+  Future<File> createLocalFileInAppDirectory(
       String reportId, String id, String extension) async {
-    final path = await _localPath;
+    final path = await _localFilePath;
     final extStr = extension.isNotEmpty ? ".$extension" : '';
     final f = await File('$path/reports/$reportId/$id$extStr')
         .create(recursive: true);
@@ -41,28 +112,22 @@ class FileService extends IFileService {
   }
 
   @override
-  Future<ReportFile> newFile(
-    String id,
-    String reportId,
-    String name,
-    String extension,
-    Uint8List bytes,
-    String? mimeType,
-  ) async {
-    final file = await _createLocalFile(reportId, id, extension);
-    await file.writeAsBytes(bytes);
-
-    return ReportFile(id, reportId, name, file.path, extension, mimeType ?? '');
+  Future<void> removeLocalFileFromAppDirectory(String id) async {
+    var reportFile = await getReportFile(id);
+    final file = reportFile.localFile;
+    if (file != null) {
+      await file.delete();
+    }
   }
 
   @override
-  Future<void> saveFile(ReportFile reportFile) async {
+  Future<void> saveReportFile(ReportFile reportFile) async {
     var _db = _dbService.db;
     await _db.insert("report_file", reportFile.toMap());
   }
 
   @override
-  Future<ReportFile> getFile(String id) async {
+  Future<ReportFile> getReportFile(String id) async {
     var _db = _dbService.db;
     var results = await _db.query(
       'report_file',
@@ -74,22 +139,18 @@ class FileService extends IFileService {
     if (results.isNotEmpty) {
       return ReportFile.fromMap(results[0]);
     }
+
     throw "File not found";
   }
 
   @override
-  Future<void> removeFile(String id) async {
-    var reportFile = await getFile(id);
-    final file = reportFile.localFile;
-    if (file != null) {
-      await file.delete();
-    }
+  Future<void> removeReportFile(String id) async {
     var _db = _dbService.db;
     await _db.delete("report_file", where: "id = ?", whereArgs: [id]);
   }
 
   @override
-  Future<List<ReportFile>> findByReportId(String reportId) async {
+  Future<List<ReportFile>> findAllReportFilesByReportId(String reportId) async {
     var _db = _dbService.db;
     var results = await _db.query(
       'report_file',
@@ -106,7 +167,7 @@ class FileService extends IFileService {
     var _db = _dbService.db;
     await _db.delete("report_file");
 
-    var localPath = await _localPath;
+    var localPath = await _localFilePath;
     var allReportFolder = File('$localPath/reports');
     await allReportFolder.delete(recursive: true);
   }
@@ -117,8 +178,25 @@ class FileService extends IFileService {
     await _db
         .delete("report_file", where: "report_id = ?", whereArgs: [reportId]);
 
-    var localPath = await _localPath;
+    var localPath = await _localFilePath;
     var reportFolder = File('$localPath/reports/$reportId');
     await reportFolder.delete(recursive: true);
+  }
+
+  @override
+  Future<void> removeAllPendingFiles() async {
+    await removeAll();
+    _pendingReportFiles.clear();
+  }
+
+  @override
+  Future<void> removePendingFile(String id) async {
+    await removeReportFile(id);
+    try {
+      var file = _pendingReportFiles.firstWhere((f) => f.id == id);
+      _pendingReportFiles.remove(file);
+    } catch (e) {
+      // not found
+    }
   }
 }

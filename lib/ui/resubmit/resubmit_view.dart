@@ -69,6 +69,20 @@ class _Body extends HookViewModelWidget<ReSubmitViewModel> {
                     await viewModel.deletePendingMonitoringRecord(id);
                   },
                 ),
+                _pendingTitle("Images"),
+                PendingList(
+                  items: viewModel.pendingImages,
+                  onDismissed: (String id) async {
+                    await viewModel.deletePendingImage(id);
+                  },
+                ),
+                _pendingTitle("Files"),
+                PendingList(
+                  items: viewModel.pendingFiles,
+                  onDismissed: (String id) async {
+                    await viewModel.deletePendingFile(id);
+                  },
+                ),
               ],
             ),
           ),
@@ -152,9 +166,9 @@ class _PendingSubmission extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(reportState.item.name),
-      subtitle: Text(
-        formatter.format(reportState.item.date.toLocal()),
-      ),
+      subtitle: reportState.item.date != null
+          ? Text(formatter.format(reportState.item.date!.toLocal()))
+          : null,
       trailing: _buildProgressStatus(reportState.state),
     );
   }
@@ -170,7 +184,7 @@ class _PendingSubmission extends StatelessWidget {
         );
       case Progress.fail:
         return const Icon(
-          Icons.close,
+          Icons.block,
           color: Colors.red,
         );
       default:

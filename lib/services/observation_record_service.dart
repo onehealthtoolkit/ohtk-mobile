@@ -182,14 +182,11 @@ class ObservationRecordService extends IObservationRecordService {
         // submit images
         var localImages = await _imageService.findByReportId(record.id);
         for (var img in localImages) {
-          var submitImageResult = await _imageApi.submitObservationRecordImage(
-              img, result.subject.id, "subject");
+          var submitImageResult = await _imageService
+              .submitObservationRecordImage(img, result.subject.id, "subject");
           if (submitImageResult is ImageSubmitSuccess) {
             result.subject.images!
                 .add(submitImageResult.image as ObservationRecordImage);
-
-            // remove image from local db
-            await _imageService.removeImage(img.id);
           }
 
           if (submitImageResult is ImageSubmitFailure) {
@@ -198,16 +195,14 @@ class ObservationRecordService extends IObservationRecordService {
         }
 
         // submit files
-        var localFiles = await _fileService.findByReportId(record.id);
+        var localFiles =
+            await _fileService.findAllReportFilesByReportId(record.id);
         for (var file in localFiles) {
-          var submitFileResult = await _fileApi.submitObservationRecordFile(
+          var submitFileResult = await _fileService.submitObservationRecordFile(
               file, result.subject.id);
           if (submitFileResult is FileSubmitSuccess) {
             result.subject.files!
                 .add(submitFileResult.file as ObservationRecordFile);
-
-            // remove file from local db and file system
-            await _fileService.removeFile(file.id);
           }
 
           if (submitFileResult is FileSubmitFailure) {
@@ -243,14 +238,12 @@ class ObservationRecordService extends IObservationRecordService {
         // submit images
         var localImages = await _imageService.findByReportId(record.id);
         for (var img in localImages) {
-          var submitImageResult = await _imageApi.submitObservationRecordImage(
-              img, result.monitoringRecord.id, "monitoring");
+          var submitImageResult =
+              await _imageService.submitObservationRecordImage(
+                  img, result.monitoringRecord.id, "monitoring");
           if (submitImageResult is ImageSubmitSuccess) {
             result.monitoringRecord.images!
                 .add(submitImageResult.image as ObservationRecordImage);
-
-            // remove image from local db
-            await _imageService.removeImage(img.id);
           }
 
           if (submitImageResult is ImageSubmitFailure) {
@@ -259,16 +252,14 @@ class ObservationRecordService extends IObservationRecordService {
         }
 
         // submit files
-        var localFiles = await _fileService.findByReportId(record.id);
+        var localFiles =
+            await _fileService.findAllReportFilesByReportId(record.id);
         for (var file in localFiles) {
-          var submitFileResult = await _fileApi.submitObservationRecordFile(
+          var submitFileResult = await _fileService.submitObservationRecordFile(
               file, result.monitoringRecord.id);
           if (submitFileResult is FileSubmitSuccess) {
             result.monitoringRecord.files!
                 .add(submitFileResult.file as ObservationRecordFile);
-
-            // remove file from local db and file system
-            await _fileService.removeFile(file.id);
           }
 
           if (submitFileResult is FileSubmitFailure) {

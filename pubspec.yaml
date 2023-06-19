@@ -87,6 +87,7 @@ dependencies:
   firebase_remote_config: ^4.2.1
   go_router: ^7.1.1
   cookie_jar: ^4.0.3
+  open_file: ">=3.2.0 <3.3.0"
 
 # Fix build release issue: Error unsupported class file major version 59
 # https://stackoverflow.com/questions/72506950/flutter-error-could-not-resolve-all-artifacts-for-configuration-image-picker

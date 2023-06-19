@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:logger/logger.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/playable_file_view.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/base_report_file.dart';
+import 'package:open_file/open_file.dart';
 
 class ReportFileGridView<T extends BaseReportFile> extends StatelessWidget {
   final AppTheme appTheme = locator<AppTheme>();
@@ -68,23 +74,72 @@ class OpenableReportFile<T extends BaseReportFile> extends StatelessWidget {
 
   OpenableReportFile({required this.file, Key? key}) : super(key: key);
 
+  Future<void> _playAudio(BuildContext context) async {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        opaque: false,
+        barrierColor: Colors.white.withOpacity(0),
+        pageBuilder: (BuildContext context, _, __) {
+          return PlayableReportFileView(
+            type: file.fileType,
+            url: file.fileUrl,
+          );
+        },
+      ),
+    );
+  }
+
+  Future<String?> downloadFile(String url, String fileName) async {
+    final Directory tempDir = await getTemporaryDirectory();
+    HttpClient httpClient = HttpClient();
+    File file;
+    String? filePath;
+
+    try {
+      var request = await httpClient.getUrl(Uri.parse(url));
+      var response = await request.close();
+      if (response.statusCode == 200) {
+        var bytes = await consolidateHttpClientResponseBytes(response);
+        final path = '${tempDir.path}/$fileName';
+        file = await File(path).create(recursive: true);
+        await file.writeAsBytes(bytes);
+        filePath = path;
+      }
+    } catch (ex) {
+      Logger().e('Error download file');
+    }
+    return filePath;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          PageRouteBuilder(
-            opaque: false,
-            barrierColor: Colors.white.withOpacity(0),
-            pageBuilder: (BuildContext context, _, __) {
-              return PlayableReportFileView(
-                type: file.fileType,
-                url: file.fileUrl,
-              );
-            },
-          ),
-        );
+      onTap: () async {
+        if (file.fileType.contains('audio')) {
+          _playAudio(context);
+        } else {
+          /// TODO improve using cache temp file if file has already been downloaded
+          final filePath = await downloadFile(file.fileUrl, file.filePath);
+
+          if (filePath != null) {
+            final result = await OpenFile.open(filePath, type: file.fileType);
+            if (result.type != ResultType.done) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                backgroundColor: Colors.red,
+                content: Text(
+                    "Cannot open file. \nEither no app supports or file is corrupted"),
+                duration: Duration(milliseconds: 3000),
+              ));
+            }
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              backgroundColor: Colors.red,
+              content: Text("File not found"),
+              duration: Duration(milliseconds: 3000),
+            ));
+          }
+        }
       },
       child: Stack(
         children: [

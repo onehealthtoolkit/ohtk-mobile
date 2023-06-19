@@ -273,7 +273,9 @@ class DateField extends Field {
 
   @override
   void toJsonValue(Map<String, dynamic> aggregateResult) {
-    aggregateResult[name] = value?.toIso8601String();
+    aggregateResult[name] = (value != null)
+        ? value!.toIso8601String() + getTimeZoneFormatter(value!.timeZoneOffset)
+        : "";
     aggregateResult["${name}__value"] = renderedValue;
   }
 
@@ -285,4 +287,14 @@ class DateField extends Field {
             : DateFormat("yyyy-MM-dd").format(value!))
         : "";
   }
+
+  String getTimeZoneFormatter(Duration offset) {
+    return "${offset.isNegative ? "-" : "+"}${offset.inHours.abs().toString().padLeft(2, "0")}:${(offset.inMinutes - offset.inHours * 60).abs().toString().padLeft(2, "0")}";
+  }
 }
+
+/*
+
+    "${offset.isNegative ? "-" : "+"}${offset.inHours.abs().toString().padLeft(2, "0")}:${(offset.inMinutes - offset.inHours * 60).toString().padLeft(2, "0")}";
+    "${offset.isNegative ? "-" : "+"}${offset.inHours.abs().toString().padLeft(2, "0")}:${(offset.inMinutes - offset.inHours * 60).abs().toString().padLeft(2, "0")}";
+    */

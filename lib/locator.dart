@@ -108,6 +108,7 @@ void setupLocator(String environment) {
     return ImageService();
   }, dependsOn: [
     IDbService,
+    ImageApi,
   ]);
 
   if (locator.isRegistered<IFileService>()) {
@@ -117,6 +118,7 @@ void setupLocator(String environment) {
     return FileService();
   }, dependsOn: [
     IDbService,
+    FileApi,
   ]);
 
   if (locator.isRegistered<IReportTypeService>()) {
