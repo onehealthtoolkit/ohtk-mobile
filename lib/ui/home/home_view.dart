@@ -13,6 +13,9 @@ import 'package:podd_app/ui/resubmit/resubmit_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
+// todo: refactor ให้รับ parameter ในการแสดง navigationBarItems จากคนเรียกใช้
+// เพื่อลดการ switch, if ช่วงบรรทัด 143-178
+
 class HomeView extends HookWidget {
   final Widget child;
 
@@ -191,7 +194,8 @@ class _ReSubmitBlock extends HookViewModelWidget<HomeViewModel> {
                   ),
                 );
               },
-              child: Text("${viewModel.numberOfPendingSubmissions} pending submission${viewModel.numberOfPendingSubmissions > 1 ? 's' : ''}, tap here to re-submit"),
+              child: Text(
+                  "${viewModel.numberOfPendingSubmissions} pending submission${viewModel.numberOfPendingSubmissions > 1 ? 's' : ''}, tap here to re-submit"),
             ),
           )
         : const SizedBox.shrink();

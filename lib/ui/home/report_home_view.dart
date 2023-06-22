@@ -43,7 +43,8 @@ class ReportHomeView extends HookWidget {
           child: IconButton(
             iconSize: 38.w,
             onPressed: () {
-              GoRouter.of(context).goNamed('reportTypes');
+              GoRouter.of(context).goNamed(
+                  'reportTypes'); // TODO เปลี่ยนเป็น const จาก router.dart จะลดการ spell ผิด
             },
             icon: const Icon(Icons.add_circle_outline),
           ),
