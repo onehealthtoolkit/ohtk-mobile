@@ -326,10 +326,10 @@ class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
             if (allow) {
               GoRouter.of(context).pushReplacementNamed(
                 'reportForm',
-                queryParameters: {
+                pathParameters: {
                   "reportTypeId": reportType.id,
-                  "test": viewModel.testFlag ? '1' : '0'
                 },
+                queryParameters: {"test": viewModel.testFlag ? '1' : '0'},
               );
             }
           },

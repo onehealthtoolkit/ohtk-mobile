@@ -37,9 +37,10 @@ void main() async {
   setupRemoteConfig(environment);
   setupLocator(environment);
   setupTheme();
+
   runApp(
     const RestartWidget(
-      child: MyApp(),
+      child: WrapperApp(),
     ),
   );
 }
@@ -53,22 +54,6 @@ Future<Locale> fetchLocaleFromPreference() async {
   return Locale(languageCode, '');
 }
 
-enum DeviceType { Phone, Tablet }
-
-DeviceType getDeviceType() {
-  final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
-  return data.size.shortestSide < 550 ? DeviceType.Phone : DeviceType.Tablet;
-}
-
-Size getScreenSize() {
-  switch (getDeviceType()) {
-    case DeviceType.Phone:
-      return const Size(360, 640);
-    case DeviceType.Tablet:
-      return const Size(768, 1024);
-  }
-}
-
 setupRemoteConfig(String environment) async {
   final remoteConfig = FirebaseRemoteConfig.instance;
   if (environment == 'dev') {
@@ -78,6 +63,42 @@ setupRemoteConfig(String environment) async {
     ));
   } else {
     // do nothing use default remote config settings
+  }
+}
+
+/*
+ * hotfix: @todo fix this later
+ * ScreenUtil is a Flutter library for adapting screen and font size.
+ * but when upgrade to flutter 3.10.5 with dart version3,  
+ * there are a problem that cause the app to rebuild when keyboard show/hide
+ * so we need to make if not rebuild when keyboard show/hide by wrapping with builder that return the same widget
+ */
+class WrapperApp extends StatelessWidget {
+  const WrapperApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Builder(builder: (context) {
+      var mediaQueryData = MediaQuery.of(context);
+      ScreenUtil.configure(
+        data: mediaQueryData,
+        designSize: getScreenSize(mediaQueryData),
+        minTextAdapt: true,
+        splitScreenMode: true,
+      );
+
+      return const MyApp();
+    });
+  }
+
+  Size getScreenSize(MediaQueryData data) {
+    if (data.size.shortestSide < 550) {
+      // Phone
+      return const Size(360, 640);
+    } else {
+      // Tablet
+      return const Size(768, 1024);
+    }
   }
 }
 
@@ -99,38 +120,30 @@ class MyApp extends StatelessWidget {
           final appViewModel = AppViewModel();
 
           return OverlaySupport.global(
-            child: ScreenUtilInit(
-              designSize: getScreenSize(),
-              minTextAdapt: true,
-              splitScreenMode: true,
-              builder: (context, child) {
-                return AnimatedBuilder(
-                  animation: appViewModel,
-                  builder: (context, child) => MaterialApp.router(
-                    debugShowCheckedModeBanner: false,
-                    title: 'OHTK Mobile',
-                    localizationsDelegates: const [
-                      AppLocalizations.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    supportedLocales: const [
-                      Locale('en', ''), // English, no country code
-                      Locale('th', ''), // Thai, no country code
-                      Locale('km', ''), // Cambodia
-                      Locale('lo', ''), // Lao
-                    ],
-                    localeResolutionCallback: (deviceLocale, supportedLocales) {
-                      Locale locale = snapshot.data[1];
-                      return locale;
-                    },
-                    theme: locator<AppTheme>().themeData,
-                    routerConfig:
-                        OhtkRouter().getRouter('/reports', appViewModel),
-                  ),
-                );
-              },
+            child: AnimatedBuilder(
+              animation: appViewModel,
+              builder: (context, child) => MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                title: 'OHTK Mobile',
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: const [
+                  Locale('en', ''), // English, no country code
+                  Locale('th', ''), // Thai, no country code
+                  Locale('km', ''), // Cambodia
+                  Locale('lo', ''), // Lao
+                ],
+                localeResolutionCallback: (deviceLocale, supportedLocales) {
+                  Locale locale = snapshot.data[1];
+                  return locale;
+                },
+                theme: locator<AppTheme>().themeData,
+                routerConfig: OhtkRouter().getRouter('/reports', appViewModel),
+              ),
             ),
           );
         });
@@ -173,7 +186,7 @@ class RestartWidget extends StatefulWidget {
   }
 
   @override
-  _RestartWidgetState createState() => _RestartWidgetState();
+  createState() => _RestartWidgetState();
 }
 
 class _RestartWidgetState extends State<RestartWidget> {
