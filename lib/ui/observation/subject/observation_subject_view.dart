@@ -244,7 +244,7 @@ class _Map extends HookViewModelWidget<ObservationSubjectViewModel> {
       BuildContext context, ObservationSubjectViewModel viewModel) {
     final latlng = viewModel.latlng;
 
-    final Completer<GoogleMapController> controller = Completer();
+    final Completer<GoogleMapController> mapControllercompleter = Completer();
     var markers = <Marker>{};
 
     if (latlng != null) {
@@ -273,7 +273,7 @@ class _Map extends HookViewModelWidget<ObservationSubjectViewModel> {
                 myLocationButtonEnabled: false,
                 scrollGesturesEnabled: true,
                 onMapCreated: (GoogleMapController controller) {
-                  controller.complete(controller);
+                  mapControllercompleter.complete(controller);
                 },
                 markers: markers,
               )
