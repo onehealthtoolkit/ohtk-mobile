@@ -64,12 +64,12 @@ class _FormLocationFieldState extends State<FormLocationField> {
                               if (permission == LocationPermission.denied) {
                                 _logger.e("permission denied");
                               } else {
-                                var _position =
+                                var position =
                                     await Geolocator.getCurrentPosition(
                                         desiredAccuracy:
                                             LocationAccuracy.medium);
                                 widget.field.value =
-                                    "${_position.longitude},${_position.latitude}";
+                                    "${position.longitude},${position.latitude}";
                               }
                             } else {
                               _logger.e("location is disable");

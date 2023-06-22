@@ -70,8 +70,8 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
           controller: code,
           onChanged: viewModel.setInvitationCode,
           textInputAction: TextInputAction.done,
-          onSubmitted: (_value) {
-            viewModel.setInvitationCode(_value);
+          onSubmitted: (value) {
+            viewModel.setInvitationCode(value);
             viewModel.checkInvitationCode();
           },
           decoration: InputDecoration(

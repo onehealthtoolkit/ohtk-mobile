@@ -33,7 +33,7 @@ class ObservationSubjectView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    TabController _tabController = useTabController(initialLength: 2);
+    TabController tabController = useTabController(initialLength: 2);
 
     return ViewModelBuilder<ObservationSubjectViewModel>.reactive(
       viewModelBuilder: () =>
@@ -50,7 +50,7 @@ class ObservationSubjectView extends HookWidget {
             child: ColoredBox(
               color: appTheme.bg2,
               child: TabBar(
-                controller: _tabController,
+                controller: tabController,
                 tabs: [
                   Tab(
                     child: Text(AppLocalizations.of(context)!
@@ -68,16 +68,16 @@ class ObservationSubjectView extends HookWidget {
         body: viewModel.isBusy
             ? const Center(child: OhtkProgressIndicator(size: 100))
             : !viewModel.hasError
-                ? _bodyView(_tabController, context, viewModel)
+                ? _bodyView(tabController, context, viewModel)
                 : const Text("Observation subject not found"),
       ),
     );
   }
 
-  Widget _bodyView(TabController _tabController, BuildContext context,
+  Widget _bodyView(TabController tabController, BuildContext context,
       ObservationSubjectViewModel viewModel) {
     return TabBarView(
-      controller: _tabController,
+      controller: tabController,
       children: [
         _SubjectDetail(),
         ObservationSubjectMonitoringView(
@@ -244,7 +244,7 @@ class _Map extends HookViewModelWidget<ObservationSubjectViewModel> {
       BuildContext context, ObservationSubjectViewModel viewModel) {
     final latlng = viewModel.latlng;
 
-    final Completer<GoogleMapController> _controller = Completer();
+    final Completer<GoogleMapController> controller = Completer();
     var markers = <Marker>{};
 
     if (latlng != null) {
@@ -273,7 +273,7 @@ class _Map extends HookViewModelWidget<ObservationSubjectViewModel> {
                 myLocationButtonEnabled: false,
                 scrollGesturesEnabled: true,
                 onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
+                  controller.complete(controller);
                 },
                 markers: markers,
               )

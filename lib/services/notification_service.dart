@@ -66,7 +66,7 @@ class NotificationService extends INotificationService {
     NotificationMessageCallback? onForegroundMessage,
   }) async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
-    _logger.d("register fcm token: " + (fcmToken ?? "???"));
+    _logger.d("register fcm token: ${fcmToken ?? "???"}");
     if (fcmToken == null) {
       return;
     }
@@ -76,7 +76,7 @@ class NotificationService extends INotificationService {
     // Note: This callback is fired at each app startup and whenever a new
     // token is generated.
     FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) async {
-      _logger.d("fcm token refresh: " + fcmToken);
+      _logger.d("fcm token refresh: $fcmToken");
       _registerFcmToken(userId, fcmToken);
     }).onError((e) {
       _logger.e(e);

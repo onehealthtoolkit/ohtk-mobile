@@ -94,9 +94,9 @@ class _DateTimeDropdown extends StatelessWidget {
         }
       }
       return DropdownMenuItem(
-        child: Text(day.toString(), style: _optionStyle(enabled)),
         value: day,
         enabled: enabled,
+        child: Text(day.toString(), style: _optionStyle(enabled)),
       );
     }).toList();
 
@@ -136,9 +136,9 @@ class _DateTimeDropdown extends StatelessWidget {
       final monthStr = formatter.format(DateTime(2000, month, 1));
 
       return DropdownMenuItem(
-        child: Text(monthStr, style: _optionStyle(enabled)),
         value: month,
         enabled: enabled,
+        child: Text(monthStr, style: _optionStyle(enabled)),
       );
     }).toList();
 
@@ -166,9 +166,9 @@ class _DateTimeDropdown extends StatelessWidget {
         }
       }
       return DropdownMenuItem(
-        child: Text(year.toString(), style: _optionStyle(enabled)),
         value: year,
         enabled: enabled,
+        child: Text(year.toString(), style: _optionStyle(enabled)),
       );
     }).toList();
 
@@ -188,9 +188,9 @@ class _DateTimeDropdown extends StatelessWidget {
   _hourDropdown(opsv.DateField field) {
     final items = List<int>.generate(24, (int index) => index).map((e) {
       return DropdownMenuItem(
+        value: e,
         child: Text((e / 10 >= 1 ? "" : "0") + e.toString(),
             style: _optionStyle(true)),
-        value: e,
       );
     }).toList();
 
@@ -210,9 +210,9 @@ class _DateTimeDropdown extends StatelessWidget {
   _minuteDropdown(opsv.DateField field) {
     final items = List<int>.generate(60, (int index) => index).map((e) {
       return DropdownMenuItem(
+        value: e,
         child: Text((e / 10 >= 1 ? "" : "0") + e.toString(),
             style: _optionStyle(true)),
-        value: e,
       );
     }).toList();
 

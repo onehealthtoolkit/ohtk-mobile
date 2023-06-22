@@ -191,9 +191,7 @@ class _ReSubmitBlock extends HookViewModelWidget<HomeViewModel> {
                   ),
                 );
               },
-              child: Text(viewModel.numberOfPendingSubmissions.toString() +
-                  " pending submission${viewModel.numberOfPendingSubmissions > 1 ? 's' : ''}," +
-                  " tap here to re-submit"),
+              child: Text("${viewModel.numberOfPendingSubmissions} pending submission${viewModel.numberOfPendingSubmissions > 1 ? 's' : ''}, tap here to re-submit"),
             ),
           )
         : const SizedBox.shrink();

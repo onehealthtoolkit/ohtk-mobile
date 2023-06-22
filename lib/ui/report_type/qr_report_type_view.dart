@@ -46,9 +46,9 @@ class QrReportTypeView extends StatelessWidget {
           color: Colors.black45,
         ),
         padding: EdgeInsets.all(MediaQuery.of(context).size.width / 5),
-        child: Column(
+        child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             CircularProgressIndicator(),
             SizedBox(height: 16),
             Text(

@@ -35,10 +35,10 @@ class FormSimulatorViewModel extends BaseViewModel {
   }
 
   init() async {
-    final String _timezone = await FlutterNativeTimezone.getLocalTimezone();
+    final String timezone = await FlutterNativeTimezone.getLocalTimezone();
     _reportId = _uuid.v4();
     _formStore = Form.fromJson(json.decode(_reportType.definition), _reportId);
-    _formStore.setTimezone(_timezone);
+    _formStore.setTimezone(timezone);
     isReady = true;
     notifyListeners();
   }

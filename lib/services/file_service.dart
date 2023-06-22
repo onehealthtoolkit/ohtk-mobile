@@ -122,14 +122,14 @@ class FileService extends IFileService {
 
   @override
   Future<void> saveReportFile(ReportFile reportFile) async {
-    var _db = _dbService.db;
-    await _db.insert("report_file", reportFile.toMap());
+    var db = _dbService.db;
+    await db.insert("report_file", reportFile.toMap());
   }
 
   @override
   Future<ReportFile> getReportFile(String id) async {
-    var _db = _dbService.db;
-    var results = await _db.query(
+    var db = _dbService.db;
+    var results = await db.query(
       'report_file',
       where: "id = ?",
       whereArgs: [
@@ -145,14 +145,14 @@ class FileService extends IFileService {
 
   @override
   Future<void> removeReportFile(String id) async {
-    var _db = _dbService.db;
-    await _db.delete("report_file", where: "id = ?", whereArgs: [id]);
+    var db = _dbService.db;
+    await db.delete("report_file", where: "id = ?", whereArgs: [id]);
   }
 
   @override
   Future<List<ReportFile>> findAllReportFilesByReportId(String reportId) async {
-    var _db = _dbService.db;
-    var results = await _db.query(
+    var db = _dbService.db;
+    var results = await db.query(
       'report_file',
       where: "report_id = ?",
       whereArgs: [
@@ -164,8 +164,8 @@ class FileService extends IFileService {
 
   @override
   Future<void> removeAll() async {
-    var _db = _dbService.db;
-    await _db.delete("report_file");
+    var db = _dbService.db;
+    await db.delete("report_file");
 
     var localPath = await _localFilePath;
     var allReportFolder = File('$localPath/reports');
@@ -174,8 +174,8 @@ class FileService extends IFileService {
 
   @override
   Future<void> remove(String reportId) async {
-    var _db = _dbService.db;
-    await _db
+    var db = _dbService.db;
+    await db
         .delete("report_file", where: "report_id = ?", whereArgs: [reportId]);
 
     var localPath = await _localFilePath;

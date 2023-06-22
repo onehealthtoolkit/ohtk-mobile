@@ -32,10 +32,10 @@ class FullScreenWidget extends StatelessWidget {
                     : backgroundColor,
                 pageBuilder: (BuildContext context, _, __) {
                   return FullScreenPage(
-                    child: fullscreenChild,
                     backgroundColor: backgroundColor,
                     backgroundIsTransparent: backgroundIsTransparent,
                     disposeLevel: disposeLevel,
+                    child: fullscreenChild,
                   );
                 }));
       },
@@ -171,9 +171,9 @@ class _FullScreenPageState extends State<FullScreenPage> {
                 left: 0,
                 right: 0,
                 child: InteractiveViewer(
-                  child: widget.child,
                   minScale: 0.1,
                   maxScale: 5,
+                  child: widget.child,
                 ),
               )
             ],

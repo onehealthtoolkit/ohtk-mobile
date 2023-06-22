@@ -5,7 +5,6 @@ import 'package:podd_app/components/form_confirm.dart';
 import 'package:podd_app/components/form_input.dart';
 import 'package:podd_app/components/form_stepper.dart';
 import 'package:podd_app/components/progress_indicator.dart';
-import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/ui/observation/form/subject_form_view_model.dart';
@@ -40,8 +39,7 @@ class ObservationSubjectFormView extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.reportTitle +
-                    " ${viewModel.definition != null ? viewModel.definition!.name : ''}"),
+                title: Text("${AppLocalizations.of(context)!.reportTitle} ${viewModel.definition != null ? viewModel.definition!.name : ''}"),
               ),
               body: SafeArea(
                 child: Column(

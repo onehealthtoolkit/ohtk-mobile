@@ -27,10 +27,10 @@ class ObservationDefinitionService extends IObservationDefinitionService {
 
   @override
   Future<List<ObservationDefinition>> fetchAllObservationDefinitions() async {
-    var _db = _dbService.db;
-    var monitoringDefinitionResult = await _db.query('monitoring_definition');
+    var db = _dbService.db;
+    var monitoringDefinitionResult = await db.query('monitoring_definition');
 
-    var result = await _db.query('observation_definition');
+    var result = await db.query('observation_definition');
     return result
         .map(
           (definition) => ObservationDefinition.fromMap(
@@ -46,11 +46,11 @@ class ObservationDefinitionService extends IObservationDefinitionService {
 
   @override
   Future<ObservationDefinition?> getObservationDefinition(int id) async {
-    var _db = _dbService.db;
-    var monitoringDefinitionResults = await _db.query('monitoring_definition',
+    var db = _dbService.db;
+    var monitoringDefinitionResults = await db.query('monitoring_definition',
         where: 'definition_id = ?', whereArgs: [id]);
 
-    var result = await _db
+    var result = await db
         .query('observation_definition', where: 'id = ?', whereArgs: [id]);
 
     if (result.isNotEmpty) {
@@ -65,8 +65,8 @@ class ObservationDefinitionService extends IObservationDefinitionService {
   @override
   Future<ObservationMonitoringDefinition?> getObservationMonitoringDefinition(
       int id) async {
-    var _db = _dbService.db;
-    var result = await _db
+    var db = _dbService.db;
+    var result = await db
         .query('monitoring_definition', where: 'id = ?', whereArgs: [id]);
 
     if (result.isNotEmpty) {
@@ -77,7 +77,7 @@ class ObservationDefinitionService extends IObservationDefinitionService {
 
   @override
   sync() async {
-    var _db = _dbService.db;
+    var db = _dbService.db;
     var oldDefinitions = await fetchAllObservationDefinitions();
 
     ObservationDefinitionSyncOutputType result =
@@ -89,22 +89,22 @@ class ObservationDefinitionService extends IObservationDefinitionService {
             .toList());
 
     if (result.removedList.isNotEmpty) {
-      await _db.delete('observation_definition',
+      await db.delete('observation_definition',
           where: "id in (?)", whereArgs: [result.removedList]);
 
-      await _db.delete('monitoring_definition',
+      await db.delete('monitoring_definition',
           where: "definition_id in (?)", whereArgs: [result.removedList]);
     }
 
     for (var definition in result.updatedList) {
-      await _db.insert(
+      await db.insert(
         'observation_definition',
         definition.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
 
       for (var monitoring in definition.monitoringDefinitions) {
-        await _db.insert(
+        await db.insert(
           'monitoring_definition',
           monitoring.toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace,
@@ -115,8 +115,8 @@ class ObservationDefinitionService extends IObservationDefinitionService {
 
   @override
   Future<void> removeAll() async {
-    var _db = _dbService.db;
-    await _db.delete('observation_definition');
-    await _db.delete('monitoring_definition');
+    var db = _dbService.db;
+    await db.delete('observation_definition');
+    await db.delete('monitoring_definition');
   }
 }

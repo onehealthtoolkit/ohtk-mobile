@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/app_theme.dart';
-import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';

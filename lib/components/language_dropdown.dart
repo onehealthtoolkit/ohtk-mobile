@@ -67,10 +67,10 @@ class LanguageDropdown extends StatelessWidget {
             },
             items: languages
                 .map((e) => DropdownMenuItem(
+                      value: e[1],
                       child: Text(e[0],
                           style:
                               TextStyle(color: appTheme.sub1, fontSize: 13.sp)),
-                      value: e[1],
                     ))
                 .toList()),
       ),

@@ -60,15 +60,15 @@ class _OptionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Observer(
       builder: (context) {
-        var _checkValue = field.valueFor(option.value);
-        var _text = field.textValueFor(option.value)?.value ?? '';
-        var _invalidTextMessage =
+        var checkValue = field.valueFor(option.value);
+        var text = field.textValueFor(option.value)?.value ?? '';
+        var invalidTextMessage =
             field.invalidTextMessageFor(option.value)?.value;
 
-        if (_text != _controller.text) {
+        if (text != _controller.text) {
           _controller.value = TextEditingValue(
-              text: _text,
-              selection: TextSelection.collapsed(offset: _text.length));
+              text: text,
+              selection: TextSelection.collapsed(offset: text.length));
         }
         return Column(
           children: [
@@ -78,12 +78,12 @@ class _OptionWidget extends StatelessWidget {
             Material(
               child: InkWell(
                 onTap: () {
-                  field.setSelectedFor(option.value, !_checkValue);
+                  field.setSelectedFor(option.value, !checkValue);
                 },
                 child: Row(
                   children: [
                     Checkbox(
-                        value: _checkValue,
+                        value: checkValue,
                         activeColor: apptheme.primary,
                         onChanged: (value) {
                           field.setSelectedFor(option.value, value ?? false);
@@ -96,7 +96,7 @@ class _OptionWidget extends StatelessWidget {
                             option.label,
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
-                          if (option.textInput && _checkValue)
+                          if (option.textInput && checkValue)
                             TextField(
                               controller: _controller,
                               style: Theme.of(context).textTheme.bodyLarge,
@@ -105,7 +105,7 @@ class _OptionWidget extends StatelessWidget {
                               },
                               decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
-                                  errorText: _invalidTextMessage),
+                                  errorText: invalidTextMessage),
                             ),
                         ],
                       ),

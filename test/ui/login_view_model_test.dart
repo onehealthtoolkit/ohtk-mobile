@@ -10,9 +10,9 @@ class AuthServiceMock implements IAuthService {
   String? password;
 
   @override
-  Future<AuthResult> authenticate(String _username, String _password) {
-    username = _username;
-    password = _password;
+  Future<AuthResult> authenticate(String username, String password) {
+    username = username;
+    password = password;
     return Future.value(
       AuthSuccess(
           token: "token",

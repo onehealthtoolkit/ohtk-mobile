@@ -150,8 +150,8 @@ class OpenableReportFile<T extends BaseReportFile> extends StatelessWidget {
               color: apptheme.primary,
               radius: const Radius.circular(12),
               dashPattern: const [4, 4],
-              child: Center(child: _display(file.fileType)),
               padding: const EdgeInsets.all(4),
+              child: Center(child: _display(file.fileType)),
             ),
           ),
           Positioned(

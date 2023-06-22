@@ -54,7 +54,7 @@ class _TabView extends HookViewModelWidget<IncidentReportViewModel> {
   @override
   Widget buildViewModelWidget(
       BuildContext context, IncidentReportViewModel viewModel) {
-    final TabController _tabController = useTabController(initialLength: 3);
+    final TabController tabController = useTabController(initialLength: 3);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -62,7 +62,7 @@ class _TabView extends HookViewModelWidget<IncidentReportViewModel> {
         child: ColoredBox(
           color: appTheme.bg2,
           child: TabBar(
-            controller: _tabController,
+            controller: tabController,
             tabs: [
               _tabItem(AppLocalizations.of(context)!.detailTabLabel),
               _tabItem(AppLocalizations.of(context)!.commentTabLabel),
@@ -74,7 +74,7 @@ class _TabView extends HookViewModelWidget<IncidentReportViewModel> {
       body: viewModel.isBusy
           ? const Center(child: OhtkProgressIndicator(size: 100))
           : !viewModel.hasError
-              ? _content(_tabController, viewModel)
+              ? _content(tabController, viewModel)
               : const Text("Incident report not found"),
     );
   }
@@ -88,8 +88,8 @@ class _TabView extends HookViewModelWidget<IncidentReportViewModel> {
   }
 
   Widget _content(
-      TabController _tabController, IncidentReportViewModel viewModel) {
-    var view = TabBarView(controller: _tabController, children: [
+      TabController tabController, IncidentReportViewModel viewModel) {
+    var view = TabBarView(controller: tabController, children: [
       _IncidentDetail(),
       ReportCommentView(viewModel.data!.threadId!),
       FollowupListView(viewModel.data!.id)
@@ -259,7 +259,7 @@ class _Map extends HookViewModelWidget<IncidentReportViewModel> {
       BuildContext context, IncidentReportViewModel viewModel) {
     final latlng = viewModel.latlng;
 
-    final Completer<GoogleMapController> _controller = Completer();
+    final Completer<GoogleMapController> controller = Completer();
     var markers = <Marker>{};
 
     if (latlng != null) {
@@ -287,7 +287,7 @@ class _Map extends HookViewModelWidget<IncidentReportViewModel> {
                 myLocationButtonEnabled: false,
                 scrollGesturesEnabled: true,
                 onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
+                  controller.complete(controller);
                 },
                 markers: markers,
               )

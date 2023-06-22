@@ -6,7 +6,6 @@ import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
 import 'package:podd_app/ui/home/observation/observation_home_view_model.dart';
-import 'package:podd_app/ui/observation/observation_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 

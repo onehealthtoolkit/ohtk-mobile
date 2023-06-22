@@ -39,16 +39,16 @@ class ReportTypeService extends IReportTypeService {
 
   @override
   Future<List<ReportType>> fetchAllReportType() async {
-    var _db = _dbService.db;
-    var results = await _db.query('report_type', orderBy: 'ordering');
+    var db = _dbService.db;
+    var results = await db.query('report_type', orderBy: 'ordering');
     return results.map((item) => ReportType.fromMap(item)).toList();
   }
 
   @override
   Future<ReportType?> getReportType(String id) async {
-    var _db = _dbService.db;
+    var db = _dbService.db;
     var results =
-        await _db.query('report_type', where: "id = ?", whereArgs: [id]);
+        await db.query('report_type', where: "id = ?", whereArgs: [id]);
     if (results.isNotEmpty) {
       return results.map((item) => ReportType.fromMap(item)).toList()[0];
     }
@@ -57,14 +57,14 @@ class ReportTypeService extends IReportTypeService {
 
   @override
   Future<List<Category>> fetchAllCategory() async {
-    var _db = _dbService.db;
-    var results = await _db.query('category', orderBy: 'ordering');
+    var db = _dbService.db;
+    var results = await db.query('category', orderBy: 'ordering');
     return results.map((item) => Category.fromMap(item)).toList();
   }
 
   @override
   sync() async {
-    var _db = _dbService.db;
+    var db = _dbService.db;
 
     var oldReportTypes = await fetchAllReportType();
     // sync from server
@@ -76,7 +76,7 @@ class ReportTypeService extends IReportTypeService {
                 ))
             .toList());
     for (var category in result.categoryList) {
-      await _db.insert(
+      await db.insert(
         'category',
         category.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
@@ -85,7 +85,7 @@ class ReportTypeService extends IReportTypeService {
 
     // delete
     if (result.removedList.isNotEmpty) {
-      await _db.delete(
+      await db.delete(
         'report_type',
         where: 'id in (?)',
         whereArgs: [result.removedList],
@@ -93,7 +93,7 @@ class ReportTypeService extends IReportTypeService {
     }
 
     for (var reportType in result.updatedList) {
-      await _db.insert(
+      await db.insert(
         'report_type',
         reportType.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
@@ -105,7 +105,7 @@ class ReportTypeService extends IReportTypeService {
 
   @override
   Future<void> removeAll() async {
-    var _db = _dbService.db;
-    await _db.delete('report_type');
+    var db = _dbService.db;
+    await db.delete('report_type');
   }
 }
