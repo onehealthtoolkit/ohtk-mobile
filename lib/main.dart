@@ -36,11 +36,13 @@ void main() async {
   );
   setupRemoteConfig(environment);
   setupLocator(environment);
-  setupTheme();
+  setupTheme(); // TODO : move to setupLocator
 
   runApp(
     const RestartWidget(
-      child: WrapperApp(),
+      child: FixScreenUtilAppWrapper(
+        child: MyApp(),
+      ),
     ),
   );
 }
@@ -73,8 +75,9 @@ setupRemoteConfig(String environment) async {
  * there are a problem that cause the app to rebuild when keyboard show/hide
  * so we need to make if not rebuild when keyboard show/hide by wrapping with builder that return the same widget
  */
-class WrapperApp extends StatelessWidget {
-  const WrapperApp({super.key});
+class FixScreenUtilAppWrapper extends StatelessWidget {
+  final Widget child;
+  const FixScreenUtilAppWrapper({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +90,7 @@ class WrapperApp extends StatelessWidget {
         splitScreenMode: true,
       );
 
-      return const MyApp();
+      return child;
     });
   }
 
@@ -142,7 +145,8 @@ class MyApp extends StatelessWidget {
                   return locale;
                 },
                 theme: locator<AppTheme>().themeData,
-                routerConfig: OhtkRouter().getRouter('/reports', appViewModel),
+                routerConfig: OhtkRouter().getRouter('/reports',
+                    appViewModel), // TODO : '/reports' ที่ pass ไปมีผลจริงหรือไม่
               ),
             ),
           );
@@ -150,6 +154,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// ​TODO : แยกเป็น file ต่างหาก
 class _WaitingScreen extends StatelessWidget {
   const _WaitingScreen({Key? key}) : super(key: key);
 
@@ -176,6 +181,7 @@ class _WaitingScreen extends StatelessWidget {
   }
 }
 
+// TODO แยกไปเป็น component ต่างหาก
 class RestartWidget extends StatefulWidget {
   final Widget child;
 
