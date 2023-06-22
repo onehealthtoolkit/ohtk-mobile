@@ -1,8 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   late MultipleChoicesField field;
+
+  setUpAll(() {
+    locator.registerSingletonAsync<AppLocalizations>(() async {
+      return AppLocalizations.delegate.load(const Locale('en'));
+    });
+  });
+
   group("json", () {
     setUp(() {
       field = MultipleChoicesField("id", "symptom", [
@@ -44,8 +54,8 @@ void main() {
       expect(json["symptom"]["sore_throat"], isTrue);
       expect(json["symptom"]["headache"], isFalse);
       expect(json["symptom"]["fever"], isTrue);
-      expect(json["symptom"]["value"], "sore_throat,fever");
-      expect(json["symptom__value"], "sore_throat,fever");
+      expect(json["symptom"]["value"], "sore_throat, fever");
+      expect(json["symptom__value"], "sore_throat, fever");
     });
 
     test("toJson with value and text", () {
@@ -58,8 +68,8 @@ void main() {
       expect(json["symptom"]["sore_throat"], isTrue);
       expect(json["symptom"]["headache"], isTrue);
       expect(json["symptom"]["fever"], isFalse);
-      expect(json["symptom"]["value"], "sore_throat,headache");
-      expect(json["symptom__value"], "sore_throat,headache - migraine");
+      expect(json["symptom"]["value"], "sore_throat, headache");
+      expect(json["symptom__value"], "sore_throat, headache - migraine");
     });
 
     test("load jsonValue", () {

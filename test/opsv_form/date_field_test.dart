@@ -1,9 +1,19 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   late DateField field;
+
+  setUpAll(() {
+    locator.registerSingletonAsync<AppLocalizations>(() async {
+      return AppLocalizations.delegate.load(const Locale('en'));
+    });
+  });
+
   group("json value", () {
     setUp(() {
       field = DateField("id", "date");
@@ -14,8 +24,10 @@ void main() {
       field.value = now;
       Map<String, dynamic> json = {};
       field.toJsonValue(json);
-      expect(json["date"],
-          DateTime(now.year, now.month, now.day).toIso8601String());
+      expect(
+          json["date"],
+          DateTime(now.year, now.month, now.day).toIso8601String() +
+              DateField.getTimeZoneFormatter(now.timeZoneOffset));
       expect(
         json["date__value"],
         DateFormat("yyyy-MM-dd").format(DateTime(now.year, now.month, now.day)),
@@ -26,7 +38,7 @@ void main() {
       Map<String, dynamic> json = {};
       field.value = null;
       field.toJsonValue(json);
-      expect(json["date"], isNull);
+      expect(json["date"], isEmpty);
       expect(json["date__value"], isEmpty);
     });
 

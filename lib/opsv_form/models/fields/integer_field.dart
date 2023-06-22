@@ -76,10 +76,11 @@ class IntegerField extends PrimitiveField<int> {
       if (!valid) {
         final localize = locator<AppLocalizations>();
         markError(
-          localize.integerFieldMinErrorMsg(
-            displayName,
-            min!.toString(),
-          ),
+          minMessage ??
+              localize.integerFieldMinErrorMsg(
+                name,
+                min!.toString(),
+              ),
         );
         return false;
       }
@@ -96,10 +97,11 @@ class IntegerField extends PrimitiveField<int> {
       if (!valid) {
         final localize = locator<AppLocalizations>();
         markError(
-          localize.integerFieldMaxErrorMsg(
-            displayName,
-            max!.toString(),
-          ),
+          maxMessage ??
+              localize.integerFieldMaxErrorMsg(
+                name,
+                max!.toString(),
+              ),
         );
         return false;
       }

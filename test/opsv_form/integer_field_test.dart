@@ -1,12 +1,23 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   late IntegerField field;
+
+  setUpAll(() {
+    locator.registerSingletonAsync<AppLocalizations>(() async {
+      return AppLocalizations.delegate.load(const Locale('en'));
+    });
+  });
+
   group("json value", () {
     setUp(() {
       field = IntegerField("id", "age");
     });
+
     test("toJson with value", () {
       field.value = 12;
       Map<String, dynamic> json = {};

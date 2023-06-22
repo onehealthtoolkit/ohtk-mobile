@@ -3,7 +3,12 @@ import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/login_result.dart';
 import 'package:podd_app/models/user_profile.dart';
 import 'package:podd_app/services/auth_service.dart';
+import 'package:podd_app/services/config_service.dart';
+import 'package:podd_app/services/gql_service.dart';
+import 'package:podd_app/services/secure_storage_service.dart';
 import 'package:podd_app/ui/login/login_view_model.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:flutter/services.dart';
 
 class AuthServiceMock implements IAuthService {
   String? username;
@@ -11,8 +16,8 @@ class AuthServiceMock implements IAuthService {
 
   @override
   Future<AuthResult> authenticate(String username, String password) {
-    username = username;
-    password = password;
+    this.username = username;
+    this.password = password;
     return Future.value(
       AuthSuccess(
           token: "token",
@@ -42,31 +47,62 @@ class AuthServiceMock implements IAuthService {
 
   @override
   Future<bool> requestAccessTokenIfExpired() {
-    // TODO: implement requestAccessTokenIfExpired
     throw UnimplementedError();
   }
 
   @override
   Future<void> fetchProfile() {
-    // TODO: implement fetchProfile
     throw UnimplementedError();
   }
 
   @override
   Future<AuthResult> verifyQrToken(String token) {
-    // TODO: implement verifyQrToken
     throw UnimplementedError();
   }
 
   @override
   updateConfirmedConsent() {
-    // TODO: implement updateConfirmedConsent
     throw UnimplementedError();
   }
 
   @override
   updateAvatarUrl(String avatarUrl) {
-    // TODO: implement updateAvatarUrl
+    throw UnimplementedError();
+  }
+}
+
+class ConfigServiceMock extends ConfigService {}
+
+class GqlServiceMock extends GqlService {}
+
+class SecureStorageServiceMock implements ISecureStorageService {
+  @override
+  Future<void> deleteAll() {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String?> get(String key) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<UserProfile?> getUserProfile() {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> set(String key, String value) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> setLoginSuccess(AuthSuccess info) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> setUserProfile(UserProfile profile) {
     throw UnimplementedError();
   }
 }
@@ -74,9 +110,34 @@ class AuthServiceMock implements IAuthService {
 void main() {
   group('Login View Model', () {
     AuthServiceMock authService = AuthServiceMock();
+    ConfigServiceMock configService = ConfigServiceMock();
+    SecureStorageServiceMock secureStorageService = SecureStorageServiceMock();
 
-    setUpAll(() {
+    setUpAll(() async {
+      TestWidgetsFlutterBinding.ensureInitialized();
+
+      const MethodChannel channel1 =
+          MethodChannel('plugins.flutter.io/path_provider');
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel1, (MethodCall methodCall) async {
+        return ".";
+      });
+
+      const MethodChannel channel2 =
+          MethodChannel('plugins.flutter.io/shared_preferences');
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel2, (MethodCall methodCall) async {
+        return {};
+      });
+
+      await initHiveForFlutter();
+
       locator.registerSingleton<IAuthService>(authService);
+      locator.registerSingleton<ConfigService>(configService);
+      locator.registerSingleton<ISecureStorageService>(secureStorageService);
+
+      GqlServiceMock gqlService = GqlServiceMock();
+      locator.registerSingleton<GqlService>(gqlService);
       authService.reset();
     });
 
@@ -94,11 +155,11 @@ void main() {
       expect(model.password, "passtest");
     });
 
-    test('authenticate', () {
+    test('authenticate', () async {
       LoginViewModel model = LoginViewModel();
       model.setUsername("test");
       model.setPassword("testpass");
-      model.authenticate();
+      await model.authenticate();
       expect(model.username, authService.username);
       expect(model.password, authService.password);
     });
