@@ -14,6 +14,9 @@ typedef TrailingFunction = Widget? Function(IncidentReport report);
 
 var formatter = DateFormat("dd/MM/yyyy HH:mm");
 
+/// rewrite code base of this thread
+/// https://github.com/flutter/flutter/issues/19269#issuecomment-577515503
+/// https://github.com/flutter/flutter/issues/19269#issuecomment-454164875
 class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
   final T viewModel;
   final TrailingFunction trailingFn;
@@ -91,77 +94,6 @@ class IncidentReportItem extends StatelessWidget {
     this.trailing,
   }) : super(key: key);
 
-  _title(BuildContext context, IncidentReport report) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            report.reportTypeName,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w600,
-                  color: appTheme.primary,
-                ),
-          ),
-        ),
-        Text(
-          formatter.format(report.createdAt.toLocal()),
-          style: TextStyle(
-            fontSize: 10.sp,
-            fontWeight: FontWeight.w300,
-          ),
-        ),
-      ],
-    );
-  }
-
-  _description() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Text(
-            report.trimWhitespaceDescription,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 11.sp,
-              color: appTheme.sub1,
-            ),
-          ),
-        ),
-        const SizedBox(width: 20),
-        Icon(
-          Icons.arrow_forward_ios_sharp,
-          size: 14,
-          color: appTheme.secondary,
-        ),
-      ],
-    );
-  }
-
-  _options() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Row(
-            children: [
-              if (report.caseId != null) IncidentReportCaseTag(),
-              if (report.testFlag) const SizedBox(width: 5),
-              if (report.testFlag) IncidentReportTestTag(),
-            ],
-          ),
-        ),
-        if (trailing != null) trailing!,
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -194,9 +126,9 @@ class IncidentReportItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _title(context, report),
-                    _description(),
-                    _options()
+                    _Title(report: report, appTheme: appTheme),
+                    _Description(report: report, appTheme: appTheme),
+                    _Options(report: report, trailing: trailing)
                   ],
                 ),
               ),
@@ -204,6 +136,104 @@ class IncidentReportItem extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _Title extends StatelessWidget {
+  final IncidentReport report;
+  final AppTheme appTheme;
+
+  const _Title({Key? key, required this.report, required this.appTheme})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            report.reportTypeName,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w600,
+                  color: appTheme.primary,
+                ),
+          ),
+        ),
+        Text(
+          formatter.format(report.createdAt.toLocal()),
+          style: TextStyle(
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Description extends StatelessWidget {
+  final IncidentReport report;
+  final AppTheme appTheme;
+
+  const _Description({Key? key, required this.report, required this.appTheme})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Text(
+            report.trimWhitespaceDescription,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 11.sp,
+              color: appTheme.sub1,
+            ),
+          ),
+        ),
+        const SizedBox(width: 20),
+        Icon(
+          Icons.arrow_forward_ios_sharp,
+          size: 14,
+          color: appTheme.secondary,
+        ),
+      ],
+    );
+  }
+}
+
+class _Options extends StatelessWidget {
+  final IncidentReport report;
+  final Widget? trailing;
+
+  const _Options({Key? key, required this.report, this.trailing})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              if (report.caseId != null) IncidentReportCaseTag(),
+              if (report.testFlag) const SizedBox(width: 5),
+              if (report.testFlag) IncidentReportTestTag(),
+            ],
+          ),
+        ),
+        if (trailing != null) trailing!,
+      ],
     );
   }
 }
