@@ -5,13 +5,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:podd_app/components/display_field.dart';
 import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/main.dart';
-import 'package:podd_app/ui/profile/change_password_view.dart';
 import 'package:podd_app/ui/profile/profile_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../components/language_dropdown.dart';
-import 'profile_form_view.dart';
 
 var decoration = BoxDecoration(
   border: Border.all(color: Colors.grey.shade300),
@@ -244,6 +242,7 @@ class _Avatar extends HookViewModelWidget<ProfileViewModel> {
               children: [
                 CircleAvatar(
                   backgroundColor: Colors.white,
+                  radius: 55,
                   child: ClipOval(
                     child: viewModel.avatarUrl == null
                         ? Image.asset(
@@ -259,7 +258,6 @@ class _Avatar extends HookViewModelWidget<ProfileViewModel> {
                             fit: BoxFit.fill,
                           ),
                   ),
-                  radius: 55,
                 ),
                 Positioned(
                   bottom: 0,
@@ -270,14 +268,14 @@ class _Avatar extends HookViewModelWidget<ProfileViewModel> {
                     },
                     elevation: 2.0,
                     fillColor: Colors.white,
-                    child: Icon(
-                      Icons.camera_alt,
-                      color: Theme.of(context).primaryColor,
-                    ),
                     padding: const EdgeInsets.all(10.0),
                     shape: CircleBorder(
                         side: BorderSide(
                             width: 2, color: Theme.of(context).primaryColor)),
+                    child: Icon(
+                      Icons.camera_alt,
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
                 ),
               ],

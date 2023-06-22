@@ -43,8 +43,8 @@ class ObservationSubjectFormViewModel extends FormBaseViewModel {
       _formStore = Form.fromJson(
           json.decode(definition!.registerFormDefinition), _subjectId);
 
-      final String _timezone = await FlutterNativeTimezone.getLocalTimezone();
-      _formStore.setTimezone(_timezone);
+      final String timezone = await FlutterNativeTimezone.getLocalTimezone();
+      _formStore.setTimezone(timezone);
 
       if (_subject != null) {
         _formStore.loadJsonValue(_subject!.formData ?? {});

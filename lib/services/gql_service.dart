@@ -185,11 +185,11 @@ class GqlService {
   }
 
   Future<void> renewClient() async {
-    final Link _dioLink = DioLink(
+    final Link dioLink = DioLink(
       await _endpoint(),
       client: _dio,
     );
-    _client = GraphQLClient(link: _dioLink, cache: _cache);
+    _client = GraphQLClient(link: dioLink, cache: _cache);
   }
 
   _endpoint() async {

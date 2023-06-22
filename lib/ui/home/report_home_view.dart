@@ -8,7 +8,6 @@ import 'package:podd_app/locator.dart';
 import 'package:podd_app/ui/home/all_reports_view.dart';
 import 'package:podd_app/ui/home/my_reports_view.dart';
 import 'package:podd_app/ui/home/report_home_view_model.dart';
-import 'package:podd_app/ui/report_type/report_type_view.dart';
 import 'package:stacked/stacked.dart';
 
 class ReportHomeView extends HookWidget {
@@ -18,9 +17,9 @@ class ReportHomeView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    TabController _tabController = useTabController(initialLength: 2);
-    TabBar _tabBar = TabBar(
-      controller: _tabController,
+    TabController tabController = useTabController(initialLength: 2);
+    TabBar tabBar = TabBar(
+      controller: tabController,
       tabs: [
         _tabItem(AppLocalizations.of(context)!.allReportTabLabel),
         _tabItem(AppLocalizations.of(context)!.myReportTabLabel),
@@ -34,7 +33,7 @@ class ReportHomeView extends HookWidget {
           preferredSize: Size.fromHeight(56.w),
           child: ColoredBox(
             color: appTheme.bg2,
-            child: _tabBar,
+            child: tabBar,
           ),
         ),
         floatingActionButton: CircleAvatar(
@@ -54,7 +53,7 @@ class ReportHomeView extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                child: TabBarView(controller: _tabController, children: const [
+                child: TabBarView(controller: tabController, children: const [
                   AllReportsView(),
                   MyReportsView(),
                 ]),

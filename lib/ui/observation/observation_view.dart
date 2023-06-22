@@ -6,7 +6,6 @@ import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
-import 'package:podd_app/ui/observation/form/subject_form_view.dart';
 import 'package:podd_app/ui/observation/observation_subject_list_view.dart';
 import 'package:podd_app/ui/observation/observation_subject_map_view.dart';
 import 'package:podd_app/ui/observation/observation_view_model.dart';
@@ -20,7 +19,7 @@ class ObservationView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    TabController _tabController = useTabController(initialLength: 2);
+    TabController tabController = useTabController(initialLength: 2);
 
     return ViewModelBuilder<ObservationViewModel>.reactive(
       viewModelBuilder: () => ObservationViewModel(definitionId),
@@ -34,7 +33,7 @@ class ObservationView extends HookWidget {
               child: ColoredBox(
                 color: appTheme.bg2,
                 child: TabBar(
-                  controller: _tabController,
+                  controller: tabController,
                   tabs: const [
                     Tab(child: Text('List')),
                     Tab(child: Text('Map')),
@@ -49,7 +48,7 @@ class ObservationView extends HookWidget {
               ? const Center(child: OhtkProgressIndicator(size: 100))
               : viewModel.definition != null
                   ? TabBarView(
-                      controller: _tabController,
+                      controller: tabController,
                       children: [
                         ObservationSubjectListView(
                             definition: viewModel.definition!),

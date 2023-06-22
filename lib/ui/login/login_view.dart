@@ -119,8 +119,8 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
                         ),
                       ),
                       onChanged: viewModel.setPassword,
-                      onSubmitted: (_value) {
-                        viewModel.setPassword(_value);
+                      onSubmitted: (value) {
+                        viewModel.setPassword(value);
                         viewModel.authenticate();
                       },
                     ),
@@ -300,8 +300,8 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
       },
       items: viewModel.serverOptions
           .map<DropdownMenuItem<String>>((option) => DropdownMenuItem(
-                child: Text(option['label'] ?? ""),
                 value: option["domain"],
+                child: Text(option['label'] ?? ""),
               ))
           .toList(),
     );

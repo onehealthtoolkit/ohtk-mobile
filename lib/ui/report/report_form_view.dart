@@ -41,8 +41,7 @@ class ReportFormView extends StatelessWidget {
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 leading: const BackAppBarAction(),
-                title: Text(AppLocalizations.of(context)!.reportTitle +
-                    " ${viewModel.reportType?.name}"),
+                title: Text("${AppLocalizations.of(context)!.reportTitle} ${viewModel.reportType?.name}"),
                 backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
                 foregroundColor: testFlag
                     ? Colors.black87
@@ -58,7 +57,6 @@ class ReportFormView extends StatelessWidget {
                       Expanded(
                         flex: 1,
                         child: FormConfirmSubmit(
-                          child: _ConfirmIncidentArea(),
                           busy: viewModel.isBusy,
                           onSubmit: () async {
                             var result = await viewModel.submit();
@@ -70,6 +68,7 @@ class ReportFormView extends StatelessWidget {
                           onBack: () {
                             viewModel.back();
                           },
+                          child: _ConfirmIncidentArea(),
                         ),
                       ),
                     if (viewModel.state == ReportFormState.formInput)

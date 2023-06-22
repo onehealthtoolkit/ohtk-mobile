@@ -9,8 +9,6 @@ import 'package:podd_app/models/entities/observation_monitoring_definition.dart'
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
-import 'package:podd_app/ui/observation/form/monitoring_record_form_view.dart';
-import 'package:podd_app/ui/observation/monitoring/observation_monitoring_view.dart';
 import 'package:podd_app/ui/observation/subject/observation_subject_monitoring_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -90,7 +88,6 @@ class _MonitoringDefinitionListing
             ),
           ),
           ElevatedButton(
-            child: const Icon(Icons.add),
             style: ElevatedButton.styleFrom(
               fixedSize: const Size(16, 16),
               shape: const CircleBorder(),
@@ -105,6 +102,7 @@ class _MonitoringDefinitionListing
                 },
               );
             },
+            child: const Icon(Icons.add),
           ),
         ],
       ),

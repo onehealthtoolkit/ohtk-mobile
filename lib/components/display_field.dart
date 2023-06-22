@@ -23,7 +23,7 @@ class DisplayField extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           value ?? "",
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
       ],
     );

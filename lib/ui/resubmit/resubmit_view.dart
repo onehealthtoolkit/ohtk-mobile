@@ -142,13 +142,13 @@ class PendingList extends StatelessWidget {
 
           return Dismissible(
             key: Key(reportState.item.id),
-            child: Card(
-              child: _PendingSubmission(reportState: reportState),
-            ),
             background: Container(color: Colors.red),
             onDismissed: (direction) {
               onDismissed != null && onDismissed!(reportState.item.id);
             },
+            child: Card(
+              child: _PendingSubmission(reportState: reportState),
+            ),
           );
         }),
         shrinkWrap: true,

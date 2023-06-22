@@ -8,8 +8,6 @@ import 'package:podd_app/models/file_submit_result.dart';
 import 'package:podd_app/models/followup_submit_result.dart';
 import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/models/report_submit_result.dart';
-import 'package:podd_app/services/api/file_api.dart';
-import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/report_api.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:podd_app/services/file_service.dart';
@@ -240,8 +238,8 @@ class ReportService extends IReportService {
   }
 
   Future<bool> _isReportInLocalDB(String id) async {
-    var _db = _dbService.db;
-    var results = await _db.query(
+    var db = _dbService.db;
+    var results = await db.query(
       'report',
       where: 'id = ?',
       whereArgs: [
@@ -252,8 +250,8 @@ class ReportService extends IReportService {
   }
 
   _deleteFromLocalDB(Report report) async {
-    var _db = _dbService.db;
-    _db.delete(
+    var db = _dbService.db;
+    db.delete(
       "report",
       where: "id = ?",
       whereArgs: [report.id],
@@ -263,10 +261,10 @@ class ReportService extends IReportService {
   }
 
   _saveToLocalDB(Report report) async {
-    var _db = _dbService.db;
+    var db = _dbService.db;
     var isInDB = await _isReportInLocalDB(report.id);
     if (isInDB) {
-      _db.update(
+      db.update(
         "report",
         report.toMap(),
         where: "id = ?",
@@ -275,7 +273,7 @@ class ReportService extends IReportService {
         ],
       );
     } else {
-      _db.insert("report", report.toMap());
+      db.insert("report", report.toMap());
       _pendingReports.add(report);
     }
   }
@@ -305,8 +303,8 @@ class ReportService extends IReportService {
 
   @override
   Future<void> removeAllPendingReports() async {
-    var _db = _dbService.db;
-    await _db.delete("report");
+    var db = _dbService.db;
+    await db.delete("report");
 
     _pendingReports.clear();
 
@@ -319,8 +317,8 @@ class ReportService extends IReportService {
 
   @override
   Future<void> removePendingReport(String id) async {
-    var _db = _dbService.db;
-    await _db.delete("report", where: "id = ?", whereArgs: [id]);
+    var db = _dbService.db;
+    await db.delete("report", where: "id = ?", whereArgs: [id]);
     await _imageService.remove(id);
     _pendingReports.removeWhere((r) => r.id == id);
   }

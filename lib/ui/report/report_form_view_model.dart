@@ -31,11 +31,11 @@ class ReportFormViewModel extends FormBaseViewModel {
   init() async {
     reportType = await _reportTypeService.getReportType(_reportTypeId);
     if (reportType != null) {
-      final String _timezone = await FlutterNativeTimezone.getLocalTimezone();
+      final String timezone = await FlutterNativeTimezone.getLocalTimezone();
       _reportId = _uuid.v4();
       _formStore =
           Form.fromJson(json.decode(reportType!.definition), _reportId);
-      _formStore.setTimezone(_timezone);
+      _formStore.setTimezone(timezone);
       isReady = true;
       notifyListeners();
     }

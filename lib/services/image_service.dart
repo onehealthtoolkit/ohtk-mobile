@@ -91,14 +91,14 @@ class ImageService extends IImageService {
 
   @override
   Future<void> saveImage(ReportImage reportImage) async {
-    var _db = _dbService.db;
-    await _db.insert("report_image", reportImage.toMap());
+    var db = _dbService.db;
+    await db.insert("report_image", reportImage.toMap());
   }
 
   @override
   Future<ReportImage> getImage(String id) async {
-    var _db = _dbService.db;
-    var results = await _db.query(
+    var db = _dbService.db;
+    var results = await db.query(
       'report_image',
       where: "id = ?",
       whereArgs: [
@@ -114,14 +114,14 @@ class ImageService extends IImageService {
 
   @override
   Future<void> removeImage(String id) async {
-    var _db = _dbService.db;
-    await _db.delete("report_image", where: "id = ?", whereArgs: [id]);
+    var db = _dbService.db;
+    await db.delete("report_image", where: "id = ?", whereArgs: [id]);
   }
 
   @override
   Future<List<ReportImage>> findByReportId(String reportId) async {
-    var _db = _dbService.db;
-    var results = await _db.query(
+    var db = _dbService.db;
+    var results = await db.query(
       'report_image',
       where: "reportId = ?",
       whereArgs: [
@@ -133,14 +133,14 @@ class ImageService extends IImageService {
 
   @override
   Future<void> removeAll() async {
-    var _db = _dbService.db;
-    await _db.delete("report_image");
+    var db = _dbService.db;
+    await db.delete("report_image");
   }
 
   @override
   Future<void> remove(String id) async {
-    var _db = _dbService.db;
-    await _db.delete("report_image", where: "reportId = ?", whereArgs: [id]);
+    var db = _dbService.db;
+    await db.delete("report_image", where: "reportId = ?", whereArgs: [id]);
   }
 
   @override

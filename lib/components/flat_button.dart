@@ -34,7 +34,6 @@ class FlatButton extends StatelessWidget {
     final AppTheme apptheme = locator<AppTheme>();
     return FlatButton(
       onPressed: onPressed,
-      child: child,
       padding: padding,
       key: key,
       backgroundColor: backgroundColor ?? apptheme.primary,
@@ -42,6 +41,7 @@ class FlatButton extends StatelessWidget {
       borderColor: backgroundColor ?? apptheme.primary,
       borderRadius: apptheme.borderRadius,
       overlayColor: Colors.black12,
+      child: child,
     );
   }
 
@@ -55,7 +55,6 @@ class FlatButton extends StatelessWidget {
     final AppTheme apptheme = locator<AppTheme>();
     return FlatButton(
       onPressed: onPressed,
-      child: child,
       padding: padding,
       key: key,
       backgroundColor: backgroundColor ?? Colors.transparent,
@@ -63,17 +62,18 @@ class FlatButton extends StatelessWidget {
       borderColor: apptheme.primary,
       borderRadius: apptheme.borderRadius,
       overlayColor: apptheme.primary.withOpacity(0.1),
+      child: child,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    var _padding = padding ?? const EdgeInsets.fromLTRB(40, 10, 40, 10);
+    var padding = padding ?? const EdgeInsets.fromLTRB(40, 10, 40, 10);
 
     return TextButton(
         style: ButtonStyle(
           padding: MaterialStateProperty.all<EdgeInsets>(
-            _padding,
+            padding,
           ),
           overlayColor: overlayColor != null
               ? MaterialStateProperty.all<Color>(overlayColor!)

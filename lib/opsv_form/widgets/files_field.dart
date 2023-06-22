@@ -216,8 +216,8 @@ class RemoveableFile extends StatelessWidget {
             color: apptheme.sub3,
             radius: const Radius.circular(12),
             dashPattern: const [4, 4],
-            child: FileDisplay(name: file.name, mimeType: file.fileType),
             padding: const EdgeInsets.all(4),
+            child: FileDisplay(name: file.name, mimeType: file.fileType),
           ),
         ),
         Positioned(

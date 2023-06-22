@@ -36,8 +36,7 @@ class FormSimulatorView extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.simulateReportTitle +
-                    " ${reportType.name}"),
+                title: Text("${AppLocalizations.of(context)!.simulateReportTitle} ${reportType.name}"),
               ),
               body: SafeArea(
                 child: Column(
@@ -105,10 +104,10 @@ class _ConfirmSubmit extends HookViewModelWidget<FormSimulatorViewModel> {
         shrinkWrap: true,
         children: [
           ConstrainedBox(
-            child: _ConfirmReportData(),
             constraints: BoxConstraints(
               minHeight: MediaQuery.of(context).size.height * .60,
             ),
+            child: _ConfirmReportData(),
           ),
           const SizedBox(
             height: 60,

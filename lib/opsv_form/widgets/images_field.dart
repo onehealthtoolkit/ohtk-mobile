@@ -187,8 +187,8 @@ class RemoveableImage extends StatelessWidget {
             color: apptheme.sub3,
             radius: const Radius.circular(12),
             dashPattern: const [4, 4],
-            child: image,
             padding: const EdgeInsets.all(4),
+            child: image,
           ),
         ),
         Positioned(
