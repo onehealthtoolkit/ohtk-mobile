@@ -182,10 +182,9 @@ class ProfileView extends StatelessWidget {
   }
 }
 
-class _Language extends HookViewModelWidget<ProfileViewModel> {
+class _Language extends StackedHookView<ProfileViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ProfileViewModel viewModel) {
+  Widget builder(BuildContext context, ProfileViewModel viewModel) {
     return SizedBox(
       width: 200,
       height: 30,
@@ -225,10 +224,9 @@ class _Language extends HookViewModelWidget<ProfileViewModel> {
   }
 }
 
-class _Avatar extends HookViewModelWidget<ProfileViewModel> {
+class _Avatar extends StackedHookView<ProfileViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ProfileViewModel viewModel) {
+  Widget builder(BuildContext context, ProfileViewModel viewModel) {
     return SizedBox(
       height: 115,
       width: 115,

@@ -6,7 +6,7 @@ import 'package:podd_app/services/db_service.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stacked/stacked.dart';
 
-abstract class IReportTypeService with ReactiveServiceMixin {
+abstract class IReportTypeService with ListenableServiceMixin {
   Future<List<ReportType>> fetchAllReportType();
   Future<ReportType?> getReportType(String id);
   Future<List<Category>> fetchAllCategory();
@@ -88,7 +88,7 @@ class ReportTypeService extends IReportTypeService {
       await db.delete(
         'report_type',
         where: 'id in (?)',
-        whereArgs: [result.removedList],
+        whereArgs: [result.removedList.toString()],
       );
     }
 

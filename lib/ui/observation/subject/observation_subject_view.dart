@@ -89,12 +89,11 @@ class ObservationSubjectView extends HookWidget {
   }
 }
 
-class _SubjectDetail extends HookViewModelWidget<ObservationSubjectViewModel> {
+class _SubjectDetail extends StackedHookView<ObservationSubjectViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ObservationSubjectViewModel viewModel) {
+  Widget builder(BuildContext context, ObservationSubjectViewModel viewModel) {
     var subject = viewModel.data!;
 
     return LayoutBuilder(
@@ -238,10 +237,9 @@ class _SubjectDetail extends HookViewModelWidget<ObservationSubjectViewModel> {
   }
 }
 
-class _Map extends HookViewModelWidget<ObservationSubjectViewModel> {
+class _Map extends StackedHookView<ObservationSubjectViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ObservationSubjectViewModel viewModel) {
+  Widget builder(BuildContext context, ObservationSubjectViewModel viewModel) {
     final latlng = viewModel.latlng;
 
     final Completer<GoogleMapController> mapControllercompleter = Completer();

@@ -14,7 +14,7 @@ class ObservationSubjectReportViewModel extends ReactiveViewModel {
   }
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [observationService];
+  List<ListenableServiceMixin> get listenableServices => [observationService];
 
   List<ObservationSubjectReport> get observationSubjectReports =>
       observationService.observationSubjectReports;

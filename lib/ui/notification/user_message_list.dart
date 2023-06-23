@@ -30,13 +30,12 @@ class UserMessageList extends StatelessWidget {
   }
 }
 
-class _UserMessageList extends HookViewModelWidget<UserMessageListViewModel> {
+class _UserMessageList extends StackedHookView<UserMessageListViewModel> {
   final formatter = DateFormat("dd/MM/yyyy HH:mm");
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, UserMessageListViewModel viewModel) {
+  Widget builder(BuildContext context, UserMessageListViewModel viewModel) {
     return viewModel.isBusy
         ? const Center(child: OhtkProgressIndicator(size: 100))
         : ListView.separated(

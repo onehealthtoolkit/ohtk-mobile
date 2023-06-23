@@ -51,10 +51,9 @@ class RegisterView extends StatelessWidget {
   }
 }
 
-class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
+class _InvitationCodeForm extends StackedHookView<RegisterViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, RegisterViewModel viewModel) {
+  Widget builder(BuildContext context, RegisterViewModel viewModel) {
     var code = useTextEditingController();
     return Column(
       children: <Widget>[
@@ -98,11 +97,10 @@ class _InvitationCodeForm extends HookViewModelWidget<RegisterViewModel> {
   }
 }
 
-class _DetailCodeForm extends HookViewModelWidget<RegisterViewModel> {
+class _DetailCodeForm extends StackedHookView<RegisterViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, RegisterViewModel viewModel) {
+  Widget builder(BuildContext context, RegisterViewModel viewModel) {
     var username = useTextEditingController();
     var firstName = useTextEditingController();
     var lastName = useTextEditingController();

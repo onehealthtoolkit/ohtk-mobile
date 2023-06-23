@@ -32,10 +32,9 @@ class _AllReportsViewState extends State<AllReportsView>
   bool get wantKeepAlive => true;
 }
 
-class _ReportList extends HookViewModelWidget<AllReportsViewModel> {
+class _ReportList extends StackedHookView<AllReportsViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, AllReportsViewModel viewModel) {
+  Widget builder(BuildContext context, AllReportsViewModel viewModel) {
     final isMounted = useIsMounted();
     useEffect(() {
       if (isMounted()) {

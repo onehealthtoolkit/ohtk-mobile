@@ -17,7 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:stacked/stacked.dart';
 
-abstract class IReportService with ReactiveServiceMixin {
+abstract class IReportService with ListenableServiceMixin {
   final _logger = locator<Logger>();
 
   Future<ReportSubmitResult> submit(Report report);

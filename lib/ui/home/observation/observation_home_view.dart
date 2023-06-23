@@ -31,12 +31,11 @@ class ObservationHomeView extends StatelessWidget {
   }
 }
 
-class _Listing extends HookViewModelWidget<ObservationHomeViewModel> {
+class _Listing extends StackedHookView<ObservationHomeViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ObservationHomeViewModel viewModel) {
+  Widget builder(BuildContext context, ObservationHomeViewModel viewModel) {
     return viewModel.isBusy
         ? const Center(
             child: OhtkProgressIndicator(size: 100),

@@ -22,7 +22,7 @@ class ReportCommentViewModel extends ReactiveViewModel {
   }
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [commentService];
+  List<ListenableServiceMixin> get listenableServices => [commentService];
 
   List<Comment> get comments => commentService.comments;
 

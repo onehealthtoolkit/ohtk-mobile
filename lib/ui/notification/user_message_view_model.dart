@@ -26,7 +26,7 @@ class UserMessageListViewModel extends ReactiveViewModel {
   }
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [notificationService];
+  List<ListenableServiceMixin> get listenableServices => [notificationService];
 
   List<UserMessage> get userMessages => notificationService.userMessages;
 

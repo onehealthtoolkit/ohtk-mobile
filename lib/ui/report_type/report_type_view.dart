@@ -102,12 +102,11 @@ class ReportTypeView extends StatelessWidget {
   }
 }
 
-class _TestFlag extends HookViewModelWidget<ReportTypeViewModel> {
+class _TestFlag extends StackedHookView<ReportTypeViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportTypeViewModel viewModel) {
+  Widget builder(BuildContext context, ReportTypeViewModel viewModel) {
     return GestureDetector(
       onTap: () {
         viewModel.testFlag = !viewModel.testFlag;
@@ -166,15 +165,14 @@ class _TestFlag extends HookViewModelWidget<ReportTypeViewModel> {
   }
 }
 
-class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
+class _ZeroReport extends StackedHookView<ReportTypeViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
   final formatter = DateFormat('dd/MM/yyyy HH:mm');
 
   _ZeroReport({Key? key}) : super(key: key);
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportTypeViewModel viewModel) {
+  Widget builder(BuildContext context, ReportTypeViewModel viewModel) {
     return Stack(
       fit: StackFit.passthrough,
       children: [
@@ -255,13 +253,12 @@ class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
   }
 }
 
-class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
+class _Listing extends StackedHookView<ReportTypeViewModel> {
   final Logger logger = locator<Logger>();
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportTypeViewModel viewModel) {
+  Widget builder(BuildContext context, ReportTypeViewModel viewModel) {
     return ListView.builder(
       itemBuilder: (context, categoryIndex) =>
           viewModel.categories[categoryIndex].reportTypes.isNotEmpty

@@ -5,7 +5,7 @@ import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:stacked/stacked.dart';
 
-abstract class IImageService with ReactiveServiceMixin {
+abstract class IImageService with ListenableServiceMixin {
   List<ReportImage> get pendingImages;
 
   Future<void> saveImage(ReportImage reportImage);

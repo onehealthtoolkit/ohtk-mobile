@@ -19,7 +19,7 @@ class ObservationSubjectMonitoringViewModel extends ReactiveViewModel {
   });
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [observationService];
+  List<ListenableServiceMixin> get listenableServices => [observationService];
 
   List<ObservationMonitoringDefinition> get observationMonitoringDefinitions =>
       definition.monitoringDefinitions;

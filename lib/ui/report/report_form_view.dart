@@ -41,7 +41,8 @@ class ReportFormView extends StatelessWidget {
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 leading: const BackAppBarAction(),
-                title: Text("${AppLocalizations.of(context)!.reportTitle} ${viewModel.reportType?.name}"),
+                title: Text(
+                    "${AppLocalizations.of(context)!.reportTitle} ${viewModel.reportType?.name}"),
                 backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
                 foregroundColor: testFlag
                     ? Colors.black87
@@ -93,11 +94,10 @@ class ReportFormView extends StatelessWidget {
   }
 }
 
-class _ConfirmIncidentArea extends HookViewModelWidget<ReportFormViewModel> {
+class _ConfirmIncidentArea extends StackedHookView<ReportFormViewModel> {
   final AppTheme apptheme = locator<AppTheme>();
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportFormViewModel viewModel) {
+  Widget builder(BuildContext context, ReportFormViewModel viewModel) {
     return Column(
       children: [
         Center(

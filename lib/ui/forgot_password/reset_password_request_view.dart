@@ -44,10 +44,9 @@ class ResetPasswordRequestView extends StatelessWidget {
   }
 }
 
-class _DetailCodeForm
-    extends HookViewModelWidget<ResetPasswordRequestViewModel> {
+class _DetailCodeForm extends StackedHookView<ResetPasswordRequestViewModel> {
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context, ResetPasswordRequestViewModel viewModel) {
     var email = useTextEditingController();
 

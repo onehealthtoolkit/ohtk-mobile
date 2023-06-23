@@ -8,7 +8,7 @@ import 'package:podd_app/services/api/file_api.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:stacked/stacked.dart';
 
-abstract class IFileService with ReactiveServiceMixin {
+abstract class IFileService with ListenableServiceMixin {
   List<ReportFile> get pendingReportFiles;
 
   Future<File> createLocalFileInAppDirectory(

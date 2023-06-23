@@ -48,12 +48,11 @@ class IncidentReportView extends HookWidget {
   }
 }
 
-class _TabView extends HookViewModelWidget<IncidentReportViewModel> {
+class _TabView extends StackedHookView<IncidentReportViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, IncidentReportViewModel viewModel) {
+  Widget builder(BuildContext context, IncidentReportViewModel viewModel) {
     final TabController tabController = useTabController(initialLength: 3);
 
     return Scaffold(
@@ -123,12 +122,11 @@ class _TabView extends HookViewModelWidget<IncidentReportViewModel> {
   }
 }
 
-class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
+class _IncidentDetail extends StackedHookView<IncidentReportViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, IncidentReportViewModel viewModel) {
+  Widget builder(BuildContext context, IncidentReportViewModel viewModel) {
     final incident = viewModel.data!;
 
     return LayoutBuilder(builder: (context, constraints) {
@@ -206,14 +204,11 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
   }
 }
 
-class _Data extends HookViewModelWidget<IncidentReportViewModel> {
+class _Data extends StackedHookView<IncidentReportViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-    BuildContext context,
-    IncidentReportViewModel viewModel,
-  ) {
+  Widget builder(BuildContext context, IncidentReportViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(28, 10, 28, 20),
       child: Row(
@@ -253,10 +248,9 @@ class _Data extends HookViewModelWidget<IncidentReportViewModel> {
   }
 }
 
-class _Map extends HookViewModelWidget<IncidentReportViewModel> {
+class _Map extends StackedHookView<IncidentReportViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, IncidentReportViewModel viewModel) {
+  Widget builder(BuildContext context, IncidentReportViewModel viewModel) {
     final latlng = viewModel.latlng;
 
     final Completer<GoogleMapController> mapControllerCompleter = Completer();

@@ -18,7 +18,7 @@ import 'package:podd_app/services/file_service.dart';
 import 'package:podd_app/services/image_service.dart';
 import 'package:stacked/stacked.dart';
 
-abstract class IObservationRecordService with ReactiveServiceMixin {
+abstract class IObservationRecordService with ListenableServiceMixin {
   final _logger = locator<Logger>();
 
   List<SubjectRecord> get pendingSubjectRecords;

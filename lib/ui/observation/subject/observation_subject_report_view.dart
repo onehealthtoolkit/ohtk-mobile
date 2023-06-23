@@ -22,9 +22,9 @@ class ObservationSubjectReportView extends StatelessWidget {
 }
 
 class _ReportListing
-    extends HookViewModelWidget<ObservationSubjectReportViewModel> {
+    extends StackedHookView<ObservationSubjectReportViewModel> {
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context, ObservationSubjectReportViewModel viewModel) {
     return RefreshIndicator(
       onRefresh: () async => viewModel.fetchSubjectReports(),

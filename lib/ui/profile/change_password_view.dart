@@ -30,10 +30,9 @@ class ChangePasswordView extends StatelessWidget {
   }
 }
 
-class _ChangePasswordForm extends HookViewModelWidget<ChangePasswordViewModel> {
+class _ChangePasswordForm extends StackedHookView<ChangePasswordViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ChangePasswordViewModel viewModel) {
+  Widget builder(BuildContext context, ChangePasswordViewModel viewModel) {
     return Column(children: [
       if (viewModel.hasErrorForKey("generalChangePassword"))
         Container(

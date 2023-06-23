@@ -38,8 +38,8 @@ class GqlService {
   ];
 
   overrideDioSelfSignCertificateHandling() {
-    DefaultHttpClientAdapter httpClient =
-        _dio.httpClientAdapter as DefaultHttpClientAdapter;
+    IOHttpClientAdapter httpClient =
+        _dio.httpClientAdapter as IOHttpClientAdapter;
     httpClient.onHttpClientCreate = (HttpClient client) {
       client.badCertificateCallback =
           (X509Certificate cert, String host, int port) {

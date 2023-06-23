@@ -30,10 +30,9 @@ class ProfileFormView extends StatelessWidget {
   }
 }
 
-class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
+class _ProfileForm extends StackedHookView<ProfileViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ProfileViewModel viewModel) {
+  Widget builder(BuildContext context, ProfileViewModel viewModel) {
     var firstName = useTextEditingController();
     firstName.text = viewModel.firstName ?? "";
     var lastName = useTextEditingController();

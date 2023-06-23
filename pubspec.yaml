@@ -38,6 +38,7 @@ dependencies:
   overlay_support: ^2.1.0
   flutter_secure_storage: ^8.0.0
   flutter_hooks: ^0.18.5+1
+  graphql: ^5.1.0
   graphql_flutter: ^5.1.0
   logger: ^1.1.0
   path: ^1.8.0

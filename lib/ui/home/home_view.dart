@@ -34,8 +34,8 @@ class HomeView extends HookWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
       viewModelBuilder: () => HomeViewModel(),
-      fireOnModelReadyOnce: true,
-      onModelReady: (viewModel) {
+      fireOnViewModelReadyOnce: true,
+      onViewModelReady: (viewModel) {
         viewModel.setupFirebaseMessaging(onBackgroundMessage: (userMessageId) {
           _viewUserMessage(context, userMessageId);
         }, onForegroundMessage: (userMessageId) {
@@ -178,9 +178,9 @@ class HomeView extends HookWidget {
   }
 }
 
-class _ReSubmitBlock extends HookViewModelWidget<HomeViewModel> {
+class _ReSubmitBlock extends StackedHookView<HomeViewModel> {
   @override
-  Widget buildViewModelWidget(BuildContext context, HomeViewModel viewModel) {
+  Widget builder(BuildContext context, HomeViewModel viewModel) {
     return viewModel.numberOfPendingSubmissions > 0
         ? Container(
             width: double.infinity,

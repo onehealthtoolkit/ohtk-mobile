@@ -6,7 +6,7 @@ import 'package:podd_app/models/entities/comment.dart';
 import 'package:podd_app/services/api/comment_api.dart';
 import 'package:stacked/stacked.dart';
 
-abstract class ICommentService with ReactiveServiceMixin {
+abstract class ICommentService with ListenableServiceMixin {
   List<Comment> get comments;
 
   Future<void> fetchComments(int threadId);

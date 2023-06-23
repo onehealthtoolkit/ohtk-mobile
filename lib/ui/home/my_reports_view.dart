@@ -38,13 +38,12 @@ class _MyReportsViewState extends State<MyReportsView>
   }
 }
 
-class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
+class _ReportList extends StackedHookView<MyReportsViewModel> {
   final _logger = locator<Logger>();
   final formatter = DateFormat("dd/MM/yyyy HH:mm");
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, MyReportsViewModel viewModel) {
+  Widget builder(BuildContext context, MyReportsViewModel viewModel) {
     return RefreshIndicator(
       onRefresh: () async {
         await viewModel.refetchIncidentReports();

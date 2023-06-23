@@ -27,12 +27,11 @@ class ObservationSubjectListView extends StatelessWidget {
   }
 }
 
-class _SubjectListing
-    extends HookViewModelWidget<ObservationSubjectListViewModel> {
+class _SubjectListing extends StackedHookView<ObservationSubjectListViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context, ObservationSubjectListViewModel viewModel) {
     return RefreshIndicator(
       onRefresh: () async => viewModel.refetchSubjects,

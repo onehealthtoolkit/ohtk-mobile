@@ -31,12 +31,11 @@ class FollowupListView extends StatelessWidget {
   }
 }
 
-class _FollowupList extends HookViewModelWidget<FollowupListViewModel> {
+class _FollowupList extends StackedHookView<FollowupListViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, FollowupListViewModel viewModel) {
+  Widget builder(BuildContext context, FollowupListViewModel viewModel) {
     return RefreshIndicator(
       onRefresh: () async {
         await viewModel.refetchFollowups();

@@ -64,11 +64,11 @@ class ObservationMonitoringRecordView extends StatelessWidget {
 }
 
 class _MonitoringRecordDetail
-    extends HookViewModelWidget<ObservationMonitoringRecordViewModel> {
+    extends StackedHookView<ObservationMonitoringRecordViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context, ObservationMonitoringRecordViewModel viewModel) {
     var monitoringRecord = viewModel.data!;
 

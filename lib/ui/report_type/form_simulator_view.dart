@@ -36,7 +36,8 @@ class FormSimulatorView extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
-                title: Text("${AppLocalizations.of(context)!.simulateReportTitle} ${reportType.name}"),
+                title: Text(
+                    "${AppLocalizations.of(context)!.simulateReportTitle} ${reportType.name}"),
               ),
               body: SafeArea(
                 child: Column(
@@ -68,12 +69,11 @@ class FormSimulatorView extends StatelessWidget {
   }
 }
 
-class _FormInput extends HookViewModelWidget<FormSimulatorViewModel> {
+class _FormInput extends StackedHookView<FormSimulatorViewModel> {
   final ItemScrollController _scrollController = ItemScrollController();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, FormSimulatorViewModel viewModel) {
+  Widget builder(BuildContext context, FormSimulatorViewModel viewModel) {
     final form = viewModel.formStore;
     return Observer(
       builder: (_) => ScrollablePositionedList.builder(
@@ -94,10 +94,9 @@ class _FormInput extends HookViewModelWidget<FormSimulatorViewModel> {
   }
 }
 
-class _ConfirmSubmit extends HookViewModelWidget<FormSimulatorViewModel> {
+class _ConfirmSubmit extends StackedHookView<FormSimulatorViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, FormSimulatorViewModel viewModel) {
+  Widget builder(BuildContext context, FormSimulatorViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: ListView(
@@ -150,10 +149,9 @@ class _ConfirmSubmit extends HookViewModelWidget<FormSimulatorViewModel> {
   }
 }
 
-class _ConfirmReportData extends HookViewModelWidget<FormSimulatorViewModel> {
+class _ConfirmReportData extends StackedHookView<FormSimulatorViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, FormSimulatorViewModel viewModel) {
+  Widget builder(BuildContext context, FormSimulatorViewModel viewModel) {
     return Padding(
         padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
         child: _data(viewModel.report));
@@ -194,15 +192,14 @@ class _ConfirmReportData extends HookViewModelWidget<FormSimulatorViewModel> {
   }
 }
 
-class _Footer extends HookViewModelWidget<FormSimulatorViewModel> {
+class _Footer extends StackedHookView<FormSimulatorViewModel> {
   final Logger logger = locator<Logger>();
   final ItemScrollController scrollController;
 
   _Footer(this.scrollController);
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, FormSimulatorViewModel viewModel) {
+  Widget builder(BuildContext context, FormSimulatorViewModel viewModel) {
     return Container(
       padding: const EdgeInsets.all(10.0),
       child: Row(
@@ -241,10 +238,9 @@ class _Footer extends HookViewModelWidget<FormSimulatorViewModel> {
   }
 }
 
-class _DotStepper extends HookViewModelWidget<FormSimulatorViewModel> {
+class _DotStepper extends StackedHookView<FormSimulatorViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, FormSimulatorViewModel viewModel) {
+  Widget builder(BuildContext context, FormSimulatorViewModel viewModel) {
     Form store = viewModel.formStore;
     return Observer(
       builder: (_) => Padding(

@@ -36,11 +36,11 @@ class ObservationSubjectMonitoringView extends StatelessWidget {
 }
 
 class _MonitoringDefinitionListing
-    extends HookViewModelWidget<ObservationSubjectMonitoringViewModel> {
+    extends StackedHookView<ObservationSubjectMonitoringViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context, ObservationSubjectMonitoringViewModel viewModel) {
     return RefreshIndicator(
       onRefresh: () async => viewModel.fetchSubjectMonitorings(),
@@ -111,14 +111,14 @@ class _MonitoringDefinitionListing
 }
 
 class _MonitoringRecordListing
-    extends HookViewModelWidget<ObservationSubjectMonitoringViewModel> {
+    extends StackedHookView<ObservationSubjectMonitoringViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
   final ObservationMonitoringDefinition monitoringDefinition;
 
   _MonitoringRecordListing(this.monitoringDefinition);
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context, ObservationSubjectMonitoringViewModel viewModel) {
     var items = viewModel.getSortedMonitoringRecords(monitoringDefinition.id);
 
