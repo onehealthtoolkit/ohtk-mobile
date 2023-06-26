@@ -60,10 +60,10 @@ class FullScreenPage extends StatefulWidget {
   final DisposeLevel disposeLevel;
 
   @override
-  _FullScreenPageState createState() => _FullScreenPageState();
+  FullScreenPageState createState() => FullScreenPageState();
 }
 
-class _FullScreenPageState extends State<FullScreenPage> {
+class FullScreenPageState extends State<FullScreenPage> {
   double initialPositionY = 0;
 
   double currentPositionY = 0;

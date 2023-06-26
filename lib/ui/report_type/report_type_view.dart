@@ -156,7 +156,10 @@ class _TestFlag extends StackedHookView<ReportTypeViewModel> {
                 padding: const EdgeInsets.fromLTRB(9, 12, 9, 12),
                 child: SvgPicture.asset(
                   "assets/images/check_icon.svg",
-                  color: viewModel.testFlag ? appTheme.warn : Colors.white,
+                  colorFilter: ColorFilter.mode(
+                    viewModel.testFlag ? appTheme.warn : Colors.white,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
@@ -248,7 +251,8 @@ class _ZeroReport extends StackedHookView<ReportTypeViewModel> {
               padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
               child: SvgPicture.asset(
                 "assets/images/doc_fill_icon.svg",
-                color: Theme.of(context).primaryColor,
+                colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColor, BlendMode.srcIn),
               ),
             ),
           ),

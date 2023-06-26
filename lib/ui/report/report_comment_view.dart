@@ -247,7 +247,8 @@ class _CommentForm extends StackedHookView<ReportCommentViewModel> {
           alignment: Alignment.center,
           child: SvgPicture.asset(
             "assets/images/add_image_comment_icon.svg",
-            color: Theme.of(context).primaryColor,
+            colorFilter: ColorFilter.mode(
+                Theme.of(context).primaryColor, BlendMode.srcIn),
             width: 40,
           ),
         ),
