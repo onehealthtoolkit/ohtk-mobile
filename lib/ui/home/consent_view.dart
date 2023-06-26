@@ -98,7 +98,9 @@ class _ConsentDetail extends StackedHookView<ConsentViewModel> {
                   onPressed: viewModel.isConsent
                       ? () async {
                           await viewModel.confirmConsent();
-                          Navigator.of(context).pop();
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
                         }
                       : null,
                   child: Text(

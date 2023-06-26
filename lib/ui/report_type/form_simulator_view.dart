@@ -121,7 +121,9 @@ class _ConfirmSubmit extends StackedHookView<FormSimulatorViewModel> {
                     var result = await viewModel.submit();
                     if (result is ReportSubmitSuccess ||
                         result is ReportSubmitPending) {
-                      Navigator.pop(context);
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
                     }
                   },
             child: viewModel.isBusy
@@ -209,7 +211,9 @@ class _Footer extends StackedHookView<FormSimulatorViewModel> {
               if (viewModel.back() == BackAction.navigationPop) {
                 if (await confirm(context)) {
                   logger.d("back using pop");
-                  Navigator.pop(context);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
                 }
               } else {
                 logger.d("back but do nothing");

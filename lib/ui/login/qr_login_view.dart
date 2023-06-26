@@ -28,7 +28,9 @@ class QrLoginView extends StatelessWidget {
                     Navigator.pop(context, 'Failed to scan QRCode');
                   } else {
                     final error = await viewModel.authenticate(code);
-                    Navigator.pop(context, error);
+                    if (context.mounted) {
+                      Navigator.pop(context, error);
+                    }
                   }
                 }
               },

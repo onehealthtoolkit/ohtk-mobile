@@ -212,7 +212,9 @@ class _Language extends StackedHookView<ProfileViewModel> {
                   child: Text(AppLocalizations.of(context)!.ok),
                   onPressed: () async {
                     await viewModel.changeLanguage(value ?? "en");
-                    RestartWidget.restartApp(context);
+                    if (context.mounted) {
+                      RestartWidget.restartApp(context);
+                    }
                   },
                 )
               ],
@@ -296,7 +298,9 @@ class _Avatar extends StackedHookView<ProfileViewModel> {
                 if (image != null) {
                   await viewModel.setPhoto(image);
                 }
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
             ),
             ListTile(
@@ -307,7 +311,9 @@ class _Avatar extends StackedHookView<ProfileViewModel> {
                 if (image != null) {
                   viewModel.setPhoto(image);
                 }
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
             ),
           ],

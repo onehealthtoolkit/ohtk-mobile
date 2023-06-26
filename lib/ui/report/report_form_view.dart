@@ -63,7 +63,9 @@ class ReportFormView extends StatelessWidget {
                             var result = await viewModel.submit();
                             if (result is ReportSubmitSuccess ||
                                 result is ReportSubmitPending) {
-                              Navigator.pop(context);
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                              }
                             }
                           },
                           onBack: () {

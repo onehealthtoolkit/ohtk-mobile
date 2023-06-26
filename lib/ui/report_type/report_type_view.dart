@@ -48,21 +48,23 @@ class ReportTypeView extends StatelessWidget {
                     ),
                   );
 
-                  if (result != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FormSimulatorView(result),
-                      ),
-                    );
-                  } else {
-                    var errorMessage = SnackBar(
-                      content: Text(AppLocalizations.of(context)
-                              ?.invalidReportTypeQrcode ??
-                          'Invalid report type qrcode'),
-                      backgroundColor: Colors.red,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(errorMessage);
+                  if (context.mounted) {
+                    if (result != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FormSimulatorView(result),
+                        ),
+                      );
+                    } else {
+                      var errorMessage = SnackBar(
+                        content: Text(AppLocalizations.of(context)
+                                ?.invalidReportTypeQrcode ??
+                            'Invalid report type qrcode'),
+                        backgroundColor: Colors.red,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(errorMessage);
+                    }
                   }
                 },
               ),
@@ -185,14 +187,17 @@ class _ZeroReport extends StackedHookView<ReportTypeViewModel> {
                 padding: const EdgeInsets.fromLTRB(15, 6, 20, 6),
                 onPressed: () async {
                   await viewModel.submitZeroReport();
-                  var showSuccessMessage = SnackBar(
-                    content: Text(
-                        AppLocalizations.of(context)?.zeroReportSubmitSuccess ??
-                            'Zero report submit success'),
-                    backgroundColor: Colors.green,
-                  );
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(showSuccessMessage);
+
+                  if (context.mounted) {
+                    var showSuccessMessage = SnackBar(
+                      content: Text(AppLocalizations.of(context)
+                              ?.zeroReportSubmitSuccess ??
+                          'Zero report submit success'),
+                      backgroundColor: Colors.green,
+                    );
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(showSuccessMessage);
+                  }
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(left: 28.0),
@@ -309,13 +314,15 @@ class _Listing extends StackedHookView<ReportTypeViewModel> {
           onTap: () async {
             var allow = await viewModel.createReport(reportType.id);
             if (allow) {
-              GoRouter.of(context).pushReplacementNamed(
-                'reportForm',
-                pathParameters: {
-                  "reportTypeId": reportType.id,
-                },
-                queryParameters: {"test": viewModel.testFlag ? '1' : '0'},
-              );
+              if (context.mounted) {
+                GoRouter.of(context).pushReplacementNamed(
+                  'reportForm',
+                  pathParameters: {
+                    "reportTypeId": reportType.id,
+                  },
+                  queryParameters: {"test": viewModel.testFlag ? '1' : '0'},
+                );
+              }
             }
           },
           child: Padding(

@@ -124,7 +124,9 @@ class _FormImagesFieldState extends State<FormImagesField> {
                 if (reportImage != null) {
                   _addImage(reportImage.id);
                 }
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
             ),
             ListTile(
@@ -135,7 +137,9 @@ class _FormImagesFieldState extends State<FormImagesField> {
                 if (reportImage != null) {
                   _addImage(reportImage.id);
                 }
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
             ),
           ],

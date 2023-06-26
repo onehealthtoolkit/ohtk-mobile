@@ -26,7 +26,9 @@ class QrReportTypeView extends StatelessWidget {
                     reportType = await viewModel.getReportType(code);
                   }
                 }
-                Navigator.pop(context, reportType);
+                if (context.mounted) {
+                  Navigator.pop(context, reportType);
+                }
               },
             ),
             _framer(context),

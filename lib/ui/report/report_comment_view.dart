@@ -270,7 +270,9 @@ class _CommentForm extends StackedHookView<ReportCommentViewModel> {
                 if (image != null) {
                   viewModel.addImage(image);
                 }
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
             ),
             ListTile(
@@ -281,7 +283,9 @@ class _CommentForm extends StackedHookView<ReportCommentViewModel> {
                 if (image != null) {
                   viewModel.addImage(image);
                 }
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
             ),
           ],

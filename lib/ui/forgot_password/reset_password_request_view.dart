@@ -91,7 +91,9 @@ class _DetailCodeForm extends StackedHookView<ResetPasswordRequestViewModel> {
                   : () async {
                       var result = await viewModel.resetPasswordRequest();
                       if (result is ForgotPasswordSuccess) {
-                        Navigator.pop(context, true);
+                        if (context.mounted) {
+                          Navigator.pop(context, true);
+                        }
                       }
                     },
               child: viewModel.isBusy

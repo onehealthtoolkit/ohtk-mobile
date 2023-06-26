@@ -124,20 +124,23 @@ class OpenableReportFile<T extends BaseReportFile> extends StatelessWidget {
 
           if (filePath != null) {
             final result = await OpenFile.open(filePath, type: file.fileType);
-            if (result.type != ResultType.done) {
+
+            if (context.mounted) {
+              if (result.type != ResultType.done) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text(
+                      "Cannot open file. \nEither no app supports or file is corrupted"),
+                  duration: Duration(milliseconds: 3000),
+                ));
+              }
+            } else {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 backgroundColor: Colors.red,
-                content: Text(
-                    "Cannot open file. \nEither no app supports or file is corrupted"),
+                content: Text("File not found"),
                 duration: Duration(milliseconds: 3000),
               ));
             }
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              backgroundColor: Colors.red,
-              content: Text("File not found"),
-              duration: Duration(milliseconds: 3000),
-            ));
           }
         }
       },

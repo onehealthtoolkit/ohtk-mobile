@@ -229,7 +229,9 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
           ),
         );
         if (error != null) {
-          showAlert(context, error);
+          if (context.mounted) {
+            showAlert(context, error);
+          }
         }
       },
       child: Row(
@@ -296,7 +298,9 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
       value: viewModel.subDomain,
       onChanged: (String? value) async {
         await viewModel.changeServer(value ?? "");
-        RestartWidget.restartApp(context);
+        if (context.mounted) {
+          RestartWidget.restartApp(context);
+        }
       },
       items: viewModel.serverOptions
           .map<DropdownMenuItem<String>>((option) => DropdownMenuItem(
@@ -321,7 +325,9 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
       value: viewModel.language,
       onChanged: (String? value) async {
         await viewModel.changeLanguage(value ?? "en");
-        RestartWidget.restartApp(context);
+        if (context.mounted) {
+          RestartWidget.restartApp(context);
+        }
       },
     );
   }

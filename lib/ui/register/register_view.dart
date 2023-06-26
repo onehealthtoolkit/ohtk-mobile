@@ -185,7 +185,9 @@ class _DetailCodeForm extends StackedHookView<RegisterViewModel> {
                   : () async {
                       var result = await viewModel.register();
                       if (result is RegisterSuccess) {
-                        Navigator.pop(context, true);
+                        if (context.mounted) {
+                          Navigator.pop(context, true);
+                        }
                       }
                     },
               child: viewModel.isBusy
