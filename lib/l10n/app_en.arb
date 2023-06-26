@@ -4,7 +4,7 @@
   "signupTitle": "Sign Up",
   "signupSubTitle": "Please enter Invitation Code\nfor registration",
   "forgotPasswordTitle": "Forgot password",
-  "forgotPasswordSubTitle": "Please enter your email address to receive messages for editing password",
+  "forgotPasswordSubTitle": "Please enter your email address and we will send you a password reset link",
   "changePasswordTitle": "Change password",
   "reportTitle": "Report",
   "reportTypeTitle": "Report type",
