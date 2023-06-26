@@ -77,8 +77,8 @@ class ReportTypeViewModel extends BaseViewModel {
       if (result is ZeroReportSubmitFailure) {
         _logger.e(result.messages);
       }
-    } on LinkException catch (_e) {
-      _logger.e(_e);
+    } on LinkException catch (e) {
+      _logger.e(e);
     }
   }
 

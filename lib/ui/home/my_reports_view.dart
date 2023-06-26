@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
@@ -39,7 +38,6 @@ class _MyReportsViewState extends State<MyReportsView>
 }
 
 class _ReportList extends StackedHookView<MyReportsViewModel> {
-  final _logger = locator<Logger>();
   final formatter = DateFormat("dd/MM/yyyy HH:mm");
 
   @override
