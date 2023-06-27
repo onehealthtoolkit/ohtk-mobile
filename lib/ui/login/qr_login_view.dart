@@ -19,6 +19,9 @@ class QrLoginView extends StatelessWidget {
               controller: MobileScannerController(
                   facing: CameraFacing.back, torchEnabled: false),
               onDetect: (barcodeCapture) async {
+                if (viewModel.detected) return;
+
+                viewModel.detected = true;
                 // check barcodeCapture.barcodes length
                 if (barcodeCapture.barcodes.isEmpty) {
                   Navigator.pop(context, 'Failed to scan QRCode');
@@ -46,7 +49,6 @@ class QrLoginView extends StatelessWidget {
   Center _waitingProgress(BuildContext context) {
     return Center(
       child: Container(
-        height: 250,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: Colors.black45,

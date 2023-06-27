@@ -258,21 +258,15 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
   showAlert(BuildContext context, String message) {
     showDialog(
       context: context,
-      builder: (_) => WillPopScope(
-        child: AlertDialog(
-          title: const Text("Scan Error"),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-        onWillPop: () async {
-          Navigator.pop(context);
-          return true;
-        },
+      builder: (_) => AlertDialog(
+        title: const Text("Scan Error"),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
       ),
     );
   }
