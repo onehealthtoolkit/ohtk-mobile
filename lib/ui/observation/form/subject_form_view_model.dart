@@ -72,7 +72,7 @@ class ObservationSubjectFormViewModel extends FormBaseViewModel {
 
     SubjectRecordSubmitResult result;
     if (_subject != null) {
-      // TODO update form data
+      /// No data saving in form non-editing mode
       result = SubjectRecordSubmitPending();
     } else {
       result = await _observationService.submitSubjectRecord(report);

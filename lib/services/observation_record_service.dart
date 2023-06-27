@@ -160,10 +160,9 @@ class ObservationRecordService extends IObservationRecordService {
     return result.data;
   }
 
+  /// Umimplemented future feature
   @override
-  Future<void> fetchAllObservationSubjectReports(int subjectId) async {
-    // TODO call fetchSubjectReports api
-  }
+  Future<void> fetchAllObservationSubjectReports(int subjectId) async {}
 
   @override
   Future<SubjectRecordSubmitResult> submitSubjectRecord(

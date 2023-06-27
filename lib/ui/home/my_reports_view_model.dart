@@ -29,13 +29,11 @@ class MyReportsViewModel extends ReactiveViewModel
     setBusy(false);
   }
 
-  // TODO Remove unused
   bool canFollow(String reportTypeId) {
     final reportType = getReportType(reportTypeId);
     return reportType != null && reportType.followupEnable;
   }
 
-  // TODO Remove causing null error
   ReportType? getReportType(String id) {
     ReportType? result;
     try {

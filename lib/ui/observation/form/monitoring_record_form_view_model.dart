@@ -75,7 +75,7 @@ class ObservationMonitoringRecordFormViewModel extends FormBaseViewModel {
 
     MonitoringRecordSubmitResult result;
     if (_monitoringRecord != null) {
-      // TODO update form data
+      /// No data saving in form non-editing mode
       result = MonitoringRecordSubmitPending();
     } else {
       result = await _observationService.submitMonitoringRecord(report);
