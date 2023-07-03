@@ -144,8 +144,7 @@ class MyApp extends StatelessWidget {
                   return locale;
                 },
                 theme: locator<AppTheme>().themeData,
-                routerConfig: OhtkRouter().getRouter('/reports',
-                    appViewModel), // TODO : '/reports' ที่ pass ไปมีผลจริงหรือไม่
+                routerConfig: OhtkRouter().getRouter(appViewModel),
               ),
             ),
           );

@@ -59,12 +59,14 @@ class OhtkRouter {
   final GlobalKey<NavigatorState> _shellNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'shell');
 
+  String? initialLocation = '/reports';
+
   factory OhtkRouter() {
     return _instance;
   }
   OhtkRouter._internal();
 
-  GoRouter getRouter(String initialLocation, AppViewModel viewModel) {
+  GoRouter getRouter(AppViewModel viewModel) {
     return GoRouter(
       navigatorKey: _rootNavigatorKey,
       initialLocation: initialLocation,
