@@ -3,12 +3,13 @@ import 'dart:io';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:lottie/lottie.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:podd_app/components/restart_widget.dart';
+import 'package:podd_app/components/waiting_screen.dart';
 import 'package:podd_app/router.dart';
 import 'package:podd_app/services/httpclient.dart';
 import 'package:podd_app/app_theme.dart';
@@ -117,7 +118,7 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           setupAppLocalization();
           if (!snapshot.hasData) {
-            return const MaterialApp(home: _WaitingScreen());
+            return const MaterialApp(home: WaitingScreen());
           }
           final appViewModel = AppViewModel();
 
@@ -149,69 +150,5 @@ class MyApp extends StatelessWidget {
             ),
           );
         });
-  }
-}
-
-// ​TODO : แยกเป็น file ต่างหาก
-class _WaitingScreen extends StatelessWidget {
-  const _WaitingScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xEE1D415A),
-              Color(0xFF1A2431),
-            ],
-          ),
-        ),
-        child: Center(
-          child: Lottie.asset('assets/animations/waiting.json',
-              width: 180, height: 180),
-        ),
-      ),
-    );
-  }
-}
-
-// TODO แยกไปเป็น component ต่างหาก
-class RestartWidget extends StatefulWidget {
-  final Widget child;
-
-  const RestartWidget({required this.child, Key? key}) : super(key: key);
-
-  static void restartApp(BuildContext context) {
-    context.findAncestorStateOfType<_RestartWidgetState>()?.restartApp();
-  }
-
-  @override
-  createState() => _RestartWidgetState();
-}
-
-class _RestartWidgetState extends State<RestartWidget> {
-  Key key = UniqueKey();
-
-  void restartApp() {
-    const String environment = String.fromEnvironment(
-      'ENVIRONMENT',
-      defaultValue: Environment.dev,
-    );
-    setupLocator(environment);
-    setState(() {
-      key = UniqueKey();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return KeyedSubtree(
-      key: key,
-      child: widget.child,
-    );
   }
 }

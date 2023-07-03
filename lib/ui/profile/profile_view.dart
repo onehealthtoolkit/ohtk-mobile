@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:podd_app/components/display_field.dart';
 import 'package:podd_app/components/flat_button.dart';
-import 'package:podd_app/main.dart';
+import 'package:podd_app/components/restart_widget.dart';
 import 'package:podd_app/ui/profile/profile_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../components/language_dropdown.dart';
 
 var decoration = BoxDecoration(
