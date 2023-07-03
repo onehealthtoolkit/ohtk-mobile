@@ -9,6 +9,7 @@ import 'package:podd_app/models/entities/observation_monitoring_definition.dart'
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
+import 'package:podd_app/router.dart';
 import 'package:podd_app/ui/observation/subject/observation_subject_monitoring_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -94,7 +95,7 @@ class _MonitoringDefinitionListing
             ),
             onPressed: () {
               GoRouter.of(context).goNamed(
-                'observationMonitoringForm',
+                OhtkRouter.observationMonitoringForm,
                 pathParameters: {
                   "definitionId": viewModel.definition.id.toString(),
                   "subjectId": viewModel.subject.id,
@@ -148,7 +149,7 @@ class _MonitoringRecordListing
               leading: leading,
               onTap: () {
                 GoRouter.of(context).goNamed(
-                  'observationMonitoringDetail',
+                  OhtkRouter.observationMonitoringDetail,
                   pathParameters: {
                     "definitionId": viewModel.definition.id.toString(),
                     "subjectId": viewModel.subject.id,

@@ -7,6 +7,7 @@ import 'package:podd_app/components/incident_report_tag.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:intl/intl.dart';
+import 'package:podd_app/router.dart';
 
 import 'all_reports_view_model.dart';
 
@@ -67,9 +68,12 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
             leading: leading,
             trailing: trailing,
             onTap: () {
-              GoRouter.of(context).goNamed('incidentDetail', pathParameters: {
-                "incidentId": report.id,
-              });
+              GoRouter.of(context).goNamed(
+                OhtkRouter.incidentDetail,
+                pathParameters: {
+                  "incidentId": report.id,
+                },
+              );
             },
           );
         },

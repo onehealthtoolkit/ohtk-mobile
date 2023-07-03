@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/router.dart';
 import 'package:podd_app/ui/home/all_reports_view.dart';
 import 'package:podd_app/ui/home/my_reports_view.dart';
 import 'package:podd_app/ui/home/report_home_view_model.dart';
@@ -43,8 +44,7 @@ class ReportHomeView extends HookWidget {
           child: IconButton(
             iconSize: 38.w,
             onPressed: () {
-              GoRouter.of(context).goNamed(
-                  'reportTypes'); // TODO เปลี่ยนเป็น const จาก router.dart จะลดการ spell ผิด
+              GoRouter.of(context).goNamed(OhtkRouter.reportTypes);
             },
             icon: const Icon(Icons.add_circle_outline),
           ),

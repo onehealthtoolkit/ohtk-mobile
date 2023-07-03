@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
+import 'package:podd_app/router.dart';
 import 'package:podd_app/ui/home/my_reports_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -73,10 +74,13 @@ class _ReportList extends StackedHookView<MyReportsViewModel> {
       MyReportsViewModel viewModel) {
     return InkWell(
       onTap: () {
-        GoRouter.of(context).goNamed('followupReportForm', pathParameters: {
-          "reportTypeId": report.reportTypeId,
-          "incidentId": report.id
-        });
+        GoRouter.of(context).goNamed(
+          OhtkRouter.followupReportForm,
+          pathParameters: {
+            "reportTypeId": report.reportTypeId,
+            "incidentId": report.id
+          },
+        );
       },
       child: Ink(
         decoration: BoxDecoration(

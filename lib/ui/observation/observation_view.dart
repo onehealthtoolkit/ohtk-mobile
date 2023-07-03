@@ -6,6 +6,7 @@ import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/router.dart';
 import 'package:podd_app/ui/observation/observation_subject_list_view.dart';
 import 'package:podd_app/ui/observation/observation_subject_map_view.dart';
 import 'package:podd_app/ui/observation/observation_view_model.dart';
@@ -66,7 +67,7 @@ class ObservationView extends HookWidget {
               onPressed: viewModel.definition != null
                   ? () {
                       GoRouter.of(context).goNamed(
-                        'observationSubjectForm',
+                        OhtkRouter.observationSubjectForm,
                         pathParameters: {
                           "definitionId": viewModel.definitionId,
                         },

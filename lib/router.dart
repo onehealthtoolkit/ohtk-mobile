@@ -43,6 +43,17 @@ class AppViewModel extends ReactiveViewModel {
 class OhtkRouter {
   static final OhtkRouter _instance = OhtkRouter._internal();
 
+  static const incidentDetail = 'incidentDetail';
+  static const incidentFollowup = 'incidentFollowup';
+  static const reportTypes = 'reportTypes';
+  static const reportForm = 'reportForm';
+  static const followupReportForm = 'followupReportForm';
+  static const observationSubjects = 'observationSubjects';
+  static const observationSubjectForm = 'observationSubjectForm';
+  static const observationSubjectDetail = 'observationSubjectDetail';
+  static const observationMonitoringForm = 'observationMonitoringForm';
+  static const observationMonitoringDetail = 'observationMonitoringDetail';
+
   final GlobalKey<NavigatorState> _rootNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'root');
   final GlobalKey<NavigatorState> _shellNavigatorKey =
@@ -95,7 +106,7 @@ class OhtkRouter {
               builder: (context, state) => ReportHomeView(),
               routes: <RouteBase>[
                 GoRoute(
-                  name: 'incidentDetail',
+                  name: incidentDetail,
                   path: 'incident/:incidentId',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
@@ -104,7 +115,7 @@ class OhtkRouter {
                   },
                   routes: [
                     GoRoute(
-                      name: 'incidentFollowup',
+                      name: incidentFollowup,
                       path: 'followup/:followupId',
                       parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
@@ -115,13 +126,13 @@ class OhtkRouter {
                   ],
                 ),
                 GoRoute(
-                  name: 'reportTypes',
+                  name: reportTypes,
                   path: 'types',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => ReportTypeView(),
                 ),
                 GoRoute(
-                  name: 'reportForm',
+                  name: reportForm,
                   path: 'types/:reportTypeId/form',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
@@ -131,7 +142,7 @@ class OhtkRouter {
                   },
                 ),
                 GoRoute(
-                  name: 'followupReportForm',
+                  name: followupReportForm,
                   path: 'incident/:incidentId/types/:reportTypeId/form',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
@@ -150,7 +161,7 @@ class OhtkRouter {
               builder: (context, state) => const ObservationHomeView(),
               routes: [
                 GoRoute(
-                  name: 'observationSubjects',
+                  name: observationSubjects,
                   path: ':definitionId/subjects',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
@@ -159,7 +170,7 @@ class OhtkRouter {
                   },
                   routes: [
                     GoRoute(
-                      name: 'observationSubjectForm',
+                      name: observationSubjectForm,
                       path: 'form',
                       parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
@@ -170,7 +181,7 @@ class OhtkRouter {
                       },
                     ),
                     GoRoute(
-                      name: 'observationSubjectDetail',
+                      name: observationSubjectDetail,
                       path: ':subjectId',
                       parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
@@ -183,7 +194,7 @@ class OhtkRouter {
                       },
                       routes: [
                         GoRoute(
-                          name: 'observationMonitoringForm',
+                          name: observationMonitoringForm,
                           path:
                               'monitoringDefinition/:monitoringDefinitionId/form',
                           parentNavigatorKey: _rootNavigatorKey,
@@ -198,7 +209,7 @@ class OhtkRouter {
                           },
                         ),
                         GoRoute(
-                          name: 'observationMonitoringDetail',
+                          name: observationMonitoringDetail,
                           path: 'monitoringRecords/:monitoringId',
                           parentNavigatorKey: _rootNavigatorKey,
                           builder: (context, state) {

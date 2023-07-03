@@ -5,6 +5,7 @@ import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
+import 'package:podd_app/router.dart';
 import 'package:podd_app/ui/home/observation/observation_home_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -62,10 +63,12 @@ class _Listing extends StackedHookView<ObservationHomeViewModel> {
                         ),
                   ),
                   onTap: () {
-                    GoRouter.of(context).goNamed('observationSubjects',
-                        pathParameters: {
-                          "definitionId": observationDefinition.id.toString()
-                        });
+                    GoRouter.of(context).goNamed(
+                      OhtkRouter.observationSubjects,
+                      pathParameters: {
+                        "definitionId": observationDefinition.id.toString()
+                      },
+                    );
                   },
                   trailing: Icon(
                     Icons.arrow_forward_ios,
