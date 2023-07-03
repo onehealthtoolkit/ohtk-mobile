@@ -159,11 +159,14 @@ class _IncidentDetail extends StackedHookView<IncidentReportViewModel> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            incident.reportTypeName,
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontSize: 20.sp,
-                ),
+          Expanded(
+            child: Text(
+              incident.reportTypeName,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge!
+                  .copyWith(fontSize: 20.sp, overflow: TextOverflow.ellipsis),
+            ),
           ),
           Text(
             formatter.format(incident.createdAt.toLocal()),
