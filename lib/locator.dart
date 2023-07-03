@@ -233,6 +233,8 @@ void setupLocator(String environment) {
   ]);
 
   registerViewModelLocators();
+
+  setupTheme();
 }
 
 /// Some viewmodels need to persist their own states across app lifecycle,

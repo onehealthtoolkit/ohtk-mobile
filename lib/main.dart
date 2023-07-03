@@ -36,7 +36,6 @@ void main() async {
   );
   setupRemoteConfig(environment);
   setupLocator(environment);
-  setupTheme(); // TODO : move to setupLocator
 
   runApp(
     const RestartWidget(
