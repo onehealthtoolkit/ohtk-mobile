@@ -13,6 +13,8 @@ class FormField extends StatelessWidget {
   _buildWidget() {
     if (field is opsv.TextField) {
       return FormTextField(field as opsv.TextField);
+    } else if (field is opsv.TextareaField) {
+      return FormTextareaField(field as opsv.TextareaField);
     } else if (field is opsv.IntegerField) {
       return FormIntegerField(field as opsv.IntegerField);
     } else if (field is opsv.DecimalField) {

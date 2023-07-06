@@ -23,6 +23,7 @@ part 'models/condition.dart';
 part 'models/fields/field.dart';
 part 'models/fields/primitive_field.dart';
 part 'models/fields/text_field.dart';
+part 'models/fields/textarea_field.dart';
 part 'models/fields/integer_field.dart';
 part 'models/fields/date_field.dart';
 part 'models/fields/decimal_field.dart';
