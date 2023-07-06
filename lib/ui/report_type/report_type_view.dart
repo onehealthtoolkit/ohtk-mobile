@@ -67,6 +67,17 @@ class ReportTypeView extends StatelessWidget {
                 },
               ),
             ),
+            SizedBox(width: 5.w),
+            CircleAvatar(
+              backgroundColor: Theme.of(context).primaryColor,
+              child: IconButton(
+                icon: const Icon(Icons.refresh, color: Colors.white),
+                tooltip: 'Refresh report form',
+                onPressed: () async {
+                  await viewModel.syncReportTypes();
+                },
+              ),
+            ),
             SizedBox(width: 15.w),
           ],
         ),
