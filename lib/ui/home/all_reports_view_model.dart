@@ -17,7 +17,7 @@ class AllReportsViewModel extends ReactiveViewModel
   List<IncidentReport> get incidentReports => reportService.incidentReports;
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [reportService];
+  List<ListenableServiceMixin> get listenableServices => [reportService];
 
   @override
   resolveImagePath(String path) {

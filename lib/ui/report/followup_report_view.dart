@@ -37,10 +37,9 @@ class FollowupReportView extends StatelessWidget {
   }
 }
 
-class _FollowupReportView extends HookViewModelWidget<FollowupReportViewModel> {
+class _FollowupReportView extends StackedHookView<FollowupReportViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, FollowupReportViewModel viewModel) {
+  Widget builder(BuildContext context, FollowupReportViewModel viewModel) {
     final followup = viewModel.data;
     if (followup == null) {
       return const Center(child: OhtkProgressIndicator(size: 100));

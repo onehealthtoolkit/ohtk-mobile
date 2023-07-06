@@ -92,22 +92,30 @@ class OpenableReportFile<T extends BaseReportFile> extends StatelessWidget {
 
   Future<String?> downloadFile(String url, String fileName) async {
     final Directory tempDir = await getTemporaryDirectory();
+    final cacheFilePath = '${tempDir.path}/$fileName';
+
     HttpClient httpClient = HttpClient();
     File file;
     String? filePath;
 
-    try {
-      var request = await httpClient.getUrl(Uri.parse(url));
-      var response = await request.close();
-      if (response.statusCode == 200) {
-        var bytes = await consolidateHttpClientResponseBytes(response);
-        final path = '${tempDir.path}/$fileName';
-        file = await File(path).create(recursive: true);
-        await file.writeAsBytes(bytes);
-        filePath = path;
+    if (File(cacheFilePath).existsSync()) {
+      filePath = cacheFilePath;
+      Logger().d('Found cache file = $filePath');
+    } else {
+      try {
+        Logger().d('No cache file in $cacheFilePath');
+        var request = await httpClient.getUrl(Uri.parse(url));
+        var response = await request.close();
+        if (response.statusCode == 200) {
+          var bytes = await consolidateHttpClientResponseBytes(response);
+          file = await File(cacheFilePath).create(recursive: true);
+          await file.writeAsBytes(bytes);
+          filePath = cacheFilePath;
+          Logger().d('Download file ok : save new file in $filePath');
+        }
+      } catch (ex) {
+        Logger().e('Error download file');
       }
-    } catch (ex) {
-      Logger().e('Error download file');
     }
     return filePath;
   }
@@ -119,25 +127,27 @@ class OpenableReportFile<T extends BaseReportFile> extends StatelessWidget {
         if (file.fileType.contains('audio')) {
           _playAudio(context);
         } else {
-          /// TODO improve using cache temp file if file has already been downloaded
           final filePath = await downloadFile(file.fileUrl, file.filePath);
 
           if (filePath != null) {
             final result = await OpenFile.open(filePath, type: file.fileType);
-            if (result.type != ResultType.done) {
+
+            if (context.mounted) {
+              if (result.type != ResultType.done) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text(
+                      "Cannot open file. \nEither no app supports or file is corrupted"),
+                  duration: Duration(milliseconds: 3000),
+                ));
+              }
+            } else {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 backgroundColor: Colors.red,
-                content: Text(
-                    "Cannot open file. \nEither no app supports or file is corrupted"),
+                content: Text("File not found"),
                 duration: Duration(milliseconds: 3000),
               ));
             }
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              backgroundColor: Colors.red,
-              content: Text("File not found"),
-              duration: Duration(milliseconds: 3000),
-            ));
           }
         }
       },

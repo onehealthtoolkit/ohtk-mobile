@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
+import 'package:podd_app/router.dart';
 import 'package:podd_app/ui/home/my_reports_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -38,13 +38,11 @@ class _MyReportsViewState extends State<MyReportsView>
   }
 }
 
-class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
-  final _logger = locator<Logger>();
+class _ReportList extends StackedHookView<MyReportsViewModel> {
   final formatter = DateFormat("dd/MM/yyyy HH:mm");
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, MyReportsViewModel viewModel) {
+  Widget builder(BuildContext context, MyReportsViewModel viewModel) {
     return RefreshIndicator(
       onRefresh: () async {
         await viewModel.refetchIncidentReports();
@@ -76,10 +74,13 @@ class _ReportList extends HookViewModelWidget<MyReportsViewModel> {
       MyReportsViewModel viewModel) {
     return InkWell(
       onTap: () {
-        GoRouter.of(context).goNamed('followupReportForm', pathParameters: {
-          "reportTypeId": report.reportTypeId,
-          "incidentId": report.id
-        });
+        GoRouter.of(context).goNamed(
+          OhtkRouter.followupReportForm,
+          pathParameters: {
+            "reportTypeId": report.reportTypeId,
+            "incidentId": report.id
+          },
+        );
       },
       child: Ink(
         decoration: BoxDecoration(

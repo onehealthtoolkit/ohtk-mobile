@@ -30,10 +30,9 @@ class ChangePasswordView extends StatelessWidget {
   }
 }
 
-class _ChangePasswordForm extends HookViewModelWidget<ChangePasswordViewModel> {
+class _ChangePasswordForm extends StackedHookView<ChangePasswordViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ChangePasswordViewModel viewModel) {
+  Widget builder(BuildContext context, ChangePasswordViewModel viewModel) {
     return Column(children: [
       if (viewModel.hasErrorForKey("generalChangePassword"))
         Container(
@@ -101,15 +100,17 @@ class _ChangePasswordForm extends HookViewModelWidget<ChangePasswordViewModel> {
                     : () async {
                         var result = await viewModel.changePassword();
                         if (result is ProfileSuccess && result.success) {
-                          var showSuccessMessage = SnackBar(
-                            content: Text(AppLocalizations.of(context)
-                                    ?.passwordUpdatedSuccess ??
-                                'Your password has been successfully changed!'),
-                            backgroundColor: Colors.green,
-                          );
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(showSuccessMessage);
-                          GoRouter.of(context).pop(true);
+                          if (context.mounted) {
+                            var showSuccessMessage = SnackBar(
+                              content: Text(AppLocalizations.of(context)
+                                      ?.passwordUpdatedSuccess ??
+                                  'Your password has been successfully changed!'),
+                              backgroundColor: Colors.green,
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(showSuccessMessage);
+                            GoRouter.of(context).pop(true);
+                          }
                         }
                       },
                 child: viewModel.isBusy

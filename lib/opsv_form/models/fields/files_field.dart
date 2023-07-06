@@ -8,6 +8,8 @@ class FilesField extends Field {
   int? max;
   int? maxSize; // max size per file in bytes, null for unlimit size
   List<String> supports; // supported mime types
+  String? minMessage;
+  String? maxMessage;
 
   String? fileDir; // file directory: {appDataDir}/reports/{reportId}
 
@@ -23,6 +25,8 @@ class FilesField extends Field {
     this.max,
     this.maxSize = 1000,
     this.supports = const [],
+    this.minMessage,
+    this.maxMessage,
     Condition? condition,
     String? tags,
   }) : super(id, name,
@@ -55,7 +59,11 @@ class FilesField extends Field {
       min: json["min"],
       max: json["max"],
       maxSize: json["maxSize"],
-      supports: (json["supports"] as List).cast<String>(),
+      supports: json["supports"] != null
+          ? (json["supports"] as List).cast<String>()
+          : [],
+      minMessage: json["minMessage"],
+      maxMessage: json["maxMessage"],
       condition: condition,
       tags: json["tags"],
     );
@@ -128,7 +136,12 @@ class FilesField extends Field {
       var valid = value.length >= min!;
       if (!valid) {
         final localize = locator<AppLocalizations>();
-        markError(localize.filesFieldMinErrorMsg(displayName, min!.toString()));
+        markError(minMessage != null
+            ? formatWithMap(minMessage!, {
+                "name": name,
+                "min": min!.toString(),
+              })
+            : localize.filesFieldMinErrorMsg(name, min!.toString()));
         return false;
       }
     }
@@ -140,7 +153,12 @@ class FilesField extends Field {
       var valid = value.length <= max!;
       if (!valid) {
         final localize = locator<AppLocalizations>();
-        markError(localize.filesFieldMaxErrorMsg(displayName, max!.toString()));
+        markError(maxMessage != null
+            ? formatWithMap(maxMessage!, {
+                "name": name,
+                "max": max!.toString(),
+              })
+            : localize.filesFieldMaxErrorMsg(name, max!.toString()));
         return false;
       }
     }
@@ -166,7 +184,7 @@ class FilesField extends Field {
         markError(
           localize.filesFieldMaxSizeErrorMsg(
             invalidIndice.join(','),
-            displayName,
+            name,
             maxSize!.toString(),
           ),
         );
@@ -195,7 +213,7 @@ class FilesField extends Field {
         markError(
           localize.filesFieldSupportedTypeErrorMsg(
             invalidIndice.join(','),
-            displayName,
+            name,
           ),
         );
         return false;

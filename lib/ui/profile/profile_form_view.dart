@@ -30,10 +30,9 @@ class ProfileFormView extends StatelessWidget {
   }
 }
 
-class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
+class _ProfileForm extends StackedHookView<ProfileViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ProfileViewModel viewModel) {
+  Widget builder(BuildContext context, ProfileViewModel viewModel) {
     var firstName = useTextEditingController();
     firstName.text = viewModel.firstName ?? "";
     var lastName = useTextEditingController();
@@ -92,15 +91,17 @@ class _ProfileForm extends HookViewModelWidget<ProfileViewModel> {
                   : () async {
                       var result = await viewModel.updateProfile();
                       if (result is ProfileSuccess && result.success) {
-                        var showSuccessMessage = SnackBar(
-                          content: Text(AppLocalizations.of(context)
-                                  ?.profileUpdateSuccess ??
-                              'Profile update success'),
-                          backgroundColor: Colors.green,
-                        );
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(showSuccessMessage);
-                        GoRouter.of(context).pop(true);
+                        if (context.mounted) {
+                          var showSuccessMessage = SnackBar(
+                            content: Text(AppLocalizations.of(context)
+                                    ?.profileUpdateSuccess ??
+                                'Profile update success'),
+                            backgroundColor: Colors.green,
+                          );
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(showSuccessMessage);
+                          GoRouter.of(context).pop(true);
+                        }
                       }
                     },
               child: viewModel.isBusy

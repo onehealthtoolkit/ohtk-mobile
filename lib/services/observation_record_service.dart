@@ -10,15 +10,13 @@ import 'package:podd_app/models/file_submit_result.dart';
 import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
-import 'package:podd_app/services/api/file_api.dart';
-import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/api/observation_api.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:podd_app/services/file_service.dart';
 import 'package:podd_app/services/image_service.dart';
 import 'package:stacked/stacked.dart';
 
-abstract class IObservationRecordService with ReactiveServiceMixin {
+abstract class IObservationRecordService with ListenableServiceMixin {
   final _logger = locator<Logger>();
 
   List<SubjectRecord> get pendingSubjectRecords;
@@ -58,9 +56,7 @@ abstract class IObservationRecordService with ReactiveServiceMixin {
 
 class ObservationRecordService extends IObservationRecordService {
   final _dbService = locator<IDbService>();
-  final _imageApi = locator<ImageApi>();
   final _imageService = locator<IImageService>();
-  final _fileApi = locator<FileApi>();
   final _fileService = locator<IFileService>();
   final _observationApi = locator<ObservationApi>();
 
@@ -164,10 +160,9 @@ class ObservationRecordService extends IObservationRecordService {
     return result.data;
   }
 
+  /// Umimplemented future feature
   @override
-  Future<void> fetchAllObservationSubjectReports(int subjectId) async {
-    // TODO call fetchSubjectReports api
-  }
+  Future<void> fetchAllObservationSubjectReports(int subjectId) async {}
 
   @override
   Future<SubjectRecordSubmitResult> submitSubjectRecord(
@@ -218,8 +213,8 @@ class ObservationRecordService extends IObservationRecordService {
         return SubjectRecordSubmitPending();
       }
       return result;
-    } on LinkException catch (_e) {
-      _logger.e(_e);
+    } on LinkException catch (e) {
+      _logger.e(e);
       _saveSubjectRecordToLocalDB(record);
       return SubjectRecordSubmitPending();
     }
@@ -275,8 +270,8 @@ class ObservationRecordService extends IObservationRecordService {
         return MonitoringRecordSubmitPending();
       }
       return result;
-    } on LinkException catch (_e) {
-      _logger.e(_e);
+    } on LinkException catch (e) {
+      _logger.e(e);
       _saveMonitoringRecordToLocalDB(record);
       return MonitoringRecordSubmitPending();
     }

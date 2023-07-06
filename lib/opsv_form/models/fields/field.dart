@@ -105,7 +105,7 @@ abstract class Field implements ConiditionSource {
   bool _validateRequired() {
     if (required == true && value == null) {
       final localize = locator<AppLocalizations>();
-      markError(localize.validateRequiredMsg);
+      markError(requiredMessage ?? localize.validateRequiredMsg);
       return false;
     }
     return true;
@@ -116,6 +116,7 @@ abstract class Field implements ConiditionSource {
       if (parent != null && parent!.display) {
         return evaluate(operator, targetValue);
       }
+      return evaluate(operator, targetValue);
     }
     return false;
   }

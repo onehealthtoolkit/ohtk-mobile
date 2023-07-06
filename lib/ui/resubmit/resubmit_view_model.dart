@@ -144,7 +144,7 @@ class ReSubmitViewModel extends ReactiveViewModel {
   }
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices =>
+  List<ListenableServiceMixin> get listenableServices =>
       [_reportService, _recordService, _imageService, _fileService];
 
   void submitAllPendings() async {

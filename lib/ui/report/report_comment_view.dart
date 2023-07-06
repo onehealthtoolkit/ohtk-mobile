@@ -47,13 +47,12 @@ class ReportCommentView extends StatelessWidget {
   }
 }
 
-class _CommentList extends HookViewModelWidget<ReportCommentViewModel> {
+class _CommentList extends StackedHookView<ReportCommentViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
   final formatter = DateFormat("dd/MM/yyyy HH:mm");
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportCommentViewModel viewModel) {
+  Widget builder(BuildContext context, ReportCommentViewModel viewModel) {
     if (viewModel.comments.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
@@ -195,12 +194,11 @@ class _CommentList extends HookViewModelWidget<ReportCommentViewModel> {
   }
 }
 
-class _CommentForm extends HookViewModelWidget<ReportCommentViewModel> {
+class _CommentForm extends StackedHookView<ReportCommentViewModel> {
   final AppTheme apptheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportCommentViewModel viewModel) {
+  Widget builder(BuildContext context, ReportCommentViewModel viewModel) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       decoration: BoxDecoration(
@@ -249,7 +247,8 @@ class _CommentForm extends HookViewModelWidget<ReportCommentViewModel> {
           alignment: Alignment.center,
           child: SvgPicture.asset(
             "assets/images/add_image_comment_icon.svg",
-            color: Theme.of(context).primaryColor,
+            colorFilter: ColorFilter.mode(
+                Theme.of(context).primaryColor, BlendMode.srcIn),
             width: 40,
           ),
         ),
@@ -272,7 +271,9 @@ class _CommentForm extends HookViewModelWidget<ReportCommentViewModel> {
                 if (image != null) {
                   viewModel.addImage(image);
                 }
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
             ),
             ListTile(
@@ -283,7 +284,9 @@ class _CommentForm extends HookViewModelWidget<ReportCommentViewModel> {
                 if (image != null) {
                   viewModel.addImage(image);
                 }
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
             ),
           ],

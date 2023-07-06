@@ -68,7 +68,7 @@ class FlatButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var padding = padding ?? const EdgeInsets.fromLTRB(40, 10, 40, 10);
+    var padding = this.padding ?? const EdgeInsets.fromLTRB(40, 10, 40, 10);
 
     return TextButton(
         style: ButtonStyle(

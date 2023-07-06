@@ -21,10 +21,9 @@ class ReSubmitView extends StatelessWidget {
   }
 }
 
-class _Body extends HookViewModelWidget<ReSubmitViewModel> {
+class _Body extends StackedHookView<ReSubmitViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReSubmitViewModel viewModel) {
+  Widget builder(BuildContext context, ReSubmitViewModel viewModel) {
     if (viewModel.isBusy) {
       return const CircularProgressIndicator();
     }

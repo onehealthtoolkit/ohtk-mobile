@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:podd_app/components/display_field.dart';
 import 'package:podd_app/components/flat_button.dart';
-import 'package:podd_app/main.dart';
+import 'package:podd_app/components/restart_widget.dart';
 import 'package:podd_app/ui/profile/profile_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../components/language_dropdown.dart';
 
 var decoration = BoxDecoration(
@@ -182,10 +183,9 @@ class ProfileView extends StatelessWidget {
   }
 }
 
-class _Language extends HookViewModelWidget<ProfileViewModel> {
+class _Language extends StackedHookView<ProfileViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ProfileViewModel viewModel) {
+  Widget builder(BuildContext context, ProfileViewModel viewModel) {
     return SizedBox(
       width: 200,
       height: 30,
@@ -213,7 +213,9 @@ class _Language extends HookViewModelWidget<ProfileViewModel> {
                   child: Text(AppLocalizations.of(context)!.ok),
                   onPressed: () async {
                     await viewModel.changeLanguage(value ?? "en");
-                    RestartWidget.restartApp(context);
+                    if (context.mounted) {
+                      RestartWidget.restartApp(context);
+                    }
                   },
                 )
               ],
@@ -225,10 +227,9 @@ class _Language extends HookViewModelWidget<ProfileViewModel> {
   }
 }
 
-class _Avatar extends HookViewModelWidget<ProfileViewModel> {
+class _Avatar extends StackedHookView<ProfileViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ProfileViewModel viewModel) {
+  Widget builder(BuildContext context, ProfileViewModel viewModel) {
     return SizedBox(
       height: 115,
       width: 115,
@@ -298,7 +299,9 @@ class _Avatar extends HookViewModelWidget<ProfileViewModel> {
                 if (image != null) {
                   await viewModel.setPhoto(image);
                 }
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
             ),
             ListTile(
@@ -309,7 +312,9 @@ class _Avatar extends HookViewModelWidget<ProfileViewModel> {
                 if (image != null) {
                   viewModel.setPhoto(image);
                 }
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
             ),
           ],

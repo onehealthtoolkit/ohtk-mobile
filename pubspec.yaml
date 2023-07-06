@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.2+50
+version: 1.0.2+51
 
 environment:
   sdk: ">=2.18.0 <3.0.0"
@@ -38,6 +38,7 @@ dependencies:
   overlay_support: ^2.1.0
   flutter_secure_storage: ^8.0.0
   flutter_hooks: ^0.18.5+1
+  graphql: ^5.1.0
   graphql_flutter: ^5.1.0
   logger: ^1.1.0
   path: ^1.8.0
@@ -60,7 +61,7 @@ dependencies:
   uuid: ^3.0.7
   mobx:
   decimal: ^2.3.2
-  flutter_html: ^3.0.0-beta.2
+  flutter_html: ^3.0.0-beta.2 # TODO เปลี่ยนดีกว่า เพราะลาก dependency มาเยอะมาก
   google_maps_flutter: ^2.1.4
   geolocator: ^9.0.1
   cross_file: ^0.3.3+4

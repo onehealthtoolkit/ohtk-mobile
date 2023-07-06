@@ -13,7 +13,7 @@ class ObservationSubjectListViewModel extends ReactiveViewModel {
   ObservationSubjectListViewModel(this.definition);
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [observationService];
+  List<ListenableServiceMixin> get listenableServices => [observationService];
 
   List<ObservationSubjectRecord> get observationSubjects =>
       observationService.subjectRecords;

@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart' as material;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Map<String, dynamic> jsonTemplate(Map<String, dynamic> field) {
   return {
@@ -21,6 +24,12 @@ Map<String, dynamic> jsonTemplate(Map<String, dynamic> field) {
 void main() {
   late Form simpleForm;
   late Form nestedForm;
+
+  setUpAll(() {
+    locator.registerSingletonAsync<AppLocalizations>(() async {
+      return AppLocalizations.delegate.load(const material.Locale('en'));
+    });
+  });
 
   group("parse from json", () {
     test("text field", () {
@@ -221,9 +230,12 @@ void main() {
           (simpleForm.getField("category") as SingleChoicesField);
       categoryField.value = "poutry";
       var at1 = (simpleForm.getField("at1") as SingleChoicesField);
-      expect(at1.display, true);
-      categoryField.value = "cattle";
       var at2 = (simpleForm.getField("at2") as SingleChoicesField);
+      expect(at1.display, true);
+      expect(at2.display, false);
+
+      categoryField.value = "cattle";
+      expect(at1.display, false);
       expect(at2.display, true);
 
       at2.value = "cow";

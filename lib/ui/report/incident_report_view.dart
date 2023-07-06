@@ -48,12 +48,11 @@ class IncidentReportView extends HookWidget {
   }
 }
 
-class _TabView extends HookViewModelWidget<IncidentReportViewModel> {
+class _TabView extends StackedHookView<IncidentReportViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, IncidentReportViewModel viewModel) {
+  Widget builder(BuildContext context, IncidentReportViewModel viewModel) {
     final TabController tabController = useTabController(initialLength: 3);
 
     return Scaffold(
@@ -123,12 +122,11 @@ class _TabView extends HookViewModelWidget<IncidentReportViewModel> {
   }
 }
 
-class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
+class _IncidentDetail extends StackedHookView<IncidentReportViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, IncidentReportViewModel viewModel) {
+  Widget builder(BuildContext context, IncidentReportViewModel viewModel) {
     final incident = viewModel.data!;
 
     return LayoutBuilder(builder: (context, constraints) {
@@ -161,11 +159,14 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            incident.reportTypeName,
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontSize: 20.sp,
-                ),
+          Expanded(
+            child: Text(
+              incident.reportTypeName,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge!
+                  .copyWith(fontSize: 20.sp, overflow: TextOverflow.ellipsis),
+            ),
           ),
           Text(
             formatter.format(incident.createdAt.toLocal()),
@@ -206,14 +207,11 @@ class _IncidentDetail extends HookViewModelWidget<IncidentReportViewModel> {
   }
 }
 
-class _Data extends HookViewModelWidget<IncidentReportViewModel> {
+class _Data extends StackedHookView<IncidentReportViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-    BuildContext context,
-    IncidentReportViewModel viewModel,
-  ) {
+  Widget builder(BuildContext context, IncidentReportViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(28, 10, 28, 20),
       child: Row(
@@ -253,13 +251,12 @@ class _Data extends HookViewModelWidget<IncidentReportViewModel> {
   }
 }
 
-class _Map extends HookViewModelWidget<IncidentReportViewModel> {
+class _Map extends StackedHookView<IncidentReportViewModel> {
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, IncidentReportViewModel viewModel) {
+  Widget builder(BuildContext context, IncidentReportViewModel viewModel) {
     final latlng = viewModel.latlng;
 
-    final Completer<GoogleMapController> controller = Completer();
+    final Completer<GoogleMapController> mapControllerCompleter = Completer();
     var markers = <Marker>{};
 
     if (latlng != null) {
@@ -287,7 +284,7 @@ class _Map extends HookViewModelWidget<IncidentReportViewModel> {
                 myLocationButtonEnabled: false,
                 scrollGesturesEnabled: true,
                 onMapCreated: (GoogleMapController controller) {
-                  controller.complete(controller);
+                  mapControllerCompleter.complete(controller);
                 },
                 markers: markers,
               )

@@ -32,7 +32,7 @@ class HomeViewModel extends IndexTrackingViewModel {
       pendingFiles.length;
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices =>
+  List<ListenableServiceMixin> get listenableServices =>
       [reportService, recordService, imageService, fileService];
 
   UserProfile? get userProfile => authService.userProfile;

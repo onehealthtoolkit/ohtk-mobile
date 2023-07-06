@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/flat_button.dart';
+import 'package:podd_app/components/language_dropdown.dart';
+import 'package:podd_app/components/restart_widget.dart';
 import 'package:podd_app/locator.dart';
-import 'package:podd_app/main.dart';
 import 'package:podd_app/ui/forgot_password/reset_password_request_view.dart';
 import 'package:podd_app/ui/login/login_view_model.dart';
 import 'package:podd_app/ui/login/qr_login_view.dart';
 import 'package:podd_app/ui/register/register_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:podd_app/components/flat_button.dart';
-import 'package:podd_app/components/language_dropdown.dart';
 
 class LoginView extends StackedView<LoginViewModel> {
   const LoginView({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class LoginView extends StackedView<LoginViewModel> {
   Widget builder(
       BuildContext context, LoginViewModel viewModel, Widget? child) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Container(
@@ -229,7 +229,9 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
           ),
         );
         if (error != null) {
-          showAlert(context, error);
+          if (context.mounted) {
+            showAlert(context, error);
+          }
         }
       },
       child: Row(
@@ -256,21 +258,15 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
   showAlert(BuildContext context, String message) {
     showDialog(
       context: context,
-      builder: (_) => WillPopScope(
-        child: AlertDialog(
-          title: const Text("Scan Error"),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-        onWillPop: () async {
-          Navigator.pop(context);
-          return true;
-        },
+      builder: (_) => AlertDialog(
+        title: const Text("Scan Error"),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
       ),
     );
   }
@@ -296,7 +292,9 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
       value: viewModel.subDomain,
       onChanged: (String? value) async {
         await viewModel.changeServer(value ?? "");
-        RestartWidget.restartApp(context);
+        if (context.mounted) {
+          RestartWidget.restartApp(context);
+        }
       },
       items: viewModel.serverOptions
           .map<DropdownMenuItem<String>>((option) => DropdownMenuItem(
@@ -321,7 +319,9 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
       value: viewModel.language,
       onChanged: (String? value) async {
         await viewModel.changeLanguage(value ?? "en");
-        RestartWidget.restartApp(context);
+        if (context.mounted) {
+          RestartWidget.restartApp(context);
+        }
       },
     );
   }

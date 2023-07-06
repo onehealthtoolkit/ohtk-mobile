@@ -11,7 +11,6 @@ class FormFilesField extends StatefulWidget {
 
 class _FormFilesFieldState extends State<FormFilesField> {
   final IFileService _fileService = locator<IFileService>();
-  final _logger = locator<Logger>();
   final AppTheme apptheme = locator<AppTheme>();
 
   @override

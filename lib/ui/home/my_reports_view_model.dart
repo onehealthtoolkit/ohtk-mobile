@@ -16,7 +16,7 @@ class MyReportsViewModel extends ReactiveViewModel
   List<IncidentReport> get incidentReports => reportService.myIncidentReports;
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [reportService];
+  List<ListenableServiceMixin> get listenableServices => [reportService];
 
   @override
   resolveImagePath(String path) {
@@ -29,13 +29,11 @@ class MyReportsViewModel extends ReactiveViewModel
     setBusy(false);
   }
 
-  // TODO Remove unused
   bool canFollow(String reportTypeId) {
     final reportType = getReportType(reportTypeId);
     return reportType != null && reportType.followupEnable;
   }
 
-  // TODO Remove causing null error
   ReportType? getReportType(String id) {
     ReportType? result;
     try {

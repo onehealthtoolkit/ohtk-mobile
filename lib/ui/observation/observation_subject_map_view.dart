@@ -27,11 +27,11 @@ class ObservationSubjectMapView extends StatelessWidget {
   }
 }
 
-class _SubjectMap extends HookViewModelWidget<ObservationSubjectMapViewModel> {
+class _SubjectMap extends StackedHookView<ObservationSubjectMapViewModel> {
   final GlobalKey _mapKey = GlobalKey();
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context, ObservationSubjectMapViewModel viewModel) {
     if (viewModel.isBusy || viewModel.currentPosition == null) {
       return const Center(

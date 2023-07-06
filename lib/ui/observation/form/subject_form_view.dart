@@ -39,7 +39,8 @@ class ObservationSubjectFormView extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
-                title: Text("${AppLocalizations.of(context)!.reportTitle} ${viewModel.definition != null ? viewModel.definition!.name : ''}"),
+                title: Text(
+                    "${AppLocalizations.of(context)!.reportTitle} ${viewModel.definition != null ? viewModel.definition!.name : ''}"),
               ),
               body: SafeArea(
                 child: Column(
@@ -57,7 +58,9 @@ class ObservationSubjectFormView extends StatelessWidget {
                             var result = await viewModel.submit();
                             if (result is SubjectRecordSubmitSuccess ||
                                 result is SubjectRecordSubmitPending) {
-                              Navigator.pop(context);
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                              }
                             }
                           },
                           onBack: () {

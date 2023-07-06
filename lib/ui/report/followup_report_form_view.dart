@@ -55,7 +55,9 @@ class FollowupReportFormView extends StatelessWidget {
                         onSubmit: () async {
                           var result = await viewModel.submit();
                           if (result is FollowupSubmitSuccess) {
-                            Navigator.pop(context);
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
                           }
                         },
                         onBack: () {

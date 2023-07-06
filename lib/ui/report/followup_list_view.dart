@@ -8,6 +8,7 @@ import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
+import 'package:podd_app/router.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
@@ -31,12 +32,11 @@ class FollowupListView extends StatelessWidget {
   }
 }
 
-class _FollowupList extends HookViewModelWidget<FollowupListViewModel> {
+class _FollowupList extends StackedHookView<FollowupListViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, FollowupListViewModel viewModel) {
+  Widget builder(BuildContext context, FollowupListViewModel viewModel) {
     return RefreshIndicator(
       onRefresh: () async {
         await viewModel.refetchFollowups();
@@ -83,11 +83,13 @@ class _FollowupList extends HookViewModelWidget<FollowupListViewModel> {
                   report: followup,
                   leading: leading,
                   onTap: () {
-                    GoRouter.of(context)
-                        .goNamed('incidentFollowup', pathParameters: {
-                      "incidentId": viewModel.incidentId,
-                      "followupId": followup.id,
-                    });
+                    GoRouter.of(context).goNamed(
+                      OhtkRouter.incidentFollowup,
+                      pathParameters: {
+                        "incidentId": viewModel.incidentId,
+                        "followupId": followup.id,
+                      },
+                    );
                   },
                 );
               },

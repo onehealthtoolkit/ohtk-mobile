@@ -18,7 +18,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 typedef NotificationMessageCallback = void Function(String userMessageId);
 
-abstract class INotificationService with ReactiveServiceMixin {
+abstract class INotificationService with ListenableServiceMixin {
   final _logger = locator<Logger>();
 
   List<UserMessage> get userMessages;

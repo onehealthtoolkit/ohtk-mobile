@@ -6,7 +6,7 @@ import 'package:podd_app/services/db_service.dart';
 import 'package:sqflite/sql.dart';
 import 'package:stacked/stacked.dart';
 
-abstract class IObservationDefinitionService with ReactiveServiceMixin {
+abstract class IObservationDefinitionService with ListenableServiceMixin {
   Future<List<ObservationDefinition>> fetchAllObservationDefinitions();
 
   Future<ObservationDefinition?> getObservationDefinition(int id);
@@ -90,10 +90,11 @@ class ObservationDefinitionService extends IObservationDefinitionService {
 
     if (result.removedList.isNotEmpty) {
       await db.delete('observation_definition',
-          where: "id in (?)", whereArgs: [result.removedList]);
+          where: "id in (?)", whereArgs: [result.removedList.toString()]);
 
       await db.delete('monitoring_definition',
-          where: "definition_id in (?)", whereArgs: [result.removedList]);
+          where: "definition_id in (?)",
+          whereArgs: [result.removedList.toString()]);
     }
 
     for (var definition in result.updatedList) {

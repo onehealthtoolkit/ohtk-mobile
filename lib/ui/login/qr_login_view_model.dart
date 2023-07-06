@@ -12,16 +12,18 @@ class QrLoginViewModel extends BaseViewModel {
   final _gqlService = locator<GqlService>();
 
   final _logger = locator<Logger>();
+  bool detected = false;
 
   Future<String?> authenticate(String token) async {
     setBusy(true);
     String? error;
-    Map<String, dynamic> payload = Jwt.parseJwt(token);
-    var domain = payload['domain'];
-    await _gqlService.setBackendSubDomain(domain);
-    await _gqlService.renewClient();
 
     try {
+      Map<String, dynamic> payload = Jwt.parseJwt(token);
+      var domain = payload['domain'];
+      await _gqlService.setBackendSubDomain(domain);
+      await _gqlService.renewClient();
+
       var authResult = await _authService.verifyQrToken(token);
       if (authResult is AuthFailure) {
         _logger.i(authResult.messages.join(','));
@@ -31,6 +33,8 @@ class QrLoginViewModel extends BaseViewModel {
       error = "Server Error";
     } on DioLinkUnkownException {
       error = "Connection refused";
+    } catch (e) {
+      error = "Application error";
     }
 
     // Let everything finished setting up after logged in

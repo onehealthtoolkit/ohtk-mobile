@@ -14,7 +14,7 @@ class FollowupListViewModel extends ReactiveViewModel {
   }
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [reportService];
+  List<ListenableServiceMixin> get listenableServices => [reportService];
 
   resolveImagePath(String path) {
     return path;

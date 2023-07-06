@@ -288,13 +288,7 @@ class DateField extends Field {
         : "";
   }
 
-  String getTimeZoneFormatter(Duration offset) {
+  static String getTimeZoneFormatter(Duration offset) {
     return "${offset.isNegative ? "-" : "+"}${offset.inHours.abs().toString().padLeft(2, "0")}:${(offset.inMinutes - offset.inHours * 60).abs().toString().padLeft(2, "0")}";
   }
 }
-
-/*
-
-    "${offset.isNegative ? "-" : "+"}${offset.inHours.abs().toString().padLeft(2, "0")}:${(offset.inMinutes - offset.inHours * 60).toString().padLeft(2, "0")}";
-    "${offset.isNegative ? "-" : "+"}${offset.inHours.abs().toString().padLeft(2, "0")}:${(offset.inMinutes - offset.inHours * 60).abs().toString().padLeft(2, "0")}";
-    */

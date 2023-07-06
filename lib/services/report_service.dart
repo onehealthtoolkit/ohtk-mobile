@@ -17,7 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:stacked/stacked.dart';
 
-abstract class IReportService with ReactiveServiceMixin {
+abstract class IReportService with ListenableServiceMixin {
   final _logger = locator<Logger>();
 
   Future<ReportSubmitResult> submit(Report report);
@@ -180,8 +180,8 @@ class ReportService extends IReportService {
         return ReportSubmitPending();
       }
       return result;
-    } on LinkException catch (_e) {
-      _logger.e(_e);
+    } on LinkException catch (e) {
+      _logger.e(e);
       _saveToLocalDB(report);
       return ReportSubmitPending();
     }
@@ -232,8 +232,8 @@ class ReportService extends IReportService {
         _logger.e("Submit followup report error: ${result.messages}");
       }
       return result;
-    } on LinkException catch (_e) {
-      return FollowupSubmitFailure(_e);
+    } on LinkException catch (e) {
+      return FollowupSubmitFailure(e);
     }
   }
 

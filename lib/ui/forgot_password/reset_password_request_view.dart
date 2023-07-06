@@ -44,10 +44,9 @@ class ResetPasswordRequestView extends StatelessWidget {
   }
 }
 
-class _DetailCodeForm
-    extends HookViewModelWidget<ResetPasswordRequestViewModel> {
+class _DetailCodeForm extends StackedHookView<ResetPasswordRequestViewModel> {
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context, ResetPasswordRequestViewModel viewModel) {
     var email = useTextEditingController();
 
@@ -92,7 +91,9 @@ class _DetailCodeForm
                   : () async {
                       var result = await viewModel.resetPasswordRequest();
                       if (result is ForgotPasswordSuccess) {
-                        Navigator.pop(context, true);
+                        if (context.mounted) {
+                          Navigator.pop(context, true);
+                        }
                       }
                     },
               child: viewModel.isBusy

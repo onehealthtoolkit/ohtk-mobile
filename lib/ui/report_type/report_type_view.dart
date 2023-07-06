@@ -48,21 +48,23 @@ class ReportTypeView extends StatelessWidget {
                     ),
                   );
 
-                  if (result != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FormSimulatorView(result),
-                      ),
-                    );
-                  } else {
-                    var errorMessage = SnackBar(
-                      content: Text(AppLocalizations.of(context)
-                              ?.invalidReportTypeQrcode ??
-                          'Invalid report type qrcode'),
-                      backgroundColor: Colors.red,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(errorMessage);
+                  if (context.mounted) {
+                    if (result != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FormSimulatorView(result),
+                        ),
+                      );
+                    } else {
+                      var errorMessage = SnackBar(
+                        content: Text(AppLocalizations.of(context)
+                                ?.invalidReportTypeQrcode ??
+                            'Invalid report type qrcode'),
+                        backgroundColor: Colors.red,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(errorMessage);
+                    }
                   }
                 },
               ),
@@ -113,12 +115,11 @@ class ReportTypeView extends StatelessWidget {
   }
 }
 
-class _TestFlag extends HookViewModelWidget<ReportTypeViewModel> {
+class _TestFlag extends StackedHookView<ReportTypeViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportTypeViewModel viewModel) {
+  Widget builder(BuildContext context, ReportTypeViewModel viewModel) {
     return GestureDetector(
       onTap: () {
         viewModel.testFlag = !viewModel.testFlag;
@@ -166,7 +167,10 @@ class _TestFlag extends HookViewModelWidget<ReportTypeViewModel> {
                 padding: const EdgeInsets.fromLTRB(9, 12, 9, 12),
                 child: SvgPicture.asset(
                   "assets/images/check_icon.svg",
-                  color: viewModel.testFlag ? appTheme.warn : Colors.white,
+                  colorFilter: ColorFilter.mode(
+                    viewModel.testFlag ? appTheme.warn : Colors.white,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
@@ -177,15 +181,14 @@ class _TestFlag extends HookViewModelWidget<ReportTypeViewModel> {
   }
 }
 
-class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
+class _ZeroReport extends StackedHookView<ReportTypeViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
   final formatter = DateFormat('dd/MM/yyyy HH:mm');
 
   _ZeroReport({Key? key}) : super(key: key);
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportTypeViewModel viewModel) {
+  Widget builder(BuildContext context, ReportTypeViewModel viewModel) {
     return Stack(
       fit: StackFit.passthrough,
       children: [
@@ -198,14 +201,17 @@ class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
                 padding: const EdgeInsets.fromLTRB(15, 6, 20, 6),
                 onPressed: () async {
                   await viewModel.submitZeroReport();
-                  var showSuccessMessage = SnackBar(
-                    content: Text(
-                        AppLocalizations.of(context)?.zeroReportSubmitSuccess ??
-                            'Zero report submit success'),
-                    backgroundColor: Colors.green,
-                  );
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(showSuccessMessage);
+
+                  if (context.mounted) {
+                    var showSuccessMessage = SnackBar(
+                      content: Text(AppLocalizations.of(context)
+                              ?.zeroReportSubmitSuccess ??
+                          'Zero report submit success'),
+                      backgroundColor: Colors.green,
+                    );
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(showSuccessMessage);
+                  }
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(left: 28.0),
@@ -256,7 +262,8 @@ class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
               padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
               child: SvgPicture.asset(
                 "assets/images/doc_fill_icon.svg",
-                color: Theme.of(context).primaryColor,
+                colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColor, BlendMode.srcIn),
               ),
             ),
           ),
@@ -266,13 +273,12 @@ class _ZeroReport extends HookViewModelWidget<ReportTypeViewModel> {
   }
 }
 
-class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
+class _Listing extends StackedHookView<ReportTypeViewModel> {
   final Logger logger = locator<Logger>();
   final AppTheme appTheme = locator<AppTheme>();
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context, ReportTypeViewModel viewModel) {
+  Widget builder(BuildContext context, ReportTypeViewModel viewModel) {
     return ListView.builder(
       itemBuilder: (context, categoryIndex) =>
           viewModel.categories[categoryIndex].reportTypes.isNotEmpty
@@ -323,13 +329,15 @@ class _Listing extends HookViewModelWidget<ReportTypeViewModel> {
           onTap: () async {
             var allow = await viewModel.createReport(reportType.id);
             if (allow) {
-              GoRouter.of(context).pushReplacementNamed(
-                'reportForm',
-                pathParameters: {
-                  "reportTypeId": reportType.id,
-                },
-                queryParameters: {"test": viewModel.testFlag ? '1' : '0'},
-              );
+              if (context.mounted) {
+                GoRouter.of(context).pushReplacementNamed(
+                  'reportForm',
+                  pathParameters: {
+                    "reportTypeId": reportType.id,
+                  },
+                  queryParameters: {"test": viewModel.testFlag ? '1' : '0'},
+                );
+              }
             }
           },
           child: Padding(
