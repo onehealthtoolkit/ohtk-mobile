@@ -1,12 +1,15 @@
 part of opensurveillance_form;
 
-class TextField extends PrimitiveField<String> {
+class TextareaField extends PrimitiveField<String> {
   int? minLength;
   int? maxLength;
   String? minLengthMessage;
   String? maxLengthMessage;
+  int rows;
 
-  TextField(
+  static const int defaultRows = 2;
+
+  TextareaField(
     String id,
     String name, {
     String? label,
@@ -18,6 +21,7 @@ class TextField extends PrimitiveField<String> {
     this.minLengthMessage,
     this.maxLength,
     this.maxLengthMessage,
+    this.rows = defaultRows,
     Condition? condition,
     String? tags,
   }) : super(id, name,
@@ -29,12 +33,12 @@ class TextField extends PrimitiveField<String> {
             condition: condition,
             tags: tags);
 
-  factory TextField.fromJson(Map<String, dynamic> json) {
+  factory TextareaField.fromJson(Map<String, dynamic> json) {
     Condition? condition;
     if (json['condition'] != null) {
       condition = SimpleCondition.fromJson(json["condition"]);
     }
-    return TextField(
+    return TextareaField(
       json["id"],
       json["name"],
       label: json["label"],
@@ -46,6 +50,9 @@ class TextField extends PrimitiveField<String> {
       maxLength: json["maxLength"],
       minLengthMessage: json["minLengthMessage"],
       maxLengthMessage: json["maxLengthMessage"],
+      rows: (json["rows"] == null || json["rows"] < 2)
+          ? defaultRows
+          : json["rows"],
       condition: condition,
       tags: json['tags'],
     );
