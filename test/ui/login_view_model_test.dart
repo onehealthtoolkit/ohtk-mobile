@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/login_result.dart';
@@ -10,7 +11,7 @@ import 'package:podd_app/ui/login/login_view_model.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter/services.dart';
 
-class AuthServiceMock implements IAuthService {
+class AuthServiceMock extends ChangeNotifier implements IAuthService {
   String? username;
   String? password;
 

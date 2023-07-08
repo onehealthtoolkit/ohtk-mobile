@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-import 'package:podd_app/locator.dart';
 import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/ui/home/home_view.dart';
 import 'package:podd_app/ui/home/observation/observation_home_view.dart';
@@ -21,24 +18,8 @@ import 'package:podd_app/ui/report/followup_report_view.dart';
 import 'package:podd_app/ui/report/incident_report_view.dart';
 import 'package:podd_app/ui/report/report_form_view.dart';
 import 'package:podd_app/ui/report_type/report_type_view.dart';
-import 'package:stacked/stacked.dart';
 
-class AppViewModel extends ReactiveViewModel {
-  final IAuthService authService = locator<IAuthService>();
-  bool? get isLogin => authService.isLogin;
-
-  late Timer timer;
-
-  AppViewModel() : super() {
-    timer = Timer.periodic(const Duration(minutes: 1), (timer) {
-      authService.requestAccessTokenIfExpired();
-    });
-  }
-
-  @override
-  List<ListenableServiceMixin> get listenableServices =>
-      [authService as AuthService];
-}
+import 'locator.dart';
 
 class OhtkRouter {
   static final OhtkRouter _instance = OhtkRouter._internal();
@@ -66,15 +47,16 @@ class OhtkRouter {
   }
   OhtkRouter._internal();
 
-  GoRouter getRouter(AppViewModel viewModel) {
+  GoRouter getRouter() {
+    final IAuthService authService = locator<IAuthService>();
     return GoRouter(
       navigatorKey: _rootNavigatorKey,
       initialLocation: initialLocation,
-      refreshListenable: viewModel,
+      refreshListenable: authService,
       // redirect to the login page if the user is not logged in
       redirect: (BuildContext context, GoRouterState state) {
         // if the user is not logged in, they need to login
-        final bool loggedIn = viewModel.isLogin ?? false;
+        final bool loggedIn = authService.isLogin ?? false;
         final bool loggingIn = state.location == '/login';
         if (!loggedIn) {
           return '/login';

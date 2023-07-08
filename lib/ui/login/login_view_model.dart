@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:gql_dio_link/gql_dio_link.dart';
+import 'package:podd_app/constants.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/login_result.dart';
 import 'package:podd_app/services/auth_service.dart';
@@ -7,8 +8,6 @@ import 'package:podd_app/services/config_service.dart';
 import 'package:podd_app/services/gql_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
-
-const languageKey = "language";
 
 class LoginViewModel extends BaseViewModel {
   IAuthService authService = locator<IAuthService>();

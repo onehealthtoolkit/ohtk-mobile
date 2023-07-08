@@ -50,3 +50,5 @@ untranslated.txt
 
 .fake
 .java-version
+
+graphqlclientstore.*

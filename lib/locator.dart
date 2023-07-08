@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
+import 'package:podd_app/constants.dart';
 import 'package:podd_app/services/api/auth_api.dart';
 import 'package:podd_app/services/api/comment_api.dart';
 import 'package:podd_app/services/api/configuration_api.dart';
@@ -44,13 +45,13 @@ final locator = GetIt.instance;
 void setupAppLocalization() {
   locator.registerSingletonAsync<AppLocalizations>(() async {
     var prefs = await SharedPreferences.getInstance();
-    var language = prefs.getString("language") ?? "en";
+    var language = prefs.getString(languageKey) ?? "en";
     return AppLocalizations.delegate.load(Locale(language));
   });
 
   locator.registerSingletonAsync<Locale>(() async {
     var prefs = await SharedPreferences.getInstance();
-    var language = prefs.getString("language") ?? "en";
+    var language = prefs.getString(languageKey) ?? "en";
     return Locale(language);
   });
 }

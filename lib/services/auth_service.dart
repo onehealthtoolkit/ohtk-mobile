@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
@@ -16,7 +17,7 @@ import 'dart:async';
 
 import 'api/auth_api.dart';
 
-abstract class IAuthService {
+abstract class IAuthService extends Listenable {
   bool? get isLogin;
 
   UserProfile? get userProfile;

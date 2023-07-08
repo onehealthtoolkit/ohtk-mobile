@@ -1,4 +1,5 @@
 import 'package:image_picker/image_picker.dart';
+import 'package:podd_app/constants.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/profile_result.dart';
 import 'package:podd_app/services/auth_service.dart';
@@ -6,8 +7,6 @@ import 'package:podd_app/services/profile_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-const languageKey = "language";
 
 class ProfileViewModel extends BaseViewModel {
   IAuthService authService = locator<IAuthService>();
