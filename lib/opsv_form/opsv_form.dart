@@ -32,3 +32,4 @@ part 'models/fields/files_field.dart';
 part 'models/fields/location_field.dart';
 part 'models/fields/single_choices_field.dart';
 part 'models/fields/multiple_choices_field.dart';
+part 'models/fields/subform_field.dart';

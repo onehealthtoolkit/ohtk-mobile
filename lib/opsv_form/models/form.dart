@@ -2,17 +2,22 @@ part of opensurveillance_form;
 
 var logger = Logger();
 
+typedef SubformMap = Map<String, Form>;
+
 class Form {
   final logger = Logger();
 
   final String id;
+  final Map<String, dynamic> jsonDefinition;
+
   List<Section> sections = List.empty(growable: true);
   final Values values = Values();
   String _timezone = "";
+  SubformMap subforms = {};
 
   final Observable<int> _currentSectionIdx = Observable(0);
 
-  Form(this.id);
+  Form(this.id, [this.jsonDefinition = const {}]);
 
   get numberOfSections => sections.length;
 
@@ -30,11 +35,17 @@ class Form {
   }
 
   factory Form.fromJson(Map<String, dynamic> json, [String? id]) {
-    var form = Form(id ?? json["id"]);
+    var form = Form(id ?? json["id"], json);
     var jsonSections = (json["sections"] ?? []) as List;
     for (var jsonSection in jsonSections) {
       form.sections.add(Section.fromJson(jsonSection));
     }
+
+    var jsonSubform = (json["subforms"] ?? {}) as Map<dynamic, dynamic>;
+    for (var entry in jsonSubform.entries) {
+      form.subforms[entry.key] = Form.fromJson(entry.value, entry.key);
+    }
+
     form._registerValues();
     return form;
   }
@@ -66,7 +77,7 @@ class Form {
   }
 
   IList<Condition> allConditions() {
-    return ilist(sections).flatMap((section) => section.allConiditions());
+    return ilist(sections).flatMap((section) => section.allConditions());
   }
 
   IList<Field> allFields() {

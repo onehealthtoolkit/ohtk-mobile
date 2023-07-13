@@ -65,7 +65,7 @@ class Section {
     }
   }
 
-  IList<Condition> allConiditions() {
+  IList<Condition> allConditions() {
     return ilist(questions).flatMap((question) => question.allConditions());
   }
 
