@@ -31,6 +31,8 @@ class FormField extends StatelessWidget {
       return FormSingleChoicesField(field as opsv.SingleChoicesField);
     } else if (field is opsv.MultipleChoicesField) {
       return FormMultipleChoicesField(field as opsv.MultipleChoicesField);
+    } else if (field is opsv.SubformField) {
+      return FormSubformField(field as opsv.SubformField);
     }
 
     return const Text("unknown field");

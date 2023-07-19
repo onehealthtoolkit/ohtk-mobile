@@ -15,19 +15,21 @@ class Subform {
     required this.descriptionTemplate,
   });
 
-  String get evaluatedTitle => formatWithMap(
+  String get evaluatedTitle => formatWithAnyMap(
         titleTemplate,
-        ref.toJsonValue() as Map<String, String>,
+        ref.toJsonValue(),
       );
 
-  String get evaluatedDescription => formatWithMap(
+  String get evaluatedDescription => formatWithAnyMap(
         descriptionTemplate,
-        ref.toJsonValue() as Map<String, String>,
+        ref.toJsonValue(),
       );
 }
 
 class SubformField extends Field {
-  final _forms = ObservableList<Subform>.of([]);
+  final forms = ObservableList<Subform>.of([]);
+  var error = Observable<String>('');
+
   final String formRef;
   String? titleTemplate;
   String? descriptionTemplate;
@@ -81,7 +83,7 @@ class SubformField extends Field {
   Subform? getSubformByName(String name) {
     Subform? f;
     try {
-      f = _forms.firstWhere((element) => element.name == name);
+      f = forms.firstWhere((element) => element.name == name);
     } catch (_) {
       // not found
     }
@@ -98,6 +100,56 @@ class SubformField extends Field {
     return true;
   }
 
+  bool _isFormRecordNameValid(String? name) {
+    if (name == null || name.isEmpty) {
+      return false;
+    }
+
+    /// check duplicate
+    Subform? subform = getSubformByName(name);
+    if (subform != null) {
+      return false;
+    }
+
+    /// check name contains no space
+    if (name.contains(RegExp(r'\s'))) {
+      return false;
+    }
+    return true;
+  }
+
+  setError([String? value]) {
+    runInAction(() {
+      error.value = value ?? '';
+    });
+  }
+
+  Subform? addForm(String name, {String? key, Map<String, dynamic>? value}) {
+    if (!_isFormRecordNameValid(name.trim())) {
+      setError('Name must not be empty and contains no space');
+      return null;
+    }
+
+    var subformForm = Form.fromJson(
+      formReference!.jsonDefinition,
+      '${formReference!.id}_${key ?? DateTime.now().millisecondsSinceEpoch}',
+      formReference!.testFlag,
+    );
+    subformForm.loadJsonValue(value ?? {});
+
+    var subform = Subform(subformForm,
+        name: name.trim(),
+        titleTemplate: titleTemplate ?? '',
+        descriptionTemplate: descriptionTemplate ?? '');
+
+    forms.add(subform);
+    return subform;
+  }
+
+  void deleteFormRecord(Subform subform) {
+    forms.remove(subform);
+  }
+
   @override
   void loadJsonValue(Map<String, dynamic> json) {
     if (json[name] != null && json[name] is SubformValueMap) {
@@ -108,17 +160,7 @@ class SubformField extends Field {
         for (var formValueMap in formValues.entries) {
           count++;
           var formName = formValueMap.key;
-          var subformForm = Form.fromJson(
-              formReference!.jsonDefinition, '${formReference!.id}_$count');
-
-          subformForm.loadJsonValue(formValueMap.value);
-
-          var subform = Subform(subformForm,
-              name: formName,
-              titleTemplate: titleTemplate ?? '',
-              descriptionTemplate: descriptionTemplate ?? '');
-
-          _forms.add(subform);
+          addForm(formName, key: count.toString(), value: formValueMap.value);
         }
       }
     }
@@ -126,14 +168,14 @@ class SubformField extends Field {
 
   @override
   String get renderedValue => IList.flattenOption(
-          ilist(_forms).map((o) => o.name.isNotEmpty ? some(o.name) : none()))
+          ilist(forms).map((o) => o.name.isNotEmpty ? some(o.name) : none()))
       .toList()
       .join(', ');
 
   @override
   void toJsonValue(Map<String, dynamic> aggregateResult) {
     Map<String, dynamic> json = {};
-    for (var form in _forms) {
+    for (var form in forms) {
       json[form.name] = form.ref.toJsonValue();
     }
     json["value"] = renderedValue;

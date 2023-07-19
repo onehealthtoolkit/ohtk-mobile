@@ -64,19 +64,3 @@ class FormInput extends StatelessWidget {
     );
   }
 }
-/* todo ลบทิ้งถ้าไม่ใช้ 
-ScrollablePositionedList.builder(
-        itemScrollController: _scrollController,
-        itemBuilder: (context, index) {
-          if (index < viewModel.formStore.currentSection.questions.length) {
-            return FormQuestion(
-              question: viewModel.formStore.currentSection.questions[index],
-            );
-          } else {
-            return FormFooter(
-                viewModel: viewModel, scrollController: _scrollController);
-          }
-        },
-        itemCount: viewModel.formStore.currentSection.questions.length + 1,
-      ),
-      */

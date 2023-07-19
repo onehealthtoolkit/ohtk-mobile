@@ -19,3 +19,13 @@ String formatWithMap(String msg, Map<String, String> mappedValues) {
     return mapped;
   });
 }
+
+String formatWithAnyMap(String msg, Map<String, dynamic> mappedValues) {
+  return msg.replaceAllMapped(RegExp(r'{(.*?)}'), (match) {
+    final mapped = mappedValues[match[1]];
+    if (mapped == null) {
+      return '{${match[1]}}';
+    }
+    return (mapped is! Map) ? mapped.toString() : '[object]';
+  });
+}

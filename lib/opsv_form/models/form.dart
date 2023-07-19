@@ -9,6 +9,7 @@ class Form {
 
   final String id;
   final Map<String, dynamic> jsonDefinition;
+  final bool testFlag;
 
   List<Section> sections = List.empty(growable: true);
   final Values values = Values();
@@ -17,7 +18,7 @@ class Form {
 
   final Observable<int> _currentSectionIdx = Observable(0);
 
-  Form(this.id, [this.jsonDefinition = const {}]);
+  Form(this.id, {this.jsonDefinition = const {}, this.testFlag = false});
 
   get numberOfSections => sections.length;
 
@@ -34,8 +35,13 @@ class Form {
     _timezone = timezone;
   }
 
-  factory Form.fromJson(Map<String, dynamic> json, [String? id]) {
-    var form = Form(id ?? json["id"], json);
+  factory Form.fromJson(Map<String, dynamic> json,
+      [String? id, bool? testFlag]) {
+    var form = Form(
+      id ?? json["id"],
+      jsonDefinition: json,
+      testFlag: testFlag ?? false,
+    );
     var jsonSections = (json["sections"] ?? []) as List;
     for (var jsonSection in jsonSections) {
       form.sections.add(Section.fromJson(jsonSection));
@@ -43,7 +49,8 @@ class Form {
 
     var jsonSubform = (json["subforms"] ?? {}) as Map<dynamic, dynamic>;
     for (var entry in jsonSubform.entries) {
-      form.subforms[entry.key] = Form.fromJson(entry.value, entry.key);
+      form.subforms[entry.key] =
+          Form.fromJson(entry.value, entry.key, testFlag);
     }
 
     form._registerValues();
