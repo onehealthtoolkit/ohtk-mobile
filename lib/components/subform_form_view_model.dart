@@ -1,3 +1,4 @@
+import 'package:mobx/mobx.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
 
@@ -12,6 +13,10 @@ class SubformFormViewModel extends FormBaseViewModel {
 
   init() {
     isReady = true;
+  }
+
+  gotoStart() {
+    runInAction(() => formStore.currentSectionIdx = 0);
   }
 
   @override

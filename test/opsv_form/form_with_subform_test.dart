@@ -39,21 +39,23 @@ void main() {
           ]
         },
       ],
-      "subforms": {
-        "subform1": {
-          "sections": [
-            {
-              "label": "info",
-              "questions": [
-                {
-                  "label": "person",
-                  "fields": [anyField]
-                }
-              ]
-            },
-          ]
+      "subforms": [
+        {
+          "subform1": {
+            "sections": [
+              {
+                "label": "info",
+                "questions": [
+                  {
+                    "label": "person",
+                    "fields": [anyField]
+                  }
+                ]
+              },
+            ]
+          }
         }
-      }
+      ]
     };
   }
 

@@ -65,7 +65,7 @@ class OhtkRouter {
         // if the user is logged in but still on the login page, send them to
         // the home page (shell route) on first view, default to 'reports'
         if (loggingIn) {
-          return '/reports';
+          return initialLocation;
         }
 
         // no need to redirect at all

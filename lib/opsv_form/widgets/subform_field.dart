@@ -20,7 +20,7 @@ class _FormSubformFieldState extends State<FormSubformField> {
         return Container();
       }
       return ListView(
-        padding: EdgeInsets.only(left: 8.w, right: 8.w, top: 8.w),
+        padding: EdgeInsets.fromLTRB(0, 8.w, 0, 8.w),
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         children: [
@@ -48,14 +48,23 @@ class _ItemList extends StatelessObserverWidget {
       itemBuilder: (context, index) {
         var subform = field.forms[index];
         return Dismissible(
+          direction: DismissDirection.startToEnd,
+          background: _deletingTrash(),
           key: Key(subform.ref.id),
           onDismissed: (direction) {
-            field.deleteFormRecord(subform);
+            field.deleteSubform(subform);
           },
           child: GestureDetector(
-            onTap: () {},
-            child: Padding(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (_) => SubformFormView(
+                        field.form.testFlag, subform.name, subform.ref)),
+              );
+            },
+            child: Container(
               padding: EdgeInsets.only(top: 8.0.w),
+              color: Colors.transparent,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -69,6 +78,17 @@ class _ItemList extends StatelessObserverWidget {
       },
     );
   }
+
+  _deletingTrash() => ColoredBox(
+        color: appTheme.warn,
+        child: const Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Icon(Icons.delete_forever, color: Colors.white),
+          ),
+        ),
+      );
 
   Row _titleDesc(BuildContext context, int index) {
     return Row(
@@ -94,9 +114,9 @@ class _ItemList extends StatelessObserverWidget {
             ],
           ),
         ),
-        IconButton(
-          onPressed: () {},
-          icon: Icon(
+        Padding(
+          padding: EdgeInsets.all(8.w),
+          child: Icon(
             Icons.keyboard_arrow_right_rounded,
             size: 24.w,
             color: appTheme.sub1,
@@ -147,6 +167,8 @@ class _LabelState extends State<_Label> {
                   widget.field.setError();
                 },
                 controller: _textFieldController,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
                   hintText: "Enter record name (no spacing)",
                   errorText: widget.field.error.value.isNotEmpty
@@ -162,7 +184,7 @@ class _LabelState extends State<_Label> {
                 FlatButton.primary(
                     onPressed: () {
                       var name = _textFieldController.text;
-                      var subform = widget.field.addForm(name);
+                      var subform = widget.field.addSubform(name);
 
                       if (subform != null) {
                         Navigator.of(context).pushReplacement(
@@ -189,7 +211,6 @@ class _LabelState extends State<_Label> {
         borderRadius: BorderRadius.circular(appTheme.borderRadius),
       ),
       padding: EdgeInsets.fromLTRB(8.w, 8.w, 8.w, 8.w),
-      margin: EdgeInsets.only(bottom: 8.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

@@ -22,7 +22,8 @@ class Form {
 
   get numberOfSections => sections.length;
 
-  get currentSectionIdx => _currentSectionIdx.value;
+  int get currentSectionIdx => _currentSectionIdx.value;
+  set currentSectionIdx(int index) => _currentSectionIdx.value = index;
 
   Values _registerValues() {
     for (var section in sections) {
@@ -47,10 +48,13 @@ class Form {
       form.sections.add(Section.fromJson(jsonSection));
     }
 
-    var jsonSubform = (json["subforms"] ?? {}) as Map<dynamic, dynamic>;
-    for (var entry in jsonSubform.entries) {
-      form.subforms[entry.key] =
-          Form.fromJson(entry.value, entry.key, testFlag);
+    var jsonSubforms = (json["subforms"] ?? []) as List;
+    for (var jsonSubform in jsonSubforms) {
+      var subform = jsonSubform as Map<dynamic, dynamic>;
+      for (var entry in subform.entries) {
+        form.subforms[entry.key] =
+            Form.fromJson(entry.value, entry.key, testFlag);
+      }
     }
 
     form._registerValues();

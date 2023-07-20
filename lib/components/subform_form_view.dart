@@ -26,6 +26,7 @@ class SubformFormView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<SubformFormViewModel>.reactive(
       viewModelBuilder: () => SubformFormViewModel(testFlag, name, form),
+      onViewModelReady: (viewModel) => viewModel.gotoStart(),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
           return const Center(child: CircularProgressIndicator());

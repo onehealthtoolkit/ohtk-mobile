@@ -124,9 +124,9 @@ class SubformField extends Field {
     });
   }
 
-  Subform? addForm(String name, {String? key, Map<String, dynamic>? value}) {
+  Subform? addSubform(String name, {String? key, Map<String, dynamic>? value}) {
     if (!_isFormRecordNameValid(name.trim())) {
-      setError('Name must not be empty and contains no space');
+      setError('Name must not be empty and has no space');
       return null;
     }
 
@@ -146,7 +146,7 @@ class SubformField extends Field {
     return subform;
   }
 
-  void deleteFormRecord(Subform subform) {
+  void deleteSubform(Subform subform) {
     forms.remove(subform);
   }
 
@@ -160,7 +160,8 @@ class SubformField extends Field {
         for (var formValueMap in formValues.entries) {
           count++;
           var formName = formValueMap.key;
-          addForm(formName, key: count.toString(), value: formValueMap.value);
+          addSubform(formName,
+              key: count.toString(), value: formValueMap.value);
         }
       }
     }
