@@ -48,18 +48,22 @@ class _ItemList extends StatelessObserverWidget {
       itemBuilder: (context, index) {
         var subform = field.forms[index];
         return Dismissible(
-          direction: DismissDirection.startToEnd,
-          background: _deletingTrash(),
+          direction: DismissDirection.horizontal,
+          background: _deletingTrash(DismissDirection.startToEnd),
+          secondaryBackground: _deletingTrash(DismissDirection.endToStart),
           key: Key(subform.ref.id),
           onDismissed: (direction) {
             field.deleteSubform(subform);
           },
           child: GestureDetector(
             onTap: () {
+              var title = field.getSubformRecordTitle(subform.name);
+
               Navigator.of(context).push(
                 MaterialPageRoute(
-                    builder: (_) => SubformFormView(
-                        field.form.testFlag, subform.name, subform.ref)),
+                  builder: (_) =>
+                      SubformFormView(field.form.testFlag, title, subform.ref),
+                ),
               );
             },
             child: Container(
@@ -79,11 +83,13 @@ class _ItemList extends StatelessObserverWidget {
     );
   }
 
-  _deletingTrash() => ColoredBox(
+  _deletingTrash(DismissDirection direction) => ColoredBox(
         color: appTheme.warn,
-        child: const Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
+        child: Align(
+          alignment: direction == DismissDirection.startToEnd
+              ? Alignment.centerLeft
+              : Alignment.centerRight,
+          child: const Padding(
             padding: EdgeInsets.all(16.0),
             child: Icon(Icons.delete_forever, color: Colors.white),
           ),
@@ -95,6 +101,7 @@ class _ItemList extends StatelessObserverWidget {
       children: [
         Expanded(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -104,13 +111,14 @@ class _ItemList extends StatelessObserverWidget {
                     .bodyMedium!
                     .copyWith(fontSize: 15.sp),
               ),
-              Text(
-                field.forms[index].evaluatedDescription,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontSize: 12.sp, color: appTheme.sub1),
-              ),
+              if (field.forms[index].evaluatedDescription.isNotEmpty)
+                Text(
+                  field.forms[index].evaluatedDescription,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontSize: 12.sp, color: appTheme.sub1),
+                ),
             ],
           ),
         ),
@@ -151,57 +159,6 @@ class _Label extends StatefulObserverWidget {
 
 class _LabelState extends State<_Label> {
   final AppTheme appTheme = locator<AppTheme>();
-  final TextEditingController _textFieldController = TextEditingController();
-
-  Future<void> _showNameInputDialog(BuildContext context) async {
-    _textFieldController.clear();
-
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return Observer(builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Add new sub-form record'),
-              content: TextField(
-                onChanged: (value) {
-                  widget.field.setError();
-                },
-                controller: _textFieldController,
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.done,
-                decoration: InputDecoration(
-                  hintText: "Enter record name (no spacing)",
-                  errorText: widget.field.error.value.isNotEmpty
-                      ? widget.field.error.value
-                      : null,
-                ),
-              ),
-              actions: <Widget>[
-                FlatButton.outline(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(AppLocalizations.of(context)!.cancel),
-                ),
-                FlatButton.primary(
-                    onPressed: () {
-                      var name = _textFieldController.text;
-                      var subform = widget.field.addSubform(name);
-
-                      if (subform != null) {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                              builder: (_) => SubformFormView(
-                                  widget.field.form.testFlag,
-                                  name,
-                                  subform.ref)),
-                        );
-                      }
-                    },
-                    child: Text(AppLocalizations.of(context)!.ok)),
-              ],
-            );
-          });
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +185,18 @@ class _LabelState extends State<_Label> {
                 shape: const CircleBorder(),
               ),
               onPressed: () {
-                _showNameInputDialog(context);
+                var subform = widget.field.addSubform();
+
+                if (subform != null) {
+                  var title = widget.field.getSubformRecordTitle(subform.name);
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => SubformFormView(
+                          widget.field.form.testFlag, title, subform.ref),
+                    ),
+                  );
+                }
               },
               child: Icon(Icons.add, size: 16.w),
             ),

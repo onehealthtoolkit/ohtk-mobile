@@ -48,13 +48,10 @@ class Form {
       form.sections.add(Section.fromJson(jsonSection));
     }
 
-    var jsonSubforms = (json["subforms"] ?? []) as List;
-    for (var jsonSubform in jsonSubforms) {
-      var subform = jsonSubform as Map<dynamic, dynamic>;
-      for (var entry in subform.entries) {
-        form.subforms[entry.key] =
-            Form.fromJson(entry.value, entry.key, testFlag);
-      }
+    var jsonSubforms = (json["subforms"] ?? {}) as Map<dynamic, dynamic>;
+    for (var entry in jsonSubforms.entries) {
+      form.subforms[entry.key] =
+          Form.fromJson(entry.value, entry.key, testFlag);
     }
 
     form._registerValues();

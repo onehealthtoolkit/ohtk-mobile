@@ -39,23 +39,21 @@ void main() {
           ]
         },
       ],
-      "subforms": [
-        {
-          "subform1": {
-            "sections": [
-              {
-                "label": "info",
-                "questions": [
-                  {
-                    "label": "person",
-                    "fields": [anyField]
-                  }
-                ]
-              },
-            ]
-          }
+      "subforms": {
+        "subform1": {
+          "sections": [
+            {
+              "label": "info",
+              "questions": [
+                {
+                  "label": "person",
+                  "fields": [anyField]
+                }
+              ]
+            },
+          ]
         }
-      ]
+      }
     };
   }
 
@@ -140,8 +138,8 @@ void main() {
       subform2TextField.value = friend2Name;
 
       var jsonValue = form.toJsonValue();
-      expect(jsonValue['friends']['friend_1']['firstName'], friend1Name);
-      expect(jsonValue['friends']['friend_2']['firstName'], friend2Name);
+      expect(jsonValue['friends']['friends_1']['firstName'], friend1Name);
+      expect(jsonValue['friends']['friends_2']['firstName'], friend2Name);
 
       expect(jsonValue['friends']['value'],
           (sourceJson['friends'] as Map<String, dynamic>).keys.join(', '));
