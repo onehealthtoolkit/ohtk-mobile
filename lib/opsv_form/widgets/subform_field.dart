@@ -19,14 +19,28 @@ class _FormSubformFieldState extends State<FormSubformField> {
       if (!widget.field.display) {
         return Container();
       }
-      return ListView(
-        padding: EdgeInsets.fromLTRB(0, 8.w, 0, 8.w),
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        children: [
-          _Label(widget.field),
-          _ItemList(widget.field),
-        ],
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: appTheme.primary),
+          borderRadius: BorderRadius.circular(appTheme.borderRadius),
+        ),
+        padding: EdgeInsets.fromLTRB(8.w, 8.w, 8.w, 8.w),
+        child: ListView(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 8.w),
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          children: [
+            _Label(widget.field),
+            if (widget.field.forms.isNotEmpty)
+              Divider(
+                color: appTheme.secondary,
+                height: 5,
+                thickness: 1,
+                endIndent: 30.w,
+              ),
+            _ItemList(widget.field),
+          ],
+        ),
       );
     });
   }
@@ -41,7 +55,6 @@ class _ItemList extends StatelessObserverWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: EdgeInsets.only(left: 8.w),
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: field.forms.length,
@@ -69,11 +82,20 @@ class _ItemList extends StatelessObserverWidget {
             child: Container(
               padding: EdgeInsets.only(top: 8.0.w),
               color: Colors.transparent,
-              child: Column(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _titleDesc(context, index),
-                  _separator(),
+                  _itemNumber(index),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _titleDesc(context, index),
+                        _separator(),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -82,6 +104,16 @@ class _ItemList extends StatelessObserverWidget {
       },
     );
   }
+
+  _itemNumber(int index) => CircleAvatar(
+        backgroundColor: appTheme.secondary,
+        foregroundColor: appTheme.bg1,
+        radius: 10,
+        child: Text(
+          (index + 1).toString(),
+          textScaleFactor: .8,
+        ),
+      );
 
   _deletingTrash(DismissDirection direction) => ColoredBox(
         color: appTheme.warn,
@@ -122,13 +154,10 @@ class _ItemList extends StatelessObserverWidget {
             ],
           ),
         ),
-        Padding(
-          padding: EdgeInsets.all(8.w),
-          child: Icon(
-            Icons.keyboard_arrow_right_rounded,
-            size: 24.w,
-            color: appTheme.sub1,
-          ),
+        Icon(
+          Icons.keyboard_arrow_right_rounded,
+          size: 24.w,
+          color: appTheme.sub1,
         ),
       ],
     );
@@ -162,47 +191,43 @@ class _LabelState extends State<_Label> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: appTheme.primary),
-        borderRadius: BorderRadius.circular(appTheme.borderRadius),
-      ),
-      padding: EdgeInsets.fromLTRB(8.w, 8.w, 8.w, 8.w),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              widget.field.label ?? '',
-              overflow: TextOverflow.ellipsis,
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            widget.field.label ?? '',
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: appTheme.sub2),
+            textScaleFactor: .9,
           ),
-          SizedBox(
-            height: 24.w,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(24.w, 24.w),
-                shape: const CircleBorder(),
-              ),
-              onPressed: () {
-                var subform = widget.field.addSubform();
-
-                if (subform != null) {
-                  var title = widget.field.getSubformRecordTitle(subform.name);
-
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => SubformFormView(
-                          widget.field.form.testFlag, title, subform.ref),
-                    ),
-                  );
-                }
-              },
-              child: Icon(Icons.add, size: 16.w),
+        ),
+        SizedBox.square(
+          dimension: 24.w,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size(24.w, 24.w),
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(0),
             ),
+            onPressed: () {
+              var subform = widget.field.addSubform();
+
+              if (subform != null) {
+                var title = widget.field.getSubformRecordTitle(subform.name);
+
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => SubformFormView(
+                        widget.field.form.testFlag, title, subform.ref),
+                  ),
+                );
+              }
+            },
+            child: Icon(Icons.add, size: 16.w),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
