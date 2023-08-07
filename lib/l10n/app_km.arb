@@ -55,5 +55,8 @@
   "testFlag": "Test",
   "testModeOn": "Test mode is on",
   "fieldRequired": "field is required.",
+  "incidentInAuthority": "Did this incident occur in your own authority?",
+  "yesAsAccept": "Yes",
+  "noAsReject": "No",
   "passwordMismatch": "Password does not match confirm password"
 }
