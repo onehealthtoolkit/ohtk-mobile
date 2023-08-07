@@ -54,7 +54,7 @@ class SubformFormView extends StatelessWidget {
                       child: FormInput(
                         viewModel: viewModel,
                         onLastSectionValid: () {
-                          Navigator.pop(context);
+                          Navigator.pop(context, 'complete');
                         },
                       ),
                     ),

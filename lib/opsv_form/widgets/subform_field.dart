@@ -210,18 +210,19 @@ class _LabelState extends State<_Label> {
               shape: const CircleBorder(),
               padding: const EdgeInsets.all(0),
             ),
-            onPressed: () {
-              var subform = widget.field.addSubform();
+            onPressed: () async {
+              var subform = widget.field.newSubform();
+              var title = widget.field.getSubformRecordTitle();
 
-              if (subform != null) {
-                var title = widget.field.getSubformRecordTitle(subform.name);
+              var result = await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => SubformFormView(
+                      widget.field.form.testFlag, title, subform.ref),
+                ),
+              );
 
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => SubformFormView(
-                        widget.field.form.testFlag, title, subform.ref),
-                  ),
-                );
+              if (result is String && result == 'complete') {
+                widget.field.addSubform(subform);
               }
             },
             child: Icon(Icons.add, size: 16.w),

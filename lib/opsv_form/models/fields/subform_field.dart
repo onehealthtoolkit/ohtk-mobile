@@ -103,20 +103,29 @@ class SubformField extends Field {
     return "${name}_${DateTime.now().millisecondsSinceEpoch}";
   }
 
-  getSubformRecordTitle(String name) {
-    var index = forms.indexWhere((element) => element.name == name);
+  /// If no [name] provided, a number is a total number of all subforms
+  _getSubformRecordIndex([String? name]) {
+    var idx = forms.indexWhere((element) => element.name == name);
+    if (idx > -1) {
+      return idx;
+    }
+    return forms.length;
+  }
 
-    /// Title of subform view
-    /// Use field label, if none, use question label, if none, use field name
+  /// Title of subform view ie. '1 - this is subform'
+  /// Use field label, if none, use question label, if none, use field name
+  getSubformRecordTitle([String? name]) {
+    var index = _getSubformRecordIndex(name);
+
     var title = label != null && label!.isNotEmpty
         ? label
         : (parent != null && parent!.label.isNotEmpty)
             ? parent!.label
             : this.name;
-    return '(${index + 1}) $title';
+    return '${index + 1} - $title';
   }
 
-  Subform? addSubform({String? varName, Map<String, dynamic>? value}) {
+  Subform newSubform({String? varName, Map<String, dynamic>? value}) {
     var formVarName = varName ?? _getNewSubformVarName();
 
     var subformForm = Form.fromJson(
@@ -131,8 +140,11 @@ class SubformField extends Field {
         titleTemplate: titleTemplate ?? '',
         descriptionTemplate: descriptionTemplate ?? '');
 
-    forms.add(subform);
     return subform;
+  }
+
+  void addSubform(Subform subform) {
+    forms.add(subform);
   }
 
   void deleteSubform(Subform subform) {
@@ -147,7 +159,8 @@ class SubformField extends Field {
 
         for (var formValueMap in formValues.entries) {
           var varName = formValueMap.key;
-          addSubform(varName: varName, value: formValueMap.value);
+          var subform = newSubform(varName: varName, value: formValueMap.value);
+          addSubform(subform);
         }
       }
     }
