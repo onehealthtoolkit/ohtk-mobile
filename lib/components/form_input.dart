@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:podd_app/components/form_footer.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
@@ -9,9 +8,14 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class FormInput extends StatelessWidget {
   final FormBaseViewModel viewModel;
+  final OnLastSectionValid? onLastSectionValid;
   final ItemScrollController _scrollController = ItemScrollController();
 
-  FormInput({required this.viewModel, Key? key}) : super(key: key);
+  FormInput({
+    required this.viewModel,
+    this.onLastSectionValid,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +60,7 @@ class FormInput extends StatelessWidget {
               child: FormFooter(
                 viewModel: viewModel,
                 scrollController: _scrollController,
+                onLastSectionValid: onLastSectionValid,
               ),
             ),
           ),
