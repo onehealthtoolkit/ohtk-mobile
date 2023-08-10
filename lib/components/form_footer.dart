@@ -8,14 +8,24 @@ import 'package:podd_app/ui/report/form_base_view_model.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+typedef OnLastSectionValid = void Function();
+
 class FormFooter extends StatelessWidget {
   final AppTheme apptheme = locator<AppTheme>();
   final Logger logger = locator<Logger>();
   final ItemScrollController scrollController;
   final FormBaseViewModel viewModel;
-  FormFooter(
-      {required this.viewModel, required this.scrollController, Key? key})
-      : super(key: key);
+
+  /// callback function called when form reaches last section and then hit 'Next'
+  /// while all questions have been validated to true
+  final OnLastSectionValid? onLastSectionValid;
+
+  FormFooter({
+    required this.viewModel,
+    required this.scrollController,
+    this.onLastSectionValid,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +83,11 @@ class FormFooter extends StatelessWidget {
               } else {
                 scrollController.scrollTo(
                     index: 0, duration: const Duration(milliseconds: 100));
+
+                if (onLastSectionValid != null &&
+                    viewModel.state == ReportFormState.confirmation) {
+                  onLastSectionValid!.call();
+                }
               }
             },
             child: Row(

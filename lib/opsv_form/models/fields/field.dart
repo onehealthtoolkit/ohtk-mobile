@@ -47,6 +47,8 @@ abstract class Field implements ConiditionSource {
         return SingleChoicesField.fromJson(json);
       case "textarea":
         return TextareaField.fromJson(json);
+      case "subform":
+        return SubformField.fromJson(json);
       case "text":
       default:
         return TextField.fromJson(json);

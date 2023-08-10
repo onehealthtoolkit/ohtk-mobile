@@ -21,30 +21,7 @@ class ReportFileGridView<T extends BaseReportFile> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (files == null || files!.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          color: appTheme.sub4,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "No Files",
-                  style: TextStyle(
-                    color: appTheme.sub2,
-                    fontSize: 16.sp,
-                  ),
-                ),
-                Image.asset(
-                  "assets/images/OHTK.png",
-                )
-              ],
-            ),
-          ),
-        ),
-      );
+      return const SizedBox.shrink();
     }
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),

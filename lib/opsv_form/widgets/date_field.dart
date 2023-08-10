@@ -47,6 +47,10 @@ class _DateTimeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (BuildContext context) {
+      if (!field.display) {
+        return Container();
+      }
+
       return Row(
         children: [
           Expanded(child: _dayDropdown(field), flex: 1),

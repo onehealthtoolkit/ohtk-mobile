@@ -104,7 +104,7 @@ class _ConfirmIncidentArea extends StackedHookView<ReportFormViewModel> {
       children: [
         Center(
           child: Text(
-            "Did this incident occur in your own authority?",
+            AppLocalizations.of(context)!.incidentInAuthority,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   fontSize: 13.sp,
                 ),
@@ -116,7 +116,7 @@ class _ConfirmIncidentArea extends StackedHookView<ReportFormViewModel> {
         Column(
           children: [
             _RadioOption(
-              title: AppLocalizations.of(context)!.yes,
+              title: AppLocalizations.of(context)!.yesAsAccept,
               value: true,
               groupValue: viewModel.incidentInAuthority,
               onChanged: (bool? value) {
@@ -124,7 +124,7 @@ class _ConfirmIncidentArea extends StackedHookView<ReportFormViewModel> {
               },
             ),
             _RadioOption(
-              title: AppLocalizations.of(context)!.no,
+              title: AppLocalizations.of(context)!.noAsReject,
               value: false,
               groupValue: viewModel.incidentInAuthority,
               onChanged: (bool? value) {

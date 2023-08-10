@@ -66,5 +66,8 @@
   "testFlag": "Test",
   "testModeOn": "Test mode is on",
   "fieldRequired": "Field is required.",
+  "incidentInAuthority": "ພື້ນທີ່ເກີດເຫດຢູ່ໃນອົງການຂອງເຈົ້າບໍ?",
+  "yesAsAccept": "ແມ່ນແລ້ວ",
+  "noAsReject": "ບໍ່​ແມ່ນ",
   "passwordMismatch": "Password does not match confirm password"
 }
