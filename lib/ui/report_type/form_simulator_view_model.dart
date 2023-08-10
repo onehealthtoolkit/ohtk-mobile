@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:podd_app/models/entities/report.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/report_submit_result.dart';
@@ -35,7 +35,7 @@ class FormSimulatorViewModel extends BaseViewModel {
   }
 
   init() async {
-    final String timezone = await FlutterNativeTimezone.getLocalTimezone();
+    final String timezone = await FlutterTimezone.getLocalTimezone();
     _reportId = _uuid.v4();
     _formStore = Form.fromJson(json.decode(_reportType.definition), _reportId);
     _formStore.setTimezone(timezone);
