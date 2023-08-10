@@ -35,13 +35,18 @@ class IncidentReportView extends HookWidget {
     return ViewModelBuilder<IncidentReportViewModel>.nonReactive(
       viewModelBuilder: () => IncidentReportViewModel(id),
       builder: (context, viewModel, child) {
-        return Scaffold(
-          appBar: AppBar(
-            leading: const BackAppBarAction(),
-            elevation: 0,
-            title: Text(AppLocalizations.of(context)!.reportDetailTitle),
+        return WillPopScope(
+          onWillPop: () async {
+            return viewModel.mapRenderedComplete;
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              leading: const BackAppBarAction(),
+              elevation: 0,
+              title: Text(AppLocalizations.of(context)!.reportDetailTitle),
+            ),
+            body: _TabView(),
           ),
-          body: _TabView(),
         );
       },
     );
@@ -252,6 +257,8 @@ class _Data extends StackedHookView<IncidentReportViewModel> {
 }
 
 class _Map extends StackedHookView<IncidentReportViewModel> {
+  final AppTheme appTheme = locator<AppTheme>();
+
   @override
   Widget builder(BuildContext context, IncidentReportViewModel viewModel) {
     final latlng = viewModel.latlng;
@@ -276,17 +283,42 @@ class _Map extends StackedHookView<IncidentReportViewModel> {
         height: 250.w,
         width: MediaQuery.of(context).size.width,
         child: (latlng != null)
-            ? GoogleMap(
-                mapType: MapType.normal,
-                initialCameraPosition: CameraPosition(
-                    zoom: 12, target: LatLng(latlng[0], latlng[1])),
-                myLocationEnabled: false,
-                myLocationButtonEnabled: false,
-                scrollGesturesEnabled: true,
-                onMapCreated: (GoogleMapController controller) {
-                  mapControllerCompleter.complete(controller);
-                },
-                markers: markers,
+            ? Stack(
+                fit: StackFit.passthrough,
+                children: [
+                  GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: CameraPosition(
+                        zoom: 12, target: LatLng(latlng[0], latlng[1])),
+                    myLocationEnabled: false,
+                    myLocationButtonEnabled: false,
+                    scrollGesturesEnabled: true,
+                    onMapCreated: (GoogleMapController controller) {
+                      mapControllerCompleter.complete(controller);
+                      viewModel.mapRenderedComplete = true;
+                    },
+                    markers: markers,
+                  ),
+                  if (!viewModel.mapRenderedComplete)
+                    ColoredBox(
+                      color: appTheme.sub4,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Loading map...",
+                            style: TextStyle(
+                              color: appTheme.sub2,
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                          Image.asset(
+                            "assets/images/OHTK.png",
+                          )
+                        ],
+                      ),
+                    )
+                ],
               )
             : Padding(
                 padding: const EdgeInsets.all(20.0),

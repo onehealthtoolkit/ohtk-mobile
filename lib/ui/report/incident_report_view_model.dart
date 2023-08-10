@@ -9,6 +9,7 @@ class IncidentReportViewModel extends FutureViewModel<IncidentReport> {
   ConfigService configService = locator<ConfigService>();
 
   String id;
+  bool _mapRenderedComplete = false;
 
   IncidentReportViewModel(this.id);
 
@@ -32,5 +33,12 @@ class IncidentReportViewModel extends FutureViewModel<IncidentReport> {
       }
     }
     return latlng;
+  }
+
+  bool get mapRenderedComplete => latlng != null ? _mapRenderedComplete : true;
+
+  set mapRenderedComplete(bool value) {
+    _mapRenderedComplete = value;
+    notifyListeners();
   }
 }
