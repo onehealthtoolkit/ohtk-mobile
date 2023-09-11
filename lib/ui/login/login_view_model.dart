@@ -16,7 +16,7 @@ class LoginViewModel extends BaseViewModel {
 
   final _dio = Dio();
   List<Map<String, String>> serverOptions = [
-    {"label": "-- Default --", "domain": ""}
+    {"label": "-- Please select server --", "domain": ""}
   ];
 
   String subDomain = "";
@@ -58,6 +58,9 @@ class LoginViewModel extends BaseViewModel {
   }
 
   changeServer(String value) async {
+    if (value == "") {
+      return;
+    }
     subDomain = value;
     await gqlService.setBackendSubDomain(value);
   }

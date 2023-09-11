@@ -46,7 +46,7 @@ class FlatButton extends StatelessWidget {
   }
 
   factory FlatButton.outline({
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
     required Widget child,
     EdgeInsets? padding,
     Color? backgroundColor,

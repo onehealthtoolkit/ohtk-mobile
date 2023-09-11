@@ -59,7 +59,7 @@ android {
         // [:flutter_secure_storage] requires minSdkVersion 18 
         // [:google_maps_flutter] requires minSdkVersion 20
         minSdkVersion 21
-        targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 

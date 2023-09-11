@@ -91,122 +91,126 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
                     const SizedBox(height: 10),
                     _tenantDropdown(viewModel, context),
                     const SizedBox(height: 20),
-                    TextField(
-                      controller: username,
-                      textInputAction: TextInputAction.next,
-                      onChanged: viewModel.setUsername,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.usernameLabel,
-                        errorText: viewModel.error("username"),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: password,
-                      textInputAction: TextInputAction.done,
-                      obscureText: viewModel.obscureText,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.passwordLabel,
-                        errorText: viewModel.error("password"),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            viewModel.setObscureText(!viewModel.obscureText);
-                          },
-                          hoverColor: Colors.transparent,
-                          icon: viewModel.obscureText
-                              ? const Icon(Icons.visibility)
-                              : const Icon(Icons.visibility_off),
+                    ...skipIfDomainNotSelected(viewModel, [
+                      TextField(
+                        controller: username,
+                        textInputAction: TextInputAction.next,
+                        onChanged: viewModel.setUsername,
+                        decoration: InputDecoration(
+                          labelText:
+                              AppLocalizations.of(context)!.usernameLabel,
+                          errorText: viewModel.error("username"),
                         ),
                       ),
-                      onChanged: viewModel.setPassword,
-                      onSubmitted: (value) {
-                        viewModel.setPassword(value);
-                        viewModel.authenticate();
-                      },
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 40,
-                      child: Stack(
-                        children: <Widget>[
-                          Positioned(
-                            top: -10,
-                            right: 2,
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ResetPasswordRequestView(),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                AppLocalizations.of(context)!
-                                    .forgotPasswordButton,
-                                style: TextStyle(
-                                  fontSize: 13.sp,
-                                ),
-                              ),
-                            ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: password,
+                        textInputAction: TextInputAction.done,
+                        obscureText: viewModel.obscureText,
+                        decoration: InputDecoration(
+                          labelText:
+                              AppLocalizations.of(context)!.passwordLabel,
+                          errorText: viewModel.error("password"),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              viewModel.setObscureText(!viewModel.obscureText);
+                            },
+                            hoverColor: Colors.transparent,
+                            icon: viewModel.obscureText
+                                ? const Icon(Icons.visibility)
+                                : const Icon(Icons.visibility_off),
                           ),
-                        ],
+                        ),
+                        onChanged: viewModel.setPassword,
+                        onSubmitted: (value) {
+                          viewModel.setPassword(value);
+                          viewModel.authenticate();
+                        },
                       ),
-                    ),
-                    if (viewModel.hasErrorForKey("general"))
-                      Text(
-                        viewModel.error("general"),
-                        style: const TextStyle(
-                          color: Colors.red,
+                      SizedBox(
+                        width: double.infinity,
+                        height: 40,
+                        child: Stack(
+                          children: <Widget>[
+                            Positioned(
+                              top: -10,
+                              right: 2,
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ResetPasswordRequestView(),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  AppLocalizations.of(context)!
+                                      .forgotPasswordButton,
+                                  style: TextStyle(
+                                    fontSize: 13.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FlatButton.primary(
-                        onPressed:
-                            viewModel.isBusy ? null : viewModel.authenticate,
-                        child: viewModel.isBusy
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
+                      if (viewModel.hasErrorForKey("general"))
+                        Text(
+                          viewModel.error("general"),
+                          style: const TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FlatButton.primary(
+                          onPressed:
+                              viewModel.isBusy ? null : viewModel.authenticate,
+                          child: viewModel.isBusy
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  AppLocalizations.of(context)!.loginButton,
+                                  style: TextStyle(fontSize: 15.sp),
                                 ),
-                              )
-                            : Text(
-                                AppLocalizations.of(context)!.loginButton,
-                                style: TextStyle(fontSize: 15.sp),
-                              ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    _qrcodeLogin(context),
-                    const SizedBox(height: 40),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FlatButton.outline(
-                        backgroundColor: appTheme.bg2,
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const RegisterView(),
-                            ),
-                          );
-                        },
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.grid_view_outlined, size: 16.w),
-                              const SizedBox(width: 4),
-                              Text(
-                                AppLocalizations.of(context)!.registerButton,
-                                style: TextStyle(
-                                  fontSize: 15.sp,
+                      const SizedBox(height: 20),
+                      _qrcodeLogin(context),
+                      const SizedBox(height: 40),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FlatButton.outline(
+                          backgroundColor: appTheme.bg2,
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const RegisterView(),
+                              ),
+                            );
+                          },
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.grid_view_outlined, size: 16.w),
+                                const SizedBox(width: 4),
+                                Text(
+                                  AppLocalizations.of(context)!.registerButton,
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                  ),
                                 ),
-                              ),
-                            ]),
+                              ]),
+                        ),
                       ),
-                    ),
+                    ])
                   ],
                 ),
               ),
@@ -215,6 +219,14 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
         ),
       ],
     );
+  }
+
+  skipIfDomainNotSelected<T>(LoginViewModel viewModel, List<T> items) {
+    if (viewModel.subDomain == "") {
+      return <T>[];
+    }
+
+    return items;
   }
 
   Widget _qrcodeLogin(
@@ -291,6 +303,9 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
       hint: const Text("Server"),
       value: viewModel.subDomain,
       onChanged: (String? value) async {
+        if (value == null) {
+          return;
+        }
         await viewModel.changeServer(value ?? "");
         if (context.mounted) {
           RestartWidget.restartApp(context);
