@@ -1,0 +1,201 @@
+{
+    "appName": "OHTK Mobile",
+    "loginTitle": "သင့်အကောင့်သို့ ဝင်ရောက်ပါ။",
+    "signupTitle": "ဆိုင်းအပ်",
+    "signupSubTitle": "မှတ်ပုံတင်ရန်အတွက် ဖိတ်စာကုဒ်ကို ထည့်သွင်းပါ။",
+    "forgotPasswordTitle": "စကားဝှက်မေ့နေပါသလား",
+    "forgotPasswordSubTitle": "ကျေးဇူးပြု၍ သင်၏ အီးမေးလ်လိပ်စာကို ထည့်သွင်းပြီး စကားဝှက် ပြန်လည်သတ်မှတ်ခြင်း လင့်ခ်ကို သင့်ထံ ပေးပို့ပါမည်။",
+    "changePasswordTitle": "စကားဝှက်ကိုပြောင်းရန်",
+    "reportTitle": "သတင်းပို့တယ်။",
+    "reportTypeTitle": "အစီရင်ခံစာအမျိုးအစား",
+    "reportDetailTitle": "အသေးစိတ်သတင်းပို့ပါ။",
+    "followupTitle": "နောက်ဆက်တွဲ",
+    "followupDetailTitle": "နောက်ဆက်တွဲအသေးစိတ်",
+    "profileTitle": "ကိုယ်ရေးအကျဉ်း",
+    "loginButton": "လော့ဂ်အင်",
+    "qrCodeLoginButton": "QRCode လော့ဂ်အင်",
+    "logoutButton": "ထွက်လိုက်ပါ။",
+    "registerButton": "မှတ်ပုံတင်ပါ။",
+    "forgotPasswordButton": "စကားဝှက်မေ့နေပါသလား",
+    "backButton": "ကျော",
+    "formBackButton": "ကျော",
+    "nextButton": "နောက်တစ်ခု",
+    "formNextButton": "နောက်တစ်ခု",
+    "submitButton": "တင်ပြပါ။",
+    "confirmButton": "အတည်ပြုပါ။",
+    "confirmRegisterButton": "စာရင်းသွင်းအတည်ပြုပါ။",
+    "sendButton": "ပို့ပါ။",
+    "updateProfileButton": "ပရိုဖိုင်ကို အပ်ဒိတ်လုပ်ပါ။",
+    "confirmUpdate": "အပ်ဒိတ်ကို အတည်ပြုပါ။",
+    "profileUpdateSuccess": "ပရိုဖိုင်ကို အပ်ဒိတ်လုပ်ထားသည်။",
+    "passwordUpdatedSuccess": "သင့်စကားဝှက်ကို အောင်မြင်စွာ ပြောင်းလဲလိုက်ပါပြီ။",
+    "changePasswordButton": "စကားဝှက်ကိုပြောင်းရန်",
+    "laguageLabel": "ဘာသာစကား",
+    "serverLabel": "ဆာဗာ",
+    "usernameLabel": "အသုံးပြုသူအမည်",
+    "passwordLabel": "စကားဝှက်",
+    "newPasswordLabel": "စကားဝှက်အသစ်",
+    "confirmPasswordLabel": "စကားဝှက်အတည်ပြုခြင်း",
+    "invitationCodeLabel": "ဖိတ်စာကုဒ်",
+    "firstNameLabel": "နာမည်",
+    "lastNameLabel": "မျိုးနွယ်အမည်",
+    "emailLabel": "အီးမေးလ်",
+    "emailHint": "tester@gmail.com",
+    "telephoneLabel": "တယ်လီဖုန်း",
+    "allReportTabLabel": "အစီရင်ခံစာအားလုံး",
+    "myReportTabLabel": "ကျွန်ုပ်၏အစီရင်ခံစာများ",
+    "detailTabLabel": "အသေးစိတ်",
+    "commentTabLabel": "မှတ်ချက်",
+    "followupTabLabel": "နောက်ဆက်တွဲ",
+    "authorityNameLabel": "အာဏာပိုင်အမည်",
+    "noFollowupReport": "နောက်ဆက်တွဲ အစီရင်ခံစာ မရှိပါ။",
+    "noComment": "အထူးပြောစရာမရှိ",
+    "zeroReportLabel": "သုညအစီရင်ခံစာ",
+    "zeroReportLastReportedMessage": "{datetime} တွင် နောက်ဆုံးအစီရင်ခံသည်",
+    "@zeroReportLastReportedMessage": {
+        "placeholders": {
+          "datetime": {
+            "type": "String",
+            "example": "17/10/2022 10:37"
+          }
+        }
+      },
+    "zeroReportSubmitSuccess": "သုညအစီရင်ခံစာတင်သွင်းခဲ့သည်။",
+    "fieldUndefinedLocation": "တည်နေရာကို ရွေးထားခြင်းမရှိပါ။",
+    "fieldUseCurrentLocation": "လက်ရှိတည်နေရာကိုသုံးပါ။",
+    "authorityLabel": "အာဏာပိုင်",
+    "incidentDate": "အဖြစ်အပျက်နေ့စွဲ",
+    "invalidReportTypeQrcode": "အစီရင်ခံစာအမျိုးအစား qrcode မမှန်ကန်ပါ။",
+    "invalidFormValue": "ဖောင်တန်ဖိုး မမှန်ကန်ပါ။",
+    "simulateReportTitle": "အစီရင်ခံစာကို အတုယူပါ။",
+    "closeSimulateReportButton": "အစီရင်ခံစာ သရုပ်သကန်ကို ပိတ်ပါ။",
+    "consentButton": "ကျွန်တော်သဘောတူသည်",
+    "observationSubjectViewTitle": "ဘာသာရပ်",
+    "observationSubjectDetailTabLabel": "အသေးစိတ်",
+    "observationSubjectMonitoringTabLabel": "စောင့်ကြည့်ရေး",
+    "observationSubjectMonitoringViewTitle": "ဘာသာရပ်စောင့်ကြည့်",
+    "validateRequiredMsg": "ဤစာကွက်လပ်မှာဖြည့်ရန်လိုအပ်ပါသည်",
+    "dateFieldMaxErrorMsg": "{name} သည် {max} ထက် ညီရမည်",
+    "@dateFieldMaxErrorMsg": {
+        "placeholders": {
+          "name": {
+            "type": "String",
+            "example": "Incident Date"
+          },
+          "max": {
+            "type": "String",
+            "example": "17/10/2022"
+          }
+        }
+      },
+    "dateFieldMinErrorMsg": "{name} သည် တန်းတူ သို့မဟုတ် {min} ထက် ပိုရမည်",
+    "@dateFieldMinErrorMsg": {
+        "placeholders": {
+          "name": {
+            "type": "String",
+            "example": "Incident Date"
+          },
+          "min": {
+            "type": "String",
+            "example": "17/10/2022"
+          }
+        }
+      },
+    "integerFieldMaxErrorMsg": "{name} သည် {max} ထက် ညီရမည်",
+    "@integerFieldMaxErrorMsg": {
+        "placeholders": {
+          "name": {
+            "type": "String",
+            "example": "Age"
+          },
+          "max": {
+            "type": "String",
+            "example": "100"
+          }
+        }
+      },
+    "integerFieldMinErrorMsg": "{name} သည် တန်းတူ သို့မဟုတ် {min} ထက် ပိုရမည်",
+    "@integerFieldMinErrorMsg": {
+        "placeholders": {
+          "name": {
+            "type": "String",
+            "example": "Age"
+          },
+          "min": {
+            "type": "String",
+            "example": "0"
+          }
+        }
+      },
+    "filesFieldMaxErrorMsg": "{name} ၏ အရေအတွက်သည် {max} ထက် တူညီရမည် သို့မဟုတ် လျော့နည်းရမည်",
+    "@filesFieldMaxErrorMsg": {
+        "placeholders": {
+          "name": {
+            "type": "String",
+            "example": "Age"
+          },
+          "max": {
+            "type": "String",
+            "example": "100"
+          }
+        }
+      },
+    "filesFieldMinErrorMsg": "{name} ၏ အရေအတွက်သည် တူညီသည် သို့မဟုတ် {min} ထက် ပိုရမည်",
+    "@filesFieldMinErrorMsg": {
+        "placeholders": {
+          "name": {
+            "type": "String",
+            "example": "Age"
+          },
+          "min": {
+            "type": "String",
+            "example": "0"
+          }
+        }
+      },
+    "filesFieldMaxSizeErrorMsg": "ဖိုင်အရွယ်အစား- {name} ရှိ #{index} သည် {maxSize} bytes ထက် ညီမျှသည် သို့မဟုတ် လျော့နည်းရပါမည်။",
+    "@filesFieldMaxSizeErrorMsg": {
+        "placeholders": {
+          "index": {
+            "type": "String",
+            "example": "1,2"
+          },
+          "name": {
+            "type": "String",
+            "example": "Age"
+          },
+          "maxSize": {
+            "type": "String",
+            "example": "0"
+          }
+        }
+      },
+    "filesFieldSupportedTypeErrorMsg": "ဖိုင်အမျိုးအစား- {name} တွင် #{index} ကို ပံ့ပိုးမထားပါ။",
+    "@filesFieldMaxSizeErrorMsg": {
+        "placeholders": {
+          "index": {
+            "type": "String",
+            "example": "1,2"
+          },
+          "name": {
+            "type": "String",
+            "example": "Age"
+          }
+        }
+      },
+    "testFlag": "Test",
+    "confirm": "ဆက်လုပ်ရန် သေချာပါသလား။",
+    "confirmExit": "ဆက်လုပ်ရန် သေချာပါသလား။",
+    "incidentInAuthority": "ဒီအဖြစ်အပျက်က မင်းရဲ့ အာဏာပိုင်မှာ ဖြစ်ခဲ့တာလား။",
+    "yesAsAccept": "ဟုတ်ကဲ့",
+    "noAsReject": "မရှိ",
+    "ok": "အိုကေ",
+    "cancel": "မလုပ်တော့",
+    "yes": "ဟုတ်ကဲ့",
+    "no": "မရှိ",
+    "testModeOn": "စမ်းသပ်မုဒ်ကို ဖွင့်ထားသည်။",
+    "loading": "ဖွင့်နေသည်...",
+    "fieldRequired": "အကွက်လိုအပ်သည်။",
+    "passwordMismatch": "စကားဝှက်သည် အတည်ပြုစကားဝှက်နှင့် မကိုက်ညီပါ။",
+    "restartApp": "လျှောက်လွှာကို ပြန်လည်စတင်ရန် လိုအပ်သည်။"
+}
