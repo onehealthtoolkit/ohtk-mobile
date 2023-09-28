@@ -13,6 +13,9 @@ class LanguageDropdown extends StatelessWidget {
     ['ภาษาไทย', 'th'],
     ['ភាសាខ្មែរ', 'km'],
     ['ພາສາລາວ', 'lo'],
+    ['Français', 'fr'],
+    ['Española', 'es'],
+    ['မြန်မာ', 'my'],
   ];
 
   LanguageDropdown({super.key, required this.onChanged, required this.value});
