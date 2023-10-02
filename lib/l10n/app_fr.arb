@@ -1,0 +1,201 @@
+{
+  "appName": "OHTK Mobile",
+  "loginTitle": "Connectez-vous à votre compte",
+  "signupTitle": "S'inscrire",
+  "signupSubTitle": "Veuillez saisir le code d'invitation pour l'inscription",
+  "forgotPasswordTitle": "Mot de passe oublié",
+  "forgotPasswordSubTitle": "Veuillez entrer votre adresse e-mail et nous vous enverrons un lien de réinitialisation de mot de passe",
+  "changePasswordTitle": "Changer le mot de passe",
+  "reportTitle": "Rapport",
+  "reportTypeTitle": "Type de rapport",
+  "reportDetailTitle": "Détail du rapport",
+  "followupTitle": "Suivi",
+  "followupDetailTitle": "Détails du suivi",
+  "profileTitle": "Profil",
+  "loginButton": "Se connecter",
+  "qrCodeLoginButton": "CONNEXION QRCode",
+  "logoutButton": "Se déconnecter",
+  "registerButton": "Registre",
+  "forgotPasswordButton": "Mot de passe oublié",
+  "backButton": "Dos",
+  "formBackButton": "dos",
+  "nextButton": "Suivant",
+  "formNextButton": "suivant",
+  "submitButton": "Soumettre",
+  "confirmButton": "Confirmer",
+  "confirmRegisterButton": "Confirmer l'inscription",
+  "sendButton": "Envoyer",
+  "updateProfileButton": "Mettre à jour le profil",
+  "confirmUpdate": "Confirmer la mise à jour",
+  "profileUpdateSuccess": "Profil mis à jour",
+  "passwordUpdatedSuccess": "Votre mot de passe a été changé avec succès!",
+  "changePasswordButton": "Changer le mot de passe",
+  "laguageLabel": "Langue",
+  "serverLabel": "Serveur",
+  "usernameLabel": "Nom d'utilisateur",
+  "passwordLabel": "Mot de passe",
+  "newPasswordLabel": "nouveau mot de passe",
+  "confirmPasswordLabel": "Confirmez le mot de passe",
+  "invitationCodeLabel": "code d'invitation",
+  "firstNameLabel": "Prénom",
+  "lastNameLabel": "Nom de famille",
+  "emailLabel": "E-mail",
+  "emailHint": "tester@gmail.com",
+  "telephoneLabel": "Téléphone",
+  "allReportTabLabel": "Tous les rapports",
+  "myReportTabLabel": "Mes rapports",
+  "detailTabLabel": "Détail",
+  "commentTabLabel": "Commentaire",
+  "followupTabLabel": "Suivi",
+  "authorityNameLabel": "Nom de l'autorité",
+  "noFollowupReport": "Aucun rapport de suivi",
+  "noComment": "Aucun commentaire",
+  "zeroReportLabel": "Zéro rapport",
+  "zeroReportLastReportedMessage": "Signalé pour la dernière fois à {datetime}",
+  "@zeroReportLastReportedMessage": {
+    "placeholders": {
+      "datetime": {
+        "type": "String",
+        "example": "17/10/2022 10:37"
+      }
+    }
+  },
+  "zeroReportSubmitSuccess": "Aucun rapport soumis",
+  "fieldUndefinedLocation": "Aucun emplacement sélectionné",
+  "fieldUseCurrentLocation": "Utiliser l'emplacement actuel",
+  "authorityLabel": "Autorité",
+  "incidentDate": "Date de l'incident",
+  "invalidReportTypeQrcode": "QRcode de type de rapport non valide",
+  "invalidFormValue": "Valeur de formulaire invalide",
+  "simulateReportTitle": "Simuler le rapport",
+  "closeSimulateReportButton": "Fermer la simulation du rapport",
+  "consentButton": "Je suis d'accord",
+  "observationSubjectViewTitle": "Sujet",
+  "observationSubjectDetailTabLabel": "Détail",
+  "observationSubjectMonitoringTabLabel": "Surveillance",
+  "observationSubjectMonitoringViewTitle": "Surveillance du sujet",
+  "validateRequiredMsg": "Ce champ est obligatoire",
+  "dateFieldMaxErrorMsg": "{name} doit être égal ou inférieur à {max}",
+  "@dateFieldMaxErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Incident Date"
+      },
+      "max": {
+        "type": "String",
+        "example": "17/10/2022"
+      }
+    }
+  },
+  "dateFieldMinErrorMsg": "{name} doit être égal ou supérieur à {min}",
+  "@dateFieldMinErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Incident Date"
+      },
+      "min": {
+        "type": "String",
+        "example": "17/10/2022"
+      }
+    }
+  },
+  "integerFieldMaxErrorMsg": "{name} doit être égal ou inférieur à {max}",
+  "@integerFieldMaxErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "max": {
+        "type": "String",
+        "example": "100"
+      }
+    }
+  },
+  "integerFieldMinErrorMsg": "{name} doit être égal ou supérieur à {min}",
+  "@integerFieldMinErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "min": {
+        "type": "String",
+        "example": "0"
+      }
+    }
+  },
+  "filesFieldMaxErrorMsg": "Le nombre de {name} doit être égal ou inférieur à {max}",
+  "@filesFieldMaxErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "max": {
+        "type": "String",
+        "example": "100"
+      }
+    }
+  },
+  "filesFieldMinErrorMsg": "Le nombre de {name} doit être égal ou supérieur à {min}",
+  "@filesFieldMinErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "min": {
+        "type": "String",
+        "example": "0"
+      }
+    }
+  },
+  "filesFieldMaxSizeErrorMsg": "Taille du fichier : #{index} dans {name} doit être égal ou inférieur à {maxSize} octets",
+  "@filesFieldMaxSizeErrorMsg": {
+    "placeholders": {
+      "index": {
+        "type": "String",
+        "example": "1,2"
+      },
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "maxSize": {
+        "type": "String",
+        "example": "0"
+      }
+    }
+  },
+  "filesFieldSupportedTypeErrorMsg": "Type de fichier : #{index} dans {name} ne sont pas pris en charge",
+  "@filesFieldSupportedTypeErrorMsg": {
+    "placeholders": {
+      "index": {
+        "type": "String",
+        "example": "1,2"
+      },
+      "name": {
+        "type": "String",
+        "example": "Age"
+      }
+    }
+  },
+  "testFlag": "Test",
+  "confirm": "Êtes-vous sûr de continuer ?",
+  "confirmExit": "Êtes-vous sûr de continuer ?",
+  "incidentInAuthority": "Cet incident s'est-il produit sous votre propre autorité ?",
+  "yesAsAccept": "Oui",
+  "noAsReject": "Non",
+  "ok": "D'ACCORD",
+  "cancel": "Annuler",
+  "yes": "Oui",
+  "no": "Non",
+  "testModeOn": "Le mode test est activé",
+  "loading": "Chargement...",
+  "fieldRequired": "Champ requis.",
+  "passwordMismatch": "Le mot de passe ne correspond pas à confirmer le mot de passe",
+  "restartApp": "L'application doit être redémarrée."
+}

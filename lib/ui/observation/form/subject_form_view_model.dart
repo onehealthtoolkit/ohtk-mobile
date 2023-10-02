@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_report_subject.dart';
@@ -43,7 +43,7 @@ class ObservationSubjectFormViewModel extends FormBaseViewModel {
       _formStore = Form.fromJson(
           json.decode(definition!.registerFormDefinition), _subjectId);
 
-      final String timezone = await FlutterNativeTimezone.getLocalTimezone();
+      final String timezone = await FlutterTimezone.getLocalTimezone();
       _formStore.setTimezone(timezone);
 
       if (_subject != null) {

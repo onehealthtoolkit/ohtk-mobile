@@ -1,0 +1,201 @@
+{
+  "appName": "OHTK Mobile",
+  "loginTitle": "Ingrese a su cuenta",
+  "signupTitle": "Inscribirse",
+  "signupSubTitle": "Por favor ingrese el código de invitación para registrarse",
+  "forgotPasswordTitle": "Has olvidado tu contraseña",
+  "forgotPasswordSubTitle": "Ingrese su dirección de correo electrónico y le enviaremos un enlace para restablecer su contraseña.",
+  "changePasswordTitle": "Cambiar la contraseña",
+  "reportTitle": "Informe",
+  "reportTypeTitle": "Tipo de informe",
+  "reportDetailTitle": "Detalle del informe",
+  "followupTitle": "Hacer un seguimiento",
+  "followupDetailTitle": "Detalle de seguimiento",
+  "profileTitle": "Perfil",
+  "loginButton": "Acceso",
+  "qrCodeLoginButton": "Código QR INICIAR SESIÓN",
+  "logoutButton": "Cerrar sesión",
+  "registerButton": "Registro",
+  "forgotPasswordButton": "Has olvidado tu contraseña",
+  "backButton": "Atrás",
+  "formBackButton": "atrás",
+  "nextButton": "Próximo",
+  "formNextButton": "próximo",
+  "submitButton": "Entregar",
+  "confirmButton": "Confirmar",
+  "confirmRegisterButton": "Confirmar Registro",
+  "sendButton": "Enviar",
+  "updateProfileButton": "Actualización del perfil",
+  "confirmUpdate": "Confirmar actualización",
+  "profileUpdateSuccess": "Perfil actualizado",
+  "passwordUpdatedSuccess": "¡Su contraseña ha sido cambiada exitosamente!",
+  "changePasswordButton": "Cambiar la contraseña",
+  "laguageLabel": "Idioma",
+  "serverLabel": "Servidor",
+  "usernameLabel": "Nombre de usuario",
+  "passwordLabel": "Contraseña",
+  "newPasswordLabel": "Nueva contraseña",
+  "confirmPasswordLabel": "Confirmar Contraseña",
+  "invitationCodeLabel": "código de invitación",
+  "firstNameLabel": "Nombre de pila",
+  "lastNameLabel": "Apellido",
+  "emailLabel": "Correo electrónico",
+  "emailHint": "tester@gmail.com",
+  "telephoneLabel": "Teléfono",
+  "allReportTabLabel": "Todos los informes",
+  "myReportTabLabel": "Mis informes",
+  "detailTabLabel": "Detalle",
+  "commentTabLabel": "Comentario",
+  "followupTabLabel": "Hacer un seguimiento",
+  "authorityNameLabel": "Nombre de la autoridad",
+  "noFollowupReport": "Sin informe de seguimiento",
+  "noComment": "Sin comentarios",
+  "zeroReportLabel": "Informe cero",
+  "zeroReportLastReportedMessage": "Reportado por última vez el {datetime}",
+  "@zeroReportLastReportedMessage": {
+    "placeholders": {
+      "datetime": {
+        "type": "String",
+        "example": "17/10/2022 10:37"
+      }
+    }
+  },
+  "zeroReportSubmitSuccess": "Informe cero enviado",
+  "fieldUndefinedLocation": "Ninguna ubicación seleccionada",
+  "fieldUseCurrentLocation": "Usar ubicación actual",
+  "authorityLabel": "Autoridad",
+  "incidentDate": "Fecha del incidente",
+  "invalidReportTypeQrcode": "Código QR de tipo de informe no válido",
+  "invalidFormValue": "Valor de formulario no válido",
+  "simulateReportTitle": "Simular informe",
+  "closeSimulateReportButton": "Cerrar simulación de informe",
+  "consentButton": "Estoy de acuerdo",
+  "observationSubjectViewTitle": "Sujeto",
+  "observationSubjectDetailTabLabel": "Detalle",
+  "observationSubjectMonitoringTabLabel": "Supervisión",
+  "observationSubjectMonitoringViewTitle": "Seguimiento de sujetos",
+  "validateRequiredMsg": "Este campo es obligatorio",
+  "dateFieldMaxErrorMsg": "{name} debe ser igual o menor que {max}",
+  "@dateFieldMaxErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Incident Date"
+      },
+      "max": {
+        "type": "String",
+        "example": "17/10/2022"
+      }
+    }
+  },
+  "dateFieldMinErrorMsg": "{nombre} debe ser igual o mayor que {min}",
+  "@dateFieldMinErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Incident Date"
+      },
+      "min": {
+        "type": "String",
+        "example": "17/10/2022"
+      }
+    }
+  },
+  "integerFieldMaxErrorMsg": "{name} debe ser igual o menor que {max}",
+  "@integerFieldMaxErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "max": {
+        "type": "String",
+        "example": "100"
+      }
+    }
+  },
+  "integerFieldMinErrorMsg": "{name} debe ser igual o mayor que {min}",
+  "@integerFieldMinErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "min": {
+        "type": "String",
+        "example": "0"
+      }
+    }
+  },
+  "filesFieldMaxErrorMsg": "El número de {name} debe ser igual o menor que {max}",
+  "@filesFieldMaxErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "max": {
+        "type": "String",
+        "example": "100"
+      }
+    }
+  },
+  "filesFieldMinErrorMsg": "El número de {name} debe ser igual o mayor que {min}",
+  "@filesFieldMinErrorMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "min": {
+        "type": "String",
+        "example": "0"
+      }
+    }
+  },
+  "filesFieldMaxSizeErrorMsg": "Tamaño del archivo: #{index} en {name} debe ser igual o menor que {maxSize} bytes",
+  "@filesFieldMaxSizeErrorMsg": {
+    "placeholders": {
+      "index": {
+        "type": "String",
+        "example": "1,2"
+      },
+      "name": {
+        "type": "String",
+        "example": "Age"
+      },
+      "maxSize": {
+        "type": "String",
+        "example": "0"
+      }
+    }
+  },
+  "filesFieldSupportedTypeErrorMsg": "Tipo de archivo: #{index} en {name} no son compatibles",
+  "@filesFieldSupportedTypeErrorMsg": {
+    "placeholders": {
+      "index": {
+        "type": "String",
+        "example": "1,2"
+      },
+      "name": {
+        "type": "String",
+        "example": "Age"
+      }
+    }
+  },
+  "testFlag": "Test",
+  "confirm": "¿Estás seguro de continuar?",
+  "confirmExit": "¿Estás seguro de continuar?",
+  "incidentInAuthority": "¿Este incidente ocurrió bajo su propia autoridad?",
+  "yesAsAccept": "Sí",
+  "noAsReject": "No",
+  "ok": "DE ACUERDO",
+  "cancel": "Cancelar",
+  "yes": "Sí",
+  "no": "No",
+  "testModeOn": "El modo de prueba está activado.",
+  "loading": "Cargando...",
+  "fieldRequired": "Se requiere campo.",
+  "passwordMismatch": "La contraseña no coincide. Confirmar contraseña.",
+  "restartApp": "Es necesario reiniciar la aplicación."
+}

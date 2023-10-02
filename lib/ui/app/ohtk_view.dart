@@ -45,6 +45,9 @@ class OhtkApp extends StatelessWidget {
                   Locale('th', ''), // Thai, no country code
                   Locale('km', ''), // Cambodia
                   Locale('lo', ''), // Lao
+                  Locale('fr', ''), // French
+                  Locale('es', ''), // Spanish
+                  Locale('my', ''), // Burmese
                 ],
                 locale: locale,
                 theme: locator<AppTheme>().themeData,
