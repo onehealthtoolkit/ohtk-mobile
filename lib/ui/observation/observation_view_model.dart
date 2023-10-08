@@ -12,6 +12,8 @@ class ObservationViewModel extends BaseViewModel {
 
   String definitionId;
   ObservationDefinition? definition;
+  bool searchMode = false;
+  String? searchWord;
 
   ObservationViewModel(this.definitionId) {
     setBusy(true);
@@ -30,5 +32,29 @@ class ObservationViewModel extends BaseViewModel {
 
   Future<void> fetchObservationSubjects() async {
     await observationService.fetchAllSubjectRecords(true, definition!.id);
+  }
+
+  String get title => searchWord != null && searchWord!.isNotEmpty
+      ? searchWord!
+      : definition != null
+          ? definition!.name
+          : "";
+
+  toggleSearchMode() {
+    searchMode = !searchMode;
+    notifyListeners();
+  }
+
+  setSearchWord(String value) {
+    searchWord = value;
+  }
+
+  submitSearch() async {
+    setBusy(true);
+    await observationService.fetchAllSubjectRecords(
+        true, definition!.id, searchWord);
+    setBusy(false);
+    searchMode = false;
+    notifyListeners();
   }
 }

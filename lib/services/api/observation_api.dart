@@ -56,14 +56,11 @@ class ObservationApi extends GraphQlBaseApi {
                 .toList()));
   }
 
-  Future<SubjectRecordQueryResult> fetchSubjectRecords(
-    int definitionId, {
-    limit = 20,
-    offset = 0,
-  }) async {
+  Future<SubjectRecordQueryResult> fetchSubjectRecords(int definitionId,
+      {limit = 20, offset = 0, String? q}) async {
     const query = r'''
-      query observationSubjects($limit: Int, $offset: Int, $definitionId: String) {
-        observationSubjects(limit: $limit, offset: $offset, definition_Id_In: [$definitionId]) {
+      query observationSubjects($limit: Int, $offset: Int, $definitionId: String, $q: String) {
+        observationSubjects(limit: $limit, offset: $offset, definition_Id_In: [$definitionId], q: $q) {
           totalCount
           results { 
             id
@@ -106,7 +103,8 @@ class ObservationApi extends GraphQlBaseApi {
       variables: {
         "limit": limit,
         "offset": offset,
-        "definitionId": definitionId.toString()
+        "definitionId": definitionId.toString(),
+        "q": q,
       },
       fetchPolicy: FetchPolicy.cacheAndNetwork,
       typeConverter: (resp) => SubjectRecordQueryResult.fromJson(resp),

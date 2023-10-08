@@ -29,7 +29,8 @@ abstract class IObservationRecordService with ListenableServiceMixin {
 
   List<ObservationSubjectReport> get observationSubjectReports;
 
-  Future<void> fetchAllSubjectRecords(bool resetFlag, int definitionId);
+  Future<void> fetchAllSubjectRecords(bool resetFlag, int definitionId,
+      [String? q]);
 
   Future<ObservationSubjectRecord> getSubject(String id);
 
@@ -120,11 +121,12 @@ class ObservationRecordService extends IObservationRecordService {
       _observationSubjectReports;
 
   @override
-  Future<void> fetchAllSubjectRecords(bool resetFlag, int definitionId) async {
+  Future<void> fetchAllSubjectRecords(bool resetFlag, int definitionId,
+      [String? q]) async {
     if (resetFlag) {
       currentSubjectRecordNextOffset = 0;
     }
-    var result = await _observationApi.fetchSubjectRecords(definitionId);
+    var result = await _observationApi.fetchSubjectRecords(definitionId, q: q);
 
     if (resetFlag) {
       _subjectRecords.clear();

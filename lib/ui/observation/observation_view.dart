@@ -21,6 +21,7 @@ class ObservationView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     TabController tabController = useTabController(initialLength: 2);
+    var searchController = useTextEditingController();
 
     return ViewModelBuilder<ObservationViewModel>.reactive(
       viewModelBuilder: () => ObservationViewModel(definitionId),
@@ -42,8 +43,18 @@ class ObservationView extends HookWidget {
                 ),
               ),
             ),
-            title: Text(
-                viewModel.definition != null ? viewModel.definition!.name : ''),
+            title: viewModel.searchMode
+                ? _searchField(searchController, viewModel)
+                : Text(viewModel.title),
+            actions: viewModel.searchMode
+                ? null
+                : [
+                    IconButton(
+                      onPressed: viewModel.toggleSearchMode,
+                      icon: const Icon(Icons.search),
+                      padding: EdgeInsets.only(right: 18.w),
+                    ),
+                  ],
           ),
           body: viewModel.isBusy
               ? const Center(child: OhtkProgressIndicator(size: 100))
@@ -77,6 +88,49 @@ class ObservationView extends HookWidget {
               icon: const Icon(Icons.add_circle_outline),
             ),
           )),
+    );
+  }
+
+  TextField _searchField(
+      TextEditingController searchController, ObservationViewModel viewModel) {
+    return TextField(
+      controller: searchController,
+      textInputAction: TextInputAction.done,
+      onChanged: viewModel.setSearchWord,
+      enableSuggestions: false,
+      onSubmitted: (value) {
+        viewModel.setSearchWord(value);
+        viewModel.submitSearch();
+      },
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderSide: BorderSide(width: 3, color: appTheme.primary),
+          borderRadius: BorderRadius.circular(50.0),
+        ),
+        suffixIcon: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              onTap: () {
+                searchController.text = '';
+                viewModel.setSearchWord('');
+                viewModel.submitSearch();
+              },
+              child: const Icon(Icons.close),
+            ),
+            InkWell(
+              onTap: () {
+                viewModel.submitSearch();
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                child: const Icon(Icons.search),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
