@@ -185,6 +185,7 @@
   },
   "testFlag": "Test",
   "confirm": "ဆက်လုပ်ရန် သေချာပါသလား။",
+  "confirmCheckReport": "This report data cannot be changed once it was submitted. Please make sure everything is correct.",
   "confirmExit": "ဆက်လုပ်ရန် သေချာပါသလား။",
   "incidentInAuthority": "ဒီအဖြစ်အပျက်က မင်းရဲ့ အာဏာပိုင်မှာ ဖြစ်ခဲ့တာလား။",
   "yesAsAccept": "ဟုတ်ကဲ့",

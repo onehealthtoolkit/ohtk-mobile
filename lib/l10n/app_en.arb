@@ -185,6 +185,7 @@
   },
   "testFlag": "Test",
   "confirm": "Are you sure to continue?",
+  "confirmCheckReport": "This report data cannot be changed once it was submitted. Please make sure everything is correct.",
   "confirmExit": "Are you sure to continue?",
   "incidentInAuthority": "Did this incident occur in your own authority?",
   "yesAsAccept": "Yes",

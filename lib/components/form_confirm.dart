@@ -33,6 +33,17 @@ class FormConfirmSubmit extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
+          Center(
+            child: Text(
+              AppLocalizations.of(context)!.confirmCheckReport,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    fontSize: 13.sp,
+                  ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
           ConstrainedBox(
             constraints: const BoxConstraints(minWidth: double.infinity),
             child: FlatButton.primary(

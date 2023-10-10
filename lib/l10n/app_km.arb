@@ -53,10 +53,19 @@
   "fieldUndefinedLocation": "មិនបានជ្រើសរើសទីតាំងទេ។",
   "fieldUseCurrentLocation": "ប្រើទីតាំងបច្ចុប្បន្ន",
   "testFlag": "Test",
-  "testModeOn": "Test mode is on",
-  "fieldRequired": "field is required.",
+  "confirm": "Are you sure to continue?",
+  "confirmCheckReport": "This report data cannot be changed once it was submitted. Please make sure everything is correct.",
+  "confirmExit": "Are you sure to continue?",
   "incidentInAuthority": "Did this incident occur in your own authority?",
   "yesAsAccept": "Yes",
   "noAsReject": "No",
-  "passwordMismatch": "Password does not match confirm password"
+  "ok": "OK",
+  "cancel": "Cancel",
+  "yes": "Yes",
+  "no": "No",
+  "testModeOn": "Test mode is on",
+  "loading": "Loading...",
+  "fieldRequired": "field is required.",
+  "passwordMismatch": "Password does not match confirm password",
+  "restartApp": "Application needs to be restarted."
 }
