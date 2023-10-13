@@ -306,7 +306,7 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
         if (value == null) {
           return;
         }
-        await viewModel.changeServer(value ?? "");
+        await viewModel.changeServer(value);
         if (context.mounted) {
           RestartWidget.restartApp(context);
         }

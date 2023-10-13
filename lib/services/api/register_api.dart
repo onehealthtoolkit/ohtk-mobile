@@ -12,6 +12,8 @@ class RegisterApi extends GraphQlBaseApi {
         query CheckCode($code: String!) {
           checkInvitationCode(code: $code) {
             code
+            generatedUsername
+            generatedEmail
             authority {
               code
               name
@@ -25,7 +27,11 @@ class RegisterApi extends GraphQlBaseApi {
         variables: {'code': code},
         fetchPolicy: FetchPolicy.networkOnly,
         typeConverter: (resp) {
-          return InvitationCodeSuccess(resp['authority']['name']);
+          return InvitationCodeSuccess(
+            resp['authority']['name'],
+            resp['generatedUsername'],
+            resp['generatedEmail'],
+          );
         },
       );
       return result;

@@ -38,6 +38,8 @@ class RegisterViewModel extends BaseViewModel {
     if (result is InvitationCodeSuccess) {
       state = RegisterState.detail;
       authorityName = result.authorityName;
+      username = result.generatedUsername;
+      email = result.generatedEmail;
       notifyListeners();
     } else if (result is InvitationCodeFailure) {
       setErrorForObject("invitationCode", result.messages.join(','));

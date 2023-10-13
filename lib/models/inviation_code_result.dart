@@ -4,8 +4,11 @@ class InvitationCodeResult {}
 
 class InvitationCodeSuccess extends InvitationCodeResult {
   String authorityName;
+  String? generatedUsername;
+  String? generatedEmail;
 
-  InvitationCodeSuccess(this.authorityName);
+  InvitationCodeSuccess(
+      this.authorityName, this.generatedUsername, this.generatedEmail);
 }
 
 class InvitationCodeFailure extends OperationExceptionFailure

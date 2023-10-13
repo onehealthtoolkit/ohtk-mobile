@@ -101,10 +101,10 @@ class _DetailCodeForm extends StackedHookView<RegisterViewModel> {
   final AppTheme appTheme = locator<AppTheme>();
   @override
   Widget builder(BuildContext context, RegisterViewModel viewModel) {
-    var username = useTextEditingController();
+    var username = useTextEditingController(text: viewModel.username);
     var firstName = useTextEditingController();
     var lastName = useTextEditingController();
-    var email = useTextEditingController();
+    var email = useTextEditingController(text: viewModel.email);
     var phone = useTextEditingController();
 
     return SingleChildScrollView(
