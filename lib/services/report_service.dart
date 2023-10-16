@@ -79,10 +79,9 @@ class ReportService extends IReportService {
       _myIncidents,
       _followups,
     ]);
-    _init();
   }
 
-  _init() async {
+  init() async {
     var rows = await _dbService.db.query("report");
     rows.map((row) => Report.fromMap(row)).forEach((report) {
       _pendingReports.add(report);

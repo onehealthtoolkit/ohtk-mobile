@@ -86,10 +86,9 @@ class ObservationRecordService extends IObservationRecordService {
       _monitoringRecords,
       _observationSubjectReports,
     ]);
-    _init();
   }
 
-  _init() async {
+  init() async {
     var subjectRows = await _dbService.db.query("subject_record");
     subjectRows.map((row) => SubjectRecord.fromMap(row)).forEach((record) {
       _pendingSubjectRecords.add(record);

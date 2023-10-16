@@ -1,8 +1,45 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-class WaitingScreen extends StatelessWidget {
-  const WaitingScreen({Key? key}) : super(key: key);
+class WaitingScreen extends StatefulWidget {
+  final StreamController<String> progressStream;
+  const WaitingScreen(this.progressStream, {Key? key}) : super(key: key);
+
+  @override
+  State<WaitingScreen> createState() => _WaitingScreenState();
+}
+
+class _WaitingScreenState extends State<WaitingScreen> {
+  final List<String> _progress = ['init app'];
+  late StreamSubscription? _progressStreamSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.progressStream.hasListener) {
+      return;
+    }
+
+    try {
+      _progressStreamSubscription =
+          widget.progressStream.stream.listen((event) {
+        _progress.add(event);
+        setState(() {});
+      });
+    } catch (e) {
+      _progressStreamSubscription = null;
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (_progressStreamSubscription != null) {
+      _progressStreamSubscription!.cancel();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +56,28 @@ class WaitingScreen extends StatelessWidget {
           ),
         ),
         child: Center(
-          child: Lottie.asset('assets/animations/waiting.json',
-              width: 180, height: 180),
+          child: SizedBox(
+            height: 300,
+            child: Column(
+              children: [
+                Lottie.asset(
+                  'assets/animations/waiting.json',
+                  width: 180,
+                  height: 180,
+                ),
+                Expanded(
+                  flex: 1,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Text(
+                      _progress.join('\n'),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

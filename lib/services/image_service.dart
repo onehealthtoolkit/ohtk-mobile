@@ -41,10 +41,9 @@ class ImageService extends IImageService {
 
   ImageService() {
     listenToReactiveValues([_pendingImages]);
-    _init();
   }
 
-  _init() async {
+  init() async {
     var rows = await _dbService.db.query("report_image");
     rows.map((row) => ReportImage.fromMap(row)).forEach((image) {
       _pendingImages.add(image);

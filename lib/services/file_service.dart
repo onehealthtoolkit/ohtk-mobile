@@ -46,10 +46,9 @@ class FileService extends IFileService {
 
   FileService() {
     listenToReactiveValues([_pendingReportFiles]);
-    _init();
   }
 
-  _init() async {
+  init() async {
     var rows = await _dbService.db.query("report_file");
     rows.map((row) => ReportFile.fromMap(row)).forEach((file) {
       _pendingReportFiles.add(file);

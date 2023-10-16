@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/error_screen.dart';
 import 'package:podd_app/components/waiting_screen.dart';
 import 'package:podd_app/constants.dart';
 import 'package:podd_app/locator.dart';
@@ -12,19 +15,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'ohtk_view_model.dart';
 
 class OhtkApp extends StatelessWidget {
-  const OhtkApp({Key? key}) : super(key: key);
+  final StreamController<String> progressStream;
+
+  const OhtkApp(
+    this.progressStream, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: Future.wait([
-          locator.allReady(),
+          locator.allReady(timeout: const Duration(seconds: 10)),
           fetchLocaleFromPreference(),
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           setupAppLocalization();
+          if (snapshot.hasError) {
+            return MaterialApp(home: ErrorScreen(snapshot.error.toString()));
+          }
           if (!snapshot.hasData) {
-            return const MaterialApp(home: WaitingScreen());
+            return MaterialApp(home: WaitingScreen(progressStream));
           }
           final appViewModel = AppViewModel();
           var locale = snapshot.data[1];

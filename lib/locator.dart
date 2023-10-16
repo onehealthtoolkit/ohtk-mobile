@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:get_it/get_it.dart';
@@ -62,22 +63,27 @@ void setupTheme() {
   });
 }
 
-void setupLocator(String environment) {
+StreamController<String> setupLocator(String environment) {
+  var controller = StreamController<String>();
+
   locator.allowReassignment = true;
 
   if (locator.isRegistered<Logger>()) {
     locator.unregister<Logger>();
   }
+  controller.add("init logger");
   locator.registerSingleton<Logger>(Logger());
 
   if (locator.isRegistered<ConfigService>()) {
     locator.unregister<ConfigService>();
   }
+  controller.add("init config service");
   locator.registerSingleton<ConfigService>(ConfigService());
 
   if (locator.isRegistered<ISecureStorageService>()) {
     locator.unregister<ISecureStorageService>();
   }
+  controller.add("init secure storage service");
   locator.registerSingletonAsync<ISecureStorageService>(() async {
     return SecureStorageService();
   });
@@ -88,10 +94,11 @@ void setupLocator(String environment) {
   locator.registerSingletonAsync<GqlService>(() async {
     var service = GqlService();
     await service.init();
+    controller.add("init gql service");
     return service;
   }, dependsOn: [ISecureStorageService]);
 
-  registerApiLocators();
+  registerApiLocators(controller);
 
   if (locator.isRegistered<IDbService>()) {
     locator.unregister<IDbService>();
@@ -99,6 +106,7 @@ void setupLocator(String environment) {
   locator.registerSingletonAsync<IDbService>(() async {
     final dbService = DbService();
     await dbService.init();
+    controller.add("init db service success");
     return dbService;
   }, dependsOn: []);
 
@@ -106,7 +114,10 @@ void setupLocator(String environment) {
     locator.unregister<IImageService>();
   }
   locator.registerSingletonAsync<IImageService>(() async {
-    return ImageService();
+    final imageService = ImageService();
+    await imageService.init();
+    controller.add("init image service success");
+    return imageService;
   }, dependsOn: [
     IDbService,
     ImageApi,
@@ -116,7 +127,11 @@ void setupLocator(String environment) {
     locator.unregister<IFileService>();
   }
   locator.registerSingletonAsync<IFileService>(() async {
-    return FileService();
+    controller.add("init file service");
+    final fileService = FileService();
+    await fileService.init();
+    controller.add("init file service success");
+    return fileService;
   }, dependsOn: [
     IDbService,
     FileApi,
@@ -127,6 +142,7 @@ void setupLocator(String environment) {
   }
   locator.registerSingletonAsync<IReportTypeService>(() async {
     final reportTypeService = ReportTypeService();
+    controller.add("init report type service");
     return reportTypeService;
   }, dependsOn: [
     IDbService,
@@ -137,6 +153,7 @@ void setupLocator(String environment) {
     locator.unregister<ICommentService>();
   }
   locator.registerSingletonAsync<ICommentService>(() async {
+    controller.add("init comment service");
     return CommentService();
   }, dependsOn: [
     CommentApi,
@@ -148,6 +165,7 @@ void setupLocator(String environment) {
   locator.registerSingletonAsync<INotificationService>(() async {
     final service = NotificationService();
     service.fetchMyMessages(true);
+    controller.add("init notification service");
     return service;
   }, dependsOn: [
     NotificationApi,
@@ -157,7 +175,10 @@ void setupLocator(String environment) {
     locator.unregister<IReportService>();
   }
   locator.registerSingletonAsync<IReportService>(() async {
-    return ReportService();
+    final reportService = ReportService();
+    await reportService.init();
+    controller.add("init report service success");
+    return reportService;
   }, dependsOn: [
     ReportApi,
     ImageApi,
@@ -170,11 +191,15 @@ void setupLocator(String environment) {
     locator.unregister<IObservationRecordService>();
   }
   locator.registerSingletonAsync<IObservationRecordService>(() async {
-    return ObservationRecordService();
+    final service = ObservationRecordService();
+    await service.init();
+    controller.add("init observation record service success");
+    return service;
   }, dependsOn: [
     ImageApi,
     IImageService,
     ObservationApi,
+    IFileService,
     IDbService,
   ]);
 
@@ -182,6 +207,7 @@ void setupLocator(String environment) {
     locator.unregister<IObservationDefinitionService>();
   }
   locator.registerSingletonAsync<IObservationDefinitionService>(() async {
+    controller.add("init observation definition service");
     return ObservationDefinitionService();
   }, dependsOn: [
     IDbService,
@@ -193,6 +219,7 @@ void setupLocator(String environment) {
   }
   locator.registerSingletonAsync<IAuthService>(() async {
     final authService = AuthService();
+    controller.add("init auth service");
     await authService.init();
     return authService;
   }, dependsOn: [
@@ -201,6 +228,7 @@ void setupLocator(String environment) {
     IReportTypeService,
     IReportService,
     IObservationDefinitionService,
+    IObservationRecordService,
   ]);
 
   if (locator.isRegistered<IRegisterService>()) {
@@ -218,6 +246,7 @@ void setupLocator(String environment) {
     locator.unregister<IForgotPasswordService>();
   }
   locator.registerSingletonAsync<IForgotPasswordService>(() async {
+    controller.add("init forgot password service");
     return ForgotPasswordService();
   }, dependsOn: [
     ForgotPasswordApi,
@@ -227,24 +256,29 @@ void setupLocator(String environment) {
     locator.unregister<IProfileService>();
   }
   locator.registerSingletonAsync<IProfileService>(() async {
+    controller.add("init profile service");
     return ProfileService();
   }, dependsOn: [
     ProfileApi,
     IAuthService,
   ]);
 
-  registerViewModelLocators();
+  registerViewModelLocators(controller);
 
+  controller.add("init theme");
   setupTheme();
+
+  return controller;
 }
 
 /// Some viewmodels need to persist their own states across app lifecycle,
 /// so register them as singleton works well
-registerViewModelLocators() {
+registerViewModelLocators(StreamController<String> controller) {
   if (locator.isRegistered<AllReportsViewModel>()) {
     locator.unregister<AllReportsViewModel>();
   }
   locator.registerSingletonAsync<AllReportsViewModel>(() async {
+    controller.add("init all reports view model");
     return AllReportsViewModel();
   }, dependsOn: [
     IReportService,
@@ -254,6 +288,7 @@ registerViewModelLocators() {
     locator.unregister<MyReportsViewModel>();
   }
   locator.registerSingletonAsync<MyReportsViewModel>(() async {
+    controller.add("init my reports view model");
     return MyReportsViewModel();
   }, dependsOn: [
     IReportService,
@@ -261,12 +296,13 @@ registerViewModelLocators() {
   ]);
 }
 
-registerApiLocators() {
+registerApiLocators(StreamController<String> controller) {
   if (locator.isRegistered<AuthApi>()) {
     locator.unregister<AuthApi>();
   }
   locator.registerSingletonAsync<AuthApi>(() async {
     var gqlService = locator<GqlService>();
+    controller.add("init auth api");
     return AuthApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
@@ -275,6 +311,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<RegisterApi>(() async {
     var gqlService = locator<GqlService>();
+    controller.add("init register api");
     return RegisterApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
@@ -283,6 +320,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<ForgotPasswordApi>(() async {
     var gqlService = locator<GqlService>();
+    controller.add("init forgot password api");
     return ForgotPasswordApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
@@ -291,6 +329,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<ProfileApi>(() async {
     var gqlService = locator<GqlService>();
+    controller.add("init profile api");
     return ProfileApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
@@ -299,6 +338,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<ReportTypeApi>(() async {
     var gqlService = locator<GqlService>();
+    controller.add("init report type api");
     return ReportTypeApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
@@ -307,6 +347,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<ReportApi>(() async {
     var gqlService = locator<GqlService>();
+    controller.add("init report api");
     return ReportApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
@@ -315,6 +356,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<ImageApi>(() async {
     var gqlService = locator<GqlService>();
+    controller.add("init image api");
     return ImageApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
@@ -323,6 +365,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<FileApi>(() async {
     var gqlService = locator<GqlService>();
+    controller.add("init file api");
     return FileApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
@@ -331,6 +374,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<NotificationApi>(() async {
     var gqlService = locator<GqlService>();
+    controller.add("init notification api");
     return NotificationApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
@@ -339,6 +383,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<CommentApi>(() async {
     var gqlService = locator<GqlService>();
+    controller.add("init comment api");
     return CommentApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
@@ -347,6 +392,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<ConfigurationApi>(() async {
     var gqlService = locator<GqlService>();
+    controller.add("init configuration api");
     return ConfigurationApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 
@@ -355,6 +401,7 @@ registerApiLocators() {
   }
   locator.registerSingletonAsync<ObservationApi>(() async {
     var gqlService = locator<GqlService>();
+    controller.add("init observation api");
     return ObservationApi(gqlService.resolveClientFunction);
   }, dependsOn: [GqlService]);
 }

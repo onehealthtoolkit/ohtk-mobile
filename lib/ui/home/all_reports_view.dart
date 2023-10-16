@@ -38,7 +38,10 @@ class _ReportList extends StackedHookView<AllReportsViewModel> {
     final isMounted = useIsMounted();
     useEffect(() {
       if (isMounted()) {
-        viewModel.refetchIncidentReports();
+        // use future.delayed to avoid  widget cannot be marked as needing to build because the framework is already in the process of building widgets
+        Future.delayed(Duration.zero, () {
+          viewModel.refetchIncidentReports();
+        });
       }
       return null;
     }, []);

@@ -28,12 +28,12 @@ void main() async {
     defaultValue: Environment.dev,
   );
   setupRemoteConfig(environment);
-  setupLocator(environment);
+  final progressStreamController = setupLocator(environment);
 
   runApp(
-    const RestartWidget(
+    RestartWidget(
       child: FixScreenUtilAppWrapper(
-        child: OhtkApp(),
+        child: OhtkApp(progressStreamController),
       ),
     ),
   );
