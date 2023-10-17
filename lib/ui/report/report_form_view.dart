@@ -33,7 +33,7 @@ class ReportFormView extends StatelessWidget {
         }
         return WillPopScope(
           onWillPop: () async {
-            return _onWillpPop(context);
+            return _onWillpPop(context, viewModel);
           },
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -91,8 +91,14 @@ class ReportFormView extends StatelessWidget {
     );
   }
 
-  Future<bool> _onWillpPop(BuildContext context) async {
-    return confirm(context);
+  Future<bool> _onWillpPop(
+      BuildContext context, ReportFormViewModel viewModel) async {
+    var result = await confirm(context);
+    if (result) {
+      // clear pending images, files for this report
+      await viewModel.clearPendingFilesAndImages();
+    }
+    return result;
   }
 }
 
