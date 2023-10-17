@@ -3,17 +3,19 @@ import 'package:podd_app/ui/resubmit/resubmit_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReSubmitView extends StatelessWidget {
   const ReSubmitView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var localize = AppLocalizations.of(context);
     return ViewModelBuilder<ReSubmitViewModel>.nonReactive(
       viewModelBuilder: () => ReSubmitViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
-          title: const Text("Pending submissions"),
+          title: Text(localize!.pendingAppLabel),
         ),
         body: _Body(),
       ),
@@ -39,6 +41,7 @@ class _Body extends StackedHookView<ReSubmitViewModel> {
   }
 
   _showPendingList(BuildContext context, ReSubmitViewModel viewModel) {
+    var localize = AppLocalizations.of(context);
     return Column(
       children: [
         Expanded(
@@ -47,35 +50,35 @@ class _Body extends StackedHookView<ReSubmitViewModel> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _pendingTitle("Reports"),
+                _pendingTitle(localize!.pendingReportsTitle),
                 PendingList(
                   items: viewModel.pendingReports,
                   onDismissed: (String id) async {
                     await viewModel.deletePendingReport(id);
                   },
                 ),
-                _pendingTitle("Subject Records"),
+                _pendingTitle(localize.pendingSubjectsTitle),
                 PendingList(
                   items: viewModel.pendingSubjectRecords,
                   onDismissed: (String id) async {
                     await viewModel.deletePendingSubjectRecord(id);
                   },
                 ),
-                _pendingTitle("Monitoring Records"),
+                _pendingTitle(localize.pendingMonitoringsTitle),
                 PendingList(
                   items: viewModel.pendingMonitoringRecords,
                   onDismissed: (String id) async {
                     await viewModel.deletePendingMonitoringRecord(id);
                   },
                 ),
-                _pendingTitle("Images"),
+                _pendingTitle(localize.pendingImagesTitle),
                 PendingList(
                   items: viewModel.pendingImages,
                   onDismissed: (String id) async {
                     await viewModel.deletePendingImage(id);
                   },
                 ),
-                _pendingTitle("Files"),
+                _pendingTitle(localize.pendingFilesTitle),
                 PendingList(
                   items: viewModel.pendingFiles,
                   onDismissed: (String id) async {

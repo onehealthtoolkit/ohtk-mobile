@@ -29,7 +29,7 @@ class RegisterViewModel extends BaseViewModel {
   checkInvitationCode() async {
     setBusy(true);
     if (invitationCode == null || invitationCode!.isEmpty) {
-      setErrorForObject("invitationCode", "Invitation code is required");
+      setErrorForObject("invitationCode", localize.invitationCodeIsRequired);
       setBusy(false);
       return;
     }

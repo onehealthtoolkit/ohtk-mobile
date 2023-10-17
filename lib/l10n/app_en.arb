@@ -198,5 +198,22 @@
   "loading": "Loading...",
   "fieldRequired": "field is required.",
   "passwordMismatch": "Password does not match confirm password",
-  "restartApp": "Application needs to be restarted."
+  "restartApp": "Application needs to be restarted.",
+  "numberOfPendingSubmissions": "{count} pending {count, plural, =1{submission} other{submissions}}, tap here to re-submit",
+  "@numberOfPendingSubmissions": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern",
+        "example": "123"
+      }
+    }
+  },
+  "pendingReportsTitle": "Reports",
+  "pendingSubjectsTitle": "Observation records",
+  "pendingMonitoringsTitle": "Objservation monitorings",
+  "pendingImagesTitle": "Images",
+  "pendingFilesTitle": "Files",
+  "pendingAppLabel": "Pending submissions",
+  "invitationCodeIsRequired": "Invitation code is required"
 }

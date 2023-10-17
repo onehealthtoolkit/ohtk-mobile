@@ -181,6 +181,8 @@ class HomeView extends HookWidget {
 class _ReSubmitBlock extends StackedHookView<HomeViewModel> {
   @override
   Widget builder(BuildContext context, HomeViewModel viewModel) {
+    var localize = AppLocalizations.of(context);
+
     return viewModel.numberOfPendingSubmissions > 0
         ? Container(
             width: double.infinity,
@@ -194,8 +196,8 @@ class _ReSubmitBlock extends StackedHookView<HomeViewModel> {
                   ),
                 );
               },
-              child: Text(
-                  "${viewModel.numberOfPendingSubmissions} pending submission${viewModel.numberOfPendingSubmissions > 1 ? 's' : ''}, tap here to re-submit"),
+              child: Text(localize!.numberOfPendingSubmissions(
+                  viewModel.numberOfPendingSubmissions)),
             ),
           )
         : const SizedBox.shrink();
