@@ -215,5 +215,7 @@
   "pendingImagesTitle": "Images",
   "pendingFilesTitle": "Files",
   "pendingAppLabel": "Pending submissions",
-  "invitationCodeIsRequired": "Invitation code is required"
+  "invitationCodeIsRequired": "Invitation code is required",
+  "pickFromGallery": "Pick from Gallery",
+  "takeAPhoto": "Take a Photo"
 }

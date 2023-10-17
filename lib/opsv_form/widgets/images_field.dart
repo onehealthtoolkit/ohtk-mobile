@@ -113,12 +113,13 @@ class _FormImagesFieldState extends State<FormImagesField> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
+        var localize = AppLocalizations.of(context)!;
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
               leading: const Icon(Icons.photo_album),
-              title: const Text('Pick from Gallery'),
+              title: Text(localize.pickFromGallery),
               onTap: () async {
                 var reportImage = await _pickImage(ImageSource.gallery);
                 if (reportImage != null) {
@@ -131,7 +132,7 @@ class _FormImagesFieldState extends State<FormImagesField> {
             ),
             ListTile(
               leading: const Icon(Icons.photo_camera),
-              title: const Text('Take a Photo'),
+              title: Text(localize.takeAPhoto),
               onTap: () async {
                 var reportImage = await _pickImage(ImageSource.camera);
                 if (reportImage != null) {

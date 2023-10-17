@@ -83,5 +83,7 @@
   "pendingReportTitle": "ລາຍງານ",
   "pendingImagesTitle": "ຮູບ",
   "pendingFiles": "ໄຟລ໌",
-  "invitationCodeIsRequired": "ກະລຸນາລະບຸລະຫັດເຊີນ"
+  "invitationCodeIsRequired": "ກະລຸນາລະບຸລະຫັດເຊີນ",
+  "pickFromGallery": "ເລືອກຈາກຄັງຮູບ",
+  "takeAPhoto": "ຖ່າຍ​ຮູບ"
 }
