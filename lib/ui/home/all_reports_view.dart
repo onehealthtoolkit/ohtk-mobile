@@ -40,14 +40,14 @@ class _ReportList extends StackedHookView<AllReportsViewModel> {
       if (isMounted()) {
         // use future.delayed to avoid  widget cannot be marked as needing to build because the framework is already in the process of building widgets
         Future.delayed(Duration.zero, () {
-          viewModel.refetchIncidentReports();
+          viewModel.refetchIncidentReports(false);
         });
       }
       return null;
     }, []);
     return RefreshIndicator(
       onRefresh: () async {
-        await viewModel.refetchIncidentReports();
+        await viewModel.refetchIncidentReports(true);
       },
       child: !viewModel.isBusy
           ? ReportListView(

@@ -187,7 +187,7 @@ class _ReSubmitBlock extends StackedHookView<HomeViewModel> {
         ? Container(
             width: double.infinity,
             height: kToolbarHeight * .6,
-            color: Colors.white,
+            color: Colors.red.shade400,
             child: TextButton(
               onPressed: () {
                 Navigator.of(context).push(
@@ -196,8 +196,14 @@ class _ReSubmitBlock extends StackedHookView<HomeViewModel> {
                   ),
                 );
               },
-              child: Text(localize!.numberOfPendingSubmissions(
-                  viewModel.numberOfPendingSubmissions)),
+              child: Text(
+                localize!.numberOfPendingSubmissions(
+                    viewModel.numberOfPendingSubmissions),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           )
         : const SizedBox.shrink();

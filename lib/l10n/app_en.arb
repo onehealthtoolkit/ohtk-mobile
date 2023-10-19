@@ -211,11 +211,14 @@
   },
   "pendingReportsTitle": "Reports",
   "pendingSubjectsTitle": "Observation records",
-  "pendingMonitoringsTitle": "Objservation monitorings",
+  "pendingMonitoringsTitle": "Observation monitorings",
   "pendingImagesTitle": "Images",
   "pendingFilesTitle": "Files",
   "pendingAppLabel": "Pending submissions",
   "invitationCodeIsRequired": "Invitation code is required",
   "pickFromGallery": "Pick from Gallery",
-  "takeAPhoto": "Take a Photo"
+  "takeAPhoto": "Take a Photo",
+  "offlineWarning": "You are offline, please check your internet connection",
+  "resubmit": "Resubmit",
+  "noPendingSubmissions": "There are no pending submissions."
 }

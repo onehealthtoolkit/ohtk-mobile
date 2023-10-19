@@ -24,12 +24,12 @@ class AllReportsViewModel extends ReactiveViewModel
     return path;
   }
 
-  Future<void> refetchIncidentReports() async {
+  Future<void> refetchIncidentReports(bool forceRefresh) async {
     setBusy(true);
-    await reportService.fetchIncidents(true);
+    await reportService.fetchIncidents(forceRefresh);
     // prefetch my reports to prevent delay when user switch to my reports tab
     // and prevent bug that happend when user report incident and switch to my reports tab
-    await reportService.fetchMyIncidents(true);
+    await reportService.fetchMyIncidents(forceRefresh);
     setBusy(false);
   }
 }

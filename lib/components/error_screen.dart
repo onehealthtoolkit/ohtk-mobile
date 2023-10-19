@@ -18,7 +18,7 @@ class ErrorScreen extends StatelessWidget {
                   'assets/images/error_icon.png',
                   width: 200,
                 ),
-                Text(error, style: Theme.of(context).textTheme.headline6),
+                Text(error, style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
           ),

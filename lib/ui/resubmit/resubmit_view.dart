@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:podd_app/ui/resubmit/resubmit_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -35,8 +36,29 @@ class _Body extends StackedHookView<ReSubmitViewModel> {
   }
 
   _showEmptyMessage(BuildContext context, ReSubmitViewModel viewModel) {
-    return const Center(
-      child: Text("There are no pending submissions."),
+    return Center(
+      child: SizedBox(
+        height: 300,
+        child: Column(
+          children: [
+            Text(AppLocalizations.of(context)!.noPendingSubmissions),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.maybePop(context);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  AppLocalizations.of(context)!.formBackButton,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -50,35 +72,45 @@ class _Body extends StackedHookView<ReSubmitViewModel> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _pendingTitle(localize!.pendingReportsTitle),
+                (viewModel.pendingReports.isNotEmpty)
+                    ? _pendingTitle(localize!.pendingReportsTitle)
+                    : Container(),
                 PendingList(
                   items: viewModel.pendingReports,
                   onDismissed: (String id) async {
                     await viewModel.deletePendingReport(id);
                   },
                 ),
-                _pendingTitle(localize.pendingSubjectsTitle),
+                viewModel.pendingSubjectRecords.isNotEmpty
+                    ? _pendingTitle(localize!.pendingSubjectsTitle)
+                    : Container(),
                 PendingList(
                   items: viewModel.pendingSubjectRecords,
                   onDismissed: (String id) async {
                     await viewModel.deletePendingSubjectRecord(id);
                   },
                 ),
-                _pendingTitle(localize.pendingMonitoringsTitle),
+                viewModel.pendingMonitoringRecords.isNotEmpty
+                    ? _pendingTitle(localize!.pendingMonitoringsTitle)
+                    : Container(),
                 PendingList(
                   items: viewModel.pendingMonitoringRecords,
                   onDismissed: (String id) async {
                     await viewModel.deletePendingMonitoringRecord(id);
                   },
                 ),
-                _pendingTitle(localize.pendingImagesTitle),
+                viewModel.pendingImages.isNotEmpty
+                    ? _pendingTitle(localize!.pendingImagesTitle)
+                    : Container(),
                 PendingList(
                   items: viewModel.pendingImages,
                   onDismissed: (String id) async {
                     await viewModel.deletePendingImage(id);
                   },
                 ),
-                _pendingTitle(localize.pendingFilesTitle),
+                viewModel.pendingFiles.isNotEmpty
+                    ? _pendingTitle(localize!.pendingFilesTitle)
+                    : Container(),
                 PendingList(
                   items: viewModel.pendingFiles,
                   onDismissed: (String id) async {
@@ -91,13 +123,19 @@ class _Body extends StackedHookView<ReSubmitViewModel> {
         ),
         viewModel.isOffline
             ? Container(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
                 width: MediaQuery.of(context).size.width,
-                height: 30,
-                color: Colors.grey.shade400,
-                child: const Align(
+                height: 100,
+                color: Colors.red.shade400,
+                child: Align(
                   alignment: Alignment.center,
                   child: Text(
-                      "You are offline, please check your internet connection"),
+                    localize!.offlineWarning,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13.sp,
+                    ),
+                  ),
                 ),
               )
             : Padding(
@@ -105,7 +143,15 @@ class _Body extends StackedHookView<ReSubmitViewModel> {
                 child: ElevatedButton(
                   onPressed:
                       !viewModel.isEmpty ? viewModel.submitAllPendings : null,
-                  child: const Text("Resubmit"),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 12, 10),
+                    child: Text(
+                      localize!.resubmit,
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                      ),
+                    ),
+                  ),
                 ),
               ),
       ],

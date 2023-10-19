@@ -28,8 +28,34 @@ class HomeViewModel extends IndexTrackingViewModel {
       pendingReports.length +
       pendingSubjectRecords.length +
       pendingMonitoringRecords.length +
-      pendingImages.length +
-      pendingFiles.length;
+      numberOfImagesExcludePendingReportAndObservation +
+      nubmerOfFilesExcludePendingReportAndObservation;
+
+  int get numberOfImagesExcludePendingReportAndObservation {
+    final reportIds = pendingReports.map((e) => e.id).toList();
+    final subjectRecordIds = pendingSubjectRecords.map((e) => e.id).toList();
+    final monitoringRecordIds =
+        pendingMonitoringRecords.map((e) => e.id).toList();
+    final allPendingCaseIds =
+        reportIds + subjectRecordIds + monitoringRecordIds;
+
+    return pendingImages
+        .where((element) => allPendingCaseIds.contains(element.reportId))
+        .length;
+  }
+
+  int get nubmerOfFilesExcludePendingReportAndObservation {
+    final reportIds = pendingReports.map((e) => e.id).toList();
+    final subjectRecordIds = pendingSubjectRecords.map((e) => e.id).toList();
+    final monitoringRecordIds =
+        pendingMonitoringRecords.map((e) => e.id).toList();
+    final allPendingCaseIds =
+        reportIds + subjectRecordIds + monitoringRecordIds;
+
+    return pendingFiles
+        .where((element) => allPendingCaseIds.contains(element.reportId))
+        .length;
+  }
 
   @override
   List<ListenableServiceMixin> get listenableServices =>

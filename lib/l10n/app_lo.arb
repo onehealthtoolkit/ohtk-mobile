@@ -80,10 +80,16 @@
   "passwordMismatch": "ລະຫັດຜ່ານບໍ່ກົງກັນ",
   "restartApp": "ແອັບພລິເຄຊັນຕ້ອງປິດເປີດຄືນໃໝ່.",
   "numberOfPendingSubmissions": "{count} ລາຍການທີ່ຍັງບໍ່ໄດ້ສົ່ງ, ກົດເພື່ອສົ່ງ",
-  "pendingReportTitle": "ລາຍງານ",
+  "pendingReportsTitle": "ລາຍງານ",
+  "pendingSubjectsTitle": "ທະບຽນ",
+  "pendingMonitoringsTitle": "ເຫດຜົນ",
   "pendingImagesTitle": "ຮູບ",
-  "pendingFiles": "ໄຟລ໌",
+  "pendingFilesTitle": "ໄຟລ໌",
+  "pendingAppLabel": "ຂໍ້ມູນຄ້າງສົ່ງ",
   "invitationCodeIsRequired": "ກະລຸນາລະບຸລະຫັດເຊີນ",
   "pickFromGallery": "ເລືອກຈາກຄັງຮູບ",
-  "takeAPhoto": "ຖ່າຍ​ຮູບ"
+  "takeAPhoto": "ຖ່າຍ​ຮູບ",
+  "offlineWarning": "ບໍ່ມີການເຊື່ອມຕໍ່ອິນເຕີເນັດ, ກະລຸນາກວດເບິ່ງການເຊື່ອມຕໍ່ອິນເຕີເນັດຂອງທ່ານ",
+  "resubmit": "ສົ່ງຂໍ້ມູນອີກຄັ້ງ",
+  "noPendingSubmissions": "ບໍ່ມີຂໍ້ມູນຄ້າງສົ່ງ"
 }

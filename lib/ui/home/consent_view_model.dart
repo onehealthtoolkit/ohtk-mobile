@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/services/api/configuration_api.dart';
@@ -24,6 +25,15 @@ class ConsentViewModel extends BaseViewModel {
   }
 
   getConsentConfiguration() async {
+    // check if we are in offline mode?
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      consentNotFound = true;
+      logger.w("No internet connection");
+      setBusy(false);
+      return;
+    }
+
     final result = await configurationApi.getConfigurations();
     try {
       final config = result.data.firstWhere(
