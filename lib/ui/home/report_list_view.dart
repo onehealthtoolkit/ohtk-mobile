@@ -53,6 +53,11 @@ class ReportListView<T extends BaseReportViewModel> extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   ),
                   fit: BoxFit.cover,
+                  errorWidget: (context, url, error) {
+                    return Image.asset(
+                      "assets/images/OHTK.png",
+                    );
+                  },
                 )
               : ColoredBox(
                   color: appTheme.sub4,

@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
@@ -136,6 +137,12 @@ class ReportApi extends GraphQlBaseApi {
         }
       }
     ''';
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    var fetchPolicy = FetchPolicy.cacheAndNetwork;
+    if (connectivityResult == ConnectivityResult.none) {
+      fetchPolicy = FetchPolicy.cacheOnly;
+    }
+
     return runGqlQuery<IncidentReportQueryResult>(
       query: query,
       variables: {
@@ -143,8 +150,7 @@ class ReportApi extends GraphQlBaseApi {
         "offset": offset,
         "testFlag": false,
       },
-      fetchPolicy:
-          resetFlag ? FetchPolicy.networkOnly : FetchPolicy.cacheAndNetwork,
+      fetchPolicy: fetchPolicy,
       typeConverter: (resp) => IncidentReportQueryResult.fromJson(resp),
     );
   }
@@ -239,6 +245,11 @@ class ReportApi extends GraphQlBaseApi {
         }
       }
     ''';
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    var fetchPolicy = FetchPolicy.cacheAndNetwork;
+    if (connectivityResult == ConnectivityResult.none) {
+      fetchPolicy = FetchPolicy.cacheOnly;
+    }
     return runGqlQuery<IncidentReportQueryResult>(
       query: query,
       variables: {
@@ -246,8 +257,7 @@ class ReportApi extends GraphQlBaseApi {
         "offset": offset,
         "testFlag": false,
       },
-      fetchPolicy:
-          resetFlag ? FetchPolicy.networkOnly : FetchPolicy.cacheAndNetwork,
+      fetchPolicy: fetchPolicy,
       typeConverter: (resp) => IncidentReportQueryResult.fromJson(resp),
     );
   }

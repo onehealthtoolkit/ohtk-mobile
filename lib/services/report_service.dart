@@ -96,7 +96,7 @@ class ReportService extends IReportService {
     var result = await _reportApi.fetchIncidentReports(
       offset: currentIncidentReportNextOffset,
       limit: incidentReportLimit,
-      resetFlag: resetFlag,
+      resetFlag: resetFlag, // TODO should remove reset flag from here
     );
     if (resetFlag) {
       _incidents.clear();
