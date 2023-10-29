@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:podd_app/models/login_result.dart';
 import 'package:podd_app/models/user_profile.dart';
@@ -23,7 +25,12 @@ class SecureStorageService implements ISecureStorageService {
 
   @override
   Future<String?> get(String key) async {
-    return storage.read(key: key);
+    try {
+      return storage.read(key: key);
+    } on PlatformException catch (e) {
+      await storage.deleteAll();
+      return null;
+    }
   }
 
   @override
