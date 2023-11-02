@@ -11,9 +11,14 @@ abstract class IProfileService {
     required String lastName,
     String? telephone,
   });
+
   Future<ProfileResult> changePassword(String newPassword);
+
   Future<bool> confirmConsent();
+
   Future<ProfileResult> uploadAvatar(XFile image);
+
+  Future<String> getLoginQrToken(int userId);
 }
 
 class ProfileService extends IProfileService {
@@ -66,6 +71,12 @@ class ProfileService extends IProfileService {
         _authService.updateAvatarUrl(result.avatarUrl!);
       }
     }
+    return result;
+  }
+
+  @override
+  Future<String> getLoginQrToken(int userId) async {
+    var result = await _profileApi.getLoginQrToken(userId.toString());
     return result;
   }
 }

@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/ui/login/qr_login_view_model.dart';
+import 'package:scan/scan.dart';
 import 'package:stacked/stacked.dart';
 
 class QrLoginView extends StatelessWidget {
   const QrLoginView({Key? key}) : super(key: key);
+
+  Future<XFile?> _pickImage(ImageSource source) async {
+    var picker = ImagePicker();
+    try {
+      final image = await picker.pickImage(source: source);
+      return image;
+    } catch (e) {
+      debugPrint("$e");
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,17 +43,48 @@ class QrLoginView extends StatelessWidget {
                 } else {
                   final String? code = barcodeCapture.barcodes.first.rawValue;
                   if (code == null) {
-                    Navigator.pop(context, 'Failed to scan QRCode');
+                    GoRouter.of(context).pop('Failed to scan QR Code');
                   } else {
                     final error = await viewModel.authenticate(code);
                     if (context.mounted) {
-                      Navigator.pop(context, error);
+                      GoRouter.of(context).pop(error);
                     }
                   }
                 }
               },
             ),
             _framer(context),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: FlatButton.primary(
+                onPressed: () async {
+                  final image = await _pickImage(ImageSource.gallery);
+                  if (image != null) {
+                    String? data = await Scan.parse(image.path);
+                    String? error;
+                    if (data != null) {
+                      error = await viewModel.authenticate(data);
+                    } else {
+                      error = 'Failed to read QR Code';
+                    }
+                    if (context.mounted) {
+                      GoRouter.of(context).pop(error);
+                    }
+                  }
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.qr_code,
+                      size: 24,
+                    ),
+                    SizedBox(width: 4),
+                    Text('Choose QRCode image'),
+                  ],
+                ),
+              ),
+            ),
             if (viewModel.isBusy) _waitingProgress(context),
           ],
         ),
@@ -49,6 +95,7 @@ class QrLoginView extends StatelessWidget {
   Center _waitingProgress(BuildContext context) {
     return Center(
       child: Container(
+        width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: Colors.black45,

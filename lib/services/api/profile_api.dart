@@ -123,4 +123,19 @@ class ProfileApi extends GraphQlBaseApi {
       return ProfileFailure(e);
     }
   }
+
+  Future<String> getLoginQrToken(String userId) {
+    const query = r'''
+    query LoginQrToken($userId: ID!) {
+      getLoginQrToken(userId: $userId) {
+        token
+      }
+    }
+    ''';
+    return runGqlQuery(
+        query: query,
+        variables: {"userId": userId},
+        fetchPolicy: FetchPolicy.cacheAndNetwork,
+        typeConverter: (resp) => resp['token']);
+  }
 }

@@ -127,6 +127,14 @@ class ProfileViewModel extends BaseViewModel {
     return result;
   }
 
+  Future<String> downloadLoginQrCode() async {
+    final userProfile = authService.userProfile;
+    setBusyForObject('downloadQrcode', true);
+    final token = await profileService.getLoginQrToken(userProfile!.id);
+    setBusyForObject('downloadQrcode', false);
+    return token;
+  }
+
   logout() {
     authService.logout();
   }
