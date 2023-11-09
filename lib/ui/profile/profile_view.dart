@@ -215,12 +215,13 @@ class _DownloadLoginQrCodeButton extends StackedHookView<ProfileViewModel> {
         : SizedBox(
             width: double.infinity,
             child: TextButton(
-                onPressed: () {
-                  viewModel.downloadLoginQrCode().then((token) {
-                    showQrCodeDialog(context, token);
-                  });
-                },
-                child: const Text('Get login QRcode')),
+              onPressed: () {
+                viewModel.downloadLoginQrCode().then((token) {
+                  showQrCodeDialog(context, token);
+                });
+              },
+              child: Text(AppLocalizations.of(context)!.getLoginQrcodeButton),
+            ),
           );
   }
 
@@ -255,7 +256,7 @@ class _DownloadLoginQrCodeButton extends StackedHookView<ProfileViewModel> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Login QR Code',
+                          AppLocalizations.of(context)!.getLoginQrcodeButton,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         QrImageView(

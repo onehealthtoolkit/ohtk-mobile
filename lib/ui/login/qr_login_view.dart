@@ -7,6 +7,7 @@ import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/ui/login/qr_login_view_model.dart';
 import 'package:scan/scan.dart';
 import 'package:stacked/stacked.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class QrLoginView extends StatelessWidget {
   const QrLoginView({Key? key}) : super(key: key);
@@ -72,15 +73,15 @@ class QrLoginView extends StatelessWidget {
                     }
                   }
                 },
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.qr_code,
                       size: 24,
                     ),
-                    SizedBox(width: 4),
-                    Text('Choose QRCode image'),
+                    const SizedBox(width: 4),
+                    Text(AppLocalizations.of(context)!.pickQrcodeImageButton),
                   ],
                 ),
               ),

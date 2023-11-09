@@ -14,6 +14,8 @@
   "profileTitle": "Profile",
   "loginButton": "Login",
   "qrCodeLoginButton": "QRCode LOGIN",
+  "pickQrcodeImageButton": "Choose QRCode image",
+  "getLoginQrcodeButton": "my QR login",
   "logoutButton": "Logout",
   "registerButton": "Register",
   "forgotPasswordButton": "Forgot Password",

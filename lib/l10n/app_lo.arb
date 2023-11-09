@@ -14,6 +14,8 @@
   "profileTitle": "ໂປຣໄຟລ໌",
   "loginButton": "ເຂົ້າ​ສູ່​ລະ​ບົບ",
   "qrCodeLoginButton": "QRCode LOGIN",
+  "pickQrcodeImageButton": "Choose QRCode image",
+  "getLoginQrcodeButton": "my QR login",
   "logoutButton": "ອອກ​ຈາກ​ລະ​ບົບ",
   "registerButton": "ລົງທະບຽນ",
   "forgotPasswordButton": "ລືມລະຫັດຜ່ານ",

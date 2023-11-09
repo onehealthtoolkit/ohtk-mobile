@@ -14,6 +14,8 @@
   "profileTitle": "Perfil",
   "loginButton": "Acceso",
   "qrCodeLoginButton": "Código QR INICIAR SESIÓN",
+  "pickQrcodeImageButton": "Choose QRCode image",
+  "getLoginQrcodeButton": "my QR login",
   "logoutButton": "Cerrar sesión",
   "registerButton": "Registro",
   "forgotPasswordButton": "Has olvidado tu contraseña",

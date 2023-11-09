@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -27,7 +26,7 @@ class SecureStorageService implements ISecureStorageService {
   Future<String?> get(String key) async {
     try {
       return storage.read(key: key);
-    } on PlatformException catch (e) {
+    } on PlatformException catch (_) {
       await storage.deleteAll();
       return null;
     }

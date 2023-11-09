@@ -14,6 +14,8 @@
   "profileTitle": "แก้ไขโปรไฟล์",
   "loginButton": "เข้าสู่ระบบ",
   "qrCodeLoginButton": "เข้าสู่ระบบผ่าน QR Code",
+  "pickQrcodeImageButton": "เลือกรูป QR Code",
+  "getLoginQrcodeButton": "QR ของฉันเพื่อใช้เข้าสู่ระบบ",
   "logoutButton": "ออกจากระบบ",
   "registerButton": "ลงทะเบียนผ่าน Code",
   "forgotPasswordButton": "ลืมรหัสผ่าน",
