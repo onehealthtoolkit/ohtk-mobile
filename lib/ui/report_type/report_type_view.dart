@@ -200,17 +200,10 @@ class _ZeroReport extends StackedHookView<ReportTypeViewModel> {
               FlatButton.primary(
                 padding: const EdgeInsets.fromLTRB(15, 6, 20, 6),
                 onPressed: () async {
-                  await viewModel.submitZeroReport();
+                  var success = await viewModel.submitZeroReport();
 
                   if (context.mounted) {
-                    var showSuccessMessage = SnackBar(
-                      content: Text(AppLocalizations.of(context)
-                              ?.zeroReportSubmitSuccess ??
-                          'Zero report submit success'),
-                      backgroundColor: Colors.green,
-                    );
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(showSuccessMessage);
+                    showZeroReportResultAlert(context, success);
                   }
                 },
                 child: Padding(
@@ -269,6 +262,32 @@ class _ZeroReport extends StackedHookView<ReportTypeViewModel> {
           ),
         )
       ],
+    );
+  }
+
+  showZeroReportResultAlert(BuildContext context, bool success) {
+    final AppTheme appTheme = locator<AppTheme>();
+    String message = success
+        ? AppLocalizations.of(context)?.zeroReportSubmitSuccess ??
+            'Zero report submit success'
+        : 'Failed to submit';
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        content: Text(message),
+        contentTextStyle: TextStyle(
+          fontSize: 16,
+          color: success ? appTheme.primary : appTheme.warn,
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: <Widget>[
+          FlatButton.primary(
+            child: Text(AppLocalizations.of(context)!.ok),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
     );
   }
 }

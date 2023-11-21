@@ -63,7 +63,7 @@ class ReportTypeViewModel extends BaseViewModel {
     return null;
   }
 
-  submitZeroReport() async {
+  Future<bool> submitZeroReport() async {
     try {
       var result = await _reportApi.submitZeroReport();
 
@@ -72,6 +72,7 @@ class ReportTypeViewModel extends BaseViewModel {
         await prefs.setInt(
             zeroReportDateTimeKey, DateTime.now().millisecondsSinceEpoch);
         notifyListeners();
+        return true;
       }
 
       if (result is ZeroReportSubmitFailure) {
@@ -80,6 +81,7 @@ class ReportTypeViewModel extends BaseViewModel {
     } on LinkException catch (e) {
       _logger.e(e);
     }
+    return false;
   }
 
   syncReportTypes() async {
