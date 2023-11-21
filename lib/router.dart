@@ -87,7 +87,20 @@ class OhtkRouter {
           routes: <RouteBase>[
             GoRoute(
               path: '/reports',
-              builder: (context, state) => ReportHomeView(),
+              pageBuilder: (context, state) => CustomTransitionPage<void>(
+                key: state.pageKey,
+                child: ReportHomeView(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(-1, 0),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+              ),
               routes: <RouteBase>[
                 GoRoute(
                   name: incidentDetail,
@@ -142,7 +155,10 @@ class OhtkRouter {
             ),
             GoRoute(
               path: '/observations',
-              builder: (context, state) => const ObservationHomeView(),
+              pageBuilder: (context, state) => NoTransitionPage<void>(
+                key: state.pageKey,
+                child: const ObservationHomeView(),
+              ),
               routes: [
                 GoRoute(
                   name: observationSubjects,
@@ -212,7 +228,20 @@ class OhtkRouter {
             ),
             GoRoute(
               path: '/profile',
-              builder: (context, state) => const ProfileView(),
+              pageBuilder: (context, state) => CustomTransitionPage<void>(
+                key: state.pageKey,
+                child: const ProfileView(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(1, 0),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+              ),
               routes: [
                 GoRoute(
                   path: 'form',
