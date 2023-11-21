@@ -55,27 +55,27 @@ class RegisterViewModel extends BaseViewModel {
   }
 
   void setUsername(String value) {
-    username = value;
+    username = value.trim();
     _clearErrorForKey('username');
   }
 
   void setFirstName(String value) {
-    firstName = value;
+    firstName = value.trim();
     _clearErrorForKey('firstName');
   }
 
   void setLastName(String value) {
-    lastName = value;
+    lastName = value.trim();
     _clearErrorForKey('lastName');
   }
 
   void setEmail(String value) {
-    email = value;
+    email = value.trim();
     _clearErrorForKey('email');
   }
 
   void setPhone(String value) {
-    phone = value;
+    phone = value.trim();
     _clearErrorForKey('phone');
   }
 
