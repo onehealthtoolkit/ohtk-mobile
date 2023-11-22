@@ -71,6 +71,8 @@ class ReportFormView extends StatelessWidget {
                           onBack: () {
                             viewModel.back();
                           },
+                          showDataSummary: true,
+                          dataSummary: viewModel.dataSummary,
                           child: _ConfirmIncidentArea(),
                         ),
                       ),
@@ -79,6 +81,9 @@ class ReportFormView extends StatelessWidget {
                         flex: 1,
                         child: FormInput(
                           viewModel: viewModel,
+                          onLastSectionValid: () {
+                            viewModel.getReportDataSummary();
+                          },
                         ),
                       ),
                   ],

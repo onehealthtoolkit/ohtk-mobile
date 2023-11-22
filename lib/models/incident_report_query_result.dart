@@ -27,3 +27,15 @@ class IncidentReportGetResult {
     return IncidentReportGetResult(data: IncidentReport.fromJson(jsonMap));
   }
 }
+
+class ReportDataSummaryGetResult {
+  String data;
+
+  ReportDataSummaryGetResult({
+    required this.data,
+  });
+
+  factory ReportDataSummaryGetResult.fromJson(Map<String, dynamic> jsonMap) {
+    return ReportDataSummaryGetResult(data: jsonMap["result"]);
+  }
+}

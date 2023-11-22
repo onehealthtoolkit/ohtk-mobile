@@ -358,6 +358,38 @@ class ReportApi extends GraphQlBaseApi {
         typeConverter: (resp) => FollowupReportGetResult.fromJson(resp));
   }
 
+  Future<ReportDataSummaryGetResult> getReportDataSummary(
+    String reportTypeId,
+    Map<String, dynamic> data,
+    DateTime incidentDate,
+  ) {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+
+    const query = r'''
+      query reportDataSummary(
+        $data: GenericScalar!, 
+        $reportTypeId: UUID!, 
+        $incidentDate: Date!
+      ) {
+          reportDataSummary(
+            data: $data, 
+            reportTypeId: $reportTypeId, 
+            incidentDate: $incidentDate
+          ) {
+            result
+          }
+      }
+    ''';
+    return runGqlQuery(
+        query: query,
+        variables: {
+          "reportTypeId": reportTypeId,
+          "incidentDate": formatter.format(incidentDate),
+          "data": data,
+        },
+        typeConverter: (resp) => ReportDataSummaryGetResult.fromJson(resp));
+  }
+
   Future<FollowupSubmitResult> submitFollowup(
     String incidentId,
     String? followupId,

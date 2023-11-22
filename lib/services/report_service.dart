@@ -44,6 +44,12 @@ abstract class IReportService with ListenableServiceMixin {
   Future<void> removeAllPendingReports();
 
   Future<void> removePendingReport(String id);
+
+  Future<String> getReportDataSummary(
+    String reportTypeId,
+    Map<String, dynamic> data,
+    DateTime incidentDate,
+  );
 }
 
 class ReportService extends IReportService {
@@ -320,5 +326,16 @@ class ReportService extends IReportService {
     await db.delete("report", where: "id = ?", whereArgs: [id]);
     await _imageService.remove(id);
     _pendingReports.removeWhere((r) => r.id == id);
+  }
+
+  @override
+  Future<String> getReportDataSummary(
+    String reportTypeId,
+    Map<String, dynamic> data,
+    DateTime incidentDate,
+  ) async {
+    var result =
+        await _reportApi.getReportDataSummary(reportTypeId, data, incidentDate);
+    return result.data;
   }
 }

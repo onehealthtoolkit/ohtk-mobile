@@ -27,6 +27,7 @@ class ReportFormViewModel extends FormBaseViewModel {
   Form _formStore = Form.fromJson({}, "");
   bool? _incidentInAuthority = true;
   ReportType? reportType;
+  String? dataSummary;
 
   ReportFormViewModel(this._testFlag, this._reportTypeId) : super() {
     init();
@@ -69,6 +70,14 @@ class ReportFormViewModel extends FormBaseViewModel {
     for (var file in pendingFiles) {
       await _fileService.removePendingFile(file.id);
     }
+  }
+
+  getReportDataSummary() async {
+    DateTime? incidentDate = _findFirstIncidentDateValue(formStore);
+    String result = await _reportService.getReportDataSummary(
+        _reportTypeId, formStore.toJsonValue(), incidentDate ?? DateTime.now());
+    dataSummary = result;
+    notifyListeners();
   }
 
   Future<ReportSubmitResult> submit() async {

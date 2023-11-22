@@ -68,6 +68,8 @@
   "testFlag": "ທົດສອບ",
   "confirm": "ທ່ານແນ່ໃຈບໍ່ວ່າຈະສືບຕໍ່",
   "confirmCheckReport": "ບົດລາຍງານທີ່ສົ່ງມາບໍ່ສາມາດຖືກແກ້ໄຂໄດ້ອີກ. ກະລຸນາກວດສອບຄວາມຖືກຕ້ອງຂອງຂໍ້ມູນກ່ອນທີ່ຈະສົ່ງ.",
+  "reportDataSummary": "Report data summary",
+  "reportDataSummaryNotFound": "No content of summary is defined for this report type",
   "confirmExit": "ທ່ານແນ່ໃຈບໍ່ວ່າຈະສືບຕໍ່",
   "incidentInAuthority": "ພື້ນທີ່ເກີດເຫດຢູ່ໃນອົງການຂອງເຈົ້າບໍ?",
   "yesAsAccept": "ແມ່ນແລ້ວ",

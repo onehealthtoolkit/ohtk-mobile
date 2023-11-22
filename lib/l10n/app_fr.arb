@@ -188,6 +188,8 @@
   "testFlag": "Test",
   "confirm": "Êtes-vous sûr de continuer ?",
   "confirmCheckReport": "This report data cannot be changed once it was submitted. Please make sure everything is correct.",
+  "reportDataSummary": "Report data summary",
+  "reportDataSummaryNotFound": "No content of summary is defined for this report type",
   "confirmExit": "Êtes-vous sûr de continuer ?",
   "incidentInAuthority": "Cet incident s'est-il produit sous votre propre autorité ?",
   "yesAsAccept": "Oui",
