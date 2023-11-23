@@ -182,19 +182,13 @@ class DateField extends Field {
         if (!valid) {
           final localize = locator<AppLocalizations>();
           final locale = locator<Locale>();
-          markError(
-            formatWithMap(
-              localize.dateFieldMinErrorMsg.toString(),
-              {
-                "name": displayName,
-                "min": (withTime
-                    ? DateFormat("yMd HH:mm", locale.toLanguageTag())
-                        .format(minDate)
-                    : DateFormat("yMd", locale.toLanguageTag())
-                        .format(minDate)),
-              },
-            ),
-          );
+          markError(localize.dateFieldMinErrorMsg(
+            displayName,
+            (withTime
+                ? DateFormat("yMd HH:mm", locale.toLanguageTag())
+                    .format(minDate)
+                : DateFormat("yMd", locale.toLanguageTag()).format(minDate)),
+          ));
           return false;
         }
       }

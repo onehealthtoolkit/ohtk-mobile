@@ -90,7 +90,7 @@
       }
     }
   },
-  "dateFieldMinErrorMsg": "{nombre} debe ser igual o mayor que {min}",
+  "dateFieldMinErrorMsg": "{name} debe ser igual o mayor que {min}",
   "@dateFieldMinErrorMsg": {
     "placeholders": {
       "name": {
