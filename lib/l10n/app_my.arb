@@ -203,5 +203,6 @@
   "loading": "ဖွင့်နေသည်...",
   "fieldRequired": "အကွက်လိုအပ်သည်။",
   "passwordMismatch": "စကားဝှက်သည် အတည်ပြုစကားဝှက်နှင့် မကိုက်ညီပါ။",
-  "restartApp": "လျှောက်လွှာကို ပြန်လည်စတင်ရန် လိုအပ်သည်။"
+  "restartApp": "လျှောက်လွှာကို ပြန်လည်စတင်ရန် လိုအပ်သည်။",
+  "locationServiceIsDisabled": "Location service is disabled, you need to turn it on."
 }

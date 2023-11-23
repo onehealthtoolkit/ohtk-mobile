@@ -73,5 +73,6 @@
   "loading": "Loading...",
   "fieldRequired": "field is required.",
   "passwordMismatch": "Password does not match confirm password",
-  "restartApp": "Application needs to be restarted."
+  "restartApp": "Application needs to be restarted.",
+  "locationServiceIsDisabled": "Location service is disabled, you need to turn it on."
 }

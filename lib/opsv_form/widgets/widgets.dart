@@ -19,6 +19,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
 import 'package:mime/mime.dart';
+import 'package:app_settings/app_settings.dart';
 
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/flat_button.dart';

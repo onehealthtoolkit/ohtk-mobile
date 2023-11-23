@@ -14,6 +14,64 @@ class _FormLocationFieldState extends State<FormLocationField> {
   final _logger = locator<Logger>();
   final AppTheme appTheme = locator<AppTheme>();
 
+  getCurrentPosition({required bool timeoutRetry}) async {
+    widget.field.clearError();
+    try {
+      var position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+        forceAndroidLocationManager: true,
+        timeLimit: const Duration(seconds: 7),
+      );
+      widget.field.value = "${position.longitude},${position.latitude}";
+    } on TimeoutException catch (e) {
+      _logger.e(e);
+      if (timeoutRetry) {
+        getCurrentPosition(timeoutRetry: false);
+      } else {
+        // error message
+        widget.field.markError(
+            "Timeout! No location is received within specific duration");
+      }
+    } on LocationServiceDisabledException catch (e) {
+      _logger.e(e);
+      showLocationServiceAlert(context);
+    } on PermissionDeniedException catch (e) {
+      _logger.e(e);
+      LocationPermission permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        // error message
+        widget.field
+            .markError("You have denied a permission to access location");
+      } else {
+        getCurrentPosition(timeoutRetry: timeoutRetry);
+      }
+    }
+  }
+
+  showLocationServiceAlert(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        content: Text(AppLocalizations.of(context)!.locationServiceIsDisabled),
+        contentTextStyle: const TextStyle(
+          fontSize: 16,
+          color: Colors.black87,
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: <Widget>[
+          FlatButton.primary(
+            child: Text(AppLocalizations.of(context)!.ok),
+            onPressed: () {
+              Navigator.pop(context);
+              AppSettings.openAppSettings(type: AppSettingsType.location);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (BuildContext context) {
@@ -55,25 +113,8 @@ class _FormLocationFieldState extends State<FormLocationField> {
                         Text(AppLocalizations.of(context)!
                             .fieldUndefinedLocation),
                         FlatButton.primary(
-                          onPressed: () async {
-                            bool serviceEnabled =
-                                await Geolocator.isLocationServiceEnabled();
-                            if (serviceEnabled) {
-                              LocationPermission permission =
-                                  await Geolocator.requestPermission();
-                              if (permission == LocationPermission.denied) {
-                                _logger.e("permission denied");
-                              } else {
-                                var position =
-                                    await Geolocator.getCurrentPosition(
-                                        desiredAccuracy:
-                                            LocationAccuracy.medium);
-                                widget.field.value =
-                                    "${position.longitude},${position.latitude}";
-                              }
-                            } else {
-                              _logger.e("location is disable");
-                            }
+                          onPressed: () {
+                            getCurrentPosition(timeoutRetry: true);
                           },
                           child: Text(
                             AppLocalizations.of(context)!
@@ -101,8 +142,8 @@ class _FormLocationFieldState extends State<FormLocationField> {
                       myLocationEnabled: false,
                       myLocationButtonEnabled: false,
                       scrollGesturesEnabled: true,
-                      gestureRecognizers: <
-                          Factory<OneSequenceGestureRecognizer>>{
+                      gestureRecognizers: <Factory<
+                          OneSequenceGestureRecognizer>>{
                         Factory<OneSequenceGestureRecognizer>(
                           () => EagerGestureRecognizer(),
                         ),

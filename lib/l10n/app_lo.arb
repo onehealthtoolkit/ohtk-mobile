@@ -96,5 +96,6 @@
   "takeAPhoto": "ຖ່າຍ​ຮູບ",
   "offlineWarning": "ບໍ່ມີການເຊື່ອມຕໍ່ອິນເຕີເນັດ, ກະລຸນາກວດເບິ່ງການເຊື່ອມຕໍ່ອິນເຕີເນັດຂອງທ່ານ",
   "resubmit": "ສົ່ງຂໍ້ມູນອີກຄັ້ງ",
-  "noPendingSubmissions": "ບໍ່ມີຂໍ້ມູນຄ້າງສົ່ງ"
+  "noPendingSubmissions": "ບໍ່ມີຂໍ້ມູນຄ້າງສົ່ງ",
+  "locationServiceIsDisabled": "Location service is disabled, you need to turn it on."
 }

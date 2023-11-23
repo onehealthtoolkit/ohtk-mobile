@@ -203,5 +203,6 @@
   "loading": "Chargement...",
   "fieldRequired": "Champ requis.",
   "passwordMismatch": "Le mot de passe ne correspond pas à confirmer le mot de passe",
-  "restartApp": "L'application doit être redémarrée."
+  "restartApp": "L'application doit être redémarrée.",
+  "locationServiceIsDisabled": "Location service is disabled, you need to turn it on."
 }
