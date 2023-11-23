@@ -21,6 +21,7 @@ class FollowupReportFormViewModel extends FormBaseViewModel {
   final String reportTypeId;
   String _reportId = "";
   Form _formStore = Form.fromJson({}, "");
+  String? dataSummary;
 
   FollowupReportFormViewModel({
     required this.incidentId,
@@ -61,5 +62,12 @@ class FollowupReportFormViewModel extends FormBaseViewModel {
     );
     setBusy(false);
     return result;
+  }
+
+  getReportDataSummary() async {
+    String result = await _reportService.getFollowupReportDataSummary(
+        incidentId, reportTypeId, formStore.toJsonValue());
+    dataSummary = result;
+    notifyListeners();
   }
 }

@@ -50,8 +50,10 @@ class FollowupReportFormView extends StatelessWidget {
                       flex: 1,
                       child: FormConfirmSubmit(
                         busy: viewModel.isBusy,
-                        child: const Text(
-                            "Press the submit button to submit your report"),
+                        showDataSummary: true,
+                        dataSummary: viewModel.dataSummary,
+                        child: Text(
+                            AppLocalizations.of(context)!.submitReportMessage),
                         onSubmit: () async {
                           var result = await viewModel.submit();
                           if (result is FollowupSubmitSuccess) {
@@ -68,7 +70,12 @@ class FollowupReportFormView extends StatelessWidget {
                   if (viewModel.state == ReportFormState.formInput)
                     Expanded(
                       flex: 1,
-                      child: FormInput(viewModel: viewModel),
+                      child: FormInput(
+                        viewModel: viewModel,
+                        onLastSectionValid: () {
+                          viewModel.getReportDataSummary();
+                        },
+                      ),
                     ),
                 ],
               ),
