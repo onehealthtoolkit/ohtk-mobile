@@ -39,7 +39,7 @@ class ObservationMonitoringRecordFormView extends StatelessWidget {
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             child: Scaffold(
-              resizeToAvoidBottomInset: true,
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 title: Text(
                     "${AppLocalizations.of(context)!.reportTitle} ${viewModel.definition != null ? viewModel.definition!.name : ''}"),

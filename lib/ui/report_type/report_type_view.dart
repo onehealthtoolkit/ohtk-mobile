@@ -14,6 +14,7 @@ import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
+import 'package:podd_app/router.dart';
 import 'package:podd_app/ui/report_type/form_simulator_view.dart';
 import 'package:podd_app/ui/report_type/qr_report_type_view.dart';
 import 'package:podd_app/ui/report_type/report_type_view_model.dart';
@@ -350,7 +351,7 @@ class _Listing extends StackedHookView<ReportTypeViewModel> {
             if (allow) {
               if (context.mounted) {
                 GoRouter.of(context).pushReplacementNamed(
-                  'reportForm',
+                  OhtkRouter.reportForm,
                   pathParameters: {
                     "reportTypeId": reportType.id,
                   },
