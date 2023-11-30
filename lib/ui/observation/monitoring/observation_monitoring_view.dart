@@ -121,7 +121,7 @@ class _MonitoringRecordDetail
           1: FlexColumnWidth(2),
         },
         children: monitoringRecord.formData!.entries.map((entry) {
-          return entry.key.contains("__value")
+          return entry.key.contains("__value") || entry.value == null
               ? const TableRow(children: [SizedBox.shrink(), SizedBox.shrink()])
               : TableRow(
                   decoration: BoxDecoration(
@@ -152,28 +152,7 @@ class _MonitoringRecordDetail
     return Padding(
       padding: const EdgeInsets.fromLTRB(28, 20, 28, 10),
       child: monitoringRecord.formData != null
-          ? Stack(
-              children: [
-                dataTable,
-                GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ObservationMonitoringRecordFormView(
-                        monitoringDefinitionId:
-                            monitoringDefinitionId.toString(),
-                        subjectId: subjectId,
-                        monitoringRecord: monitoringRecord,
-                      ),
-                    ),
-                  ),
-                  child: const Align(
-                    alignment: Alignment.centerRight,
-                    child: Icon(Icons.edit_note),
-                  ),
-                )
-              ],
-            )
+          ? dataTable
           : const Center(
               child: Text("No data"),
             ),

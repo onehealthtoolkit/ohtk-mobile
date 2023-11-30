@@ -179,7 +179,7 @@ class _SubjectDetail extends StackedHookView<ObservationSubjectViewModel> {
           1: FlexColumnWidth(2),
         },
         children: subject.formData!.entries.map((entry) {
-          return entry.key.contains("__value")
+          return entry.key.contains("__value") || entry.value == null
               ? const TableRow(children: [SizedBox.shrink(), SizedBox.shrink()])
               : TableRow(
                   decoration: BoxDecoration(
@@ -210,26 +210,7 @@ class _SubjectDetail extends StackedHookView<ObservationSubjectViewModel> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(28, 20, 28, 10),
       child: subject.formData != null
-          ? Stack(
-              children: [
-                dataTable,
-                GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ObservationSubjectFormView(
-                        definitionId: definition.id.toString(),
-                        subject: subject,
-                      ),
-                    ),
-                  ),
-                  child: const Align(
-                    alignment: Alignment.centerRight,
-                    child: Icon(Icons.edit_note),
-                  ),
-                ),
-              ],
-            )
+          ? dataTable
           : const Center(
               child: Text("No data"),
             ),
