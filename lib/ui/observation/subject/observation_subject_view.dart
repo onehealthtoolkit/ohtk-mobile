@@ -13,7 +13,6 @@ import 'package:podd_app/components/report_image_carousel.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
-import 'package:podd_app/ui/observation/form/subject_form_view.dart';
 import 'package:podd_app/ui/observation/subject/observation_subject_monitoring_view.dart';
 import 'package:podd_app/ui/observation/subject/observation_subject_view_model.dart';
 import 'package:stacked/stacked.dart';

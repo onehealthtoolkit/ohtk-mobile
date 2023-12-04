@@ -18,7 +18,13 @@ class ObservationSubjectListViewModel extends ReactiveViewModel {
   List<ObservationSubjectRecord> get observationSubjects =>
       observationService.subjectRecords;
 
+  bool get hasMoreSubjectRecords => observationService.hasMoreSubjectRecords;
+
   refetchSubjects() {
+    observationService.fetchAllSubjectRecords(true, definition.id);
+  }
+
+  continueFetchSubjects() {
     observationService.fetchAllSubjectRecords(false, definition.id);
   }
 }

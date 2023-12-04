@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:podd_app/app_theme.dart';
+import 'package:podd_app/components/animated_list_item.dart';
+import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_definition.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
@@ -35,14 +38,27 @@ class _SubjectListing extends StackedHookView<ObservationSubjectListViewModel> {
   Widget builder(
       BuildContext context, ObservationSubjectListViewModel viewModel) {
     return RefreshIndicator(
-      onRefresh: () async => viewModel.refetchSubjects,
+      onRefresh: () async => viewModel.refetchSubjects(),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
         child: ListView.builder(
           key: const PageStorageKey('subject-list-storage-key'),
+          addAutomaticKeepAlives: true,
           itemBuilder: (context, index) {
-            var subject = viewModel.observationSubjects[index];
+            if (index >= viewModel.observationSubjects.length) {
+              return AnimatedListItem(
+                animateOnce: false,
+                duration: const Duration(milliseconds: 300),
+                child: FlatButton.outline(
+                  onPressed: () {
+                    viewModel.continueFetchSubjects();
+                  },
+                  child: Text(AppLocalizations.of(context)!.loadMore),
+                ),
+              );
+            }
 
+            var subject = viewModel.observationSubjects[index];
             var leading = subject.imageUrl != null
                 ? CachedNetworkImage(
                     imageUrl: subject.imageUrl!,
@@ -73,7 +89,9 @@ class _SubjectListing extends StackedHookView<ObservationSubjectListViewModel> {
               },
             );
           },
-          itemCount: viewModel.observationSubjects.length,
+          itemCount: viewModel.hasMoreSubjectRecords
+              ? viewModel.observationSubjects.length + 1
+              : viewModel.observationSubjects.length,
         ),
       ),
     );

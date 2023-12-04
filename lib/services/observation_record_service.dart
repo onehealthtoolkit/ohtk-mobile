@@ -23,6 +23,8 @@ abstract class IObservationRecordService with ListenableServiceMixin {
 
   List<ObservationSubjectRecord> get subjectRecords;
 
+  bool get hasMoreSubjectRecords;
+
   List<MonitoringRecord> get pendingMonitoringRecords;
 
   List<ObservationMonitoringRecord> get monitoringRecords;
@@ -74,6 +76,7 @@ class ObservationRecordService extends IObservationRecordService {
   final ReactiveList<ObservationSubjectReport> _observationSubjectReports =
       ReactiveList<ObservationSubjectReport>();
 
+  @override
   bool hasMoreSubjectRecords = false;
   int currentSubjectRecordNextOffset = 0;
   int subjectRecordLimit = 20;
@@ -125,7 +128,10 @@ class ObservationRecordService extends IObservationRecordService {
     if (resetFlag) {
       currentSubjectRecordNextOffset = 0;
     }
-    var result = await _observationApi.fetchSubjectRecords(definitionId, q: q);
+    var result = await _observationApi.fetchSubjectRecords(definitionId,
+        limit: subjectRecordLimit,
+        offset: currentSubjectRecordNextOffset,
+        q: q);
 
     if (resetFlag) {
       _subjectRecords.clear();

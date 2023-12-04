@@ -226,5 +226,6 @@
   "offlineWarning": "You are offline, please check your internet connection",
   "resubmit": "Resubmit",
   "noPendingSubmissions": "There are no pending submissions.",
-  "locationServiceIsDisabled": "Location service is disabled, you need to turn it on."
+  "locationServiceIsDisabled": "Location service is disabled, you need to turn it on.",
+  "loadMore": "Load more"
 }

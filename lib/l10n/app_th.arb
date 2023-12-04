@@ -85,5 +85,6 @@
   "fieldRequired": "กรุณากรอกข้อมูล",
   "passwordMismatch": "รหัสผ่านไม่ถูกต้อง",
   "restartApp": "แอปพลิเคชันจะทำการรีสตาร์ท",
-  "locationServiceIsDisabled": "Location service is disabled, you need to turn it on."
+  "locationServiceIsDisabled": "Location service is disabled, you need to turn it on.",
+  "loadMore": "ดูเพิ่มเติม"
 }
