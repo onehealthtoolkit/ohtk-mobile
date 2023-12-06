@@ -33,7 +33,7 @@ class _FormMultipleChoicesFieldState extends State<FormMultipleChoicesField> {
                   child: Text(
                     widget.field.label!,
                     style: TextStyle(
-                      color: appTheme.warn,
+                      color: Colors.grey.shade700,
                     ),
                   ),
                 ),

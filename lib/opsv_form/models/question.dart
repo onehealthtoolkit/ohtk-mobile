@@ -20,6 +20,7 @@ class Question implements ConiditionSource {
     var question = Question(
       json["label"],
       name: json["name"],
+      description: json["description"],
       condition: condition,
     );
     var jsonFields = json["fields"] as List;

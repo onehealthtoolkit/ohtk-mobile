@@ -59,7 +59,7 @@ class _FormSingleChoicesFieldState extends State<FormSingleChoicesField> {
                   widget.field.label!,
                   textScaleFactor: 1.1,
                   style: TextStyle(
-                    color: appTheme.warn,
+                    color: Colors.grey.shade700,
                   ),
                 ),
               ),

@@ -34,6 +34,16 @@ class FormQuestion extends StatelessWidget {
                             fontSize: 14.sp,
                           ),
                     ),
+                    if (question.description != null &&
+                        question.description!.isNotEmpty) ...[
+                      Text(
+                        question.description!,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: apptheme.sub1,
+                            ),
+                      ),
+                      SizedBox(height: 5.h)
+                    ],
                     ListView.separated(
                       itemBuilder: (context, index) {
                         return FormField(field: question.fields[index]);
