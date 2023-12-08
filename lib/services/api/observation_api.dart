@@ -60,7 +60,13 @@ class ObservationApi extends GraphQlBaseApi {
       {limit = 20, offset = 0, String? q}) async {
     const query = r'''
       query observationSubjects($limit: Int, $offset: Int, $definitionId: String, $q: String) {
-        observationSubjects(limit: $limit, offset: $offset, definition_Id_In: [$definitionId], q: $q) {
+        observationSubjects(
+          limit: $limit, 
+          offset: $offset, 
+          definition_Id_In: [$definitionId], 
+          q: $q,
+          ordering: "created_at,desc"
+        ) {
           totalCount
           results { 
             id
