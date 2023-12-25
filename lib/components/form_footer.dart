@@ -53,6 +53,7 @@ class FormFooter extends StatelessWidget {
         children: [
           TextButton(
             onPressed: () async {
+              FocusManager.instance.primaryFocus?.unfocus();
               if (viewModel.back() == BackAction.navigationPop) {
                 logger.d("back using pop");
                 Navigator.maybePop(context);
@@ -71,6 +72,7 @@ class FormFooter extends StatelessWidget {
           FlatButton.primary(
             padding: const EdgeInsets.fromLTRB(20, 10, 12, 10),
             onPressed: () {
+              FocusManager.instance.primaryFocus?.unfocus();
               if (!viewModel.next()) {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   backgroundColor: Colors.red,
