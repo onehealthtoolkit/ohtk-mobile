@@ -97,18 +97,20 @@ class HomeView extends HookWidget {
       },
       builder: (context, viewModel, _) {
         var navigationBarItems = [
-          const BottomNavigationBarItem(
-            label: 'Incidents',
-            icon: Icon(Icons.art_track),
+          BottomNavigationBarItem(
+            label:
+                AppLocalizations.of(context)?.incidentsTabTitle ?? 'Incidents',
+            icon: const Icon(Icons.art_track),
           ),
           if (viewModel.hasObservationFeature)
-            const BottomNavigationBarItem(
-              label: 'Observations',
-              icon: Icon(Icons.format_list_bulleted),
+            BottomNavigationBarItem(
+              label: AppLocalizations.of(context)?.observationsTabTitle ??
+                  'Observations',
+              icon: const Icon(Icons.format_list_bulleted),
             ),
-          const BottomNavigationBarItem(
-            label: 'Profile',
-            icon: Icon(Icons.account_circle),
+          BottomNavigationBarItem(
+            label: AppLocalizations.of(context)?.profileTabTitle ?? 'Profile',
+            icon: const Icon(Icons.account_circle),
           ),
         ];
 

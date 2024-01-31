@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/progress_indicator.dart';
@@ -18,7 +19,8 @@ class UserMessageList extends StatelessWidget {
       viewModelBuilder: () => UserMessageListViewModel(),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
-          title: const Text("Messages"),
+          title: Text(
+              AppLocalizations.of(context)?.messagesPageTitle ?? "Messages"),
           leading: const BackAppBarAction(),
         ),
         body: Padding(

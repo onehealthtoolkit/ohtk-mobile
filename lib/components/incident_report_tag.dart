@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/locator.dart';
 
@@ -46,7 +46,7 @@ class IncidentReportCaseTag extends StatelessWidget {
       margin: const EdgeInsets.only(top: 4),
       padding: tagLTRB,
       child: Text(
-        "Case",
+        AppLocalizations.of(context)?.caseTag ?? "Case",
         style: TextStyle(
           color: appTheme.bg1,
           fontSize: 10.sp,

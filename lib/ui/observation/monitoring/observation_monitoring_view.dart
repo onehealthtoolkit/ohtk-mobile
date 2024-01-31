@@ -7,7 +7,6 @@ import 'package:podd_app/components/report_file_grid_view.dart';
 import 'package:podd_app/components/report_image_carousel.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
-import 'package:podd_app/ui/observation/form/monitoring_record_form_view.dart';
 import 'package:podd_app/ui/observation/monitoring/observation_monitoring_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
