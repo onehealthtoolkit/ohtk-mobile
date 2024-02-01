@@ -67,13 +67,9 @@ class TextField extends PrimitiveField<String> {
           ? value!.length >= minLength!
           : true;
       if (!valid) {
-        markError(formatWithMap(
-            minLengthMessage ??
-                "{name} must be equal or more than {minLength} letters",
-            {
-              "name": name,
-              "minLength": minLength!.toString(),
-            }));
+        final localize = locator<AppLocalizations>();
+        markError(minLengthMessage ??
+            localize.textFieldMinErrorMsg(minLength!.toString()));
         return false;
       }
     }
@@ -84,8 +80,8 @@ class TextField extends PrimitiveField<String> {
     if (required == true && value != null) {
       var valid = value!.isNotEmpty;
       if (!valid) {
-        markError(formatWithMap(
-            requiredMessage ?? "This field is required", {"name": name}));
+        final localize = locator<AppLocalizations>();
+        markError(requiredMessage ?? localize.validateRequiredMsg);
         return false;
       }
     }
@@ -98,13 +94,9 @@ class TextField extends PrimitiveField<String> {
           ? value!.length <= maxLength!
           : true;
       if (!valid) {
-        markError(formatWithMap(
-            maxLengthMessage ??
-                "{name} must be equal or less than {maxLength} letters",
-            {
-              "name": name,
-              "maxLength": maxLength!.toString(),
-            }));
+        final localize = locator<AppLocalizations>();
+        markError(maxLengthMessage ??
+            localize.textFieldMaxErrorMsg(maxLength!.toString()));
         return false;
       }
     }

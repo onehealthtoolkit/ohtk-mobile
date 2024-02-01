@@ -85,94 +85,84 @@
   "observationSubjectMonitoringTabLabel": "Monitoring",
   "observationSubjectMonitoringViewTitle": "Subject monitoring",
   "validateRequiredMsg": "This field is required",
-  "dateFieldMaxErrorMsg": "{name} must be equal or less than {max}",
+  "dateFieldMaxErrorMsg": "must be equal or less than {max}",
   "@dateFieldMaxErrorMsg": {
     "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Incident Date"
-      },
       "max": {
         "type": "String",
         "example": "17/10/2022"
       }
     }
   },
-  "dateFieldMinErrorMsg": "{name} must be equal or more than {min}",
+  "dateFieldMinErrorMsg": "must be equal or more than {min}",
   "@dateFieldMinErrorMsg": {
     "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Incident Date"
-      },
       "min": {
         "type": "String",
         "example": "17/10/2022"
       }
     }
   },
-  "integerFieldMaxErrorMsg": "{name} must be equal or less than {max}",
+  "integerFieldMaxErrorMsg": "must be equal or less than {max}",
   "@integerFieldMaxErrorMsg": {
     "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Age"
-      },
       "max": {
         "type": "String",
         "example": "100"
       }
     }
   },
-  "integerFieldMinErrorMsg": "{name} must be equal or more than {min}",
+  "integerFieldMinErrorMsg": "must be equal or more than {min}",
   "@integerFieldMinErrorMsg": {
     "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Age"
-      },
       "min": {
         "type": "String",
         "example": "0"
       }
     }
   },
-  "filesFieldMaxErrorMsg": "Number of {name} must be equal or lesser than {max}",
-  "@filesFieldMaxErrorMsg": {
+  "textFieldMaxErrorMsg": "must be equal or less than {max} letters",
+  "@textFieldMaxErrorMsg": {
     "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Age"
-      },
       "max": {
         "type": "String",
         "example": "100"
       }
     }
   },
-  "filesFieldMinErrorMsg": "Number of {name} must be equal or more than {min}",
-  "@filesFieldMinErrorMsg": {
+  "textFieldMinErrorMsg": "must be equal or more than {min} letters",
+  "@textFieldMinErrorMsg": {
     "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Age"
-      },
       "min": {
         "type": "String",
         "example": "0"
       }
     }
   },
-  "filesFieldMaxSizeErrorMsg": "Size of file: #{index} in {name} must be equal or less than {maxSize} bytes",
+  "filesFieldMaxErrorMsg": "Number of files must be equal or less than {max}",
+  "@filesFieldMaxErrorMsg": {
+    "placeholders": {
+      "max": {
+        "type": "String",
+        "example": "100"
+      }
+    }
+  },
+  "filesFieldMinErrorMsg": "Number of files must be equal or more than {min}",
+  "@filesFieldMinErrorMsg": {
+    "placeholders": {
+      "min": {
+        "type": "String",
+        "example": "0"
+      }
+    }
+  },
+  "filesFieldMaxSizeErrorMsg": "Size of file: #{index} must be equal or less than {maxSize} bytes",
   "@filesFieldMaxSizeErrorMsg": {
     "placeholders": {
       "index": {
         "type": "String",
         "example": "1,2"
-      },
-      "name": {
-        "type": "String",
-        "example": "Age"
       },
       "maxSize": {
         "type": "String",
@@ -180,16 +170,12 @@
       }
     }
   },
-  "filesFieldSupportedTypeErrorMsg": "Type of file: #{index} in {name} are not supported",
+  "filesFieldSupportedTypeErrorMsg": "Type of file: #{index} are not supported",
   "@filesFieldSupportedTypeErrorMsg": {
     "placeholders": {
       "index": {
         "type": "String",
         "example": "1,2"
-      },
-      "name": {
-        "type": "String",
-        "example": "Age"
       }
     }
   },

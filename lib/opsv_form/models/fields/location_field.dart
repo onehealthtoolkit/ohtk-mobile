@@ -72,8 +72,8 @@ class LocationField extends PrimitiveField<String> {
     if (required == true && value != null) {
       var valid = value!.isNotEmpty;
       if (!valid) {
-        markError(formatWithMap(
-            requiredMessage ?? "This field is required", {"name": name}));
+        final localize = locator<AppLocalizations>();
+        markError(requiredMessage ?? localize.validateRequiredMsg);
         return false;
       }
     }

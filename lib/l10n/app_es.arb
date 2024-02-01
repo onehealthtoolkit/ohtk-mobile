@@ -85,114 +85,16 @@
   "observationSubjectMonitoringTabLabel": "Supervisión",
   "observationSubjectMonitoringViewTitle": "Seguimiento de sujetos",
   "validateRequiredMsg": "Este campo es obligatorio",
-  "dateFieldMaxErrorMsg": "{name} debe ser igual o menor que {max}",
-  "@dateFieldMaxErrorMsg": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Incident Date"
-      },
-      "max": {
-        "type": "String",
-        "example": "17/10/2022"
-      }
-    }
-  },
-  "dateFieldMinErrorMsg": "{name} debe ser igual o mayor que {min}",
-  "@dateFieldMinErrorMsg": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Incident Date"
-      },
-      "min": {
-        "type": "String",
-        "example": "17/10/2022"
-      }
-    }
-  },
-  "integerFieldMaxErrorMsg": "{name} debe ser igual o menor que {max}",
-  "@integerFieldMaxErrorMsg": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Age"
-      },
-      "max": {
-        "type": "String",
-        "example": "100"
-      }
-    }
-  },
-  "integerFieldMinErrorMsg": "{name} debe ser igual o mayor que {min}",
-  "@integerFieldMinErrorMsg": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Age"
-      },
-      "min": {
-        "type": "String",
-        "example": "0"
-      }
-    }
-  },
-  "filesFieldMaxErrorMsg": "El número de {name} debe ser igual o menor que {max}",
-  "@filesFieldMaxErrorMsg": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Age"
-      },
-      "max": {
-        "type": "String",
-        "example": "100"
-      }
-    }
-  },
-  "filesFieldMinErrorMsg": "El número de {name} debe ser igual o mayor que {min}",
-  "@filesFieldMinErrorMsg": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Age"
-      },
-      "min": {
-        "type": "String",
-        "example": "0"
-      }
-    }
-  },
-  "filesFieldMaxSizeErrorMsg": "Tamaño del archivo: #{index} en {name} debe ser igual o menor que {maxSize} bytes",
-  "@filesFieldMaxSizeErrorMsg": {
-    "placeholders": {
-      "index": {
-        "type": "String",
-        "example": "1,2"
-      },
-      "name": {
-        "type": "String",
-        "example": "Age"
-      },
-      "maxSize": {
-        "type": "String",
-        "example": "0"
-      }
-    }
-  },
-  "filesFieldSupportedTypeErrorMsg": "Tipo de archivo: #{index} en {name} no son compatibles",
-  "@filesFieldSupportedTypeErrorMsg": {
-    "placeholders": {
-      "index": {
-        "type": "String",
-        "example": "1,2"
-      },
-      "name": {
-        "type": "String",
-        "example": "Age"
-      }
-    }
-  },
+  "dateFieldMaxErrorMsg": "debe ser igual o menor que {max}",
+  "dateFieldMinErrorMsg": "debe ser igual o mayor que {min}",
+  "integerFieldMaxErrorMsg": "debe ser igual o menor que {max}",
+  "integerFieldMinErrorMsg": "debe ser igual o mayor que {min}",
+  "textFieldMaxErrorMsg": "must be equal or less than {max} letters",
+  "textFieldMinErrorMsg": "must be equal or more than {min} letters",
+  "filesFieldMaxErrorMsg": "El número de archivos debe ser igual o menor que {max}",
+  "filesFieldMinErrorMsg": "El número de archivos debe ser igual o mayor que {min}",
+  "filesFieldMaxSizeErrorMsg": "Tamaño del archivo: #{index} debe ser igual o menor que {maxSize} bytes",
+  "filesFieldSupportedTypeErrorMsg": "Tipo de archivo: #{index} no son compatibles",
   "testFlag": "Test",
   "confirm": "¿Estás seguro de continuar?",
   "confirmCheckReport": "This report data cannot be changed once it was submitted. Please make sure everything is correct.",

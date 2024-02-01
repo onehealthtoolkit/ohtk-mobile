@@ -182,13 +182,9 @@ class DateField extends Field {
         if (!valid) {
           final localize = locator<AppLocalizations>();
           final locale = locator<Locale>();
-          markError(localize.dateFieldMinErrorMsg(
-            displayName,
-            (withTime
-                ? DateFormat("yMd HH:mm", locale.toLanguageTag())
-                    .format(minDate)
-                : DateFormat("yMd", locale.toLanguageTag()).format(minDate)),
-          ));
+          markError(localize.dateFieldMinErrorMsg((withTime
+              ? DateFormat("yMd HH:mm", locale.toLanguageTag()).format(minDate)
+              : DateFormat("yMd", locale.toLanguageTag()).format(minDate))));
           return false;
         }
       }
@@ -217,15 +213,9 @@ class DateField extends Field {
         if (!valid) {
           final localize = locator<AppLocalizations>();
           final locale = locator<Locale>();
-          markError(
-            localize.dateFieldMaxErrorMsg(
-                displayName,
-                (withTime
-                    ? DateFormat("yMd HH:mm", locale.toLanguageTag())
-                        .format(maxDate)
-                    : DateFormat("yMd", locale.toLanguageTag())
-                        .format(maxDate))),
-          );
+          markError(localize.dateFieldMaxErrorMsg((withTime
+              ? DateFormat("yMd HH:mm", locale.toLanguageTag()).format(maxDate)
+              : DateFormat("yMd", locale.toLanguageTag()).format(maxDate))));
           return false;
         }
       }

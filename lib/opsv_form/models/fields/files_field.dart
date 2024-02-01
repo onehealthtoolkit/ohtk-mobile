@@ -124,7 +124,7 @@ class FilesField extends Field {
   _validateNotEmpty() {
     if (required == true && _value.isEmpty) {
       final localize = locator<AppLocalizations>();
-      markError(localize.validateRequiredMsg);
+      markError(requiredMessage ?? localize.validateRequiredMsg);
       return false;
     }
     _invalidMessage.value = null;
@@ -138,10 +138,9 @@ class FilesField extends Field {
         final localize = locator<AppLocalizations>();
         markError(minMessage != null
             ? formatWithMap(minMessage!, {
-                "name": name,
                 "min": min!.toString(),
               })
-            : localize.filesFieldMinErrorMsg(name, min!.toString()));
+            : localize.filesFieldMinErrorMsg(min!.toString()));
         return false;
       }
     }
@@ -155,10 +154,9 @@ class FilesField extends Field {
         final localize = locator<AppLocalizations>();
         markError(maxMessage != null
             ? formatWithMap(maxMessage!, {
-                "name": name,
                 "max": max!.toString(),
               })
-            : localize.filesFieldMaxErrorMsg(name, max!.toString()));
+            : localize.filesFieldMaxErrorMsg(max!.toString()));
         return false;
       }
     }
@@ -184,7 +182,6 @@ class FilesField extends Field {
         markError(
           localize.filesFieldMaxSizeErrorMsg(
             invalidIndice.join(','),
-            name,
             maxSize!.toString(),
           ),
         );
@@ -213,7 +210,6 @@ class FilesField extends Field {
         markError(
           localize.filesFieldSupportedTypeErrorMsg(
             invalidIndice.join(','),
-            name,
           ),
         );
         return false;

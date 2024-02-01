@@ -87,7 +87,8 @@ class ImagesField extends Field {
 
   _validateNotEmpty() {
     if (required == true && _value.isEmpty) {
-      _invalidMessage.value = requiredMessage ?? "This field is required";
+      final localize = locator<AppLocalizations>();
+      _invalidMessage.value = requiredMessage ?? localize.validateRequiredMsg;
       return false;
     }
     _invalidMessage.value = null;
@@ -98,15 +99,12 @@ class ImagesField extends Field {
     if (min != null) {
       var valid = value.length >= min!;
       if (!valid) {
-        markError(
-          formatWithMap(
-            minMessage ?? "Number of {name} must be equal or more than {min}",
-            {
-              "name": name,
-              "min": min!.toString(),
-            },
-          ),
-        );
+        final localize = locator<AppLocalizations>();
+        markError(minMessage != null
+            ? formatWithMap(minMessage!, {
+                "min": min!.toString(),
+              })
+            : localize.filesFieldMinErrorMsg(min!.toString()));
         return false;
       }
     }
@@ -117,15 +115,12 @@ class ImagesField extends Field {
     if (max != null) {
       var valid = value.length <= max!;
       if (!valid) {
-        markError(
-          formatWithMap(
-            maxMessage ?? "Number of {name} must be equal or lesser than {max}",
-            {
-              "name": name,
-              "max": max!.toString(),
-            },
-          ),
-        );
+        final localize = locator<AppLocalizations>();
+        markError(maxMessage != null
+            ? formatWithMap(maxMessage!, {
+                "max": max!.toString(),
+              })
+            : localize.filesFieldMaxErrorMsg(max!.toString()));
         return false;
       }
     }

@@ -97,7 +97,9 @@ class SingleChoicesField extends PrimitiveField<String> {
     var result = _findSelectedOption().filter((option) => option.textInput);
     if (result.isSome()) {
       if (text == null || (text != null && text!.isEmpty)) {
-        invalidTextInputMessage = "This field is required";
+        final localize = locator<AppLocalizations>();
+        invalidTextInputMessage =
+            requiredMessage ?? localize.validateRequiredMsg;
         return false;
       }
     }
