@@ -323,7 +323,8 @@ class _Map extends StackedHookView<IncidentReportViewModel> {
             : Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
-                  "No gps location provided",
+                  AppLocalizations.of(context)?.noGpsProvided ??
+                      "No gps location provided",
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w300,

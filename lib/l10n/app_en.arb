@@ -59,6 +59,7 @@
   "authorityNameLabel": "Authority Name",
   "noFollowupReport": "No followup report",
   "noComment": "No comment",
+  "noGpsProvided": "No gps location provided",
   "zeroReportLabel": "Zero report",
   "zeroReportLastReportedMessage": "Last reported at {datetime}",
   "@zeroReportLastReportedMessage": {

@@ -59,6 +59,7 @@
   "authorityNameLabel": "အာဏာပိုင်အမည်",
   "noFollowupReport": "နောက်ဆက်တွဲ အစီရင်ခံစာ မရှိပါ။",
   "noComment": "အထူးပြောစရာမရှိ",
+  "noGpsProvided": "No gps location provided",
   "zeroReportLabel": "သုညအစီရင်ခံစာ",
   "zeroReportLastReportedMessage": "{datetime} တွင် နောက်ဆုံးအစီရင်ခံသည်",
   "@zeroReportLastReportedMessage": {
