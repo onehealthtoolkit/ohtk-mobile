@@ -47,6 +47,7 @@ class RegisterApi extends GraphQlBaseApi {
     String? lastName,
     String? email,
     String? phone,
+    String? address,
   }) async {
     String mutation = r'''
       mutation UserRegister(
@@ -55,6 +56,7 @@ class RegisterApi extends GraphQlBaseApi {
         $invitationCode: String!,
         $lastName: String!,
         $telephone: String = null,
+        $address: String = null,
         $username: String!      
       ) {
         authorityUserRegister(
@@ -63,6 +65,7 @@ class RegisterApi extends GraphQlBaseApi {
           invitationCode: $invitationCode,
           lastName: $lastName,
           telephone: $telephone,
+          address: $address,
           username: $username
         ) {
           me {
@@ -78,28 +81,32 @@ class RegisterApi extends GraphQlBaseApi {
       }
     ''';
 
-    final result = await runGqlMutation(
-      mutation: mutation,
-      variables: {
-        "email": email,
-        "firstName": firstName,
-        "invitationCode": invitationCode,
-        "lastName": lastName,
-        "telephone": phone,
-        "username": username
-      },
-      parseData: (resp) => RegisterSuccess(
-        loginSuccess: AuthSuccess(
-          token: resp?['token'],
-          refreshToken: resp?['refreshToken'],
-          // save in seconds
-          refreshExpiresIn:
-              (DateTime.now().millisecondsSinceEpoch / 1000).round() +
-                  (14 * 24 * 60 * 60),
+    try {
+      final result = await runGqlMutation(
+        mutation: mutation,
+        variables: {
+          "email": email,
+          "firstName": firstName,
+          "invitationCode": invitationCode,
+          "lastName": lastName,
+          "telephone": phone,
+          "address": address,
+          "username": username
+        },
+        parseData: (resp) => RegisterSuccess(
+          loginSuccess: AuthSuccess(
+            token: resp?['token'],
+            refreshToken: resp?['refreshToken'],
+            // save in seconds
+            refreshExpiresIn:
+                (DateTime.now().millisecondsSinceEpoch / 1000).round() +
+                    (14 * 24 * 60 * 60),
+          ),
         ),
-      ),
-    );
-
-    return result;
+      );
+      return result;
+    } on OperationException catch (e) {
+      return RegisterFailure(e);
+    }
   }
 }

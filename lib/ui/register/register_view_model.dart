@@ -21,6 +21,7 @@ class RegisterViewModel extends BaseViewModel {
   String? lastName;
   String? phone;
   String? email;
+  String? address;
 
   setInvitationCode(value) {
     invitationCode = value;
@@ -79,7 +80,13 @@ class RegisterViewModel extends BaseViewModel {
     _clearErrorForKey('phone');
   }
 
+  void setAddress(String value) {
+    address = value.trim();
+    _clearErrorForKey('address');
+  }
+
   Future<RegisterResult> register() async {
+    _clearErrorForKey('submit');
     setBusy(true);
     var isValidData = true;
     if (username == null || username!.isEmpty) {
@@ -115,12 +122,18 @@ class RegisterViewModel extends BaseViewModel {
     }
 
     var result = await registerService.registerUser(
-        invitationCode: invitationCode!,
-        username: username,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phone: phone);
+      invitationCode: invitationCode!,
+      username: username,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phone,
+      address: address,
+    );
+
+    if (result is RegisterFailure) {
+      setErrorForObject("submit", result.messages.join(','));
+    }
 
     setBusy(false);
     return result;

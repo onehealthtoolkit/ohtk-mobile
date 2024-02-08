@@ -9,13 +9,15 @@ import 'package:podd_app/services/secure_storage_service.dart';
 abstract class IRegisterService {
   Future<InvitationCodeResult> checkInvitationCode(String invitationCode);
 
-  Future<RegisterResult> registerUser(
-      {required String invitationCode,
-      String? username,
-      String? firstName,
-      String? lastName,
-      String? email,
-      String? phone});
+  Future<RegisterResult> registerUser({
+    required String invitationCode,
+    String? username,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? phone,
+    String? address,
+  });
 }
 
 class RegisterService extends IRegisterService {
@@ -33,20 +35,24 @@ class RegisterService extends IRegisterService {
   }
 
   @override
-  Future<RegisterResult> registerUser(
-      {required String invitationCode,
-      String? username,
-      String? firstName,
-      String? lastName,
-      String? email,
-      String? phone}) async {
+  Future<RegisterResult> registerUser({
+    required String invitationCode,
+    String? username,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? phone,
+    String? address,
+  }) async {
     var result = await _registerApi.registerUser(
-        invitationCode: invitationCode,
-        username: username,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phone: phone);
+      invitationCode: invitationCode,
+      username: username,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phone,
+      address: address,
+    );
 
     if (result is RegisterSuccess) {
       _authService.saveTokenAndFetchProfile(result.loginSuccess);

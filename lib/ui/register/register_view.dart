@@ -106,6 +106,7 @@ class _DetailCodeForm extends StackedHookView<RegisterViewModel> {
     var lastName = useTextEditingController();
     var email = useTextEditingController(text: viewModel.email);
     var phone = useTextEditingController();
+    var address = useTextEditingController();
 
     return SingleChildScrollView(
       child: Column(
@@ -176,6 +177,24 @@ class _DetailCodeForm extends StackedHookView<RegisterViewModel> {
               errorText: viewModel.error("phone"),
             ),
           ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: address,
+            textInputAction: TextInputAction.done,
+            onChanged: viewModel.setAddress,
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.addressLabel,
+              errorText: viewModel.error("address"),
+            ),
+          ),
+          const SizedBox(height: 10),
+          if (viewModel.hasErrorForKey("submit"))
+            Text(
+              viewModel.error("submit"),
+              style: const TextStyle(
+                color: Colors.red,
+              ),
+            ),
           const SizedBox(height: 30),
           SizedBox(
             width: double.infinity,
