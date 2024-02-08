@@ -51,6 +51,7 @@
   "emailLabel": "အီးမေးလ်",
   "emailHint": "tester@gmail.com",
   "telephoneLabel": "တယ်လီဖုန်း",
+  "addressLabel": "Address",
   "allReportTabLabel": "အစီရင်ခံစာအားလုံး",
   "myReportTabLabel": "ကျွန်ုပ်၏အစီရင်ခံစာများ",
   "detailTabLabel": "အသေးစိတ်",

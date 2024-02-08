@@ -12,17 +12,20 @@ class ProfileApi extends GraphQlBaseApi {
     required String firstName,
     required String lastName,
     String? telephone,
+    String? address,
   }) async {
     String mutation = r'''
     mutation UserUpdate(
       $firstName: String!,
       $lastName: String!,
       $telephone: String
+      $address: String
     ) {
       adminUserUpdateProfile(
         firstName: $firstName,
         lastName: $lastName,
         telephone: $telephone,
+        address: $address,
       ) {
         success
       }
@@ -36,6 +39,7 @@ class ProfileApi extends GraphQlBaseApi {
             "firstName": firstName,
             "lastName": lastName,
             "telephone": telephone,
+            "address": address,
           },
           parseData: (resp) => ProfileSuccess(success: resp?["success"]));
       return result;

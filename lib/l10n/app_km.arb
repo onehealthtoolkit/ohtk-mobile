@@ -48,6 +48,7 @@
   "emailLabel": "អ៊ីមែល",
   "emailHint": "tester@gmail.com",
   "telephoneLabel": "ទូរស័ព្ទ",
+  "addressLabel": "Address",
   "allReportTabLabel": "របាយការណ៍ទាំងអស់។",
   "myReportTabLabel": "របាយការណ៍របស់ខ្ញុំ",
   "detailTabLabel": "លម្អិត",

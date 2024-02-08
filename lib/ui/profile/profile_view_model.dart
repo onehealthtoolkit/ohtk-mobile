@@ -19,6 +19,7 @@ class ProfileViewModel extends BaseViewModel {
   String? lastName;
   String? email;
   String? telephone;
+  String? address;
   String? avatarUrl;
 
   String language = "en";
@@ -40,6 +41,7 @@ class ProfileViewModel extends BaseViewModel {
       email = userProfile.email;
       authorityName = userProfile.authorityName;
       avatarUrl = userProfile.avatarUrl;
+      address = userProfile.address;
       notifyListeners();
     }
     language = prefs.getString(languageKey) ?? "en";
@@ -58,6 +60,11 @@ class ProfileViewModel extends BaseViewModel {
   void setTelephone(String value) {
     telephone = value;
     _clearErrorForKey('telephone');
+  }
+
+  void setAddress(String value) {
+    address = value;
+    _clearErrorForKey('address');
   }
 
   Future<void> setPhoto(XFile value) async {
@@ -98,6 +105,7 @@ class ProfileViewModel extends BaseViewModel {
       firstName: firstName!,
       lastName: lastName!,
       telephone: telephone,
+      address: address,
     );
 
     if (result is ProfileSuccess) {

@@ -92,6 +92,10 @@ class ProfileView extends StatelessWidget {
                               label:
                                   AppLocalizations.of(context)!.telephoneLabel,
                               value: viewModel.telephone),
+                          const SizedBox(height: 15),
+                          DisplayField(
+                              label: AppLocalizations.of(context)!.addressLabel,
+                              value: viewModel.address),
                           Divider(
                             height: 20,
                             thickness: 1,

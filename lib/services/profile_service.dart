@@ -10,6 +10,7 @@ abstract class IProfileService {
     required String firstName,
     required String lastName,
     String? telephone,
+    String? address,
   });
 
   Future<ProfileResult> changePassword(String newPassword);
@@ -30,11 +31,13 @@ class ProfileService extends IProfileService {
     required String firstName,
     required String lastName,
     String? telephone,
+    String? address,
   }) async {
     var result = await _profileApi.updateProfile(
       firstName: firstName,
       lastName: lastName,
       telephone: telephone,
+      address: address,
     );
 
     if (result is ProfileSuccess && result.success) {

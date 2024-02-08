@@ -51,6 +51,7 @@
   "emailLabel": "Email",
   "emailHint": "tester@gmail.com",
   "telephoneLabel": "Telephone",
+  "addressLabel": "Address",
   "allReportTabLabel": "All Reports",
   "myReportTabLabel": "My Reports",
   "detailTabLabel": "Detail",

@@ -39,6 +39,8 @@ class _ProfileForm extends StackedHookView<ProfileViewModel> {
     lastName.text = viewModel.lastName ?? "";
     var telephone = useTextEditingController();
     telephone.text = viewModel.telephone ?? "";
+    var address = useTextEditingController();
+    address.text = viewModel.address ?? "";
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
@@ -72,6 +74,16 @@ class _ProfileForm extends StackedHookView<ProfileViewModel> {
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context)!.telephoneLabel,
               errorText: viewModel.error("telephone"),
+            ),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            textInputAction: TextInputAction.next,
+            onChanged: viewModel.setAddress,
+            controller: address,
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.addressLabel,
+              errorText: viewModel.error("address"),
             ),
           ),
           const SizedBox(height: 10),

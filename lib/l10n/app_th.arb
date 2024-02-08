@@ -50,6 +50,7 @@
   "emailLabel": "อีเมล",
   "emailHint": "tester@gmail.com",
   "telephoneLabel": "โทรศัพท์",
+  "addressLabel": "ที่อยู่",
   "allReportTabLabel": "รายงานทั้งหมด",
   "myReportTabLabel": "รายงานของฉัน",
   "detailTabLabel": "รายละเอียด",
