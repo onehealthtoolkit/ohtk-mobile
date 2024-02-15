@@ -22,7 +22,8 @@ class ObservationSubjectMonitoringViewModel extends ReactiveViewModel {
   List<ListenableServiceMixin> get listenableServices => [observationService];
 
   List<ObservationMonitoringDefinition> get observationMonitoringDefinitions =>
-      definition.monitoringDefinitions;
+      definition.monitoringDefinitions
+        ..sort((a, b) => a.name.compareTo(b.name));
 
   List<ObservationMonitoringRecord> get observationSubjectMonitoringRecords =>
       observationService.monitoringRecords;
