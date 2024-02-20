@@ -362,6 +362,7 @@ class ReportApi extends GraphQlBaseApi {
     String reportTypeId,
     Map<String, dynamic> data,
     DateTime incidentDate,
+    String location,
   ) {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
 
@@ -370,11 +371,13 @@ class ReportApi extends GraphQlBaseApi {
         $data: GenericScalar!, 
         $reportTypeId: UUID!, 
         $incidentDate: Date!
+        $gpsLocation: String,
       ) {
           reportDataSummary(
             data: $data, 
             reportTypeId: $reportTypeId, 
-            incidentDate: $incidentDate
+            incidentDate: $incidentDate,
+            gpsLocation: $gpsLocation,
           ) {
             result
           }
@@ -386,6 +389,7 @@ class ReportApi extends GraphQlBaseApi {
           "reportTypeId": reportTypeId,
           "incidentDate": formatter.format(incidentDate),
           "data": data,
+          "gpsLocation": location,
         },
         typeConverter: (resp) => ReportDataSummaryGetResult.fromJson(resp));
   }

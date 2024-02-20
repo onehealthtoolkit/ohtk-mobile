@@ -49,6 +49,7 @@ abstract class IReportService with ListenableServiceMixin {
     String reportTypeId,
     Map<String, dynamic> data,
     DateTime incidentDate,
+    String location,
   );
 
   Future<String> getFollowupReportDataSummary(
@@ -339,9 +340,10 @@ class ReportService extends IReportService {
     String reportTypeId,
     Map<String, dynamic> data,
     DateTime incidentDate,
+    String location,
   ) async {
-    var result =
-        await _reportApi.getReportDataSummary(reportTypeId, data, incidentDate);
+    var result = await _reportApi.getReportDataSummary(
+        reportTypeId, data, incidentDate, location);
     return result.data;
   }
 

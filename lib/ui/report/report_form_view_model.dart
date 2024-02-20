@@ -74,8 +74,12 @@ class ReportFormViewModel extends FormBaseViewModel {
 
   getReportDataSummary() async {
     DateTime? incidentDate = _findFirstIncidentDateValue(formStore);
+    String? location = _findFirstLocationValue(formStore);
     String result = await _reportService.getReportDataSummary(
-        _reportTypeId, formStore.toJsonValue(), incidentDate ?? DateTime.now());
+        _reportTypeId,
+        formStore.toJsonValue(),
+        incidentDate ?? DateTime.now(),
+        location ?? "");
     dataSummary = result;
     notifyListeners();
   }
