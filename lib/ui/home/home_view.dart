@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:podd_app/components/notification_appbar_action.dart';
+import 'package:podd_app/components/simulate_submit_report_button.dart';
 import 'package:podd_app/ui/home/consent_view.dart';
 import 'package:podd_app/ui/home/home_view_model.dart';
 import 'package:podd_app/ui/notification/user_message_view.dart';
@@ -120,6 +121,7 @@ class HomeView extends HookWidget {
             centerTitle: true,
             title: Text(AppLocalizations.of(context)!.appName),
             actions: [
+              const SimulateSubmitReportButton(),
               NotificationAppBarAction(),
             ],
             bottom: PreferredSize(
