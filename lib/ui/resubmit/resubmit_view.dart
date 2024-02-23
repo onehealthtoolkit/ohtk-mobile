@@ -64,98 +64,105 @@ class _Body extends StackedHookView<ReSubmitViewModel> {
 
   _showPendingList(BuildContext context, ReSubmitViewModel viewModel) {
     var localize = AppLocalizations.of(context);
-    return Column(
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                (viewModel.pendingReports.isNotEmpty)
-                    ? _pendingTitle(localize!.pendingReportsTitle)
-                    : Container(),
-                PendingList(
-                  items: viewModel.pendingReports,
-                  onDismissed: (String id) async {
-                    await viewModel.deletePendingReport(id);
-                  },
-                ),
-                viewModel.pendingSubjectRecords.isNotEmpty
-                    ? _pendingTitle(localize!.pendingSubjectsTitle)
-                    : Container(),
-                PendingList(
-                  items: viewModel.pendingSubjectRecords,
-                  onDismissed: (String id) async {
-                    await viewModel.deletePendingSubjectRecord(id);
-                  },
-                ),
-                viewModel.pendingMonitoringRecords.isNotEmpty
-                    ? _pendingTitle(localize!.pendingMonitoringsTitle)
-                    : Container(),
-                PendingList(
-                  items: viewModel.pendingMonitoringRecords,
-                  onDismissed: (String id) async {
-                    await viewModel.deletePendingMonitoringRecord(id);
-                  },
-                ),
-                viewModel.pendingImages.isNotEmpty
-                    ? _pendingTitle(localize!.pendingImagesTitle)
-                    : Container(),
-                PendingList(
-                  items: viewModel.pendingImages,
-                  onDismissed: (String id) async {
-                    await viewModel.deletePendingImage(id);
-                  },
-                ),
-                viewModel.pendingFiles.isNotEmpty
-                    ? _pendingTitle(localize!.pendingFilesTitle)
-                    : Container(),
-                PendingList(
-                  items: viewModel.pendingFiles,
-                  onDismissed: (String id) async {
-                    await viewModel.deletePendingFile(id);
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-        viewModel.isOffline
-            ? Container(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-                width: MediaQuery.of(context).size.width,
-                height: 100,
-                color: Colors.red.shade400,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    localize!.offlineWarning,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 13.sp,
-                    ),
+    return LayoutBuilder(builder: (context, constraints) {
+      return Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      (viewModel.pendingReports.isNotEmpty)
+                          ? _pendingTitle(localize!.pendingReportsTitle)
+                          : Container(),
+                      PendingList(
+                        items: viewModel.pendingReports,
+                        onDismissed: (String id) async {
+                          await viewModel.deletePendingReport(id);
+                        },
+                      ),
+                      viewModel.pendingSubjectRecords.isNotEmpty
+                          ? _pendingTitle(localize!.pendingSubjectsTitle)
+                          : Container(),
+                      PendingList(
+                        items: viewModel.pendingSubjectRecords,
+                        onDismissed: (String id) async {
+                          await viewModel.deletePendingSubjectRecord(id);
+                        },
+                      ),
+                      viewModel.pendingMonitoringRecords.isNotEmpty
+                          ? _pendingTitle(localize!.pendingMonitoringsTitle)
+                          : Container(),
+                      PendingList(
+                        items: viewModel.pendingMonitoringRecords,
+                        onDismissed: (String id) async {
+                          await viewModel.deletePendingMonitoringRecord(id);
+                        },
+                      ),
+                      viewModel.pendingImages.isNotEmpty
+                          ? _pendingTitle(localize!.pendingImagesTitle)
+                          : Container(),
+                      PendingList(
+                        items: viewModel.pendingImages,
+                        onDismissed: (String id) async {
+                          await viewModel.deletePendingImage(id);
+                        },
+                      ),
+                      viewModel.pendingFiles.isNotEmpty
+                          ? _pendingTitle(localize!.pendingFilesTitle)
+                          : Container(),
+                      PendingList(
+                        items: viewModel.pendingFiles,
+                        onDismissed: (String id) async {
+                          await viewModel.deletePendingFile(id);
+                        },
+                      ),
+                    ],
                   ),
                 ),
-              )
-            : Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 8, 20),
-                child: ElevatedButton(
-                  onPressed:
-                      !viewModel.isEmpty ? viewModel.submitAllPendings : null,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 10, 12, 10),
+              ),
+            ),
+          ),
+          viewModel.isOffline
+              ? Container(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+                  width: MediaQuery.of(context).size.width,
+                  height: 100,
+                  color: Colors.red.shade400,
+                  child: Align(
+                    alignment: Alignment.center,
                     child: Text(
-                      localize!.resubmit,
+                      localize!.offlineWarning,
                       style: TextStyle(
+                        color: Colors.white,
                         fontSize: 13.sp,
                       ),
                     ),
                   ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 20),
+                  child: ElevatedButton(
+                    onPressed:
+                        !viewModel.isEmpty ? viewModel.submitAllPendings : null,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 10, 12, 10),
+                      child: Text(
+                        localize!.resubmit,
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-      ],
-    );
+        ],
+      );
+    });
   }
 
   _pendingTitle(String name) => Text(
@@ -184,6 +191,7 @@ class PendingList extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: items.length,
         itemBuilder: ((context, index) {
           var reportState = items[index];
