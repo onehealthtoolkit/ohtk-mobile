@@ -174,10 +174,14 @@ class AuthService with ListenableServiceMixin implements IAuthService {
     if (_token != null) {
       if (Jwt.isExpired(_token!)) {
         _logger.d("token expired");
-        var authResult = await _authApi.refreshToken();
-        if (authResult is AuthSuccess) {
-          await _saveToken(authResult);
-          return false;
+        try {
+          var authResult = await _authApi.refreshToken();
+          if (authResult is AuthSuccess) {
+            await _saveToken(authResult);
+            return false;
+          }
+        } catch (e) {
+          // could be network error
         }
         return true; // try to refresh token but failed
       } else {
