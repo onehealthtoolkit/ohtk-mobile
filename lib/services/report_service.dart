@@ -325,6 +325,7 @@ class ReportService extends IReportService {
     await prefs.remove(zeroReportDateTimeKey);
 
     await _imageService.removeAll();
+    await _fileService.removeAll();
   }
 
   @override
@@ -332,6 +333,7 @@ class ReportService extends IReportService {
     var db = _dbService.db;
     await db.delete("report", where: "id = ?", whereArgs: [id]);
     await _imageService.remove(id);
+    await _fileService.remove(id);
     _pendingReports.removeWhere((r) => r.id == id);
   }
 

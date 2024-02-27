@@ -200,7 +200,9 @@ class PendingList extends StatelessWidget {
             key: Key(reportState.item.id),
             background: Container(color: Colors.red),
             onDismissed: (direction) {
-              onDismissed != null && onDismissed!(reportState.item.id);
+              if (onDismissed != null) {
+                onDismissed!(reportState.item.id);
+              }
             },
             child: Card(
               child: _PendingSubmission(reportState: reportState),

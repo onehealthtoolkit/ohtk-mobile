@@ -173,13 +173,18 @@ class FileService extends IFileService {
 
   @override
   Future<void> remove(String reportId) async {
-    var db = _dbService.db;
-    await db
-        .delete("report_file", where: "report_id = ?", whereArgs: [reportId]);
+    var files = await findAllReportFilesByReportId(reportId);
+    await Future.forEach(files, (element) async {
+      await removePendingFile(element.id);
+    });
 
     var localPath = await _localFilePath;
     var reportFolder = File('$localPath/reports/$reportId');
-    await reportFolder.delete(recursive: true);
+    try {
+      await reportFolder.delete(recursive: true);
+    } catch (e) {
+      /// path not exist, do nothing
+    }
   }
 
   @override

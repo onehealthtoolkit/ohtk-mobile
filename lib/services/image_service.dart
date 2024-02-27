@@ -18,7 +18,7 @@ abstract class IImageService with ListenableServiceMixin {
 
   Future<void> removeAll();
 
-  Future<void> remove(String id);
+  Future<void> remove(String reportId);
 
   Future<ImageSubmitResult> submit(ReportImage image);
 
@@ -137,9 +137,11 @@ class ImageService extends IImageService {
   }
 
   @override
-  Future<void> remove(String id) async {
-    var db = _dbService.db;
-    await db.delete("report_image", where: "reportId = ?", whereArgs: [id]);
+  Future<void> remove(String reportId) async {
+    var images = await findByReportId(reportId);
+    for (var image in images) {
+      await removePendingImage(image.id);
+    }
   }
 
   @override

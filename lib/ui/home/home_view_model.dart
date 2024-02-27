@@ -40,7 +40,7 @@ class HomeViewModel extends IndexTrackingViewModel {
         reportIds + subjectRecordIds + monitoringRecordIds;
 
     return pendingImages
-        .where((element) => allPendingCaseIds.contains(element.reportId))
+        .where((element) => !allPendingCaseIds.contains(element.reportId))
         .length;
   }
 
@@ -53,7 +53,7 @@ class HomeViewModel extends IndexTrackingViewModel {
         reportIds + subjectRecordIds + monitoringRecordIds;
 
     return pendingFiles
-        .where((element) => allPendingCaseIds.contains(element.reportId))
+        .where((element) => !allPendingCaseIds.contains(element.reportId))
         .length;
   }
 

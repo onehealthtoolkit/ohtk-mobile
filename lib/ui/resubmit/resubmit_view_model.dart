@@ -105,12 +105,14 @@ class ReSubmitViewModel extends ReactiveViewModel {
     final allPendingCaseIds =
         reportIds + subjectRecordIds + monitoringRecordIds;
 
+    /// Only dangling images but their reports were already submitted.
+    /// (images that failed to send along with their reports)
     /// All images that are not submitted with their pending reports, subject or monitoring records,
-    /// are excluded from pending image list, becuase they will be included in submission with their reports.
-    _imageService.pendingImages
-        .removeWhere((image) => allPendingCaseIds.contains(image.reportId));
+    /// are excluded from pending image list, because they will be included with their parent submission.
+    var images = _imageService.pendingImages
+        .where((image) => !allPendingCaseIds.contains(image.reportId));
 
-    return _imageService.pendingImages
+    return images
         .map((image) => SubmissionState(
               item: SubmissionItem(
                 id: image.id,
@@ -130,10 +132,11 @@ class ReSubmitViewModel extends ReactiveViewModel {
     final allPendingCaseIds =
         reportIds + subjectRecordIds + monitoringRecordIds;
 
-    _fileService.pendingReportFiles
-        .removeWhere((file) => allPendingCaseIds.contains(file.reportId));
+    /// Only files without their parent reports (same case as pending images)
+    var files = _fileService.pendingReportFiles
+        .where((file) => !allPendingCaseIds.contains(file.reportId));
 
-    return _fileService.pendingReportFiles
+    return files
         .map((file) => SubmissionState(
               item: SubmissionItem(
                 id: file.id,
