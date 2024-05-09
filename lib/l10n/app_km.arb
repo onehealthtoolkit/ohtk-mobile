@@ -65,6 +65,7 @@
   "fieldUseCurrentLocation": "ប្រើទីតាំងបច្ចុប្បន្ន",
   "authorityLabel": "Authority",
   "incidentDate": "Incident Date",
+  "invalidQrcode": "Invalid qrcode",
   "invalidReportTypeQrcode": "Invalid report type qrcode",
   "invalidFormValue": "Invalid form value",
   "simulateReportTitle": "Simulate report",

@@ -67,6 +67,7 @@
   "fieldUseCurrentLocation": "ใช้ตำแหน่งปัจจุบัน",
   "authorityLabel": "หน่วยงาน",
   "incidentDate": "วันที่เกิดเหตุ",
+  "invalidQrcode": "qrcode ไม่ถูกต้อง",
   "invalidReportTypeQrcode": "qrcode ไม่ถูกต้องสำหรับประเภทรายงาน",
   "invalidFormValue": "ค่าที่ป้อนไม่ถูกต้อง",
   "simulateReportTitle": "จำลองแบบรายงาน",

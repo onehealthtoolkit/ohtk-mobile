@@ -76,6 +76,7 @@
   "fieldUseCurrentLocation": "Utiliser l'emplacement actuel",
   "authorityLabel": "Autorité",
   "incidentDate": "Date de l'incident",
+  "invalidQrcode": "Invalid qrcode",
   "invalidReportTypeQrcode": "QRcode de type de rapport non valide",
   "invalidFormValue": "Valeur de formulaire invalide",
   "simulateReportTitle": "Simuler le rapport",

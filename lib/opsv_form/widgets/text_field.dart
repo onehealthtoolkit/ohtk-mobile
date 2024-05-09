@@ -45,6 +45,39 @@ class _FormTextFieldState extends State<FormTextField> {
               ? widget.field.description!
               : null,
           errorText: widget.field.isValid ? null : widget.field.invalidMessage,
+          suffixIcon: (widget.field.scan != null && widget.field.scan!)
+              ? IconButton(
+                  splashColor: Colors.blueGrey.shade200,
+                  icon: Icon(
+                    Icons.qr_code_scanner,
+                    color: Theme.of(context).primaryColor,
+                    size: 20.w,
+                  ),
+                  onPressed: () async {
+                    var result = await Navigator.push<String>(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const QrScanner(),
+                      ),
+                    );
+
+                    if (context.mounted) {
+                      if (result != null) {
+                        widget.field.value = result;
+                      } else {
+                        var errorMessage = SnackBar(
+                          content: Text(
+                              AppLocalizations.of(context)?.invalidQrcode ??
+                                  'Invalid qrcode'),
+                          backgroundColor: Colors.red,
+                        );
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(errorMessage);
+                      }
+                    }
+                  },
+                )
+              : null,
         ),
         onChanged: (val) {
           widget.field.value = val;

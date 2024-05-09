@@ -5,6 +5,7 @@ class TextField extends PrimitiveField<String> {
   int? maxLength;
   String? minLengthMessage;
   String? maxLengthMessage;
+  bool? scan;
 
   TextField(
     String id,
@@ -18,6 +19,7 @@ class TextField extends PrimitiveField<String> {
     this.minLengthMessage,
     this.maxLength,
     this.maxLengthMessage,
+    this.scan,
     Condition? condition,
     String? tags,
   }) : super(id, name,
@@ -46,6 +48,7 @@ class TextField extends PrimitiveField<String> {
       maxLength: json["maxLength"],
       minLengthMessage: json["minLengthMessage"],
       maxLengthMessage: json["maxLengthMessage"],
+      scan: json['scan'],
       condition: condition,
       tags: json['tags'],
     );

@@ -67,6 +67,7 @@
   "fieldUseCurrentLocation": "ໃຊ້ສະຖານທີ່ປະຈຸບັນ",
   "authorityLabel": "ອົງການ",
   "incidentDate": "ວັນທີເກີດເຫດ",
+  "invalidQrcode": "Invalid qrcode",
   "invalidReportTypeQrcode": "ບໍ່ເຂົ້າໃຈ qrcode",
   "invalidFormValue": "ຄ່າແບບຟອມບໍ່ຖືກຕ້ອງ",
   "simulateReportTitle": "ການຈໍາລອງລາຍງານ",

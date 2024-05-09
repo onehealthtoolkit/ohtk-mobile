@@ -76,6 +76,7 @@
   "fieldUseCurrentLocation": "လက်ရှိတည်နေရာကိုသုံးပါ။",
   "authorityLabel": "အာဏာပိုင်",
   "incidentDate": "အဖြစ်အပျက်နေ့စွဲ",
+  "invalidQrcode": "Invalid qrcode",
   "invalidReportTypeQrcode": "အစီရင်ခံစာအမျိုးအစား qrcode မမှန်ကန်ပါ။",
   "invalidFormValue": "ဖောင်တန်ဖိုး မမှန်ကန်ပါ။",
   "simulateReportTitle": "အစီရင်ခံစာကို အတုယူပါ။",
