@@ -1,7 +1,14 @@
 part of 'widgets.dart';
 
-class QrScanner extends StatelessWidget {
+class QrScanner extends StatefulWidget {
   const QrScanner({Key? key}) : super(key: key);
+
+  @override
+  State<QrScanner> createState() => _QrScannerState();
+}
+
+class _QrScannerState extends State<QrScanner> {
+  bool detected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +20,17 @@ class QrScanner extends StatelessWidget {
             controller: MobileScannerController(
                 facing: CameraFacing.back, torchEnabled: false),
             onDetect: (barcodeCapture) {
+              if (detected) return;
+
               String? result;
               if (barcodeCapture.barcodes.isNotEmpty) {
                 result = barcodeCapture.barcodes.first.rawValue;
+                Navigator.pop(context, result);
+
+                setState(() {
+                  detected = true;
+                });
               }
-              Navigator.pop(context, result);
             },
           ),
           const ScannerMaskOverlay(),
