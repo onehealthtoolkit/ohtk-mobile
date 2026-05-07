@@ -15,6 +15,9 @@ class CensusViewModel extends BaseViewModel {
   final animalQuantities = <int, String>{};
   final householdQuantities = <int, String>{};
   String? message;
+  String? cacheMessage;
+  VillageCensusDraft? draft;
+  int fieldVersion = 0;
 
   CensusViewModel() {
     init();
@@ -32,6 +35,7 @@ class CensusViewModel extends BaseViewModel {
   Future<void> init() async {
     setBusy(true);
     message = null;
+    cacheMessage = null;
     clearErrors();
 
     if (!hasCensusAccess) {
@@ -39,29 +43,50 @@ class CensusViewModel extends BaseViewModel {
       return;
     }
 
-    try {
-      species = await censusService.fetchActiveSpecies();
-      for (final item in species) {
-        animalQuantities.putIfAbsent(item.id, () => '');
-        householdQuantities.putIfAbsent(item.id, () => '');
-      }
-      latestCensus =
-          await censusService.getLatestVillageCensus(selectedVillage!.id);
-    } catch (e) {
-      setError(e.toString());
+    final readData = await censusService.loadVillageCensus(selectedVillage!.id);
+    species = readData.species;
+    latestCensus = readData.latestCensus;
+    _syncQuantityRows();
+    await _loadDraft();
+
+    if (readData.usedCache) {
+      cacheMessage = 'Showing saved census data. Pull to refresh.';
+    } else if (readData.errorMessage != null) {
+      setError(readData.errorMessage);
     }
 
     setBusy(false);
   }
 
-  void setAnimalQuantity(int speciesId, String value) {
+  Future<void> setAnimalQuantity(int speciesId, String value) async {
     animalQuantities[speciesId] = value.trim();
     _clearSubmitError();
+    await _saveDraft();
+    notifyListeners();
   }
 
-  void setHouseholdQuantity(int speciesId, String value) {
+  Future<void> setHouseholdQuantity(int speciesId, String value) async {
     householdQuantities[speciesId] = value.trim();
     _clearSubmitError();
+    await _saveDraft();
+    notifyListeners();
+  }
+
+  bool get hasDraft => draft?.hasValues ?? false;
+
+  Future<void> discardDraft() async {
+    if (selectedVillage == null) {
+      return;
+    }
+    await censusService.clearDraft(selectedVillage!.id);
+    draft = null;
+    for (final item in species) {
+      animalQuantities[item.id] = '';
+      householdQuantities[item.id] = '';
+    }
+    fieldVersion++;
+    message = 'Draft discarded.';
+    notifyListeners();
   }
 
   Future<VillageCensusSubmitResult?> submit() async {
@@ -95,6 +120,8 @@ class CensusViewModel extends BaseViewModel {
 
     if (result is VillageCensusSubmitSuccess) {
       latestCensus = result.snapshot;
+      await censusService.clearDraft(selectedVillage!.id);
+      draft = null;
       message = 'Census submitted.';
     } else if (result is VillageCensusSubmitValidationFailure) {
       setErrorForObject('submit', result.messages.join(', '));
@@ -104,6 +131,53 @@ class CensusViewModel extends BaseViewModel {
 
     notifyListeners();
     return result;
+  }
+
+  void _syncQuantityRows() {
+    final speciesIds = species.map((item) => item.id).toSet();
+    animalQuantities
+        .removeWhere((speciesId, _) => !speciesIds.contains(speciesId));
+    householdQuantities
+        .removeWhere((speciesId, _) => !speciesIds.contains(speciesId));
+    for (final item in species) {
+      animalQuantities.putIfAbsent(item.id, () => '');
+      householdQuantities.putIfAbsent(item.id, () => '');
+    }
+  }
+
+  Future<void> _loadDraft() async {
+    if (selectedVillage == null) {
+      draft = null;
+      return;
+    }
+    draft = await censusService.getDraft(selectedVillage!.id);
+    if (draft == null) {
+      return;
+    }
+    for (final item in species) {
+      animalQuantities[item.id] = draft!.animalQuantities[item.id] ?? '';
+      householdQuantities[item.id] = draft!.householdQuantities[item.id] ?? '';
+    }
+    fieldVersion++;
+  }
+
+  Future<void> _saveDraft() async {
+    if (selectedVillage == null) {
+      return;
+    }
+    final currentDraft = VillageCensusDraft(
+      villageId: selectedVillage!.id,
+      animalQuantities: Map<int, String>.from(animalQuantities),
+      householdQuantities: Map<int, String>.from(householdQuantities),
+      savedAt: DateTime.now(),
+    );
+    if (currentDraft.hasValues) {
+      draft = currentDraft;
+      await censusService.saveDraft(currentDraft);
+    } else {
+      draft = null;
+      await censusService.clearDraft(selectedVillage!.id);
+    }
   }
 
   List<AnimalCensusFactInput>? _buildFacts() {

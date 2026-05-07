@@ -38,6 +38,13 @@ class CensusView extends StatelessWidget {
                   viewModel.modelError.toString(),
                   style: const TextStyle(color: Colors.red),
                 ),
+              if (viewModel.cacheMessage != null) ...[
+                Text(
+                  viewModel.cacheMessage!,
+                  style: TextStyle(color: Colors.orange.shade800),
+                ),
+                const SizedBox(height: 12),
+              ],
               if (viewModel.hasCensusAccess) ...[
                 _LatestCensus(snapshot: viewModel.latestCensus),
                 const SizedBox(height: 24),
@@ -107,6 +114,23 @@ class _CensusForm extends StatelessWidget {
       children: [
         Text('Submit census', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 12),
+        if (viewModel.hasDraft) ...[
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Draft saved',
+                  style: TextStyle(color: Colors.blueGrey.shade700),
+                ),
+              ),
+              TextButton(
+                onPressed: viewModel.discardDraft,
+                child: const Text('Discard'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+        ],
         for (final item in viewModel.species)
           _SpeciesQuantityRow(item, viewModel),
         if (viewModel.hasErrorForKey('submit')) ...[
@@ -161,7 +185,11 @@ class _SpeciesQuantityRow extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: TextField(
+                child: TextFormField(
+                  key: ValueKey(
+                    'animal-${species.id}-${viewModel.fieldVersion}',
+                  ),
+                  initialValue: viewModel.animalQuantities[species.id] ?? '',
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (value) =>
@@ -174,7 +202,11 @@ class _SpeciesQuantityRow extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: TextField(
+                child: TextFormField(
+                  key: ValueKey(
+                    'household-${species.id}-${viewModel.fieldVersion}',
+                  ),
+                  initialValue: viewModel.householdQuantities[species.id] ?? '',
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (value) =>
