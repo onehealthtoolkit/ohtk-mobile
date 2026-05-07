@@ -21,6 +21,16 @@ class AnimalSpecies {
         sortOrder: json['sortOrder'] as int? ?? 0,
       );
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'code': code,
+      'name': name,
+      'active': active,
+      'sortOrder': sortOrder,
+    };
+  }
+
   String get displayName {
     if (code.isEmpty) {
       return name;

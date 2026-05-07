@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:podd_app/components/flat_button.dart';
+import 'package:podd_app/components/test_id.dart';
 import 'package:podd_app/models/animal_species.dart';
 import 'package:podd_app/models/village_census.dart';
 import 'package:podd_app/ui/census/census_view_model.dart';
@@ -24,12 +25,19 @@ class CensusView extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
             children: [
-              Text(
-                'Village census',
-                style: Theme.of(context).textTheme.titleLarge,
+              TestId(
+                id: 'census.title_text',
+                child: Text(
+                  'Village census',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
               const SizedBox(height: 8),
-              Text(viewModel.selectedVillage?.displayName ?? 'No village'),
+              TestId(
+                id: 'census.village_text',
+                child: Text(
+                    viewModel.selectedVillage?.displayName ?? 'No village'),
+              ),
               const SizedBox(height: 20),
               if (!viewModel.hasCensusAccess)
                 const Text('Census is not available for this account.'),
@@ -38,6 +46,13 @@ class CensusView extends StatelessWidget {
                   viewModel.modelError.toString(),
                   style: const TextStyle(color: Colors.red),
                 ),
+              if (viewModel.cacheMessage != null) ...[
+                Text(
+                  viewModel.cacheMessage!,
+                  style: TextStyle(color: Colors.orange.shade800),
+                ),
+                const SizedBox(height: 12),
+              ],
               if (viewModel.hasCensusAccess) ...[
                 _LatestCensus(snapshot: viewModel.latestCensus),
                 const SizedBox(height: 24),
@@ -107,35 +122,71 @@ class _CensusForm extends StatelessWidget {
       children: [
         Text('Submit census', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 12),
+        if (viewModel.hasDraft) ...[
+          Row(
+            children: [
+              Expanded(
+                child: TestId(
+                  id: 'census.draft_saved_text',
+                  child: Text(
+                    'Draft saved',
+                    style: TextStyle(color: Colors.blueGrey.shade700),
+                  ),
+                ),
+              ),
+              TestId(
+                id: 'census.discard_draft_button',
+                button: true,
+                child: TextButton(
+                  onPressed: viewModel.discardDraft,
+                  child: const Text('Discard'),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+        ],
         for (final item in viewModel.species)
           _SpeciesQuantityRow(item, viewModel),
         if (viewModel.hasErrorForKey('submit')) ...[
           const SizedBox(height: 12),
-          Text(
-            viewModel.error('submit'),
-            style: const TextStyle(color: Colors.red),
+          TestId(
+            id: 'census.submit_error_text',
+            liveRegion: true,
+            child: Text(
+              viewModel.error('submit'),
+              style: const TextStyle(color: Colors.red),
+            ),
           ),
         ],
         if (viewModel.message != null) ...[
           const SizedBox(height: 12),
-          Text(
-            viewModel.message!,
-            style: TextStyle(color: Colors.green.shade700),
+          TestId(
+            id: 'census.status_text',
+            liveRegion: true,
+            child: Text(
+              viewModel.message!,
+              style: TextStyle(color: Colors.green.shade700),
+            ),
           ),
         ],
         const SizedBox(height: 20),
         SizedBox(
           width: double.infinity,
-          child: FlatButton.primary(
-            onPressed:
-                viewModel.busy('submit') ? null : () => viewModel.submit(),
-            child: viewModel.busy('submit')
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(color: Colors.white),
-                  )
-                : Text('Submit census', style: TextStyle(fontSize: 15.sp)),
+          child: TestId(
+            id: 'census.submit_button',
+            button: true,
+            child: FlatButton.primary(
+              onPressed:
+                  viewModel.busy('submit') ? null : () => viewModel.submit(),
+              child: viewModel.busy('submit')
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(color: Colors.white),
+                    )
+                  : Text('Submit census', style: TextStyle(fontSize: 15.sp)),
+            ),
           ),
         ),
       ],
@@ -161,27 +212,44 @@ class _SpeciesQuantityRow extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  onChanged: (value) =>
-                      viewModel.setAnimalQuantity(species.id, value),
-                  decoration: const InputDecoration(
-                    labelText: 'Animals',
-                    border: OutlineInputBorder(),
+                child: TestId(
+                  id: 'census.${species.code}.animals_field',
+                  textField: true,
+                  child: TextFormField(
+                    key: ValueKey(
+                      'animal-${species.id}-${viewModel.fieldVersion}',
+                    ),
+                    initialValue: viewModel.animalQuantities[species.id] ?? '',
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    onChanged: (value) =>
+                        viewModel.setAnimalQuantity(species.id, value),
+                    decoration: const InputDecoration(
+                      labelText: 'Animals',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  onChanged: (value) =>
-                      viewModel.setHouseholdQuantity(species.id, value),
-                  decoration: const InputDecoration(
-                    labelText: 'Households',
-                    border: OutlineInputBorder(),
+                child: TestId(
+                  id: 'census.${species.code}.households_field',
+                  textField: true,
+                  child: TextFormField(
+                    key: ValueKey(
+                      'household-${species.id}-${viewModel.fieldVersion}',
+                    ),
+                    initialValue:
+                        viewModel.householdQuantities[species.id] ?? '',
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    onChanged: (value) =>
+                        viewModel.setHouseholdQuantity(species.id, value),
+                    decoration: const InputDecoration(
+                      labelText: 'Households',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
               ),
