@@ -1,0 +1,78 @@
+appId: org.poddtoolkit.poddMobile
+name: FAO mobile census draft cache smoke
+---
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: "login.server_dropdown"
+    timeout: 30000
+- tapOn:
+    id: "login.server_dropdown"
+- tapOn: "Local public"
+- tapOn:
+    id: "login.username_field"
+- inputText: "codex_poc"
+- tapOn:
+    id: "login.password_field"
+- inputText: "codex_poc"
+- hideKeyboard
+- tapOn:
+    id: "login.submit_button"
+- waitForAnimationToEnd:
+    timeout: 10000
+- tapOn:
+    id: "home.nav.census_tab"
+- extendedWaitUntil:
+    visible:
+      id: "census.title_text"
+    timeout: 30000
+- assertVisible:
+    id: "census.village_text"
+- tapOn:
+    id: "census.CATTLE.animals_field"
+- inputText: "12"
+- tapOn:
+    id: "census.CATTLE.households_field"
+- inputText: "3"
+- hideKeyboard
+- extendedWaitUntil:
+    visible:
+      id: "census.draft_saved_text"
+    timeout: 10000
+- tapOn:
+    id: "home.nav.incidents_tab"
+- tapOn:
+    id: "home.nav.census_tab"
+- extendedWaitUntil:
+    visible:
+      id: "census.title_text"
+    timeout: 30000
+- assertVisible:
+    id: "census.draft_saved_text"
+- assertVisible: "12"
+- assertVisible: "3"
+- tapOn:
+    id: "census.discard_draft_button"
+- assertVisible:
+    id: "census.status_text"
+- assertNotVisible:
+    id: "census.draft_saved_text"
+- tapOn:
+    id: "census.CATTLE.animals_field"
+- inputText: "14"
+- tapOn:
+    id: "census.CATTLE.households_field"
+- inputText: "4"
+- hideKeyboard
+- extendedWaitUntil:
+    visible:
+      id: "census.draft_saved_text"
+    timeout: 10000
+- tapOn:
+    id: "census.submit_button"
+- extendedWaitUntil:
+    visible:
+      id: "census.status_text"
+    timeout: 30000
+- assertNotVisible:
+    id: "census.draft_saved_text"

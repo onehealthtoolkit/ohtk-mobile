@@ -6,6 +6,7 @@ import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/components/language_dropdown.dart';
 import 'package:podd_app/components/restart_widget.dart';
+import 'package:podd_app/components/test_id.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/ui/forgot_password/reset_password_request_view.dart';
 import 'package:podd_app/ui/login/login_view_model.dart';
@@ -84,48 +85,66 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      width: 150.w,
-                      child: _languageDropdown(viewModel, context),
+                    TestId(
+                      id: 'login.language_dropdown',
+                      button: true,
+                      child: SizedBox(
+                        width: 150.w,
+                        child: _languageDropdown(viewModel, context),
+                      ),
                     ),
                     const SizedBox(height: 10),
                     _tenantDropdown(viewModel, context),
                     const SizedBox(height: 20),
                     ...skipIfDomainNotSelected(viewModel, [
-                      TextField(
-                        controller: username,
-                        textInputAction: TextInputAction.next,
-                        onChanged: viewModel.setUsername,
-                        decoration: InputDecoration(
-                          labelText:
-                              AppLocalizations.of(context)!.usernameLabel,
-                          errorText: viewModel.error("username"),
+                      TestId(
+                        id: 'login.username_field',
+                        textField: true,
+                        child: TextField(
+                          controller: username,
+                          textInputAction: TextInputAction.next,
+                          onChanged: viewModel.setUsername,
+                          decoration: InputDecoration(
+                            labelText:
+                                AppLocalizations.of(context)!.usernameLabel,
+                            errorText: viewModel.error("username"),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
-                      TextField(
-                        controller: password,
-                        textInputAction: TextInputAction.done,
-                        obscureText: viewModel.obscureText,
-                        decoration: InputDecoration(
-                          labelText:
-                              AppLocalizations.of(context)!.passwordLabel,
-                          errorText: viewModel.error("password"),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              viewModel.setObscureText(!viewModel.obscureText);
-                            },
-                            hoverColor: Colors.transparent,
-                            icon: viewModel.obscureText
-                                ? const Icon(Icons.visibility)
-                                : const Icon(Icons.visibility_off),
+                      TestId(
+                        id: 'login.password_field',
+                        textField: true,
+                        child: TextField(
+                          controller: password,
+                          textInputAction: TextInputAction.done,
+                          obscureText: viewModel.obscureText,
+                          decoration: InputDecoration(
+                            labelText:
+                                AppLocalizations.of(context)!.passwordLabel,
+                            errorText: viewModel.error("password"),
+                            suffixIcon: TestId(
+                              id: 'login.password_visibility_button',
+                              button: true,
+                              child: IconButton(
+                                tooltip: 'Toggle password visibility',
+                                onPressed: () {
+                                  viewModel
+                                      .setObscureText(!viewModel.obscureText);
+                                },
+                                hoverColor: Colors.transparent,
+                                icon: viewModel.obscureText
+                                    ? const Icon(Icons.visibility)
+                                    : const Icon(Icons.visibility_off),
+                              ),
+                            ),
                           ),
+                          onChanged: viewModel.setPassword,
+                          onSubmitted: (value) {
+                            viewModel.setPassword(value);
+                            viewModel.authenticate();
+                          },
                         ),
-                        onChanged: viewModel.setPassword,
-                        onSubmitted: (value) {
-                          viewModel.setPassword(value);
-                          viewModel.authenticate();
-                        },
                       ),
                       SizedBox(
                         width: double.infinity,
@@ -157,29 +176,38 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
                         ),
                       ),
                       if (viewModel.hasErrorForKey("general"))
-                        Text(
-                          viewModel.error("general"),
-                          style: const TextStyle(
-                            color: Colors.red,
+                        TestId(
+                          id: 'login.general_error_text',
+                          liveRegion: true,
+                          child: Text(
+                            viewModel.error("general"),
+                            style: const TextStyle(
+                              color: Colors.red,
+                            ),
                           ),
                         ),
                       SizedBox(
                         width: double.infinity,
-                        child: FlatButton.primary(
-                          onPressed:
-                              viewModel.isBusy ? null : viewModel.authenticate,
-                          child: viewModel.isBusy
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
+                        child: TestId(
+                          id: 'login.submit_button',
+                          button: true,
+                          child: FlatButton.primary(
+                            onPressed: viewModel.isBusy
+                                ? null
+                                : viewModel.authenticate,
+                            child: viewModel.isBusy
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Text(
+                                    AppLocalizations.of(context)!.loginButton,
+                                    style: TextStyle(fontSize: 15.sp),
                                   ),
-                                )
-                              : Text(
-                                  AppLocalizations.of(context)!.loginButton,
-                                  style: TextStyle(fontSize: 15.sp),
-                                ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -232,37 +260,41 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
   Widget _qrcodeLogin(
     BuildContext context,
   ) {
-    return InkWell(
-      onTap: () async {
-        var error = await Navigator.push<String>(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const QrLoginView(),
-          ),
-        );
-        if (error != null) {
-          if (context.mounted) {
-            showAlert(context, error);
-          }
-        }
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.qr_code_scanner,
-            color: Theme.of(context).primaryColor,
-            size: 16.w,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            AppLocalizations.of(context)!.qrCodeLoginButton,
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontSize: 15.sp,
+    return TestId(
+      id: 'login.qr_button',
+      button: true,
+      child: InkWell(
+        onTap: () async {
+          var error = await Navigator.push<String>(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const QrLoginView(),
             ),
-          ),
-        ],
+          );
+          if (error != null) {
+            if (context.mounted) {
+              showAlert(context, error);
+            }
+          }
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.qr_code_scanner,
+              color: Theme.of(context).primaryColor,
+              size: 16.w,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              AppLocalizations.of(context)!.qrCodeLoginButton,
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontSize: 15.sp,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -292,31 +324,35 @@ class _LoginForm extends StackedHookView<LoginViewModel> {
       );
     }
 
-    return DropdownButtonFormField<String>(
-      isExpanded: true,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).primaryColor)),
-        labelText: AppLocalizations.of(context)!.serverLabel,
+    return TestId(
+      id: 'login.server_dropdown',
+      button: true,
+      child: DropdownButtonFormField<String>(
+        isExpanded: true,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Theme.of(context).primaryColor)),
+          labelText: AppLocalizations.of(context)!.serverLabel,
+        ),
+        hint: const Text("Server"),
+        initialValue: viewModel.subDomain,
+        onChanged: (String? value) async {
+          if (value == null) {
+            return;
+          }
+          await viewModel.changeServer(value);
+          if (context.mounted) {
+            RestartWidget.restartApp(context);
+          }
+        },
+        items: viewModel.serverOptions
+            .map<DropdownMenuItem<String>>((option) => DropdownMenuItem(
+                  value: option["domain"],
+                  child: Text(option['label'] ?? ""),
+                ))
+            .toList(),
       ),
-      hint: const Text("Server"),
-      initialValue: viewModel.subDomain,
-      onChanged: (String? value) async {
-        if (value == null) {
-          return;
-        }
-        await viewModel.changeServer(value);
-        if (context.mounted) {
-          RestartWidget.restartApp(context);
-        }
-      },
-      items: viewModel.serverOptions
-          .map<DropdownMenuItem<String>>((option) => DropdownMenuItem(
-                value: option["domain"],
-                child: Text(option['label'] ?? ""),
-              ))
-          .toList(),
     );
   }
 
