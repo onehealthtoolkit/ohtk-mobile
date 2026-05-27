@@ -39,15 +39,11 @@ final class LoginScenario extends BaseTestScenario {
   });
 
   // ---------------------------------------------------------------------------
-  // Guard
+  // Guard — always run the scenario; let `run()` fail hard if screen is missing.
   // ---------------------------------------------------------------------------
 
   @override
-  Future<bool> waitAndCheckValid() async {
-    // The app is already settled by start_test.dart's initial pumpAndSettle.
-    // Just check that the login screen's root Scaffold is present.
-    return $(K.loginKeys.view).exists;
-  }
+  Future<bool> waitAndCheckValid() async => true;
 
   // ---------------------------------------------------------------------------
   // Test logic
@@ -57,7 +53,13 @@ final class LoginScenario extends BaseTestScenario {
   Future<bool> run() async {
     await $.pumpAndSettle();
 
-    // ── 1. Verify the login form is fully rendered ──────────────────────────
+    // ── 1. Verify the login screen and form are fully rendered ──────────────
+    expect(
+      $(K.loginKeys.view).exists,
+      isTrue,
+      reason: 'Login screen not found — app may have shown a different '
+          'initial screen (WelcomeView, tenant picker, etc.).',
+    );
     expect(
       $(K.loginKeys.usernameField).exists,
       isTrue,
@@ -84,15 +86,15 @@ final class LoginScenario extends BaseTestScenario {
     // ── 3. Tap sign in ───────────────────────────────────────────────────────
     await $(K.loginKeys.signInButton).tap();
 
-    // Allow time for auth round-trip and navigation.
+    // Allow time for the auth round-trip.
     await $.pumpAndSettle(duration: const Duration(seconds: 8));
 
-    // ── 4. Assert we navigated away from the login screen ───────────────────
+    // ── 4. Assert we stayed on the login screen (authentication failed) ─────
     expect(
       $(K.loginKeys.view).exists,
-      isFalse,
-      reason: 'Still on the login screen after tapping sign in — '
-          'check credentials or server selection.',
+      isTrue,
+      reason: 'Left the login screen — expected auth to fail with '
+          'the supplied credentials.',
     );
 
     return true;

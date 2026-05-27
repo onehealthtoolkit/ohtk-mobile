@@ -9,6 +9,7 @@ library application_keys;
 import 'package:flutter/widgets.dart';
 
 part 'items/login_keys.dart';
+part 'items/welcome_keys.dart';
 
 /// Top-level typedef so callers can write `K.loginKeys.xxx` instead of the
 /// full `ApplicationKeys.loginKeys.xxx`.
@@ -18,4 +19,5 @@ final class ApplicationKeys {
   const ApplicationKeys._();
 
   static final loginKeys = _LoginKeys._();
+  static final welcomeKeys = _WelcomeKeys._();
 }
