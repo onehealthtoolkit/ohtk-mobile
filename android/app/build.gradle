@@ -47,7 +47,7 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    ndkVersion '27.0.12077973'
+    ndkVersion "28.2.13676358"
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -61,6 +61,12 @@ android {
 
         manifestPlaceholders += [googleMapApiKey: localProperties.getProperty('google.map.key')]
         multiDexEnabled true
+        testInstrumentationRunner "pl.leancode.patrol.PatrolJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: "true"
+    }
+
+    testOptions {
+        execution "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
     signingConfigs {
@@ -90,4 +96,5 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.3.10"
     implementation 'androidx.multidex:multidex:2.0.1'
+    androidTestUtil "androidx.test:orchestrator:1.5.1"
 }

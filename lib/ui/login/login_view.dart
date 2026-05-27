@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:podd_app/components/restart_widget.dart';
 import 'package:podd_app/constants.dart';
+import 'package:podd_app/keys/application_keys.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/ui/login/login_view_model.dart';
 import 'package:podd_app/ui/login/picker_sheets.dart';
@@ -32,6 +33,7 @@ class LoginView extends StackedView<LoginViewModel> {
   Widget builder(
       BuildContext context, LoginViewModel viewModel, Widget? child) {
     return Scaffold(
+      key: K.loginKeys.view,
       backgroundColor: _sand,
       resizeToAvoidBottomInset: true,
       body: GestureDetector(
@@ -294,6 +296,7 @@ class _ReturningSheet extends StackedHookView<LoginViewModel> {
             ),
             const SizedBox(height: 14),
             _TextFieldShell(
+              fieldKey: K.loginKeys.usernameField,
               icon: Icons.person_outline,
               controller: username,
               hint: l10n.usernameLabel,
@@ -304,6 +307,7 @@ class _ReturningSheet extends StackedHookView<LoginViewModel> {
             ),
             const SizedBox(height: 10),
             _TextFieldShell(
+              fieldKey: K.loginKeys.passwordField,
               icon: Icons.lock_outline,
               controller: password,
               hint: l10n.passwordLabel,
@@ -353,6 +357,7 @@ class _ReturningSheet extends StackedHookView<LoginViewModel> {
 }
 
 class _TextFieldShell extends StatelessWidget {
+  final Key? fieldKey;
   final IconData icon;
   final TextEditingController controller;
   final String hint;
@@ -364,6 +369,7 @@ class _TextFieldShell extends StatelessWidget {
   final Widget? trailing;
 
   const _TextFieldShell({
+    this.fieldKey,
     required this.icon,
     required this.controller,
     required this.hint,
@@ -397,6 +403,7 @@ class _TextFieldShell extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: TextField(
+                  key: fieldKey,
                   controller: controller,
                   obscureText: obscure,
                   textInputAction: textInputAction,
@@ -456,6 +463,7 @@ class _SignInButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
+        key: K.loginKeys.signInButton,
         onPressed: viewModel.isBusy ? null : viewModel.authenticate,
         style: ButtonStyle(
           elevation: WidgetStateProperty.all(0),
@@ -500,6 +508,7 @@ class _QrSignInButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return SizedBox(
+      key: K.loginKeys.qrSignInButton,
       width: double.infinity,
       child: Material(
         color: Colors.white,
@@ -622,6 +631,7 @@ class _ServerFooter extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Material(
+            key: K.loginKeys.changeServerButton,
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(4),
