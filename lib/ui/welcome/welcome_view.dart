@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:podd_app/components/language_dropdown.dart';
+import 'package:podd_app/keys/application_keys.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/ui/welcome/welcome_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -40,6 +41,7 @@ class WelcomeView extends StackedView<WelcomeViewModel> {
         builder: (innerContext) {
           final l10n = AppLocalizations.of(innerContext)!;
           return Scaffold(
+            key: K.welcomeKeys.view,
             backgroundColor: _tealDeep,
             body: SafeArea(
               child: Column(
@@ -443,6 +445,7 @@ class _ContinueFooter extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
+          key: K.welcomeKeys.continueButton,
           onPressed: ready
               ? () async {
                   await viewModel.submit();
