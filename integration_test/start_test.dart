@@ -9,9 +9,12 @@
 //     --dart-define=TEST_USERNAME=myuser \
 //     --dart-define=TEST_PASSWORD=mypass \
 //     --dart-define=TENANT_API_ENDPOINT=https://admin.ohtk.org/api/servers/ \
-//     --dart-define=GRAPHQL_ENDPOINT=https://bon.backend.ohtk.org/graphql/
+//     --dart-define=TEST_SERVER_DOMAIN=bon.backend.ohtk.org \
+//     --dart-define=EXPECT_WELCOME_SCREEN=true
 //
-// Scenario chain:  WelcomeScenario → LoginScenario  (extend with next: HomeScenario, etc.)
+// Scenario chain:
+//   EXPECT_WELCOME_SCREEN=true  => WelcomeScenario → LoginScenario
+//   EXPECT_WELCOME_SCREEN=false => LoginScenario only
 import 'package:patrol/patrol.dart';
 
 import 'flows/login_scenario.dart';
@@ -26,7 +29,7 @@ void main() {
   // test runner to find 0 tests.
 
   patrolTest(
-    'Welcome flow + Login flow: setup, authenticate, expect auth failure',
+    'Startup setup + negative auth: welcome gate then invalid login stays on login screen',
     ($) async {
       // ── 1. Boot the app via shared utility ─────────────────────────────────
       await TestUtility.init($);
@@ -40,21 +43,48 @@ void main() {
         'TEST_PASSWORD',
         defaultValue: 'test_password',
       );
+      const testServerDomain = String.fromEnvironment(
+        'TEST_SERVER_DOMAIN',
+        defaultValue: '',
+      );
+      const testServerMatch = String.fromEnvironment(
+        'TEST_SERVER_MATCH',
+        defaultValue: 'bon',
+      );
+      const expectWelcomeScreen = bool.fromEnvironment(
+        'EXPECT_WELCOME_SCREEN',
+        defaultValue: true,
+      );
 
       // ── 3. Build the scenario chain and kick it off ─────────────────────────
       // Extend the chain here as the app grows, e.g.:
       //   next: HomeScenario($, next: null)
-      final chain = WelcomeScenario(
-        $,
-        next: LoginScenario(
+      // NOTE: When EXPECT_WELCOME_SCREEN=false, welcome is skipped entirely.
+      if (expectWelcomeScreen) {
+        final chain = WelcomeScenario(
+          $,
+          requireOnStart: true,
+          serverDomain: testServerDomain,
+          serverMatch: testServerMatch,
+          next: LoginScenario(
+            $,
+            username: testUsername,
+            password: testPassword,
+            next: null,
+          ),
+        );
+
+        await chain.startFlow();
+      } else {
+        final chain = LoginScenario(
           $,
           username: testUsername,
           password: testPassword,
           next: null,
-        ),
-      );
+        );
 
-      await chain.startFlow();
+        await chain.startFlow();
+      }
     },
   );
 }
