@@ -52,9 +52,6 @@ void main() {
             {
               'row_key': 'species:CATTLE',
               'label': 'Cattle',
-              'species_id': 1,
-              'species_code': 'CATTLE',
-              'sort_order': 1,
             }
           ],
           'measures': [
@@ -81,39 +78,47 @@ void main() {
       expect(cached.runtimeSchema.measures.single.key, 'animal_quantity');
     });
 
-    test('fetchActiveSpecies parses active species list', () async {
-      final link = QueueLink([
-        {
-          '__typename': 'Query',
-          'animalSpecies': [
+    test('runtime schema preserves and applies localized labels', () {
+      final version = CensusDefinitionVersion.fromJson({
+        'id': '7',
+        'version': 2,
+        'status': 'PUBLISHED',
+        'runtimeSchema': {
+          'rows': [
             {
-              '__typename': 'AnimalSpeciesType',
-              'id': 1,
-              'code': 'CATTLE',
-              'name': 'Cattle',
-              'active': true,
-              'sortOrder': 1,
-            },
-            {
-              '__typename': 'AnimalSpeciesType',
-              'id': 2,
-              'code': 'BUFFALO',
-              'name': 'Buffalo',
-              'active': true,
-              'sortOrder': 2,
-            },
+              'row_key': 'species:CATTLE',
+              'label': 'Cattle',
+              'label_i18n': {
+                'default': 'Cattle',
+                'la': 'ງົວ',
+              },
+            }
           ],
-        }
-      ]);
-      final api = censusApiFor(link);
+          'measures': [
+            {
+              'key': 'animal_quantity',
+              'label': 'Animal quantity',
+              'label_i18n': {
+                'default': 'Animal quantity',
+                'la': 'ຈຳນວນສັດ',
+              },
+              'type': 'integer',
+              'required': true,
+            }
+          ],
+        },
+      });
 
-      final species = await api.fetchActiveSpecies();
+      final cached = CensusDefinitionVersion.fromCacheMap(
+        version.toCacheMap(
+          kind: 'ANIMAL',
+          fetchedAt: DateTime.parse('2026-05-19T00:00:00Z'),
+        ),
+      );
+      final localized = cached.runtimeSchema.localized('lo');
 
-      expect(species.map((item) => item.displayName), [
-        'CATTLE - Cattle',
-        'BUFFALO - Buffalo',
-      ]);
-      expect(link.requests.single.variables, isEmpty);
+      expect(localized.rows.single.label, 'ງົວ');
+      expect(localized.measures.single.label, 'ຈຳນວນສັດ');
     });
 
     test('getActiveCensusDefinitionVersion parses runtime schema', () async {
@@ -126,11 +131,8 @@ void main() {
             'version': 1,
             'status': 'PUBLISHED',
             'runtimeSchema': {
-              'row_source': 'ACTIVE_ANIMAL_SPECIES',
               'rows': [
                 {
-                  'species_id': '1',
-                  'species_code': 'CATTLE',
                   'label': 'Cattle',
                   'row_key': 'species:CATTLE',
                 }
@@ -158,11 +160,8 @@ void main() {
       final version = await api.getActiveCensusDefinitionVersion('ANIMAL');
 
       expect(version?.id, 7);
-      expect(version?.runtimeSchema.supportsLegacyAnimalSubmit, isTrue);
-      expect(
-        version?.runtimeSchema.toAnimalSpeciesRows().single.displayName,
-        'CATTLE - Cattle',
-      );
+      expect(version?.runtimeSchema.supportsMobileAnimalSubmit, isTrue);
+      expect(version?.runtimeSchema.rows.single.label, 'Cattle');
       expect(link.requests.single.variables, {'kind': 'ANIMAL'});
     });
 
@@ -214,7 +213,6 @@ void main() {
                     {
                       'row_key': 'species:CATTLE',
                       'label': 'Cattle',
-                      'species_id': 1,
                     }
                   ],
                   'measures': [
@@ -284,19 +282,6 @@ void main() {
       expect(summaries, isEmpty);
     });
 
-    test('getLatestVillageCensus returns null when no snapshot exists',
-        () async {
-      final link = QueueLink([
-        {'__typename': 'Query', 'latestVillageCensus': null}
-      ]);
-      final api = censusApiFor(link);
-
-      final latest = await api.getLatestVillageCensus(11);
-
-      expect(latest, isNull);
-      expect(link.requests.single.variables, {'villageId': 11});
-    });
-
     test('getLatestVillageCensusV2 parses generic form data', () async {
       final link = QueueLink([
         {
@@ -346,142 +331,12 @@ void main() {
       });
     });
 
-    test('submitVillageCensusSnapshot parses success union', () async {
-      final link = QueueLink([
-        {
-          '__typename': 'Mutation',
-          'submitVillageCensusSnapshot': {
-            '__typename': 'SubmitVillageCensusSnapshotMutation',
-            'result': {
-              '__typename': 'VillageCensusSnapshotType',
-              'id': 99,
-              'censusDate': '2026-05-05',
-              'submittedAt': '2026-05-05T10:00:00Z',
-              'village': {
-                '__typename': 'VillageType',
-                'id': 11,
-                'code': 'V001',
-                'name': 'Village One',
-              },
-              'facts': [
-                {
-                  'species': {
-                    '__typename': 'AnimalSpeciesType',
-                    'id': 1,
-                    'code': 'CATTLE',
-                    'name': 'Cattle',
-                    'active': true,
-                    'sortOrder': 1,
-                  },
-                  'animalQuantity': 5,
-                  'householdQuantity': 2,
-                }
-              ],
-            }
-          }
-        }
-      ]);
-      final api = censusApiFor(link);
-
-      final result = await api.submitVillageCensusSnapshot(
-        villageId: 11,
-        censusDate: '2026-05-05',
-        facts: const [
-          AnimalCensusFactInput(
-            speciesId: 1,
-            animalQuantity: 5,
-            householdQuantity: 2,
-          )
-        ],
-      );
-
-      expect(result, isA<VillageCensusSubmitSuccess>());
-      final success = result as VillageCensusSubmitSuccess;
-      expect(success.snapshot.facts.single.animalQuantity, 5);
-      expect(link.requests.single.variables['villageId'], 11);
-      expect(link.requests.single.variables['facts'], [
-        {'speciesId': 1, 'animalQuantity': 5, 'householdQuantity': 2}
-      ]);
-    });
-
-    test('submitVillageCensusSnapshot parses validation problem union',
-        () async {
-      final link = QueueLink([
-        {
-          '__typename': 'Mutation',
-          'submitVillageCensusSnapshot': {
-            '__typename': 'SubmitVillageCensusSnapshotMutation',
-            'result': {
-              '__typename': 'VillageCensusSnapshotProblem',
-              'message': null,
-              'fields': [
-                {
-                  '__typename': 'AdminFieldValidationProblem',
-                  'name': 'village_id',
-                  'message': 'reporter is not official for this village',
-                }
-              ],
-            }
-          }
-        }
-      ]);
-      final api = censusApiFor(link);
-
-      final result = await api.submitVillageCensusSnapshot(
-        villageId: 11,
-        censusDate: '2026-05-05',
-        facts: const [],
-      );
-
-      expect(result, isA<VillageCensusSubmitValidationFailure>());
-      final failure = result as VillageCensusSubmitValidationFailure;
-      expect(failure.messages, ['reporter is not official for this village']);
-    });
-
-    test('submitVillageCensusSnapshot classifies animal species changes',
-        () async {
-      final link = QueueLink([
-        {
-          '__typename': 'Mutation',
-          'submitVillageCensusSnapshot': {
-            '__typename': 'SubmitVillageCensusSnapshotMutation',
-            'result': {
-              '__typename': 'VillageCensusSnapshotProblem',
-              'message': null,
-              'fields': [
-                {
-                  '__typename': 'AdminFieldValidationProblem',
-                  'name': 'facts',
-                  'message': 'ACTIVE_ANIMAL_SPECIES_CHANGED',
-                }
-              ],
-            }
-          }
-        }
-      ]);
-      final api = censusApiFor(link);
-
-      final result = await api.submitVillageCensusSnapshot(
-        villageId: 11,
-        censusDate: '2026-05-05',
-        facts: const [
-          AnimalCensusFactInput(
-            speciesId: 1,
-            animalQuantity: 10,
-            householdQuantity: 5,
-          ),
-        ],
-      );
-
-      expect(result, isA<CensusDefinitionChanged>());
-    });
-
     test('submitVillageCensusSnapshotV2 sends definition version and form data',
         () async {
       final formData = {
         'rows': [
           {
-            'species_id': 1,
+            'row_key': 'species:CATTLE',
             'measures': {
               'animal_quantity': 5,
               'household_quantity': 2,
@@ -517,14 +372,8 @@ void main() {
               },
               'facts': [
                 {
-                  'species': {
-                    '__typename': 'AnimalSpeciesType',
-                    'id': 1,
-                    'code': 'CATTLE',
-                    'name': 'Cattle',
-                    'active': true,
-                    'sortOrder': 1,
-                  },
+                  'rowKey': 'species:CATTLE',
+                  'rowLabel': 'Cattle',
                   'animalQuantity': 5,
                   'householdQuantity': 2,
                 }

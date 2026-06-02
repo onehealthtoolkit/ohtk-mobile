@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:podd_app/models/animal_species.dart';
 import 'package:podd_app/models/village_census.dart';
 
 class CensusKindSummary {
@@ -138,25 +137,23 @@ class CensusRuntimeSchema {
     };
   }
 
-  bool get supportsLegacyAnimalSubmit {
-    final measureKeys = measures.map((measure) => measure.key).toSet();
-    final speciesIds = rows.map((row) => row.speciesId).whereType<int>();
-    return rows.isNotEmpty &&
-        extraDimensions.isEmpty &&
-        rows.every((row) => row.speciesId != null) &&
-        speciesIds.length == speciesIds.toSet().length &&
-        measureKeys.length == 2 &&
-        measureKeys.contains('animal_quantity') &&
-        measureKeys.contains('household_quantity');
+  CensusRuntimeSchema localized(String localeName) {
+    return CensusRuntimeSchema(
+      rows: rows.map((row) => row.localized(localeName)).toList(),
+      measures:
+          measures.map((measure) => measure.localized(localeName)).toList(),
+      extraDimensions: extraDimensions,
+    );
   }
 
   bool get supportsMobileAnimalSubmit {
-    final speciesIds = rows.map((row) => row.speciesId).whereType<int>();
+    final rowKeys =
+        rows.map((row) => row.rowKey).where((key) => key.isNotEmpty);
     return rows.isNotEmpty &&
         measures.isNotEmpty &&
         extraDimensions.isEmpty &&
-        rows.every((row) => row.speciesId != null) &&
-        speciesIds.length == speciesIds.toSet().length &&
+        rows.every((row) => row.rowKey.isNotEmpty) &&
+        rowKeys.length == rowKeys.toSet().length &&
         measures.every((measure) => measure.isInteger);
   }
 
@@ -170,46 +167,37 @@ class CensusRuntimeSchema {
         rowKeys.length == rowKeys.toSet().length &&
         measures.every((measure) => measure.isInteger);
   }
-
-  List<AnimalSpecies> toAnimalSpeciesRows() {
-    return rows
-        .where((row) => row.speciesId != null)
-        .map(
-          (row) => AnimalSpecies(
-            id: row.speciesId!,
-            code: row.speciesCode,
-            name: row.label,
-            active: true,
-            sortOrder: row.sortOrder,
-          ),
-        )
-        .toList();
-  }
 }
 
 class CensusSchemaRow {
   final String rowKey;
   final String label;
-  final int? speciesId;
-  final String speciesCode;
-  final int sortOrder;
+  final Map<String, String> labelI18n;
 
   const CensusSchemaRow({
     required this.rowKey,
     required this.label,
-    this.speciesId,
-    this.speciesCode = '',
-    this.sortOrder = 0,
+    this.labelI18n = const {},
   });
 
   factory CensusSchemaRow.fromJson(Map<String, dynamic> json) {
-    final speciesCode = json['species_code']?.toString() ?? '';
+    final labelValue = json['label'];
     return CensusSchemaRow(
       rowKey: json['row_key']?.toString() ?? json['key']?.toString() ?? '',
-      label: json['label']?.toString() ?? speciesCode,
-      speciesId: _parseInt(json['species_id']),
-      speciesCode: speciesCode,
-      sortOrder: _parseInt(json['sort_order']) ?? 0,
+      label: _labelText(labelValue, ''),
+      labelI18n: _localizedLabelMap(json['label_i18n'] ?? labelValue),
+    );
+  }
+
+  CensusSchemaRow localized(String localeName) {
+    final localizedLabel = _localizedLabelText(labelI18n, localeName, label);
+    if (localizedLabel == label) {
+      return this;
+    }
+    return CensusSchemaRow(
+      rowKey: rowKey,
+      label: localizedLabel,
+      labelI18n: labelI18n,
     );
   }
 
@@ -217,9 +205,7 @@ class CensusSchemaRow {
     return {
       'row_key': rowKey,
       'label': label,
-      'species_id': speciesId,
-      'species_code': speciesCode,
-      'sort_order': sortOrder,
+      if (labelI18n.isNotEmpty) 'label_i18n': labelI18n,
     };
   }
 }
@@ -227,12 +213,14 @@ class CensusSchemaRow {
 class CensusSchemaMeasure {
   final String key;
   final String label;
+  final Map<String, String> labelI18n;
   final String type;
   final bool required;
 
   const CensusSchemaMeasure({
     required this.key,
     required this.label,
+    this.labelI18n = const {},
     required this.type,
     required this.required,
   });
@@ -240,21 +228,98 @@ class CensusSchemaMeasure {
   factory CensusSchemaMeasure.fromJson(Map<String, dynamic> json) =>
       CensusSchemaMeasure(
         key: json['key']?.toString() ?? '',
-        label: json['label']?.toString() ?? '',
+        label: _labelText(json['label'], ''),
+        labelI18n: _localizedLabelMap(json['label_i18n'] ?? json['label']),
         type: json['type']?.toString() ?? '',
         required: json['required'] as bool? ?? false,
       );
 
   bool get isInteger => type.isEmpty || type == 'integer';
 
+  CensusSchemaMeasure localized(String localeName) {
+    final localizedLabel = _localizedLabelText(labelI18n, localeName, label);
+    if (localizedLabel == label) {
+      return this;
+    }
+    return CensusSchemaMeasure(
+      key: key,
+      label: localizedLabel,
+      labelI18n: labelI18n,
+      type: type,
+      required: required,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'key': key,
       'label': label,
+      if (labelI18n.isNotEmpty) 'label_i18n': labelI18n,
       'type': type,
       'required': required,
     };
   }
+}
+
+String _labelText(dynamic value, String fallback) {
+  if (value is Map) {
+    final localized = _localizedLabelMap(value);
+    return localized['default'] ??
+        localized['en'] ??
+        localized.values.firstOrNull ??
+        fallback;
+  }
+  if (value == null) {
+    return fallback;
+  }
+  return value.toString();
+}
+
+Map<String, String> _localizedLabelMap(dynamic value) {
+  if (value is! Map) {
+    if (value is String && value.isNotEmpty) {
+      return {'default': value};
+    }
+    return const {};
+  }
+  final labels = <String, String>{};
+  for (final entry in value.entries) {
+    final key = entry.key?.toString().trim();
+    final label = entry.value?.toString().trim();
+    if (key == null || key.isEmpty || label == null || label.isEmpty) {
+      continue;
+    }
+    labels[key] = label;
+  }
+  return labels;
+}
+
+String _localizedLabelText(
+  Map<String, String> labels,
+  String localeName,
+  String fallback,
+) {
+  for (final key in _localeCandidates(localeName)) {
+    final label = labels[key];
+    if (label != null && label.isNotEmpty) {
+      return label;
+    }
+  }
+  return fallback;
+}
+
+List<String> _localeCandidates(String localeName) {
+  final normalized = localeName.replaceAll('_', '-').toLowerCase();
+  final language = normalized.split('-').first;
+  final candidates = <String>[
+    normalized,
+    language,
+    if (language == 'lo') 'la',
+    if (language == 'la') 'lo',
+    'default',
+    'en',
+  ];
+  return candidates.toSet().toList();
 }
 
 int? _parseInt(dynamic value) {

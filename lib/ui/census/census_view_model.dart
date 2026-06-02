@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/locator.dart';
-import 'package:podd_app/models/animal_species.dart';
 import 'package:podd_app/models/census_definition.dart';
 import 'package:podd_app/models/village.dart';
 import 'package:podd_app/models/village_census.dart';
@@ -20,7 +19,6 @@ class CensusViewModel extends BaseViewModel {
       locator<IFeatureCapabilityService>();
   final AppLocalizations localize = locator<AppLocalizations>();
 
-  List<AnimalSpecies> species = [];
   List<CensusKindSummary> censusKinds = [];
   List<CensusSchemaRow> rows = [];
   List<CensusSchemaMeasure> measures = [];
@@ -38,7 +36,7 @@ class CensusViewModel extends BaseViewModel {
   bool definitionChanged = false;
   bool latestSnapshotUsesOlderDefinition = false;
   bool latestSnapshotPrefilledAnyValue = false;
-  bool _canSubmitWithLegacyMutation = true;
+  bool latestSnapshotPrefilledAllValues = false;
   final String? requestedKind;
   String? activeKind;
   int formValueRevision = 0;
@@ -60,7 +58,7 @@ class CensusViewModel extends BaseViewModel {
           false) &&
       selectedVillage != null;
 
-  bool get hasSpecies => species.isNotEmpty;
+  bool get hasSpecies => rows.isNotEmpty;
 
   bool get hasRows => rows.isNotEmpty;
 
@@ -73,7 +71,7 @@ class CensusViewModel extends BaseViewModel {
   bool get isHubMode => activeKind == null;
 
   String get activeKindName =>
-      activeKindSummary?.displayName ?? _kindDisplayName(activeKind);
+      _kindDisplayName(activeKind ?? activeKindSummary?.kind);
 
   String? get freshnessLabel {
     if (latestCensus == null) {
@@ -90,7 +88,8 @@ class CensusViewModel extends BaseViewModel {
   }
 
   String? get oldSnapshotNotice {
-    if (!latestSnapshotUsesOlderDefinition) {
+    if (!latestSnapshotUsesOlderDefinition ||
+        latestSnapshotPrefilledAllValues) {
       return null;
     }
     if (latestSnapshotPrefilledAnyValue) {
@@ -259,12 +258,8 @@ class CensusViewModel extends BaseViewModel {
           censusDate: DateTime.now(),
           formData: formData,
         );
-        if (result is VillageCensusSubmitUnsupported &&
-            _canSubmitWithLegacyMutation) {
-          result = await _submitLegacy(formData);
-        }
       } else {
-        result = await _submitLegacy(formData);
+        result = VillageCensusSubmitUnsupported();
       }
     } catch (e) {
       setErrorForObject('submit', e.toString());
@@ -276,6 +271,7 @@ class CensusViewModel extends BaseViewModel {
       latestCensus = _submittedSnapshot(result.snapshot, formData);
       latestSnapshotUsesOlderDefinition = false;
       latestSnapshotPrefilledAnyValue = false;
+      latestSnapshotPrefilledAllValues = false;
       _captureInitialValues();
       await _pendingDraftWrite;
       await _clearDraft();
@@ -370,10 +366,8 @@ class CensusViewModel extends BaseViewModel {
       final payload = <String, dynamic>{
         'measures': measureMap,
       };
-      if (activeKind == 'HUMAN') {
+      if (activeKind == 'ANIMAL' || activeKind == 'HUMAN') {
         payload['row_key'] = row.rowKey;
-      } else if (row.speciesId != null) {
-        payload['species_id'] = row.speciesId;
       } else {
         setErrorForObject(
           'submit',
@@ -432,9 +426,6 @@ class CensusViewModel extends BaseViewModel {
         villageId: selectedVillage!.id,
         kind: normalizedKind,
       );
-    } else if (normalizedKind == 'ANIMAL') {
-      latestCensus =
-          await censusService.getLatestVillageCensus(selectedVillage!.id);
     }
     _prefillFromLatestCensus();
     await _loadDraft();
@@ -445,12 +436,12 @@ class CensusViewModel extends BaseViewModel {
     CensusKindSummary? summary,
     bool allowCachedDefinitionFallback = true,
   }) async {
-    _canSubmitWithLegacyMutation = true;
     usingCachedDefinition = false;
     unsupportedSchema = false;
     definitionInactive = false;
     latestSnapshotUsesOlderDefinition = false;
     latestSnapshotPrefilledAnyValue = false;
+    latestSnapshotPrefilledAllValues = false;
     _clearFormData();
     CensusDefinitionVersion? definition;
 
@@ -475,104 +466,25 @@ class CensusViewModel extends BaseViewModel {
       }
     }
 
-    if (definition == null && kind == 'ANIMAL') {
-      species = await censusService.fetchActiveSpecies();
-      _useLegacySpeciesRows(species);
-    } else if (definition == null) {
+    if (definition == null) {
       definitionInactive = true;
     } else {
       activeDefinition = definition;
-      rows = definition.runtimeSchema.rows;
-      measures = definition.runtimeSchema.measures;
+      final runtimeSchema = definition.runtimeSchema.localized(
+        localize.localeName,
+      );
+      rows = runtimeSchema.rows;
+      measures = runtimeSchema.measures;
       if (kind == 'ANIMAL') {
-        species = definition.runtimeSchema.toAnimalSpeciesRows();
-        unsupportedSchema =
-            !definition.runtimeSchema.supportsMobileAnimalSubmit;
-        _canSubmitWithLegacyMutation =
-            definition.runtimeSchema.supportsLegacyAnimalSubmit;
+        unsupportedSchema = !runtimeSchema.supportsMobileAnimalSubmit;
       } else if (kind == 'HUMAN') {
-        unsupportedSchema = !definition.runtimeSchema.supportsMobileHumanSubmit;
-        _canSubmitWithLegacyMutation = false;
+        unsupportedSchema = !runtimeSchema.supportsMobileHumanSubmit;
       } else {
         unsupportedSchema = true;
-        _canSubmitWithLegacyMutation = false;
       }
     }
 
     _ensureValueSlots();
-  }
-
-  Future<VillageCensusSubmitResult> _submitLegacy(
-    Map<String, dynamic> formData,
-  ) {
-    final facts = _buildLegacyFacts(formData);
-    if (facts == null) {
-      return Future.value(
-        VillageCensusSubmitValidationFailure([
-          localize.censusUnsupportedError,
-        ]),
-      );
-    }
-    return censusService.submitVillageCensusSnapshot(
-      villageId: selectedVillage!.id,
-      censusDate: DateTime.now(),
-      facts: facts,
-    );
-  }
-
-  List<AnimalCensusFactInput>? _buildLegacyFacts(
-    Map<String, dynamic> formData,
-  ) {
-    final formRows = formData['rows'] as List? ?? const [];
-    final facts = <AnimalCensusFactInput>[];
-    for (final row in formRows.whereType<Map>()) {
-      final measures = Map<String, dynamic>.from(row['measures'] as Map);
-      final speciesId = row['species_id'] as int?;
-      final animalQuantity = measures['animal_quantity'] as int?;
-      final householdQuantity = measures['household_quantity'] as int?;
-      if (speciesId == null ||
-          animalQuantity == null ||
-          householdQuantity == null) {
-        return null;
-      }
-      facts.add(
-        AnimalCensusFactInput(
-          speciesId: speciesId,
-          animalQuantity: animalQuantity,
-          householdQuantity: householdQuantity,
-        ),
-      );
-    }
-    return facts;
-  }
-
-  void _useLegacySpeciesRows(List<AnimalSpecies> speciesRows) {
-    activeDefinition = null;
-    rows = speciesRows
-        .map(
-          (item) => CensusSchemaRow(
-            rowKey: 'species:${item.id}',
-            label: item.name,
-            speciesId: item.id,
-            speciesCode: item.code,
-            sortOrder: item.sortOrder,
-          ),
-        )
-        .toList();
-    measures = const [
-      CensusSchemaMeasure(
-        key: 'animal_quantity',
-        label: 'Heads',
-        type: 'integer',
-        required: true,
-      ),
-      CensusSchemaMeasure(
-        key: 'household_quantity',
-        label: 'Households keeping this species',
-        type: 'integer',
-        required: true,
-      ),
-    ];
   }
 
   void _ensureValueSlots() {
@@ -591,21 +503,23 @@ class CensusViewModel extends BaseViewModel {
         latestCensus?.definitionVersionId != null &&
         latestCensus!.definitionVersionId != activeDefinition!.id;
     if (latestCensus == null) {
+      latestSnapshotPrefilledAllValues = false;
       _captureInitialValues();
       return;
     }
 
     var prefilledAny = false;
+    var prefilledCount = 0;
+    final expectedCount = rows.length * measures.length;
     final submittedRows = latestCensus!.formData['rows'];
     if (submittedRows is List && submittedRows.isNotEmpty) {
       for (final submittedRow in submittedRows.whereType<Map>()) {
         final rowKey = submittedRow['row_key']?.toString();
-        final speciesId = submittedRow['species_id'];
         final row = rows.where((candidate) {
           if (rowKey != null && rowKey.isNotEmpty) {
             return candidate.rowKey == rowKey;
           }
-          return candidate.speciesId == speciesId;
+          return false;
         }).firstOrNull;
         if (row == null) {
           continue;
@@ -621,19 +535,22 @@ class CensusViewModel extends BaseViewModel {
           if (value != null) {
             measureValues[row.rowKey]![measure.key] = value.toString();
             prefilledAny = true;
+            prefilledCount++;
           }
         }
       }
       latestSnapshotPrefilledAnyValue = prefilledAny;
+      latestSnapshotPrefilledAllValues =
+          expectedCount > 0 && prefilledCount == expectedCount;
       _captureInitialValues();
       return;
     }
 
-    final factsBySpeciesId = {
-      for (final fact in latestCensus!.facts) fact.species.id: fact,
+    final factsByRowKey = {
+      for (final fact in latestCensus!.facts) fact.rowKey: fact,
     };
     for (final row in rows) {
-      final fact = factsBySpeciesId[row.speciesId];
+      final fact = factsByRowKey[row.rowKey];
       if (fact == null) {
         continue;
       }
@@ -643,8 +560,11 @@ class CensusViewModel extends BaseViewModel {
       measureValues[row.rowKey]!['household_quantity'] =
           fact.householdQuantity.toString();
       prefilledAny = true;
+      prefilledCount += 2;
     }
     latestSnapshotPrefilledAnyValue = prefilledAny;
+    latestSnapshotPrefilledAllValues =
+        expectedCount > 0 && prefilledCount == expectedCount;
     _captureInitialValues();
   }
 
@@ -846,11 +766,11 @@ class CensusViewModel extends BaseViewModel {
     latestCensus = null;
     draft = null;
     definitionInactive = false;
-    species = [];
     rows = [];
     measures = [];
     latestSnapshotUsesOlderDefinition = false;
     latestSnapshotPrefilledAnyValue = false;
+    latestSnapshotPrefilledAllValues = false;
     measureValues.clear();
     measureErrors.clear();
     _initialMeasureValues.clear();

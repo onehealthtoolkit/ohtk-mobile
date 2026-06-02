@@ -359,7 +359,7 @@ class _CensusKindCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    summary.displayName,
+                    _kindTitle(localize, summary.kind),
                     style: OhtkType.h3,
                   ),
                   const SizedBox(height: 4),

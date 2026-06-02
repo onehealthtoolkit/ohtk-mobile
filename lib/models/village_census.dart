@@ -1,44 +1,36 @@
-import 'package:podd_app/models/animal_species.dart';
 import 'package:podd_app/models/operation_exception_failure.dart';
 import 'package:podd_app/models/village.dart';
 
-class AnimalCensusFactInput {
-  final int speciesId;
-  final int animalQuantity;
-  final int householdQuantity;
-
-  const AnimalCensusFactInput({
-    required this.speciesId,
-    required this.animalQuantity,
-    required this.householdQuantity,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'speciesId': speciesId,
-      'animalQuantity': animalQuantity,
-      'householdQuantity': householdQuantity,
-    };
-  }
-}
-
 class AnimalCensusFact {
-  final AnimalSpecies species;
+  final String rowKey;
+  final String rowLabel;
   final int animalQuantity;
   final int householdQuantity;
 
   const AnimalCensusFact({
-    required this.species,
+    required this.rowKey,
+    required this.rowLabel,
     required this.animalQuantity,
     required this.householdQuantity,
   });
 
   factory AnimalCensusFact.fromJson(Map<String, dynamic> json) =>
       AnimalCensusFact(
-        species: AnimalSpecies.fromJson(json['species']),
+        rowKey: json['rowKey']?.toString() ?? json['row_key']?.toString() ?? '',
+        rowLabel:
+            json['rowLabel']?.toString() ?? json['row_label']?.toString() ?? '',
         animalQuantity: json['animalQuantity'] as int? ?? 0,
         householdQuantity: json['householdQuantity'] as int? ?? 0,
       );
+
+  Map<String, dynamic> toJson() {
+    return {
+      'rowKey': rowKey,
+      'rowLabel': rowLabel,
+      'animalQuantity': animalQuantity,
+      'householdQuantity': householdQuantity,
+    };
+  }
 }
 
 class VillageCensusSnapshot {
@@ -81,6 +73,23 @@ class VillageCensusSnapshot {
           .toList(),
       formData: Map<String, dynamic>.from(json['formData'] as Map? ?? {}),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      if (village != null) 'village': village!.toJson(),
+      if (censusDate != null) 'censusDate': _dateOnly(censusDate!),
+      if (submittedAt != null) 'submittedAt': submittedAt,
+      if (definitionVersionId != null || definitionVersionNumber != null)
+        'definitionVersion': {
+          if (definitionVersionId != null) 'id': definitionVersionId,
+          if (definitionVersionNumber != null)
+            'version': definitionVersionNumber,
+        },
+      'facts': facts.map((fact) => fact.toJson()).toList(),
+      'formData': formData,
+    };
   }
 }
 
@@ -173,4 +182,11 @@ int? _parseInt(dynamic value) {
     return value;
   }
   return int.tryParse(value.toString());
+}
+
+String _dateOnly(DateTime date) {
+  final year = date.year.toString().padLeft(4, '0');
+  final month = date.month.toString().padLeft(2, '0');
+  final day = date.day.toString().padLeft(2, '0');
+  return '$year-$month-$day';
 }
