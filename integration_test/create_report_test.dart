@@ -13,12 +13,14 @@
 //     --dart-define=EXPECT_WELCOME_SCREEN=true
 //
 // Scenario chain:
-//   EXPECT_WELCOME_SCREEN=true  => WelcomeScenario → LoginSuccessScenario → ReportListScenario
-//   EXPECT_WELCOME_SCREEN=false => LoginSuccessScenario → ReportListScenario
+//   EXPECT_WELCOME_SCREEN=true  => WelcomeScenario → LoginSuccessScenario → ReportListScenario → ReportTypeScenario → ReportFormScenario
+//   EXPECT_WELCOME_SCREEN=false => LoginSuccessScenario → ReportListScenario → ReportTypeScenario → ReportFormScenario
 import 'package:patrol/patrol.dart';
 
 import 'flows/login_success_scenario.dart';
+import 'flows/report_form_scenario.dart';
 import 'flows/report_list_scenario.dart';
+import 'flows/report_type_scenario.dart';
 import 'flows/welcome_scenario.dart';
 import 'utils/test_utility.dart';
 
@@ -30,7 +32,7 @@ void main() {
   // test runner to find 0 tests.
 
   patrolTest(
-    'Create report flow: welcome → login → report list → tap new report',
+    'Create report flow: welcome → login → report list → select report type → fill form',
     ($) async {
       // ── 1. Boot the app via shared utility ─────────────────────────────────
       await TestUtility.init($);
@@ -58,7 +60,8 @@ void main() {
       );
 
       // ── 3. Build the scenario chain and kick it off ─────────────────────────
-      // The chain: Welcome (optional) → Login (successful) → Report List → Tap New Report
+      // The chain: Welcome (optional) → Login (successful) → Report List → 
+      //            Report Type Selection → Report Form Filling
       if (expectWelcomeScreen) {
         final chain = WelcomeScenario(
           $,
@@ -71,7 +74,30 @@ void main() {
             password: testPassword,
             next: ReportListScenario(
               $,
-              next: null, // Stop here after tapping new report button
+              next: ReportTypeScenario(
+                $,
+                categoryName: 'สุขภาพคน',
+                reportTypeName: 'สัตว์กัด',
+                next: ReportFormScenario(
+                  $,
+                  formData: const {
+                    // Page 1
+                    'age': '18',
+                    'gender': 'หญิง',
+                    'animalType': 'แมว',
+                    // Page 2
+                    'affectedAreas': ['แขน', 'มือ'],
+                    'wound': 'ไม่มีเลือดออก',
+                    'owner': 'เป็นสัตว์ไม่มีเจ้าของ',
+                    // Page 3
+                    'vaccinated': 'ไม่ทราบ/ไม่แน่ใจ',
+                    'incidentCause': 'เข้าไปกวนตอนกินข้าว',
+                    'stillAlive': 'ยังมีชีวิตอยู่',
+                    'moreDetail': 'ทดสอบรายละเอียดเพิ่มเติม',
+                  },
+                  next: null, // Stop after submission
+                ),
+              ),
             ),
           ),
         );
@@ -84,7 +110,30 @@ void main() {
           password: testPassword,
           next: ReportListScenario(
             $,
-            next: null, // Stop here after tapping new report button
+            next: ReportTypeScenario(
+              $,
+              categoryName: 'สุขภาพคน',
+              reportTypeName: 'สัตว์กัด',
+              next: ReportFormScenario(
+                $,
+                formData: const {
+                  // Page 1
+                  'age': '18',
+                  'gender': 'หญิง',
+                  'animalType': 'แมว',
+                  // Page 2
+                  'affectedAreas': ['แขน', 'มือ'],
+                  'wound': 'ไม่มีเลือดออก',
+                  'owner': 'เป็นสัตว์ไม่มีเจ้าของ',
+                  // Page 3
+                  'vaccinated': 'ไม่ทราบ/ไม่แน่ใจ',
+                  'incidentCause': 'เข้าไปกวนตอนกินข้าว',
+                  'stillAlive': 'ยังมีชีวิตอยู่',
+                  'moreDetail': 'บ้าไปแล้ว',
+                },
+                next: null, // Stop after submission
+              ),
+            ),
           ),
         );
 
