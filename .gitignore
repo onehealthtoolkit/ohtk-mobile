@@ -62,3 +62,9 @@ bundletool-all-*.jar
 toc.pb
 devtools_options.yaml
 tmp/
+
+# FVM Version Cache
+.fvm/
+
+# Patrol auto-generated test bundle
+integration_test/test_bundle.dart
