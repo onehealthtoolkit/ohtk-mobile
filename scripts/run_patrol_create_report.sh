@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Run Patrol integration tests (start_test) against BON tenant defaults.
+# Run Patrol integration tests (create_report_test) against BON tenant defaults.
 #
 # Usage:
-#   ./scripts/run_patrol_bon.sh <username> <password> [expect_welcome=true] [extra patrol args...]
+#   ./scripts/run_patrol_create_report.sh <username> <password> [expect_welcome=true] [extra patrol args...]
 #
 # Examples:
-#   ./scripts/run_patrol_bon.sh myuser mypass
-#   ./scripts/run_patrol_bon.sh myuser mypass false --verbose
+#   ./scripts/run_patrol_create_report.sh myuser mypass
+#   ./scripts/run_patrol_create_report.sh myuser mypass false --verbose
 #
 # Notes:
 # - Username/password are required.
@@ -35,5 +35,5 @@ parse_patrol_args "$@"
 # Set BON tenant defaults
 set_bon_defaults
 
-# Run the start_test
-run_patrol_test "integration_test/start_test.dart"
+# Run the create_report_test
+run_patrol_test "integration_test/create_report_test.dart"
