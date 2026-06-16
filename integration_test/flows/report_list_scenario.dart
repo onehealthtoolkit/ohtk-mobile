@@ -51,7 +51,7 @@ final class ReportListScenario extends BaseTestScenario {
     // Wait for one of the tab texts to appear
     await $.waitUntilVisible(
       allReportsText,
-      timeout: const Duration(seconds: 10),
+      timeout: const Duration(seconds: 1),
     );
 
     expect(
@@ -89,23 +89,21 @@ final class ReportListScenario extends BaseTestScenario {
       await $(newReportButtonFinder).tap();
     }
 
-    await $.pumpAndSettle(duration: const Duration(seconds: 2));
-
     // ── 4. Verify navigation to report types screen ─────────────────────────
-    // We should see the report types title or list after tapping
-    // The screen title is localized, so we'll look for common Thai text
-    // or wait for report type items to appear
-    
+    // After tapping the new report button, the app should navigate to the
+    // report type selection screen which shows "โหมดทดสอบ" toggle button.
     // Give the navigation time to complete
     await $.pumpAndSettle(duration: const Duration(seconds: 3));
 
-    // Report type screen should be showing now
-    // We can verify by checking if we're no longer on the report list
-    // and that new content has loaded
+    // The report type screen should now be showing with the test mode toggle
+    final testModeText = find.text('โหมดทดสอบ');
+
     expect(
-      true, // Successfully tapped the new report button and navigated
+      $(testModeText).exists,
       isTrue,
-      reason: 'Successfully navigated after tapping new report button',
+      reason: "After tapping the new report button, expected to navigate to "
+          "the report type selection screen, but the test mode toggle "
+          "(\\""โหมดทดสอบ\\"") was not found.",
     );
 
     return true;

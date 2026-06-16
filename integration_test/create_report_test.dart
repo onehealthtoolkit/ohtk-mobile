@@ -129,7 +129,7 @@ void main() {
                   'vaccinated': 'ไม่ทราบ/ไม่แน่ใจ',
                   'incidentCause': 'เข้าไปกวนตอนกินข้าว',
                   'stillAlive': 'ยังมีชีวิตอยู่',
-                  'moreDetail': 'บ้าไปแล้ว',
+                  'moreDetail': 'ทดสอบรายละเอียดเพิ่มเติม',
                 },
                 next: null, // Stop after submission
               ),

@@ -65,12 +65,25 @@ has_device_arg() {
 # Exits with error if no suitable device found.
 #
 # Excludes: web, macOS, chrome desktop browsers
+# Prefers: wireless/physical devices over emulators
 detect_flutter_device() {
   local devices_output
   local device_id
   
   devices_output="$(flutter devices 2>/dev/null || true)"
-  device_id="$(printf '%s\n' "$devices_output" | grep '•' | grep -v 'web\|macOS\|chrome\|Mac ' | head -1 | awk -F '•' '{gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2); print $2}')"
+  
+  # First, try to find a wireless device (physical device connected wirelessly)
+  device_id="$(printf '%s\n' "$devices_output" | grep '•' | grep 'wireless' | head -1 | awk -F '•' '{gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2); print $2}')"
+  
+  # If no wireless device, try any mobile device that's not an emulator
+  if [[ -z "$device_id" ]]; then
+    device_id="$(printf '%s\n' "$devices_output" | grep '•' | grep 'mobile' | grep -v 'emulator' | grep -v 'web\|macOS\|chrome\|Mac ' | head -1 | awk -F '•' '{gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2); print $2}')"
+  fi
+  
+  # Finally, fall back to any device (including emulator) that's not web/desktop
+  if [[ -z "$device_id" ]]; then
+    device_id="$(printf '%s\n' "$devices_output" | grep '•' | grep -v 'web\|macOS\|chrome\|Mac ' | head -1 | awk -F '•' '{gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2); print $2}')"
+  fi
 
   if [[ -z "$device_id" ]]; then
     echo "Error: no Patrol device found. Connect/start a device, or pass --device <id>." >&2
@@ -111,10 +124,14 @@ run_patrol_test() {
   if ! has_device_arg; then
     local device_id
     device_id="$(detect_flutter_device)"
+    echo "Auto-detected device: $device_id" >&2
     patrol_args+=(--device "$device_id")
+  else
+    echo "Using device from command-line arguments" >&2
   fi
 
   patrol_args+=("${EXTRA_PATROL_ARGS[@]}")
 
+  echo "Running: patrol ${patrol_args[*]}" >&2
   patrol "${patrol_args[@]}"
 }
