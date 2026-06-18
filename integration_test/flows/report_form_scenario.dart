@@ -83,8 +83,11 @@ final class ReportFormScenario extends BaseTestScenario {
           widget is TextField && widget.keyboardType == TextInputType.number,
     );
 
-    // Wait a moment for the field to be ready
-    await $.pumpAndSettle(duration: const Duration(milliseconds: 500));
+    // Wait for the age field to be visible and ready
+    await $.waitUntilVisible(
+      ageFieldFinder,
+      timeout: const Duration(seconds: 3),
+    );
 
     if ($(ageFieldFinder).exists) {
       // Tap to focus the field first
@@ -153,7 +156,13 @@ final class ReportFormScenario extends BaseTestScenario {
     );
 
     await $(nextButtonPage1).tap();
-    await $.pumpAndSettle(duration: const Duration(seconds: 2));
+    
+    // Wait for page 2 to appear
+    final page2Indicator = find.text('ขั้นตอนที่ 2 จาก 3');
+    await $.waitUntilVisible(
+      page2Indicator,
+      timeout: const Duration(seconds: 3),
+    );
 
     // ═══════════════════════════════════════════════════════════════════════
     // PAGE 2: Affected Areas, Wound Type, Owner Status
@@ -230,7 +239,13 @@ final class ReportFormScenario extends BaseTestScenario {
     );
 
     await $(nextButtonPage2).tap();
-    await $.pumpAndSettle(duration: const Duration(seconds: 2));
+    
+    // Wait for page 3 to appear
+    final page3Indicator = find.text('ขั้นตอนที่ 3 จาก 3');
+    await $.waitUntilVisible(
+      page3Indicator,
+      timeout: const Duration(seconds: 3),
+    );
 
     // ═══════════════════════════════════════════════════════════════════════
     // PAGE 3: Vaccination Status, Incident Cause, Animal Status, Details, Image
@@ -396,31 +411,17 @@ final class ReportFormScenario extends BaseTestScenario {
     );
 
     await $(reviewButton).tap();
-    await $.pumpAndSettle(duration: const Duration(seconds: 3));
-
+    
     // ═══════════════════════════════════════════════════════════════════════
     // CONFIRMATION PAGE: Review and Submit
     // ═══════════════════════════════════════════════════════════════════════
 
-    // Wait for the confirmation page to load
-    await $.pumpAndSettle(duration: const Duration(seconds: 2));
-
-    // Look for the submit button (ส่งรายงาน)
+    // Wait for the confirmation page to load by waiting for submit button
     final submitButton = find.text('ส่งรายงาน');
-
-    // Scroll to ensure the submit button is visible
-    // try {
-    //   await $.scrollUntilVisible(
-    //     finder: submitButton,
-    //     view: find.byType(SingleChildScrollView).first,
-    //     scrollDirection: AxisDirection.down,
-    //   );
-    // } catch (_) {
-    //   print('[WARN] Submit button (ส่งรายงาน) not found — cannot proceed');
-    //   rethrow;
-    // }
-
-    // await $.pumpAndSettle();
+    await $.waitUntilVisible(
+      submitButton,
+      timeout: const Duration(seconds: 5),
+    );
 
     expect(
       $(submitButton).exists,
@@ -453,7 +454,8 @@ final class ReportFormScenario extends BaseTestScenario {
     );
 
     // Allow time for the overlay to auto-dismiss and Navigator.pop to fire
-    await $.pumpAndSettle(duration: const Duration(seconds: 4));
+    // The overlay shows for ~1080ms (280ms animation + 800ms hold)
+    await $.pumpAndSettle(duration: const Duration(seconds: 2));
 
     // Verify we navigated back to the report list screen
     // The report list shows tab labels "รายงานทั้งหมด" and "รายงานของฉัน"

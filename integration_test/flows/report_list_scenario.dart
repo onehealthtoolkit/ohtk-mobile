@@ -92,11 +92,13 @@ final class ReportListScenario extends BaseTestScenario {
     // ── 4. Verify navigation to report types screen ─────────────────────────
     // After tapping the new report button, the app should navigate to the
     // report type selection screen which shows "โหมดทดสอบ" toggle button.
-    // Give the navigation time to complete
-    await $.pumpAndSettle(duration: const Duration(seconds: 3));
-
-    // The report type screen should now be showing with the test mode toggle
+    // Wait for the navigation to complete and the screen to appear
     final testModeText = find.text('โหมดทดสอบ');
+    
+    await $.waitUntilVisible(
+      testModeText,
+      timeout: const Duration(seconds: 5),
+    );
 
     expect(
       $(testModeText).exists,
