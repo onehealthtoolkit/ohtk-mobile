@@ -39,7 +39,7 @@ class _FormTextareaFieldState extends State<FormTextareaField> {
             TextInputAction.newline,
         minLines: widget.field.rows,
         maxLines: null,
-        keyboardType: TextInputType.multiline,
+        keyboardType: TextInputType.multiline,  
         decoration: ohtkInputDecoration(
           hintText: widget.field.label,
           suffixText: widget.field.suffixLabel,

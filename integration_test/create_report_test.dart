@@ -15,6 +15,45 @@
 // Scenario chain:
 //   EXPECT_WELCOME_SCREEN=true  => WelcomeScenario → LoginSuccessScenario → ReportListScenario → ReportTypeScenario → ReportFormScenario
 //   EXPECT_WELCOME_SCREEN=false => LoginSuccessScenario → ReportListScenario → ReportTypeScenario → ReportFormScenario
+//
+// How It Works:
+// ─────────────
+//
+// ┌─────────────────────────────────────────────────────────────┐
+// │ 1. Welcome Screen (if EXPECT_WELCOME_SCREEN=true)           │
+// │    - Select Thai + BON server                               │
+// └────────────────┬────────────────────────────────────────────┘
+//                  │
+//                  ▼
+// ┌─────────────────────────────────────────────────────────────┐
+// │ 2. Login                                                    │
+// │    - Enter credentials                                      │
+// │    - Tap "เข้าสู่ระบบ"                                      │
+// │    - Wait for report list to load                           │
+// └────────────────┬────────────────────────────────────────────┘
+//                  │
+//                  ▼
+// ┌─────────────────────────────────────────────────────────────┐
+// │ 3. Report List                                              │
+// │    - Tap "รายงานใหม่" FAB                                   │
+// └────────────────┬────────────────────────────────────────────┘
+//                  │
+//                  ▼
+// ┌─────────────────────────────────────────────────────────────┐
+// │ 4. Report Type Selection                                    │
+// │    - Toggle test mode ON                                    │
+// │    - Select category "สุขภาพคน"                             │
+// │    - Select type "สัตว์กัด"                                   │
+// └────────────────┬────────────────────────────────────────────┘
+//                  │
+//                  ▼
+// ┌─────────────────────────────────────────────────────────────┐
+// │ 5. Report Form (3 pages)                                    │
+// │    - Fill all required fields                               │
+// │    - Proceed through pages                                  │
+// │    - Submit form                                            │
+// │    - Verify success overlay "ส่งรายงานสำเร็จ"                │
+// └─────────────────────────────────────────────────────────────┘
 import 'package:patrol/patrol.dart';
 
 import 'flows/login_success_scenario.dart';

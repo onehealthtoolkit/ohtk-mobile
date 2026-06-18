@@ -264,13 +264,19 @@ Report Form (/reports/types/{id}/form)
 
 ### 🔜 Phase 2 — Medium-term (extend coverage)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 5 | Add **form validation tests** — submit empty/invalid data and verify error snackbar + field-level errors | 2-3h | High — covers critical UX |
-| 6 | **Verify test report in the list** — after submission, navigate back and check the test-flagged report appears | 2-3h | High — closes the loop |
-| 7 | **Parameterize for multiple report types** — make data-driven scenarios for different forms (e.g., "อุจจาระร่วง", "ไข้เลือดออก") | 3-4h | Medium — broadens coverage |
-| 8 | Add **screenshot capture** at key steps using Patrol's built-in screenshot API | 1h | Medium — debugging aid |
-| 9 | Add key-based finders (`ValueKey`) to opsv_form widgets and migrate tests away from text-based finding | 4-6h | Medium — stability |
+| # | Task | Effort | Impact | Status |
+|---|------|--------|--------|--------|
+| 5 | Add **form validation tests** — submit empty/invalid data and verify error snackbar + field-level errors | 2-3h | High — covers critical UX | ✅ Done |
+| 6 | **Verify test report in the list** — after submission, navigate back and check the test-flagged report appears | 2-3h | High — closes the loop | ✅ Done |
+| 7 | **Parameterize for multiple report types** — make data-driven scenarios for different forms (e.g., "อุจจาระร่วง", "ไข้เลือดออก") | 3-4h | Medium — broadens coverage | 🟡 Pending |
+| 8 | Add **screenshot capture** at key steps using Patrol's built-in screenshot API | 1h | Medium — debugging aid | 🟡 Pending |
+| 9 | Add key-based finders (`ValueKey`) to opsv_form widgets and migrate tests away from text-based finding | 4-6h | Medium — stability | 🟡 Pending |
+
+**Phase 2 Task 5 Status:** ✅ **COMPLETE** (June 18, 2026)  
+**See:** [VALIDATION_TEST.md](VALIDATION_TEST.md) for test design, flow, and usage.
+
+**Phase 2 Task 6 Status:** ✅ **COMPLETE** (June 18, 2026)  
+**See:** [PHASE2_TASK6.md](PHASE2_TASK6.md) for implementation details and test flow.
 
 ### 🔜 Phase 3 — Long-term (new test domains)
 

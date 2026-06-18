@@ -68,3 +68,9 @@ tmp/
 
 # Patrol auto-generated test bundle
 integration_test/test_bundle.dart
+
+# ai tools
+_bmad/
+.agents/
+.opencode/
+.github/agents/

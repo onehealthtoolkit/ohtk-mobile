@@ -12,9 +12,21 @@
 //     --dart-define=TEST_SERVER_DOMAIN=bon.backend.ohtk.org \
 //     --dart-define=EXPECT_WELCOME_SCREEN=true
 //
-// Scenario chain:
-//   EXPECT_WELCOME_SCREEN=true  => WelcomeScenario → LoginScenario
-//   EXPECT_WELCOME_SCREEN=false => LoginScenario only
+// How It Works:
+// ─────────────
+//
+// ┌─────────────────────────────────────────────────────────────┐
+// │ 1. Welcome Screen (if EXPECT_WELCOME_SCREEN=true)           │
+// │    - Select Thai + BON server                               │
+// └────────────────┬────────────────────────────────────────────┘
+//                  │
+//                  ▼
+// ┌─────────────────────────────────────────────────────────────┐
+// │ 2. Login Screen                                             │
+// │    - Enter credentials                                      │
+// │    - Tap "เข้าสู่ระบบ"                                      │
+// │    - Assert still on login screen (error persists)          │
+// └─────────────────────────────────────────────────────────────┘
 import 'package:patrol/patrol.dart';
 
 import 'flows/login_scenario.dart';
