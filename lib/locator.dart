@@ -63,7 +63,9 @@ void setupAppLocalization() {
 
 void setupTheme() {
   locator.registerSingletonAsync<AppTheme>(() async {
-    return AppTheme();
+    final appTheme = AppTheme();
+    await appTheme.init();
+    return appTheme;
   });
 }
 

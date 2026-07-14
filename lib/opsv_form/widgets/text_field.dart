@@ -91,17 +91,17 @@ class _QrScanSuffix extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 4, 6, 4),
       child: Material(
-        color: incidentsTeal.withValues(alpha: 0.10),
+        color: _ohtkFormBrandTint(0.10),
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           onTap: onScan,
           borderRadius: BorderRadius.circular(8),
-          child: const SizedBox(
+          child: SizedBox(
             width: 32,
             height: 32,
             child: Icon(
               Icons.qr_code_scanner,
-              color: incidentsTeal,
+              color: _ohtkFormBrand,
               size: 18,
             ),
           ),

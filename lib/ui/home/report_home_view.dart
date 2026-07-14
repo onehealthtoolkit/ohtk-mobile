@@ -54,13 +54,12 @@ class ReportHomeView extends HookWidget {
               boxShadow: OhtkShadow.raised,
             ),
             child: FloatingActionButton.extended(
-              backgroundColor: OhtkColor.teal700,
+              backgroundColor: OhtkTheme.palette.teal700,
               foregroundColor: Colors.white,
               elevation: 0,
               highlightElevation: 0,
               shape: const StadiumBorder(),
-              extendedPadding:
-                  const EdgeInsets.symmetric(horizontal: 20),
+              extendedPadding: const EdgeInsets.symmetric(horizontal: 20),
               onPressed: () {
                 GoRouter.of(context).goNamed(OhtkRouter.reportTypes);
               },

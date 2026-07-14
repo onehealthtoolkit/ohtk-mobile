@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:podd_app/components/flat_button.dart';
 import 'package:podd_app/components/qr_scanner_parts.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/login/qr_login_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
@@ -40,7 +41,12 @@ class QrLoginView extends StatelessWidget {
     return ViewModelBuilder<QrLoginViewModel>.reactive(
       viewModelBuilder: () => QrLoginViewModel(),
       builder: (context, viewModel, child) => Scaffold(
-        appBar: AppBar(title: const Text('QR Code Login')),
+        appBar: AppBar(
+          title: const Text('QR Code Login'),
+          backgroundColor: OhtkTheme.palette.teal900,
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
         body: Stack(
           children: [
             MobileScanner(
@@ -79,6 +85,7 @@ class QrLoginView extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomCenter,
       child: FlatButton.primary(
+        backgroundColor: OhtkTheme.palette.teal700,
         onPressed: () async {
           final image = await _pickImage(ImageSource.gallery);
           if (image != null) {

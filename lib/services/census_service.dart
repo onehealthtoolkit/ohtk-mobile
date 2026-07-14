@@ -26,10 +26,17 @@ abstract class ICensusService {
     required String kind,
   });
 
+  Future<List<CensusRoundOccurrence>> getOpenVillageCensusRoundOccurrences({
+    required int villageId,
+    required String kind,
+    String mode,
+  });
+
   Future<VillageCensusDraft?> getDraft({
     required int villageId,
     required String kind,
     int? definitionVersionId,
+    int? occurrenceId,
   });
 
   Future<void> saveDraft(VillageCensusDraft draft);
@@ -38,11 +45,13 @@ abstract class ICensusService {
     required int villageId,
     required String kind,
     int? definitionVersionId,
+    int? occurrenceId,
   });
 
   Future<VillageCensusSubmitResult> submitVillageCensusSnapshotV2({
     required int villageId,
     required int definitionVersionId,
+    int? occurrenceId,
     required DateTime censusDate,
     required Map<String, dynamic> formData,
   });
@@ -117,17 +126,42 @@ class CensusService implements ICensusService {
   }
 
   @override
+  Future<List<CensusRoundOccurrence>> getOpenVillageCensusRoundOccurrences({
+    required int villageId,
+    required String kind,
+    String mode = 'PRODUCTION',
+  }) {
+    return _censusApi.getOpenVillageCensusRoundOccurrences(
+      villageId: villageId,
+      kind: kind,
+      mode: mode,
+    );
+  }
+
+  @override
   Future<VillageCensusDraft?> getDraft({
     required int villageId,
     required String kind,
     int? definitionVersionId,
+    int? occurrenceId,
   }) async {
     final key = _draftKey(
       villageId: villageId,
       kind: kind,
       definitionVersionId: definitionVersionId,
+      occurrenceId: occurrenceId,
     );
-    final raw = (await _preferences()).getString(key);
+    final preferences = await _preferences();
+    var raw = preferences.getString(key);
+    if (raw == null && occurrenceId != null) {
+      raw = preferences.getString(
+        _draftKey(
+          villageId: villageId,
+          kind: kind,
+          definitionVersionId: definitionVersionId,
+        ),
+      );
+    }
     if (raw == null) {
       return null;
     }
@@ -138,6 +172,7 @@ class CensusService implements ICensusService {
         villageId: villageId,
         kind: kind,
         definitionVersionId: definitionVersionId,
+        occurrenceId: occurrenceId,
       );
       return null;
     }
@@ -150,6 +185,7 @@ class CensusService implements ICensusService {
         villageId: draft.villageId,
         kind: draft.kind,
         definitionVersionId: draft.definitionVersionId,
+        occurrenceId: draft.occurrenceId,
       ),
       jsonEncode(draft.toJson()),
     );
@@ -160,26 +196,40 @@ class CensusService implements ICensusService {
     required int villageId,
     required String kind,
     int? definitionVersionId,
+    int? occurrenceId,
   }) async {
-    await (await _preferences()).remove(
+    final preferences = await _preferences();
+    await preferences.remove(
       _draftKey(
         villageId: villageId,
         kind: kind,
         definitionVersionId: definitionVersionId,
+        occurrenceId: occurrenceId,
       ),
     );
+    if (occurrenceId != null) {
+      await preferences.remove(
+        _draftKey(
+          villageId: villageId,
+          kind: kind,
+          definitionVersionId: definitionVersionId,
+        ),
+      );
+    }
   }
 
   @override
   Future<VillageCensusSubmitResult> submitVillageCensusSnapshotV2({
     required int villageId,
     required int definitionVersionId,
+    int? occurrenceId,
     required DateTime censusDate,
     required Map<String, dynamic> formData,
   }) {
     return _censusApi.submitVillageCensusSnapshotV2(
       villageId: villageId,
       definitionVersionId: definitionVersionId,
+      occurrenceId: occurrenceId,
       censusDate: _dateOnly(censusDate),
       formData: formData,
     );
@@ -276,9 +326,11 @@ class CensusService implements ICensusService {
     required int villageId,
     required String kind,
     int? definitionVersionId,
+    int? occurrenceId,
   }) {
     final versionKey = definitionVersionId?.toString() ?? 'legacy';
-    return 'fao.census.draft.$villageId.${kind.toUpperCase()}.$versionKey';
+    final occurrenceKey = occurrenceId?.toString() ?? 'unscoped';
+    return 'fao.census.draft.$villageId.${kind.toUpperCase()}.$versionKey.$occurrenceKey';
   }
 
   String _dateOnly(DateTime date) {

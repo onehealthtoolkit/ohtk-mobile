@@ -188,8 +188,10 @@ class OhtkRouter {
                 GoRoute(
                   path: ':kind',
                   parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) =>
-                      CensusView(kind: state.pathParameters['kind']),
+                  builder: (context, state) => CensusView(
+                    kind: state.pathParameters['kind'],
+                    trainingMode: state.uri.queryParameters['training'] == '1',
+                  ),
                 ),
               ],
             ),

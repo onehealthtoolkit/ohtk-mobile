@@ -37,7 +37,7 @@ class ImageApi extends GraphQlBaseApi {
           variables: {
             "image": file,
             "imageId": reportImage.id,
-            "reportId": reportImage.reportId
+            "reportId": reportImage.effectiveParentId
           });
 
       return ImageSubmitSuccess(result);

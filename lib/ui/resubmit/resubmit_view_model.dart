@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:logger/logger.dart';
@@ -28,6 +27,7 @@ class ReSubmitViewModel extends ReactiveViewModel {
   final submissionStates = <String, Progress>{};
 
   bool isOffline = true;
+  bool isSubmittingAll = false;
 
   ReSubmitViewModel() {
     _connectionChangeStream =
@@ -35,20 +35,12 @@ class ReSubmitViewModel extends ReactiveViewModel {
   }
 
   void connectionChanged(List<ConnectivityResult> result) async {
-    if (!result.contains(ConnectivityResult.none)) {
-      try {
-        final result = await InternetAddress.lookup("ohtk.org");
-        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-          _logger.i('connected');
-          isOffline = false;
-        }
-      } on SocketException catch (_) {
-        _logger.w('not connected: lookup ohtk.org failed');
-        isOffline = true;
-      }
-    } else {
+    if (result.contains(ConnectivityResult.none)) {
       _logger.w('not connected: no connection');
       isOffline = true;
+    } else {
+      _logger.i('network interface connected');
+      isOffline = false;
     }
     notifyListeners();
   }
@@ -150,21 +142,31 @@ class ReSubmitViewModel extends ReactiveViewModel {
   List<ListenableServiceMixin> get listenableServices =>
       [_reportService, _recordService, _imageService, _fileService];
 
-  void submitAllPendings() async {
-    for (var report in pendingReports) {
-      _submitReport(report);
+  Future<void> submitAllPendings() async {
+    if (isSubmittingAll) {
+      return;
     }
-    for (var record in pendingSubjectRecords) {
-      _submitSubjectRecord(record);
-    }
-    for (var record in pendingMonitoringRecords) {
-      _submitMonitoringRecord(record);
-    }
-    for (var image in pendingImages) {
-      _submitImage(image);
-    }
-    for (var file in pendingFiles) {
-      _submitFile(file);
+    isSubmittingAll = true;
+    notifyListeners();
+    try {
+      for (var report in List<SubmissionState>.of(pendingReports)) {
+        await _submitReport(report);
+      }
+      for (var record in List<SubmissionState>.of(pendingSubjectRecords)) {
+        await _submitSubjectRecord(record);
+      }
+      for (var record in List<SubmissionState>.of(pendingMonitoringRecords)) {
+        await _submitMonitoringRecord(record);
+      }
+      for (var image in List<SubmissionState>.of(pendingImages)) {
+        await _submitImage(image);
+      }
+      for (var file in List<SubmissionState>.of(pendingFiles)) {
+        await _submitFile(file);
+      }
+    } finally {
+      isSubmittingAll = false;
+      notifyListeners();
     }
   }
 

@@ -13,6 +13,8 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 final _commentTimestamp = DateFormat('dd/MM/yy HH:mm');
+Color get _brandPrimary => OhtkTheme.palette.teal700;
+Color get _brandTint => OhtkTheme.palette.teal700.withValues(alpha: 0.08);
 
 class ReportCommentView extends StatelessWidget {
   final int threadId;
@@ -160,7 +162,7 @@ class _CommentCard extends StatelessWidget {
                           placeholder: (context, url) =>
                               Container(color: incidentsHair),
                           errorWidget: (context, url, error) => Container(
-                            color: OhtkColor.teal100,
+                            color: OhtkTheme.palette.teal100,
                             alignment: Alignment.center,
                             child: const Icon(
                               Icons.image_not_supported_outlined,
@@ -219,16 +221,16 @@ class _Avatar extends StatelessWidget {
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: incidentsTeal.withValues(alpha: 0.15),
+        color: _brandPrimary.withValues(alpha: 0.15),
         shape: BoxShape.circle,
       ),
       alignment: Alignment.center,
       child: Text(
         initial,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w700,
-          color: incidentsTeal,
+          color: _brandPrimary,
         ),
       ),
     );
@@ -247,13 +249,13 @@ class _CommentEmptyState extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              color: incidentsTeal.withValues(alpha: 0.08),
+              color: _brandTint,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.chat_bubble_outline,
               size: 32,
-              color: incidentsTeal,
+              color: _brandPrimary,
             ),
           ),
         ),
@@ -346,9 +348,7 @@ class _CommentComposer extends StackedHookView<ReportCommentViewModel> {
               color: incidentsSand,
               borderRadius: BorderRadius.circular(26),
               border: Border.all(
-                color: isFocused.value
-                    ? incidentsTeal
-                    : Colors.transparent,
+                color: isFocused.value ? _brandPrimary : Colors.transparent,
                 width: 1.5,
               ),
             ),
@@ -357,7 +357,7 @@ class _CommentComposer extends StackedHookView<ReportCommentViewModel> {
               children: [
                 _ComposerIcon(
                   icon: Icons.camera_alt_outlined,
-                  tone: incidentsTeal,
+                  tone: _brandPrimary,
                   onTap: () => _showAddImageModal(context, viewModel),
                 ),
                 Expanded(
@@ -495,7 +495,7 @@ class _ComposerSend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (busy) {
-      return const SizedBox(
+      return SizedBox(
         width: 48,
         height: 48,
         child: Center(
@@ -504,7 +504,7 @@ class _ComposerSend extends StatelessWidget {
             height: 20,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(incidentsTeal),
+              valueColor: AlwaysStoppedAnimation<Color>(_brandPrimary),
             ),
           ),
         ),
@@ -512,8 +512,8 @@ class _ComposerSend extends StatelessWidget {
     }
     return IconButton(
       icon: const Icon(Icons.send_rounded, size: 22),
-      color: incidentsTeal,
-      disabledColor: incidentsTeal.withValues(alpha: 0.35),
+      color: _brandPrimary,
+      disabledColor: _brandPrimary.withValues(alpha: 0.35),
       splashRadius: 22,
       focusColor: Colors.transparent,
       hoverColor: Colors.transparent,

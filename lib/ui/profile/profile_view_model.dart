@@ -55,6 +55,7 @@ class ProfileViewModel extends BaseViewModel {
     }
     final prefs = await SharedPreferences.getInstance();
     language = prefs.getString(languageKey) ?? "en";
+    notifyListeners();
   }
 
   bool get hasMultipleAssignedVillages => assignedVillages.length > 1;
@@ -103,9 +104,11 @@ class ProfileViewModel extends BaseViewModel {
     }
   }
 
-  changeLanguage(String value) async {
+  Future<void> changeLanguage(String value) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(languageKey, value);
+    await prefs.setString(languageKey, value);
+    language = value;
+    notifyListeners();
   }
 
   Future<ProfileResult> updateProfile() async {

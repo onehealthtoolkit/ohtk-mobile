@@ -3,6 +3,7 @@ import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 
 const double _cardRadius = 16;
+Color get _profileTeal => OhtkTheme.palette.teal700;
 
 class ProfileSectionCard extends StatelessWidget {
   final String? eyebrow;
@@ -271,12 +272,12 @@ class ProfileDashedPrompt extends StatelessWidget {
       margin: margin,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: incidentsTeal.withValues(alpha: 0.05),
+        color: _profileTeal.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(_cardRadius),
       ),
       child: CustomPaint(
         painter: _DashedBorderPainter(
-          color: incidentsTeal.withValues(alpha: 0.45),
+          color: _profileTeal.withValues(alpha: 0.45),
           radius: _cardRadius,
         ),
         child: Padding(
@@ -284,10 +285,10 @@ class ProfileDashedPrompt extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(
+              Icon(
                 Icons.info_outline,
                 size: 20,
-                color: incidentsTeal,
+                color: _profileTeal,
               ),
               const SizedBox(width: 10),
               Expanded(

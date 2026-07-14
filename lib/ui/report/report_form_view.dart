@@ -7,6 +7,7 @@ import 'package:podd_app/components/form_input.dart';
 import 'package:podd_app/components/submit_success_overlay.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/report_submit_result.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
 import 'package:podd_app/ui/report/report_form_view_model.dart';
@@ -26,10 +27,12 @@ class ReportFormView extends StatelessWidget {
       viewModelBuilder: () => ReportFormViewModel(testFlag, reportTypeId),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
-          return const Scaffold(
+          return Scaffold(
             backgroundColor: incidentsSand,
             body: Center(
-              child: CircularProgressIndicator(color: incidentsTeal),
+              child: CircularProgressIndicator(
+                color: OhtkTheme.palette.teal700,
+              ),
             ),
           );
         }
@@ -119,7 +122,6 @@ class ReportFormView extends StatelessWidget {
     }
     return discard;
   }
-
 }
 
 class _AuthorityRadios extends StackedHookView<ReportFormViewModel> {
@@ -202,7 +204,7 @@ class _RadioRing extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: selected ? incidentsTeal : incidentsHair,
+          color: selected ? OhtkTheme.palette.teal700 : incidentsHair,
           width: 2,
         ),
       ),
@@ -211,8 +213,8 @@ class _RadioRing extends StatelessWidget {
               child: Container(
                 width: 10,
                 height: 10,
-                decoration: const BoxDecoration(
-                  color: incidentsTeal,
+                decoration: BoxDecoration(
+                  color: OhtkTheme.palette.teal700,
                   shape: BoxShape.circle,
                 ),
               ),

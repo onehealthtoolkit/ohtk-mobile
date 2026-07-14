@@ -4,11 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:podd_app/components/form_chrome.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/profile_result.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/profile/profile_widgets.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import 'profile_view_model.dart';
+
+Color get _profileTeal => OhtkTheme.palette.teal700;
 
 class ProfileFormView extends StatelessWidget {
   static const String route = '/profile/form';
@@ -226,20 +229,20 @@ class _RecapAvatar extends StatelessWidget {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: incidentsTeal.withValues(alpha: 0.10),
+        color: _profileTeal.withValues(alpha: 0.10),
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white, width: 1.5),
       ),
       child: ClipOval(
         child: url == null
-            ? const Icon(Icons.person_outline, size: 22, color: incidentsTeal)
+            ? Icon(Icons.person_outline, size: 22, color: _profileTeal)
             : Image.network(
                 url!,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const Icon(
+                errorBuilder: (_, __, ___) => Icon(
                   Icons.person_outline,
                   size: 22,
-                  color: incidentsTeal,
+                  color: _profileTeal,
                 ),
               ),
       ),
@@ -284,7 +287,6 @@ class _GeneralErrorBanner extends StatelessWidget {
   }
 }
 
-
 class _StickyFooter extends StackedHookView<ProfileViewModel> {
   // ignore: prefer_const_constructors_in_immutables
   _StickyFooter({required this.viewModel});
@@ -311,15 +313,13 @@ class _StickyFooter extends StackedHookView<ProfileViewModel> {
       child: Row(
         children: [
           OutlinedButton(
-            onPressed: vm.isBusy
-                ? null
-                : () => Navigator.of(context).pop(false),
+            onPressed:
+                vm.isBusy ? null : () => Navigator.of(context).pop(false),
             style: OutlinedButton.styleFrom(
               foregroundColor: incidentsInk,
               side: const BorderSide(color: incidentsHair, width: 1),
               shape: const StadiumBorder(),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 22, vertical: 11),
+              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 11),
               minimumSize: const Size(0, 44),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
@@ -338,10 +338,9 @@ class _StickyFooter extends StackedHookView<ProfileViewModel> {
             child: TextButton(
               onPressed: vm.isBusy ? null : () => _save(context, vm),
               style: TextButton.styleFrom(
-                backgroundColor: incidentsTeal,
+                backgroundColor: _profileTeal,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor:
-                    incidentsTeal.withValues(alpha: 0.5),
+                disabledBackgroundColor: _profileTeal.withValues(alpha: 0.5),
                 disabledForegroundColor: Colors.white,
                 shape: const StadiumBorder(),
                 padding: const EdgeInsets.symmetric(vertical: 12),
@@ -380,7 +379,7 @@ class _StickyFooter extends StackedHookView<ProfileViewModel> {
     if (result is ProfileSuccess && result.success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: incidentsTeal,
+          backgroundColor: _profileTeal,
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 2),
           content: Text(

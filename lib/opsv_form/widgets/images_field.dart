@@ -137,7 +137,7 @@ class _AddImageTile extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: DottedBorder(
-        color: incidentsTeal,
+        color: _ohtkFormBrand,
         strokeWidth: 1.5,
         dashPattern: const [5, 4],
         borderType: BorderType.RRect,
@@ -147,18 +147,18 @@ class _AddImageTile extends StatelessWidget {
           width: _thumbSize,
           height: _thumbSize,
           decoration: BoxDecoration(
-            color: incidentsTeal.withValues(alpha: 0.08),
+            color: _ohtkFormBrandTint(0.08),
             borderRadius: BorderRadius.circular(_thumbRadius),
           ),
-          child: const Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 Icons.photo_camera_outlined,
                 size: 22,
-                color: incidentsTeal,
+                color: _ohtkFormBrand,
               ),
-              SizedBox(height: 2),
+              const SizedBox(height: 2),
               Text(
                 'ADD',
                 style: TextStyle(
@@ -167,7 +167,7 @@ class _AddImageTile extends StatelessWidget {
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.6,
-                  color: incidentsTeal,
+                  color: _ohtkFormBrand,
                 ),
               ),
             ],
@@ -209,13 +209,13 @@ class _ImageThumb extends StatelessWidget {
                 future: loader(imageId),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) return snapshot.data!;
-                  return const Center(
+                  return Center(
                     child: SizedBox(
                       height: 18,
                       width: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: incidentsTeal,
+                        color: _ohtkFormBrand,
                       ),
                     ),
                   );
@@ -287,7 +287,7 @@ class _PickerRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         child: Row(
           children: [
-            Icon(icon, size: 22, color: incidentsTeal),
+            Icon(icon, size: 22, color: _ohtkFormBrand),
             const SizedBox(width: 14),
             Text(
               label,

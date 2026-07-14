@@ -5,6 +5,7 @@ import 'package:podd_app/components/form_confirm.dart';
 import 'package:podd_app/components/form_input.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/followup_submit_result.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/report/followup_report_form_view_model.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
@@ -29,10 +30,12 @@ class FollowupReportFormView extends StatelessWidget {
       ),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
-          return const Scaffold(
+          return Scaffold(
             backgroundColor: incidentsSand,
             body: Center(
-              child: CircularProgressIndicator(color: incidentsTeal),
+              child: CircularProgressIndicator(
+                color: OhtkTheme.palette.teal700,
+              ),
             ),
           );
         }
@@ -108,5 +111,4 @@ class FollowupReportFormView extends StatelessWidget {
     }
     return showExitConfirmDialog(context);
   }
-
 }

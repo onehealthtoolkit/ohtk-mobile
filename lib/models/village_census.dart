@@ -40,6 +40,8 @@ class VillageCensusSnapshot {
   final String? submittedAt;
   final int? definitionVersionId;
   final int? definitionVersionNumber;
+  final int? villageHouseholdQuantity;
+  final int? animalHouseholdQuantity;
   final List<AnimalCensusFact> facts;
   final Map<String, dynamic> formData;
 
@@ -50,6 +52,8 @@ class VillageCensusSnapshot {
     this.submittedAt,
     this.definitionVersionId,
     this.definitionVersionNumber,
+    this.villageHouseholdQuantity,
+    this.animalHouseholdQuantity,
     this.facts = const [],
     this.formData = const {},
   });
@@ -68,6 +72,10 @@ class VillageCensusSnapshot {
       submittedAt: json['submittedAt']?.toString(),
       definitionVersionId: _parseInt(definitionVersion['id']),
       definitionVersionNumber: _parseInt(definitionVersion['version']),
+      villageHouseholdQuantity: _parseInt(json['villageHouseholdQuantity']) ??
+          _parseSummaryInt(json, 'village_household_quantity'),
+      animalHouseholdQuantity: _parseInt(json['animalHouseholdQuantity']) ??
+          _parseSummaryInt(json, 'animal_household_quantity'),
       facts: (json['facts'] as List? ?? const [])
           .map((fact) => AnimalCensusFact.fromJson(fact))
           .toList(),
@@ -81,6 +89,10 @@ class VillageCensusSnapshot {
       if (village != null) 'village': village!.toJson(),
       if (censusDate != null) 'censusDate': _dateOnly(censusDate!),
       if (submittedAt != null) 'submittedAt': submittedAt,
+      if (villageHouseholdQuantity != null)
+        'villageHouseholdQuantity': villageHouseholdQuantity,
+      if (animalHouseholdQuantity != null)
+        'animalHouseholdQuantity': animalHouseholdQuantity,
       if (definitionVersionId != null || definitionVersionNumber != null)
         'definitionVersion': {
           if (definitionVersionId != null) 'id': definitionVersionId,
@@ -93,11 +105,73 @@ class VillageCensusSnapshot {
   }
 }
 
+class CensusRoundOccurrence {
+  final int id;
+  final String occurrenceKey;
+  final String kind;
+  final String mode;
+  final DateTime? censusPeriodStart;
+  final DateTime? censusPeriodEnd;
+  final DateTime? startDate;
+  final DateTime? softFinishDate;
+  final DateTime? hardFinishDate;
+  final String status;
+
+  const CensusRoundOccurrence({
+    required this.id,
+    required this.occurrenceKey,
+    required this.kind,
+    required this.mode,
+    this.censusPeriodStart,
+    this.censusPeriodEnd,
+    this.startDate,
+    this.softFinishDate,
+    this.hardFinishDate,
+    required this.status,
+  });
+
+  factory CensusRoundOccurrence.fromJson(Map<String, dynamic> json) {
+    return CensusRoundOccurrence(
+      id: _parseInt(json['id']) ?? 0,
+      occurrenceKey: json['occurrenceKey']?.toString() ??
+          json['occurrence_key']?.toString() ??
+          '',
+      kind: json['kind']?.toString() ?? '',
+      mode: json['mode']?.toString() ?? '',
+      censusPeriodStart: _parseDate(json['censusPeriodStart']),
+      censusPeriodEnd: _parseDate(json['censusPeriodEnd']),
+      startDate: _parseDate(json['startDate']),
+      softFinishDate: _parseDate(json['softFinishDate']),
+      hardFinishDate: _parseDate(json['hardFinishDate']),
+      status: json['status']?.toString() ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'occurrenceKey': occurrenceKey,
+      'kind': kind,
+      'mode': mode,
+      if (censusPeriodStart != null)
+        'censusPeriodStart': _dateOnly(censusPeriodStart!),
+      if (censusPeriodEnd != null)
+        'censusPeriodEnd': _dateOnly(censusPeriodEnd!),
+      if (startDate != null) 'startDate': _dateOnly(startDate!),
+      if (softFinishDate != null) 'softFinishDate': _dateOnly(softFinishDate!),
+      if (hardFinishDate != null) 'hardFinishDate': _dateOnly(hardFinishDate!),
+      'status': status,
+    };
+  }
+}
+
 class VillageCensusDraft {
   final int villageId;
   final String kind;
   final int? definitionVersionId;
+  final int? occurrenceId;
   final Map<String, Map<String, String>> measureValues;
+  final Map<String, String> summaryValues;
   final DateTime savedAt;
 
   const VillageCensusDraft({
@@ -105,7 +179,9 @@ class VillageCensusDraft {
     required this.kind,
     required this.measureValues,
     required this.savedAt,
+    this.summaryValues = const {},
     this.definitionVersionId,
+    this.occurrenceId,
   });
 
   factory VillageCensusDraft.fromJson(Map<String, dynamic> json) {
@@ -130,7 +206,11 @@ class VillageCensusDraft {
           : int.parse('${json['villageId']}'),
       kind: json['kind']?.toString() ?? '',
       definitionVersionId: _parseInt(json['definitionVersionId']),
+      occurrenceId: _parseInt(json['occurrenceId']),
       measureValues: parseMeasureValues(json['measureValues']),
+      summaryValues: (json['summaryValues'] as Map? ?? const {}).map(
+        (key, value) => MapEntry(key.toString(), value?.toString() ?? ''),
+      ),
       savedAt: DateTime.tryParse(json['savedAt']?.toString() ?? '') ??
           DateTime.fromMillisecondsSinceEpoch(0),
     );
@@ -141,7 +221,9 @@ class VillageCensusDraft {
       'villageId': villageId,
       'kind': kind,
       'definitionVersionId': definitionVersionId,
+      'occurrenceId': occurrenceId,
       'measureValues': measureValues,
+      'summaryValues': summaryValues,
       'savedAt': savedAt.toIso8601String(),
     };
   }
@@ -182,6 +264,25 @@ int? _parseInt(dynamic value) {
     return value;
   }
   return int.tryParse(value.toString());
+}
+
+int? _parseSummaryInt(Map<String, dynamic> json, String key) {
+  final formData = json['formData'];
+  if (formData is! Map) {
+    return null;
+  }
+  final summary = formData['summary'];
+  if (summary is! Map) {
+    return null;
+  }
+  return _parseInt(summary[key]);
+}
+
+DateTime? _parseDate(dynamic value) {
+  if (value == null) {
+    return null;
+  }
+  return DateTime.tryParse(value.toString());
 }
 
 String _dateOnly(DateTime date) {

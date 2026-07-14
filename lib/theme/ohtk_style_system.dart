@@ -1,5 +1,189 @@
 import 'package:flutter/material.dart';
 
+class OhtkBrandPalette {
+  final Color teal900;
+  final Color teal800;
+  final Color teal700;
+  final Color teal600;
+  final Color teal100;
+  final Color teal50;
+
+  const OhtkBrandPalette({
+    required this.teal900,
+    required this.teal800,
+    required this.teal700,
+    required this.teal600,
+    required this.teal100,
+    required this.teal50,
+  });
+}
+
+enum OhtkThemePreset {
+  lagoon(
+    OhtkBrandPalette(
+      teal900: Color(0xFF0D4E5C),
+      teal800: Color(0xFF126577),
+      teal700: Color(0xFF15788D),
+      teal600: Color(0xFF1D8DA4),
+      teal100: Color(0xFFD7EBF0),
+      teal50: Color(0xFFEAF5F7),
+    ),
+    'Lagoon',
+  ),
+  tide(
+    OhtkBrandPalette(
+      teal900: Color(0xFF15788D),
+      teal800: Color(0xFF2E8EA3),
+      teal700: Color(0xFF4FA0B5),
+      teal600: Color(0xFF6DB4C9),
+      teal100: Color(0xFFDCEEF3),
+      teal50: Color(0xFFEEF7FA),
+    ),
+    'Tide',
+  ),
+  mist(
+    OhtkBrandPalette(
+      teal900: Color(0xFF1E6475),
+      teal800: Color(0xFF438DA1),
+      teal700: Color(0xFF6DB4C9),
+      teal600: Color(0xFF83C1D3),
+      teal100: Color(0xFFE2F0F4),
+      teal50: Color(0xFFF1F8FA),
+    ),
+    'Mist',
+  ),
+  forest(
+    OhtkBrandPalette(
+      teal900: Color(0xFF063A2E),
+      teal800: Color(0xFF0A4C3D),
+      teal700: Color(0xFF0F7B5A),
+      teal600: Color(0xFF14916B),
+      teal100: Color(0xFFD6EBE2),
+      teal50: Color(0xFFEAF5F0),
+    ),
+    'Forest',
+  ),
+  indigo(
+    OhtkBrandPalette(
+      teal900: Color(0xFF1E1B4B),
+      teal800: Color(0xFF3730A3),
+      teal700: Color(0xFF4F46E5),
+      teal600: Color(0xFF6366F1),
+      teal100: Color(0xFFE0E7FF),
+      teal50: Color(0xFFEEF2FF),
+    ),
+    'Indigo',
+  ),
+  sunset(
+    OhtkBrandPalette(
+      teal900: Color(0xFF7C2D12),
+      teal800: Color(0xFF9A3412),
+      teal700: Color(0xFFEA580C),
+      teal600: Color(0xFFF97316),
+      teal100: Color(0xFFFFEDD5),
+      teal50: Color(0xFFFFF7ED),
+    ),
+    'Sunset',
+  ),
+  plum(
+    OhtkBrandPalette(
+      teal900: Color(0xFF4C1D95),
+      teal800: Color(0xFF6D28D9),
+      teal700: Color(0xFF7C3AED),
+      teal600: Color(0xFF8B5CF6),
+      teal100: Color(0xFFEDE9FE),
+      teal50: Color(0xFFF5F3FF),
+    ),
+    'Plum',
+  ),
+  slate(
+    OhtkBrandPalette(
+      teal900: Color(0xFF0F172A),
+      teal800: Color(0xFF1E293B),
+      teal700: Color(0xFF334155),
+      teal600: Color(0xFF475569),
+      teal100: Color(0xFFE2E8F0),
+      teal50: Color(0xFFF1F5F9),
+    ),
+    'Slate',
+  ),
+  crimson(
+    OhtkBrandPalette(
+      teal900: Color(0xFF7F1D1D),
+      teal800: Color(0xFF991B1B),
+      teal700: Color(0xFFDC2626),
+      teal600: Color(0xFFEF4444),
+      teal100: Color(0xFFFEE2E2),
+      teal50: Color(0xFFFEF2F2),
+    ),
+    'Crimson',
+  ),
+  lahis(
+    OhtkBrandPalette(
+      teal900: Color(0xFF13396B),
+      teal800: Color(0xFF184A8A),
+      teal700: Color(0xFF1D5AA8),
+      teal600: Color(0xFF2F6FBE),
+      teal100: Color(0xFFDCE6F4),
+      teal50: Color(0xFFEEF3FB),
+    ),
+    'LAHIS',
+  );
+
+  final OhtkBrandPalette palette;
+  final String label;
+
+  const OhtkThemePreset(this.palette, this.label);
+
+  static OhtkThemePreset fromName(String name) {
+    switch (name.trim().toLowerCase()) {
+      case 'lagoon':
+        return OhtkThemePreset.lagoon;
+      case 'tide':
+        return OhtkThemePreset.tide;
+      case 'mist':
+        return OhtkThemePreset.mist;
+      case 'forest':
+        return OhtkThemePreset.forest;
+      case 'indigo':
+        return OhtkThemePreset.indigo;
+      case 'sunset':
+        return OhtkThemePreset.sunset;
+      case 'plum':
+        return OhtkThemePreset.plum;
+      case 'slate':
+        return OhtkThemePreset.slate;
+      case 'crimson':
+        return OhtkThemePreset.crimson;
+      case 'lahis':
+        return OhtkThemePreset.lahis;
+      default:
+        return OhtkThemePreset.lagoon;
+    }
+  }
+}
+
+class OhtkThemeConfig {
+  const OhtkThemeConfig._();
+
+  static const defineName = 'OHTK_THEME';
+  static const configuredPresetName = String.fromEnvironment(
+    defineName,
+    defaultValue: 'lagoon',
+  );
+
+  static OhtkThemePreset? _runtimePreset;
+
+  static OhtkThemePreset get defaultPreset =>
+      OhtkThemePreset.fromName(configuredPresetName);
+  static OhtkThemePreset get preset => _runtimePreset ?? defaultPreset;
+  static OhtkBrandPalette get palette => preset.palette;
+
+  static void usePreset(OhtkThemePreset preset) {
+    _runtimePreset = preset;
+  }
+}
+
 class OhtkColor {
   const OhtkColor._();
 
@@ -160,23 +344,26 @@ class OhtkLayout {
 class OhtkTheme {
   const OhtkTheme._();
 
-  static ThemeData build() {
+  static OhtkBrandPalette get palette => OhtkThemeConfig.palette;
+
+  static ThemeData build({OhtkBrandPalette? brandPalette}) {
+    final brand = brandPalette ?? palette;
     final base = ThemeData.light();
     return base.copyWith(
       scaffoldBackgroundColor: OhtkColor.cream,
-      primaryColor: OhtkColor.teal700,
+      primaryColor: brand.teal700,
       colorScheme: base.colorScheme.copyWith(
-        primary: OhtkColor.teal700,
-        secondary: OhtkColor.teal100,
+        primary: brand.teal700,
+        secondary: brand.teal100,
         surface: OhtkColor.paper,
         error: OhtkColor.danger,
       ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: OhtkColor.teal800,
+      appBarTheme: AppBarTheme(
+        backgroundColor: brand.teal900,
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
-        titleTextStyle: TextStyle(
+        titleTextStyle: const TextStyle(
           fontFamily: OhtkType.family,
           fontFamilyFallback: OhtkType.fallback,
           fontSize: 18,
@@ -207,7 +394,7 @@ class OhtkTheme {
           side: BorderSide(color: OhtkColor.line),
         ),
       ),
-      inputDecorationTheme: const InputDecorationTheme(
+      inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: OhtkColor.paper,
         border: OutlineInputBorder(
@@ -220,7 +407,7 @@ class OhtkTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: OhtkRadius.input,
-          borderSide: BorderSide(color: OhtkColor.teal700, width: 1.5),
+          borderSide: BorderSide(color: brand.teal700, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: OhtkRadius.input,
@@ -234,7 +421,7 @@ class OhtkTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: OhtkColor.teal700,
+          backgroundColor: brand.teal700,
           foregroundColor: Colors.white,
           disabledBackgroundColor: OhtkColor.line,
           disabledForegroundColor: OhtkColor.ink400,
@@ -251,29 +438,29 @@ class OhtkTheme {
           shape: const StadiumBorder(),
         ),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: OhtkColor.paper,
-        selectedItemColor: OhtkColor.teal700,
+        selectedItemColor: brand.teal700,
         unselectedItemColor: OhtkColor.ink400,
-        selectedIconTheme: IconThemeData(color: OhtkColor.teal700),
-        unselectedIconTheme: IconThemeData(color: OhtkColor.ink400),
+        selectedIconTheme: IconThemeData(color: brand.teal700),
+        unselectedIconTheme: const IconThemeData(color: OhtkColor.ink400),
       ),
-      tabBarTheme: const TabBarThemeData(
-        labelColor: OhtkColor.teal700,
+      tabBarTheme: TabBarThemeData(
+        labelColor: brand.teal700,
         unselectedLabelColor: OhtkColor.ink500,
         indicator: UnderlineTabIndicator(
-          borderSide: BorderSide(color: OhtkColor.teal700, width: 2),
+          borderSide: BorderSide(color: brand.teal700, width: 2),
         ),
       ),
       radioTheme: RadioThemeData(
         fillColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) return OhtkColor.teal700;
+          if (states.contains(WidgetState.selected)) return brand.teal700;
           return OhtkColor.line;
         }),
       ),
       checkboxTheme: CheckboxThemeData(
         fillColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) return OhtkColor.teal700;
+          if (states.contains(WidgetState.selected)) return brand.teal700;
           return OhtkColor.paper;
         }),
         side: const BorderSide(color: OhtkColor.line, width: 1.5),
@@ -314,10 +501,11 @@ class _OhtkCardState extends State<OhtkCard> {
 
   @override
   Widget build(BuildContext context) {
+    final brand = OhtkTheme.palette;
     final background = switch (widget.tone) {
       OhtkCardTone.paper => OhtkColor.paper,
       OhtkCardTone.cream => OhtkColor.creamHi,
-      OhtkCardTone.mint => OhtkColor.teal50,
+      OhtkCardTone.mint => brand.teal50,
     };
     final borderRadius = OhtkRadius.card;
     final content = Container(
@@ -358,27 +546,31 @@ class _OhtkCardState extends State<OhtkCard> {
 class OhtkIconTile extends StatelessWidget {
   final IconData icon;
   final double size;
-  final Color backgroundColor;
-  final Color foregroundColor;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
 
   const OhtkIconTile({
     required this.icon,
     this.size = 48,
-    this.backgroundColor = OhtkColor.teal100,
-    this.foregroundColor = OhtkColor.teal700,
+    this.backgroundColor,
+    this.foregroundColor,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final brand = OhtkTheme.palette;
     return Container(
       width: size,
       height: size,
       decoration: const BoxDecoration(
-        color: OhtkColor.teal100,
         borderRadius: OhtkRadius.tile,
-      ).copyWith(color: backgroundColor),
-      child: Icon(icon, color: foregroundColor, size: size * 0.48),
+      ).copyWith(color: backgroundColor ?? brand.teal100),
+      child: Icon(
+        icon,
+        color: foregroundColor ?? brand.teal700,
+        size: size * 0.48,
+      ),
     );
   }
 }
@@ -399,14 +591,15 @@ class OhtkChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fg = ghost ? OhtkColor.ink500 : OhtkColor.teal700;
+    final brand = OhtkTheme.palette;
+    final fg = ghost ? OhtkColor.ink500 : brand.teal700;
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: small ? 8 : 10,
         vertical: small ? 4 : 6,
       ),
       decoration: BoxDecoration(
-        color: ghost ? Colors.transparent : OhtkColor.teal100,
+        color: ghost ? Colors.transparent : brand.teal100,
         borderRadius: OhtkRadius.chip,
         border: ghost ? Border.all(color: OhtkColor.line) : null,
       ),

@@ -51,9 +51,10 @@ class OhtkApp extends StatelessWidget {
             );
           }
           final appViewModel = AppViewModel();
+          final appTheme = locator<AppTheme>();
           return OverlaySupport.global(
             child: ListenableBuilder(
-              listenable: appViewModel,
+              listenable: Listenable.merge([appViewModel, appTheme]),
               builder: (context, child) => MaterialApp.router(
                 debugShowCheckedModeBanner: false,
                 title: 'OHTK Mobile',
@@ -73,7 +74,7 @@ class OhtkApp extends StatelessWidget {
                   Locale('my', ''), // Burmese
                 ],
                 locale: locale,
-                theme: locator<AppTheme>().themeData,
+                theme: appTheme.themeData,
                 routerConfig:
                     OhtkRouter().getRouter(setupComplete: setupComplete),
               ),

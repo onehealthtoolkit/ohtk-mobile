@@ -101,12 +101,12 @@ class _EmptyState extends StatelessWidget {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                    color: OhtkColor.teal700.withValues(alpha: 0.08),
+                    color: OhtkTheme.palette.teal700.withValues(alpha: 0.08),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.visibility_outlined,
-                    color: OhtkColor.teal700,
+                    color: OhtkTheme.palette.teal700,
                     size: 36,
                   ),
                 ),

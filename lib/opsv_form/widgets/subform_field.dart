@@ -165,9 +165,9 @@ class _SubformItemCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: incidentsTeal.withValues(alpha: 0.05),
+            color: _ohtkFormBrandTint(0.05),
             border: Border.all(
-              color: incidentsTeal.withValues(alpha: 0.18),
+              color: _ohtkFormBrandTint(0.18),
               width: 1,
             ),
             borderRadius: BorderRadius.circular(10),
@@ -241,8 +241,8 @@ class _IndexPill extends StatelessWidget {
       width: 22,
       height: 22,
       alignment: Alignment.center,
-      decoration: const BoxDecoration(
-        color: incidentsTeal,
+      decoration: BoxDecoration(
+        color: _ohtkFormBrand,
         shape: BoxShape.circle,
       ),
       child: Text(
@@ -296,7 +296,7 @@ class _AddAnotherButton extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: DottedBorder(
-        color: incidentsTeal,
+        color: _ohtkFormBrand,
         strokeWidth: 1.5,
         dashPattern: const [5, 4],
         borderType: BorderType.RRect,
@@ -312,17 +312,17 @@ class _AddAnotherButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.add, size: 18, color: incidentsTeal),
+              Icon(Icons.add, size: 18, color: _ohtkFormBrand),
               const SizedBox(width: 8),
               Text(
                 localize.addAnotherSubformButton,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: incidentsFontFamily,
                   fontFamilyFallback: incidentsFontFamilyFallback,
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.3,
-                  color: incidentsTeal,
+                  color: _ohtkFormBrand,
                 ),
               ),
             ],

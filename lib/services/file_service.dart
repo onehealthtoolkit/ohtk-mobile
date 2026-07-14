@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/entities/pending_media_parent_type.dart';
 import 'package:podd_app/models/entities/report_file.dart';
 import 'package:podd_app/models/file_submit_result.dart';
 import 'package:podd_app/services/api/file_api.dart';
 import 'package:podd_app/services/db_service.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:stacked/stacked.dart';
 
 abstract class IFileService with ListenableServiceMixin {
@@ -29,6 +31,12 @@ abstract class IFileService with ListenableServiceMixin {
   Future<void> remove(String reportId);
 
   Future<FileSubmitResult> submit(ReportFile file);
+
+  Future<List<ReportFile>> markForRemoteParent({
+    required String localParentId,
+    required String parentType,
+    required String remoteParentId,
+  });
 
   Future<FileSubmitResult> submitObservationRecordFile(
       ReportFile file, String recordId);
@@ -60,7 +68,12 @@ class FileService extends IFileService {
 
   @override
   Future<FileSubmitResult> submit(ReportFile file) async {
-    var result = await _fileApi.submit(file);
+    final result = PendingMediaParentType.isObservation(file.parentType)
+        ? await _fileApi.submitObservationRecordFile(
+            file,
+            file.effectiveParentId,
+          )
+        : await _fileApi.submit(file);
     if (result is FileSubmitSuccess) {
       await removeLocalFileFromAppDirectory(file.id);
       await removeReportFile(file.id);
@@ -114,7 +127,7 @@ class FileService extends IFileService {
   Future<void> removeLocalFileFromAppDirectory(String id) async {
     var reportFile = await getReportFile(id);
     final file = reportFile.localFile;
-    if (file != null) {
+    if (file != null && await file.exists()) {
       await file.delete();
     }
   }
@@ -122,7 +135,33 @@ class FileService extends IFileService {
   @override
   Future<void> saveReportFile(ReportFile reportFile) async {
     var db = _dbService.db;
-    await db.insert("report_file", reportFile.toMap());
+    await db.insert(
+      "report_file",
+      reportFile.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    final pendingIndex =
+        _pendingReportFiles.indexWhere((file) => file.id == reportFile.id);
+    if (pendingIndex != -1) {
+      _pendingReportFiles[pendingIndex] = reportFile;
+    }
+  }
+
+  @override
+  Future<List<ReportFile>> markForRemoteParent({
+    required String localParentId,
+    required String parentType,
+    required String remoteParentId,
+  }) async {
+    final files = await findAllReportFilesByReportId(localParentId);
+    for (final file in files) {
+      final updated = file.withRemoteParent(
+        parentType: parentType,
+        remoteParentId: remoteParentId,
+      );
+      await saveReportFile(updated);
+    }
+    return findAllReportFilesByReportId(localParentId);
   }
 
   @override
@@ -167,8 +206,10 @@ class FileService extends IFileService {
     await db.delete("report_file");
 
     var localPath = await _localFilePath;
-    var allReportFolder = File('$localPath/reports');
-    await allReportFolder.delete(recursive: true);
+    var allReportFolder = Directory('$localPath/reports');
+    if (await allReportFolder.exists()) {
+      await allReportFolder.delete(recursive: true);
+    }
   }
 
   @override

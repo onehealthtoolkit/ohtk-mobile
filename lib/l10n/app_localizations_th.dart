@@ -953,6 +953,19 @@ class AppLocalizationsTh extends AppLocalizations {
   String get censusEditedBadge => 'แก้ไขแล้ว';
 
   @override
+  String get censusHouseholdSummaryTitle => 'สรุปครัวเรือนของหมู่บ้าน';
+
+  @override
+  String get censusVillageHouseholdQuantityLabel => 'จำนวนครัวเรือนในหมู่บ้าน';
+
+  @override
+  String get censusAnimalHouseholdQuantityLabel => 'จำนวนครัวเรือนที่มีสัตว์';
+
+  @override
+  String get censusAnimalHouseholdsExceedVillageError =>
+      'จำนวนครัวเรือนที่มีสัตว์ต้องไม่เกินจำนวนครัวเรือนในหมู่บ้าน';
+
+  @override
   String get censusSaveCurrentButton => 'บันทึกสำมะโนปัจจุบัน';
 
   @override

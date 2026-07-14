@@ -14,7 +14,7 @@ class DbService extends IDbService {
     // follow this migration pattern https://github.com/tekartik/sqflite/blob/master/sqflite/doc/migration_example.md
     _db = await openDatabase(
       'podd.db',
-      version: 12,
+      version: 13,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onDowngrade: onDatabaseDowngradeDelete,
@@ -38,43 +38,46 @@ class DbService extends IDbService {
 
   _onUpgrade(Database db, int oldVersion, int newVersion) async {
     var batch = db.batch();
-    if (oldVersion == 1) {
+    if (oldVersion < 2) {
       await _createTableReportImageV2(batch);
     }
-    if (oldVersion == 2) {
+    if (oldVersion < 3) {
       await _createTableReportV3(batch);
       await _alterTableReportTypeV3(batch);
     }
-    if (oldVersion == 3) {
+    if (oldVersion < 4) {
       await _alterTableReportV4(batch);
     }
-    if (oldVersion == 4) {
+    if (oldVersion < 5) {
       await _alterTableReportV5(batch);
     }
-    if (oldVersion == 5) {
+    if (oldVersion < 6) {
       await _alterTableReportTypeV6(batch);
     }
-    if (oldVersion == 6) {
+    if (oldVersion < 7) {
       await _createTableObservationDefinitionV1(batch);
       await _createTableMonitoringDefinitionV1(batch);
     }
-    if (oldVersion == 7) {
+    if (oldVersion < 8) {
       await _createTableSubjectRecordV1(batch);
       await _createTableMonitoringRecordV1(batch);
     }
-    if (oldVersion == 8) {
+    if (oldVersion < 9) {
       await _alterTableMonitoringRecordV1(batch);
     }
-    if (oldVersion == 9) {
+    if (oldVersion < 10) {
       await _alterTableReportV6(batch);
     }
-    if (oldVersion == 10) {
+    if (oldVersion < 11) {
       await _createTableReportFileV1(batch);
     }
     if (oldVersion < 12) {
       await _createTableCensusDefinitionCacheV1(batch);
     }
     await batch.commit();
+    if (oldVersion < 13) {
+      await _alterTableMediaParentV13(db);
+    }
   }
 
   _createTableReportTypeV2(Batch batch) {
@@ -103,11 +106,13 @@ class DbService extends IDbService {
   _createTableReportImageV2(Batch batch) {
     batch.execute("DROP TABLE IF EXISTS report_image");
     batch.execute('''CREATE TABLE report_image (
-      id TEXT PRIMARY KEY,
-      reportId TEXT,
-      image BLOB,
-      submitted INT
-    )''');
+	      id TEXT PRIMARY KEY,
+	      reportId TEXT,
+	      image BLOB,
+	      submitted INT,
+        parent_type TEXT,
+        remote_parent_id TEXT
+	    )''');
   }
 
   _createTableReportFileV1(Batch batch) {
@@ -118,10 +123,12 @@ class DbService extends IDbService {
       report_id TEXT,
       name TEXT,
       file_path TEXT,
-      file_extension TEXT,
-      file_type TEXT,
-      submitted INT
-    )''');
+	      file_extension TEXT,
+	      file_type TEXT,
+	      submitted INT,
+        parent_type TEXT,
+        remote_parent_id TEXT
+	    )''');
   }
 
   _createTableCensusDefinitionCacheV1(Batch batch) {
@@ -279,5 +286,26 @@ class DbService extends IDbService {
 
   _alterTableReportV6(Batch batch) {
     batch.execute("ALTER TABLE report add column test_flag INT");
+  }
+
+  Future<void> _alterTableMediaParentV13(Database db) async {
+    await _addColumnIfMissing(db, 'report_image', 'parent_type', 'TEXT');
+    await _addColumnIfMissing(db, 'report_image', 'remote_parent_id', 'TEXT');
+    await _addColumnIfMissing(db, 'report_file', 'parent_type', 'TEXT');
+    await _addColumnIfMissing(db, 'report_file', 'remote_parent_id', 'TEXT');
+  }
+
+  Future<void> _addColumnIfMissing(
+    Database db,
+    String tableName,
+    String columnName,
+    String columnType,
+  ) async {
+    final columns = await db.rawQuery('PRAGMA table_info($tableName)');
+    final exists = columns.any((column) => column['name'] == columnName);
+    if (!exists) {
+      await db
+          .execute('ALTER TABLE $tableName add column $columnName $columnType');
+    }
   }
 }

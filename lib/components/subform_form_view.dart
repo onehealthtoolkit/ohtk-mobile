@@ -4,6 +4,7 @@ import 'package:podd_app/components/form_chrome.dart';
 import 'package:podd_app/components/form_input.dart';
 import 'package:podd_app/components/subform_form_view_model.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:stacked/stacked.dart';
 
@@ -22,10 +23,12 @@ class SubformFormView extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.gotoStart(),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
-          return const Scaffold(
+          return Scaffold(
             backgroundColor: incidentsSand,
             body: Center(
-              child: CircularProgressIndicator(color: incidentsTeal),
+              child: CircularProgressIndicator(
+                color: OhtkTheme.palette.teal700,
+              ),
             ),
           );
         }

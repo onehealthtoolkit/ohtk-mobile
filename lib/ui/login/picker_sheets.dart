@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:podd_app/components/language_dropdown.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 
-const _tealHero = Color(0xFF0F8A82);
-const _tealMuted = Color(0xFFE6F4F2);
-const _ink = Color(0xFF1A1F1D);
-const _muted = Color(0xFF6B7370);
-const _hair = Color(0xFFE4E2DC);
-const _placeholder = Color(0xFFA8ACA7);
-const _disabled = Color(0xFFE4E2DC);
-const _disabledFg = Color(0xFFA8ACA7);
-const _fontFamily = 'Inter';
-const _fontFamilyFallback = <String>['NotoSansThai', 'NotoSansLao'];
+Color get _tealHero => OhtkTheme.palette.teal700;
+Color get _tealMuted => OhtkTheme.palette.teal50;
+Color get _ink => OhtkColor.ink900;
+Color get _muted => OhtkColor.ink500;
+Color get _hair => OhtkColor.line;
+Color get _placeholder => OhtkColor.ink300;
+Color get _disabled => OhtkColor.line;
+Color get _disabledFg => OhtkColor.ink300;
+const _fontFamily = OhtkType.family;
+const _fontFamilyFallback = OhtkType.fallback;
 
 const _romanizedFallback = <String, String>{
   'en': 'EN',
@@ -106,7 +107,7 @@ class LanguagePickerSheet extends StatelessWidget {
                                 _shortNativeName[code] ?? option[0],
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontFamily: _fontFamily,
                                   fontFamilyFallback: _fontFamilyFallback,
                                   color: _ink,
@@ -118,7 +119,7 @@ class LanguagePickerSheet extends StatelessWidget {
                               const SizedBox(height: 2),
                               Text(
                                 _romanizedFallback[code] ?? '',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontFamily: _fontFamily,
                                   fontFamilyFallback: _fontFamilyFallback,
                                   color: _muted,
@@ -135,7 +136,7 @@ class LanguagePickerSheet extends StatelessWidget {
               ),
             ),
             Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: _hair, width: 1)),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -143,7 +144,7 @@ class LanguagePickerSheet extends StatelessWidget {
               child: Text(
                 l10n.signInChangeLanguageHint,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: _fontFamily,
                   fontFamilyFallback: _fontFamilyFallback,
                   color: _placeholder,
@@ -242,8 +243,7 @@ class _ServerPickerSheetState extends State<ServerPickerSheet> {
                       selected: selected,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 14, vertical: 12),
-                      onTap: () =>
-                          setState(() => _selectedDomain = domain),
+                      onTap: () => setState(() => _selectedDomain = domain),
                       child: Row(
                         children: [
                           _LightRadio(selected: selected, size: 22),
@@ -260,7 +260,7 @@ class _ServerPickerSheetState extends State<ServerPickerSheet> {
                                         label,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontFamily: _fontFamily,
                                           fontFamilyFallback:
                                               _fontFamilyFallback,
@@ -272,7 +272,8 @@ class _ServerPickerSheetState extends State<ServerPickerSheet> {
                                     ),
                                     if (isCurrent) ...[
                                       const SizedBox(width: 8),
-                                      _CurrentBadge(label: l10n.signInServerCurrentBadge),
+                                      _CurrentBadge(
+                                          label: l10n.signInServerCurrentBadge),
                                     ],
                                   ],
                                 ),
@@ -281,7 +282,7 @@ class _ServerPickerSheetState extends State<ServerPickerSheet> {
                                   domain,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontFamily: _fontFamily,
                                     fontFamilyFallback: _fontFamilyFallback,
                                     color: _muted,
@@ -298,18 +299,17 @@ class _ServerPickerSheetState extends State<ServerPickerSheet> {
                 ),
               ),
               Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   border: Border(top: BorderSide(color: _hair, width: 1)),
                 ),
-                padding:
-                    const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
                 child: Row(
                   children: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
                         l10n.signInCancelButton,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: _fontFamily,
                           fontFamilyFallback: _fontFamilyFallback,
                           color: _muted,
@@ -348,7 +348,7 @@ class _ServerPickerSheetState extends State<ServerPickerSheet> {
                         ),
                         child: Text(
                           l10n.signInConfirmServerButton,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: _fontFamily,
                             fontFamilyFallback: _fontFamilyFallback,
                             fontSize: 14,
@@ -413,7 +413,7 @@ class _SheetHeader extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: _fontFamily,
                     fontFamilyFallback: _fontFamilyFallback,
                     color: _ink,
@@ -426,7 +426,7 @@ class _SheetHeader extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     subtitle!,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: _fontFamily,
                       fontFamilyFallback: _fontFamilyFallback,
                       color: _muted,
@@ -462,11 +462,11 @@ class _CloseButton extends StatelessWidget {
           width: 32,
           height: 32,
           alignment: Alignment.center,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Color(0xFFF1EFEA),
           ),
-          child: const Icon(Icons.close, size: 18, color: _muted),
+          child: Icon(Icons.close, size: 18, color: _muted),
         ),
       ),
     );
@@ -548,7 +548,7 @@ class _CurrentBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontFamily: _fontFamily,
           fontFamilyFallback: _fontFamilyFallback,
           color: _tealHero,

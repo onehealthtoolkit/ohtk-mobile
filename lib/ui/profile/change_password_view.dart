@@ -4,12 +4,15 @@ import 'package:go_router/go_router.dart';
 import 'package:podd_app/components/form_chrome.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/profile_result.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/profile/profile_widgets.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 import 'change_password_view_model.dart';
+
+Color get _profileTeal => OhtkTheme.palette.teal700;
 
 class ChangePasswordView extends StatelessWidget {
   static const String route = '/profile/password';
@@ -122,12 +125,11 @@ class _PasswordHeader extends StatelessWidget {
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            color: incidentsTeal.withValues(alpha: 0.08),
+            color: _profileTeal.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(12),
           ),
           alignment: Alignment.center,
-          child: const Icon(Icons.lock_outline,
-              size: 22, color: incidentsTeal),
+          child: Icon(Icons.lock_outline, size: 22, color: _profileTeal),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -209,8 +211,8 @@ class _GeneralErrorBanner extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 1),
-            child: Icon(Icons.error_outline,
-                size: 18, color: incidentsErrorRed),
+            child:
+                Icon(Icons.error_outline, size: 18, color: incidentsErrorRed),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -258,15 +260,13 @@ class _StickyFooter extends StackedHookView<ChangePasswordViewModel> {
       child: Row(
         children: [
           OutlinedButton(
-            onPressed: vm.isBusy
-                ? null
-                : () => Navigator.of(context).pop(false),
+            onPressed:
+                vm.isBusy ? null : () => Navigator.of(context).pop(false),
             style: OutlinedButton.styleFrom(
               foregroundColor: incidentsInk,
               side: const BorderSide(color: incidentsHair, width: 1),
               shape: const StadiumBorder(),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 22, vertical: 11),
+              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 11),
               minimumSize: const Size(0, 44),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
@@ -285,10 +285,9 @@ class _StickyFooter extends StackedHookView<ChangePasswordViewModel> {
             child: TextButton(
               onPressed: vm.isBusy ? null : () => _save(context, vm),
               style: TextButton.styleFrom(
-                backgroundColor: incidentsTeal,
+                backgroundColor: _profileTeal,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor:
-                    incidentsTeal.withValues(alpha: 0.5),
+                disabledBackgroundColor: _profileTeal.withValues(alpha: 0.5),
                 disabledForegroundColor: Colors.white,
                 shape: const StadiumBorder(),
                 padding: const EdgeInsets.symmetric(vertical: 12),
@@ -320,15 +319,14 @@ class _StickyFooter extends StackedHookView<ChangePasswordViewModel> {
     );
   }
 
-  Future<void> _save(
-      BuildContext context, ChangePasswordViewModel vm) async {
+  Future<void> _save(BuildContext context, ChangePasswordViewModel vm) async {
     FocusManager.instance.primaryFocus?.unfocus();
     final result = await vm.changePassword();
     if (!context.mounted) return;
     if (result is ProfileSuccess && result.success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: incidentsTeal,
+          backgroundColor: _profileTeal,
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 2),
           content: Text(

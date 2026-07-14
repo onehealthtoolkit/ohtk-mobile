@@ -130,6 +130,8 @@ class CensusApi extends GraphQlBaseApi {
           id
           censusDate
           submittedAt
+          villageHouseholdQuantity
+          animalHouseholdQuantity
           formData
           definitionVersion {
             id
@@ -187,9 +189,83 @@ class CensusApi extends GraphQlBaseApi {
     return VillageCensusSnapshot.fromJson(snapshot);
   }
 
+  Future<List<CensusRoundOccurrence>> getOpenVillageCensusRoundOccurrences({
+    required int villageId,
+    required String kind,
+    String mode = 'PRODUCTION',
+  }) async {
+    const query = r'''
+      query OpenVillageCensusRoundOccurrences(
+        $villageId: Int!,
+        $kind: String!,
+        $mode: String
+      ) {
+        openVillageCensusRoundOccurrences(
+          villageId: $villageId,
+          kind: $kind,
+          mode: $mode
+        ) {
+          id
+          occurrenceKey
+          kind
+          mode
+          censusPeriodStart
+          censusPeriodEnd
+          startDate
+          softFinishDate
+          hardFinishDate
+          status
+        }
+      }
+    ''';
+
+    if (!await ensureAuthCookieIsSet()) {
+      throw GraphQlException(
+        message: 'Cookies are invalid',
+        query: query,
+        queryName: 'OpenVillageCensusRoundOccurrences',
+      );
+    }
+
+    final response = await resolveClient().query(
+      QueryOptions(
+        document: gql(query),
+        variables: {
+          'villageId': villageId,
+          'kind': kind,
+          'mode': mode,
+        },
+        fetchPolicy: FetchPolicy.networkOnly,
+        cacheRereadPolicy: CacheRereadPolicy.ignoreAll,
+      ),
+    );
+
+    if (response.hasException) {
+      if (_hasUnsupportedField(
+        response.exception,
+        'openVillageCensusRoundOccurrences',
+      )) {
+        return const [];
+      }
+      if (response.exception?.linkException != null) {
+        throw response.exception!.linkException!;
+      }
+      throw response.exception!;
+    }
+
+    return (response.data?['openVillageCensusRoundOccurrences'] as List? ??
+            const [])
+        .whereType<Map>()
+        .map((occurrence) => CensusRoundOccurrence.fromJson(
+              Map<String, dynamic>.from(occurrence),
+            ))
+        .toList();
+  }
+
   Future<VillageCensusSubmitResult> submitVillageCensusSnapshotV2({
     required int villageId,
     required int definitionVersionId,
+    int? occurrenceId,
     required String censusDate,
     required Map<String, dynamic> formData,
   }) async {
@@ -197,12 +273,14 @@ class CensusApi extends GraphQlBaseApi {
       mutation SubmitVillageCensusSnapshotV2(
         $villageId: Int!,
         $definitionVersionId: Int!,
+        $occurrenceId: Int,
         $censusDate: Date!,
         $formData: GenericScalar!
       ) {
         submitVillageCensusSnapshotV2(
           villageId: $villageId,
           definitionVersionId: $definitionVersionId,
+          occurrenceId: $occurrenceId,
           censusDate: $censusDate,
           formData: $formData
         ) {
@@ -212,6 +290,14 @@ class CensusApi extends GraphQlBaseApi {
               id
               censusDate
               submittedAt
+              roundResolution
+              roundOccurrence {
+                id
+                occurrenceKey
+                mode
+              }
+              villageHouseholdQuantity
+              animalHouseholdQuantity
               village {
                 id
                 code
@@ -242,6 +328,7 @@ class CensusApi extends GraphQlBaseApi {
         variables: {
           'villageId': villageId,
           'definitionVersionId': definitionVersionId,
+          'occurrenceId': occurrenceId,
           'censusDate': censusDate,
           'formData': formData,
         },

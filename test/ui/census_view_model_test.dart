@@ -226,6 +226,7 @@ void main() {
 
     final viewModel = CensusViewModel(kind: 'ANIMAL');
     await flushAsync();
+    fillAnimalSummary(viewModel);
     viewModel.setMeasureValue('species:1', 'animal_quantity', '10');
     viewModel.setMeasureValue('species:1', 'household_quantity', '5');
 
@@ -244,6 +245,7 @@ void main() {
 
     final viewModel = CensusViewModel(kind: 'ANIMAL');
     await flushAsync();
+    fillAnimalSummary(viewModel);
     viewModel.setMeasureValue('species:1', 'animal_quantity', '10');
 
     final result = await viewModel.submit();
@@ -310,6 +312,35 @@ void main() {
     expect(viewModel.censusKinds.single.kind, 'ANIMAL');
     expect(viewModel.hasRows, isFalse);
     expect(viewModel.activeDefinition, isNull);
+  });
+
+  test('training toggle updates immediately before async reload completes',
+      () async {
+    censusService.activeKinds = [
+      CensusKindSummary(
+        kind: 'ANIMAL',
+        name: 'Animal census',
+        enabled: true,
+        activeVersion: animalDefinition(),
+      ),
+    ];
+    censusService.openOccurrences = [
+      const CensusRoundOccurrence(
+        id: 17,
+        occurrenceKey: 'ANIMAL_TRAINING_2026',
+        kind: 'ANIMAL',
+        mode: 'TRAINING',
+        status: 'OPEN',
+      ),
+    ];
+
+    final viewModel = CensusViewModel();
+    await flushAsync();
+
+    final pendingToggle = viewModel.setTrainingMode(true);
+
+    expect(viewModel.trainingMode, isTrue);
+    await pendingToggle;
   });
 
   test('reload clears incompatible values after definition shape changes',
@@ -432,6 +463,114 @@ void main() {
     expect(viewModel.hasDraft, isTrue);
   });
 
+  test('animal census requires village household summary', () async {
+    censusService.activeDefinition = animalDefinition();
+
+    final viewModel = CensusViewModel(kind: 'ANIMAL');
+    await flushAsync();
+    viewModel.setMeasureValue('species:1', 'animal_quantity', '10');
+    viewModel.setMeasureValue('species:1', 'household_quantity', '5');
+
+    final result = await viewModel.submit();
+
+    expect(result, isNull);
+    expect(
+      viewModel.summaryError(CensusViewModel.villageHouseholdQuantityKey),
+      'This field is required',
+    );
+    expect(
+      viewModel.summaryError(CensusViewModel.animalHouseholdQuantityKey),
+      'This field is required',
+    );
+  });
+
+  test('animal household count cannot exceed village households', () async {
+    censusService.activeDefinition = animalDefinition();
+
+    final viewModel = CensusViewModel(kind: 'ANIMAL');
+    await flushAsync();
+    viewModel.setSummaryValue(
+      CensusViewModel.villageHouseholdQuantityKey,
+      '20',
+    );
+    viewModel.setSummaryValue(
+      CensusViewModel.animalHouseholdQuantityKey,
+      '21',
+    );
+    viewModel.setMeasureValue('species:1', 'animal_quantity', '10');
+    viewModel.setMeasureValue('species:1', 'household_quantity', '5');
+
+    final result = await viewModel.submit();
+
+    expect(result, isNull);
+    expect(
+      viewModel.summaryError(CensusViewModel.animalHouseholdQuantityKey),
+      'Households with animals cannot exceed village households.',
+    );
+  });
+
+  test('animal census submits household summary with row measures', () async {
+    censusService.activeDefinition = animalDefinition();
+
+    final viewModel = CensusViewModel(kind: 'ANIMAL');
+    await flushAsync();
+    fillAnimalSummary(viewModel);
+    viewModel.setMeasureValue('species:1', 'animal_quantity', '10');
+    viewModel.setMeasureValue('species:1', 'household_quantity', '5');
+
+    await viewModel.submit();
+
+    expect(censusService.lastSubmittedFormData?['summary'], {
+      'village_household_quantity': 30,
+      'animal_household_quantity': 20,
+    });
+    expect(censusService.lastSubmittedFormData?['rows'], [
+      {
+        'measures': {
+          'animal_quantity': 10,
+          'household_quantity': 5,
+        },
+        'row_key': 'species:1',
+      },
+    ]);
+  });
+
+  test('restores animal summary from matching draft', () async {
+    censusService.activeDefinition = animalDefinition();
+    censusService.seedDraft(
+      VillageCensusDraft(
+        villageId: 1,
+        kind: 'ANIMAL',
+        definitionVersionId: 7,
+        summaryValues: const {
+          'village_household_quantity': '30',
+          'animal_household_quantity': '20',
+        },
+        measureValues: const {
+          'species:1': {
+            'animal_quantity': '10',
+            'household_quantity': '5',
+          },
+        },
+        savedAt: DateTime.parse('2026-05-22T00:00:00Z'),
+      ),
+    );
+
+    final viewModel = CensusViewModel(kind: 'ANIMAL');
+    await flushAsync();
+
+    expect(
+      viewModel.summaryValue(CensusViewModel.villageHouseholdQuantityKey),
+      '30',
+    );
+    expect(
+      viewModel.summaryValue(CensusViewModel.animalHouseholdQuantityKey),
+      '20',
+    );
+    expect(viewModel.hasDraft, isTrue);
+    expect(viewModel.isSummaryDirty, isTrue);
+  });
+
   test('restores matching draft over latest census values', () async {
     censusService.activeDefinition = humanDefinition(
       id: 2,
@@ -526,6 +665,136 @@ void main() {
       isNull,
     );
     expect(viewModel.hasDraft, isFalse);
+  });
+
+  test('training mode uses training occurrence and training success message',
+      () async {
+    censusService.activeDefinition = animalDefinition();
+    censusService.openOccurrences = [
+      const CensusRoundOccurrence(
+        id: 7,
+        occurrenceKey: 'ANIMAL_H1_2026',
+        kind: 'ANIMAL',
+        mode: 'PRODUCTION',
+        status: 'OPEN',
+      ),
+      const CensusRoundOccurrence(
+        id: 17,
+        occurrenceKey: 'ANIMAL_TRAINING_2026',
+        kind: 'ANIMAL',
+        mode: 'TRAINING',
+        status: 'OPEN',
+      ),
+    ];
+
+    final viewModel = CensusViewModel(
+      kind: 'ANIMAL',
+      initialTrainingMode: true,
+    );
+    await flushAsync();
+    fillAnimalSummary(viewModel);
+    viewModel.setMeasureValue('species:1', 'animal_quantity', '10');
+    viewModel.setMeasureValue('species:1', 'household_quantity', '5');
+
+    await viewModel.submit();
+
+    expect(viewModel.isTrainingSubmission, isTrue);
+    expect(viewModel.activeOccurrence?.id, 17);
+    expect(censusService.lastSubmittedOccurrenceId, 17);
+    expect(
+      viewModel.message,
+      contains('Training census submitted'),
+    );
+  });
+
+  test('switches from closed production round to open training round',
+      () async {
+    censusService.activeDefinition = animalDefinition();
+    censusService.openOccurrences = [
+      const CensusRoundOccurrence(
+        id: 17,
+        occurrenceKey: 'ANIMAL_TRAINING_2026',
+        kind: 'ANIMAL',
+        mode: 'TRAINING',
+        status: 'OPEN',
+      ),
+    ];
+
+    final viewModel = CensusViewModel(kind: 'ANIMAL');
+    await flushAsync();
+
+    expect(viewModel.trainingMode, isFalse);
+    expect(viewModel.noActiveRound, isTrue);
+    expect(viewModel.activeOccurrence, isNull);
+    expect(viewModel.hasTrainingOccurrence, isTrue);
+
+    await viewModel.setTrainingMode(true);
+
+    expect(viewModel.trainingMode, isTrue);
+    expect(viewModel.noActiveRound, isFalse);
+    expect(viewModel.activeOccurrence?.id, 17);
+  });
+
+  test('production and training drafts are isolated by occurrence', () async {
+    censusService.activeDefinition = animalDefinition();
+    censusService.openOccurrences = [
+      const CensusRoundOccurrence(
+        id: 7,
+        occurrenceKey: 'ANIMAL_H1_2026',
+        kind: 'ANIMAL',
+        mode: 'PRODUCTION',
+        status: 'OPEN',
+      ),
+      const CensusRoundOccurrence(
+        id: 17,
+        occurrenceKey: 'ANIMAL_TRAINING_2026',
+        kind: 'ANIMAL',
+        mode: 'TRAINING',
+        status: 'OPEN',
+      ),
+    ];
+
+    final viewModel = CensusViewModel(kind: 'ANIMAL');
+    await flushAsync();
+    fillAnimalSummary(viewModel);
+    viewModel.setMeasureValue('species:1', 'animal_quantity', '10');
+    viewModel.setMeasureValue('species:1', 'household_quantity', '5');
+    await flushAsync();
+
+    await viewModel.setTrainingMode(true);
+    expect(viewModel.activeOccurrence?.id, 17);
+    expect(viewModel.measureValue('species:1', 'animal_quantity'), '');
+    fillAnimalSummary(viewModel);
+    viewModel.setMeasureValue('species:1', 'animal_quantity', '99');
+    viewModel.setMeasureValue('species:1', 'household_quantity', '9');
+    await flushAsync();
+
+    await viewModel.setTrainingMode(false);
+
+    expect(viewModel.activeOccurrence?.id, 7);
+    expect(viewModel.measureValue('species:1', 'animal_quantity'), '10');
+    expect(
+      censusService
+          .draftFor(
+            villageId: 1,
+            kind: 'ANIMAL',
+            definitionVersionId: 7,
+            occurrenceId: 7,
+          )
+          ?.measureValues['species:1']?['animal_quantity'],
+      '10',
+    );
+    expect(
+      censusService
+          .draftFor(
+            villageId: 1,
+            kind: 'ANIMAL',
+            definitionVersionId: 7,
+            occurrenceId: 17,
+          )
+          ?.measureValues['species:1']?['animal_quantity'],
+      '99',
+    );
   });
 
   test('discard draft restores latest submitted values', () async {
@@ -662,6 +931,17 @@ Future<void> flushAsync() async {
   }
 }
 
+void fillAnimalSummary(CensusViewModel viewModel) {
+  viewModel.setSummaryValue(
+    CensusViewModel.villageHouseholdQuantityKey,
+    '30',
+  );
+  viewModel.setSummaryValue(
+    CensusViewModel.animalHouseholdQuantityKey,
+    '20',
+  );
+}
+
 class AuthServiceMock extends ChangeNotifier implements IAuthService {
   final _village = const Village(id: 1, code: 'V001', name: 'FAO Mock Village');
   late final _profile = UserProfile(
@@ -748,8 +1028,26 @@ class CensusServiceMock implements ICensusService {
   CensusDefinitionVersion? activeDefinition;
   VillageCensusSnapshot? latestV2;
   List<CensusKindSummary> activeKinds = const [];
+  List<CensusRoundOccurrence> openOccurrences = [
+    const CensusRoundOccurrence(
+      id: 7,
+      occurrenceKey: 'ANIMAL_H1_2026',
+      kind: 'ANIMAL',
+      mode: 'PRODUCTION',
+      status: 'OPEN',
+    ),
+    const CensusRoundOccurrence(
+      id: 8,
+      occurrenceKey: 'HUMAN_H1_2026',
+      kind: 'HUMAN',
+      mode: 'PRODUCTION',
+      status: 'OPEN',
+    ),
+  ];
   bool throwActiveDefinitionError = false;
   final drafts = <String, VillageCensusDraft>{};
+  Map<String, dynamic>? lastSubmittedFormData;
+  int? lastSubmittedOccurrenceId;
   VillageCensusSubmitResult submitResult = VillageCensusSubmitSuccess(
     VillageCensusSnapshot(id: 99),
   );
@@ -759,6 +1057,7 @@ class CensusServiceMock implements ICensusService {
       villageId: draft.villageId,
       kind: draft.kind,
       definitionVersionId: draft.definitionVersionId,
+      occurrenceId: draft.occurrenceId,
     )] = draft;
   }
 
@@ -766,7 +1065,27 @@ class CensusServiceMock implements ICensusService {
     required int villageId,
     required String kind,
     int? definitionVersionId,
+    int? occurrenceId,
   }) {
+    final exact = drafts[_draftKey(
+      villageId: villageId,
+      kind: kind,
+      definitionVersionId: definitionVersionId,
+      occurrenceId: occurrenceId,
+    )];
+    if (exact != null) {
+      return exact;
+    }
+    if (occurrenceId == null) {
+      final prefix =
+          '$villageId:${kind.toUpperCase()}:${definitionVersionId ?? 'legacy'}:';
+      for (final entry in drafts.entries) {
+        if (entry.key.startsWith(prefix)) {
+          return entry.value;
+        }
+      }
+      return null;
+    }
     return drafts[_draftKey(
       villageId: villageId,
       kind: kind,
@@ -804,15 +1123,28 @@ class CensusServiceMock implements ICensusService {
       latestV2;
 
   @override
+  Future<List<CensusRoundOccurrence>> getOpenVillageCensusRoundOccurrences({
+    required int villageId,
+    required String kind,
+    String mode = 'PRODUCTION',
+  }) async =>
+      openOccurrences
+          .where((occurrence) =>
+              occurrence.kind == kind && occurrence.mode == mode)
+          .toList();
+
+  @override
   Future<VillageCensusDraft?> getDraft({
     required int villageId,
     required String kind,
     int? definitionVersionId,
+    int? occurrenceId,
   }) async =>
       draftFor(
         villageId: villageId,
         kind: kind,
         definitionVersionId: definitionVersionId,
+        occurrenceId: occurrenceId,
       );
 
   @override
@@ -825,28 +1157,42 @@ class CensusServiceMock implements ICensusService {
     required int villageId,
     required String kind,
     int? definitionVersionId,
+    int? occurrenceId,
   }) async {
     drafts.remove(_draftKey(
       villageId: villageId,
       kind: kind,
       definitionVersionId: definitionVersionId,
+      occurrenceId: occurrenceId,
     ));
+    if (occurrenceId != null) {
+      drafts.remove(_draftKey(
+        villageId: villageId,
+        kind: kind,
+        definitionVersionId: definitionVersionId,
+      ));
+    }
   }
 
   @override
   Future<VillageCensusSubmitResult> submitVillageCensusSnapshotV2({
     required int villageId,
     required int definitionVersionId,
+    int? occurrenceId,
     required DateTime censusDate,
     required Map<String, dynamic> formData,
-  }) async =>
-      submitResult;
+  }) async {
+    lastSubmittedFormData = formData;
+    lastSubmittedOccurrenceId = occurrenceId;
+    return submitResult;
+  }
 
   String _draftKey({
     required int villageId,
     required String kind,
     int? definitionVersionId,
+    int? occurrenceId,
   }) {
-    return '$villageId:${kind.toUpperCase()}:${definitionVersionId ?? 'legacy'}';
+    return '$villageId:${kind.toUpperCase()}:${definitionVersionId ?? 'legacy'}:${occurrenceId ?? 'unscoped'}';
   }
 }

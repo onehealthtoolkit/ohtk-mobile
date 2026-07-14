@@ -1818,6 +1818,30 @@ abstract class AppLocalizations {
   /// **'EDITED'**
   String get censusEditedBadge;
 
+  /// No description provided for @censusHouseholdSummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Village household summary'**
+  String get censusHouseholdSummaryTitle;
+
+  /// No description provided for @censusVillageHouseholdQuantityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Village households'**
+  String get censusVillageHouseholdQuantityLabel;
+
+  /// No description provided for @censusAnimalHouseholdQuantityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Households with animals'**
+  String get censusAnimalHouseholdQuantityLabel;
+
+  /// No description provided for @censusAnimalHouseholdsExceedVillageError.
+  ///
+  /// In en, this message translates to:
+  /// **'Households with animals cannot exceed village households.'**
+  String get censusAnimalHouseholdsExceedVillageError;
+
   /// No description provided for @censusSaveCurrentButton.
   ///
   /// In en, this message translates to:

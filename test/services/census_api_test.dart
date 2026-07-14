@@ -291,6 +291,8 @@ void main() {
             'id': '13',
             'censusDate': '2026-05-19',
             'submittedAt': '2026-05-19T10:00:00Z',
+            'villageHouseholdQuantity': null,
+            'animalHouseholdQuantity': null,
             'definitionVersion': {
               '__typename': 'CensusDefinitionVersionType',
               'id': '6',
@@ -387,6 +389,7 @@ void main() {
       final result = await api.submitVillageCensusSnapshotV2(
         villageId: 11,
         definitionVersionId: 7,
+        occurrenceId: 22,
         censusDate: '2026-05-05',
         formData: formData,
       );
@@ -398,6 +401,7 @@ void main() {
       expect(success.snapshot.formData, formData);
       expect(link.requests.single.variables['villageId'], 11);
       expect(link.requests.single.variables['definitionVersionId'], 7);
+      expect(link.requests.single.variables['occurrenceId'], 22);
       expect(link.requests.single.variables['formData'], formData);
     });
 

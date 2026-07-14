@@ -46,12 +46,11 @@ InputDecoration ohtkInputDecoration({
     suffixText: suffixText,
     suffixStyle: _ohtkInputSuffixStyle,
     suffixIcon: suffixIcon,
-    suffixIconConstraints:
-        const BoxConstraints(minWidth: 32, minHeight: 32),
+    suffixIconConstraints: const BoxConstraints(minWidth: 32, minHeight: 32),
     border: border(idleColor, 1.5),
     enabledBorder: border(idleColor, 1.5),
     focusedBorder: border(
-      isInvalid ? incidentsErrorRed : incidentsTeal,
+      isInvalid ? incidentsErrorRed : _ohtkFormBrand,
       1.8,
     ),
     errorBorder: border(incidentsErrorRed, 1.5),

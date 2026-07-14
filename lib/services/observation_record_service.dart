@@ -1,6 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/entities/pending_media_parent_type.dart';
 import 'package:podd_app/models/entities/observation_report_monitoring_record.dart';
 import 'package:podd_app/models/entities/observation_report_subject.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
@@ -178,14 +179,23 @@ class ObservationRecordService extends IObservationRecordService {
       var result = await _observationApi.submitSubjectRecord(record);
 
       if (result is SubjectRecordSubmitSuccess) {
-        await _deleteSubjectRecordFromLocalDB(record);
         result.subject.images = List.of([]);
+
+        await _imageService.markForRemoteParent(
+          localParentId: record.id,
+          parentType: PendingMediaParentType.observationSubject,
+          remoteParentId: result.subject.id,
+        );
+        await _fileService.markForRemoteParent(
+          localParentId: record.id,
+          parentType: PendingMediaParentType.observationSubject,
+          remoteParentId: result.subject.id,
+        );
 
         // submit images
         var localImages = await _imageService.findByReportId(record.id);
         for (var img in localImages) {
-          var submitImageResult = await _imageService
-              .submitObservationRecordImage(img, result.subject.id, "subject");
+          var submitImageResult = await _imageService.submit(img);
           if (submitImageResult is ImageSubmitSuccess) {
             result.subject.images!
                 .add(submitImageResult.image as ObservationRecordImage);
@@ -200,8 +210,7 @@ class ObservationRecordService extends IObservationRecordService {
         var localFiles =
             await _fileService.findAllReportFilesByReportId(record.id);
         for (var file in localFiles) {
-          var submitFileResult = await _fileService.submitObservationRecordFile(
-              file, result.subject.id);
+          var submitFileResult = await _fileService.submit(file);
           if (submitFileResult is FileSubmitSuccess) {
             result.subject.files!
                 .add(submitFileResult.file as ObservationRecordFile);
@@ -211,18 +220,19 @@ class ObservationRecordService extends IObservationRecordService {
             _logger.e("Submit file error: ${submitFileResult.messages}");
           }
         }
+        await _deleteSubjectRecordFromLocalDB(record);
         _subjectRecords.insert(0, result.subject);
       }
 
       if (result is SubjectRecordSubmitFailure) {
         _logger.e("Submit subject record error: ${result.messages}");
-        _saveSubjectRecordToLocalDB(record);
+        await _saveSubjectRecordToLocalDB(record);
         return SubjectRecordSubmitPending();
       }
       return result;
     } on LinkException catch (e) {
       _logger.e(e);
-      _saveSubjectRecordToLocalDB(record);
+      await _saveSubjectRecordToLocalDB(record);
       return SubjectRecordSubmitPending();
     }
   }
@@ -234,15 +244,23 @@ class ObservationRecordService extends IObservationRecordService {
       var result = await _observationApi.submitMonitoringRecord(record);
 
       if (result is MonitoringRecordSubmitSuccess) {
-        await _deleteMonitoringRecordFromLocalDB(record);
         result.monitoringRecord.images = List.of([]);
+
+        await _imageService.markForRemoteParent(
+          localParentId: record.id,
+          parentType: PendingMediaParentType.observationMonitoring,
+          remoteParentId: result.monitoringRecord.id,
+        );
+        await _fileService.markForRemoteParent(
+          localParentId: record.id,
+          parentType: PendingMediaParentType.observationMonitoring,
+          remoteParentId: result.monitoringRecord.id,
+        );
 
         // submit images
         var localImages = await _imageService.findByReportId(record.id);
         for (var img in localImages) {
-          var submitImageResult =
-              await _imageService.submitObservationRecordImage(
-                  img, result.monitoringRecord.id, "monitoring");
+          var submitImageResult = await _imageService.submit(img);
           if (submitImageResult is ImageSubmitSuccess) {
             result.monitoringRecord.images!
                 .add(submitImageResult.image as ObservationRecordImage);
@@ -257,8 +275,7 @@ class ObservationRecordService extends IObservationRecordService {
         var localFiles =
             await _fileService.findAllReportFilesByReportId(record.id);
         for (var file in localFiles) {
-          var submitFileResult = await _fileService.submitObservationRecordFile(
-              file, result.monitoringRecord.id);
+          var submitFileResult = await _fileService.submit(file);
           if (submitFileResult is FileSubmitSuccess) {
             result.monitoringRecord.files!
                 .add(submitFileResult.file as ObservationRecordFile);
@@ -268,18 +285,19 @@ class ObservationRecordService extends IObservationRecordService {
             _logger.e("Submit file error: ${submitFileResult.messages}");
           }
         }
+        await _deleteMonitoringRecordFromLocalDB(record);
         _monitoringRecords.insert(0, result.monitoringRecord);
       }
 
       if (result is MonitoringRecordSubmitFailure) {
         _logger.e("Submit monitoring record error: ${result.messages}");
-        _saveMonitoringRecordToLocalDB(record);
+        await _saveMonitoringRecordToLocalDB(record);
         return MonitoringRecordSubmitPending();
       }
       return result;
     } on LinkException catch (e) {
       _logger.e(e);
-      _saveMonitoringRecordToLocalDB(record);
+      await _saveMonitoringRecordToLocalDB(record);
       return MonitoringRecordSubmitPending();
     }
   }
@@ -298,7 +316,7 @@ class ObservationRecordService extends IObservationRecordService {
 
   _deleteSubjectRecordFromLocalDB(SubjectRecord record) async {
     var db = _dbService.db;
-    db.delete(
+    await db.delete(
       "subject_record",
       where: "id = ?",
       whereArgs: [record.id],
@@ -323,7 +341,7 @@ class ObservationRecordService extends IObservationRecordService {
     var db = _dbService.db;
     var isInDB = await _isSubjectRecordInLocalDB(record.id);
     if (isInDB) {
-      db.update(
+      await db.update(
         "subject_record",
         record.toMap(),
         where: "id = ?",
@@ -332,7 +350,7 @@ class ObservationRecordService extends IObservationRecordService {
         ],
       );
     } else {
-      db.insert("subject_record", record.toMap());
+      await db.insert("subject_record", record.toMap());
       _pendingSubjectRecords.add(record);
     }
   }
@@ -342,12 +360,13 @@ class ObservationRecordService extends IObservationRecordService {
     var db = _dbService.db;
     await db.delete("subject_record", where: "id = ?", whereArgs: [id]);
     await _imageService.remove(id);
+    await _fileService.remove(id);
     _pendingSubjectRecords.removeWhere((r) => r.id == id);
   }
 
   _deleteMonitoringRecordFromLocalDB(MonitoringRecord record) async {
     var db = _dbService.db;
-    db.delete(
+    await db.delete(
       "monitoring_record",
       where: "id = ?",
       whereArgs: [record.id],
@@ -372,7 +391,7 @@ class ObservationRecordService extends IObservationRecordService {
     var db = _dbService.db;
     var isInDB = await _isMonitoringRecordInLocalDB(record.id);
     if (isInDB) {
-      db.update(
+      await db.update(
         "monitoring_record",
         record.toMap(),
         where: "id = ?",
@@ -381,7 +400,7 @@ class ObservationRecordService extends IObservationRecordService {
         ],
       );
     } else {
-      db.insert("monitoring_record", record.toMap());
+      await db.insert("monitoring_record", record.toMap());
       _pendingMonitoringRecords.add(record);
     }
   }
@@ -391,6 +410,7 @@ class ObservationRecordService extends IObservationRecordService {
     var db = _dbService.db;
     await db.delete("monitoring_record", where: "id = ?", whereArgs: [id]);
     await _imageService.remove(id);
+    await _fileService.remove(id);
     _pendingMonitoringRecords.removeWhere((r) => r.id == id);
   }
 
@@ -403,5 +423,6 @@ class ObservationRecordService extends IObservationRecordService {
     _pendingSubjectRecords.clear();
     _pendingMonitoringRecords.clear();
     await _imageService.removeAll();
+    await _fileService.removeAll();
   }
 }

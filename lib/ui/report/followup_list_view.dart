@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/router.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -12,6 +13,8 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 import 'followup_list_view_model.dart';
 
 final _followupTimestamp = DateFormat('dd/MM/yyyy HH:mm');
+Color get _brandPrimary => OhtkTheme.palette.teal700;
+Color get _brandTint => OhtkTheme.palette.teal700.withValues(alpha: 0.08);
 
 class FollowupListView extends StatelessWidget {
   final String incidentId;
@@ -161,12 +164,12 @@ class _FollowupRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 22),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 22),
                 child: Icon(
                   Icons.chevron_right,
                   size: 18,
-                  color: incidentsTeal,
+                  color: _brandPrimary,
                 ),
               ),
             ],
@@ -237,18 +240,18 @@ class _HFallbackPainter extends CustomPainter {
     final light = Paint()..color = incidentsFallbackStemLight;
 
     canvas.drawRect(
-      Rect.fromLTWH(origin.dx + 8 * scale, origin.dy + 6 * scale,
-          12 * scale, 48 * scale),
+      Rect.fromLTWH(
+          origin.dx + 8 * scale, origin.dy + 6 * scale, 12 * scale, 48 * scale),
       dark,
     );
     canvas.drawRect(
-      Rect.fromLTWH(origin.dx + 26 * scale, origin.dy + 12 * scale,
-          12 * scale, 42 * scale),
+      Rect.fromLTWH(origin.dx + 26 * scale, origin.dy + 12 * scale, 12 * scale,
+          42 * scale),
       light,
     );
     canvas.drawRect(
-      Rect.fromLTWH(origin.dx + 20 * scale, origin.dy + 26 * scale,
-          6 * scale, 10 * scale),
+      Rect.fromLTWH(origin.dx + 20 * scale, origin.dy + 26 * scale, 6 * scale,
+          10 * scale),
       dark,
     );
   }
@@ -269,13 +272,13 @@ class _FollowupEmptyState extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              color: incidentsTeal.withValues(alpha: 0.08),
+              color: _brandTint,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.update,
               size: 32,
-              color: incidentsTeal,
+              color: _brandPrimary,
             ),
           ),
         ),

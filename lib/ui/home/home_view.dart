@@ -63,7 +63,7 @@ class HomeView extends HookWidget {
                 ),
               );
             }),
-            background: incidentsTealDeep,
+            background: OhtkTheme.palette.teal900,
             slideDismissDirection: DismissDirection.horizontal,
             duration: const Duration(seconds: 4),
           );
@@ -140,7 +140,7 @@ class _IncidentsAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     return Container(
-      color: incidentsTealDeep,
+      color: OhtkTheme.palette.teal900,
       padding: EdgeInsets.fromLTRB(
         OhtkLayout.pagePad,
         mediaQuery.padding.top,
@@ -216,7 +216,8 @@ class _NotificationBell extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: incidentsBadgeDot,
                       shape: BoxShape.circle,
-                      border: Border.all(color: incidentsTealDeep, width: 1.5),
+                      border: Border.all(
+                          color: OhtkTheme.palette.teal900, width: 1.5),
                     ),
                   ),
                 ),
@@ -317,7 +318,7 @@ class _NavTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? OhtkColor.teal700 : OhtkColor.ink400;
+    final color = selected ? OhtkTheme.palette.teal700 : OhtkColor.ink400;
     return InkResponse(
       onTap: onTap,
       child: Padding(

@@ -181,7 +181,8 @@ class _Thumbnail extends StatelessWidget {
         child: CachedNetworkImage(
           imageUrl: imagePath!,
           fit: BoxFit.cover,
-          placeholder: (context, url) => Container(color: OhtkColor.teal100),
+          placeholder: (context, url) =>
+              Container(color: OhtkTheme.palette.teal100),
           errorWidget: (context, url, error) => const _FallbackTile(),
         ),
       ),
@@ -211,7 +212,7 @@ class _FallbackTile extends StatelessWidget {
 class _FallbackPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final bgPaint = Paint()..color = OhtkColor.teal100;
+    final bgPaint = Paint()..color = OhtkTheme.palette.teal100;
     canvas.drawRect(Offset.zero & size, bgPaint);
 
     final glyphSide = size.width * 0.55;

@@ -6,12 +6,18 @@ import 'package:podd_app/components/submit_success_overlay.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/router.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/report_type/report_type_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 final _zeroReportTimestamp = DateFormat('dd/MM · HH:mm');
+
+Color get _brandPrimary => OhtkTheme.palette.teal700;
+Color get _brandDeep => OhtkTheme.palette.teal900;
+Color _brandTint(double alpha) =>
+    OhtkTheme.palette.teal700.withValues(alpha: alpha);
 
 class ReportTypeView extends StatelessWidget {
   const ReportTypeView({Key? key}) : super(key: key);
@@ -44,7 +50,7 @@ class _ChooserAppBar extends StatelessWidget {
     final localize = AppLocalizations.of(context)!;
     final topInset = MediaQuery.of(context).padding.top;
     return Container(
-      color: incidentsTealDeep,
+      color: _brandDeep,
       padding: EdgeInsets.fromLTRB(12, topInset + 10, 12, 10),
       child: Row(
         children: [
@@ -250,7 +256,7 @@ class _ChooserBody extends StatelessWidget {
         .toList(growable: false);
 
     return RefreshIndicator(
-      color: incidentsTeal,
+      color: _brandPrimary,
       onRefresh: () async {
         await viewModel.syncReportTypes();
       },
@@ -325,7 +331,7 @@ class _SectionEyebrow extends StatelessWidget {
             width: 3,
             height: 14,
             decoration: BoxDecoration(
-              color: incidentsTeal,
+              color: _brandPrimary,
               borderRadius: BorderRadius.circular(1.5),
             ),
           ),
@@ -417,7 +423,7 @@ class _CategoryIconTile extends StatelessWidget {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: incidentsTeal.withValues(alpha: 0.10),
+        color: _brandTint(0.10),
         borderRadius: BorderRadius.circular(11),
       ),
       padding: const EdgeInsets.all(8),
@@ -425,19 +431,19 @@ class _CategoryIconTile extends StatelessWidget {
           ? CachedNetworkImage(
               imageUrl: iconUrl,
               fit: BoxFit.contain,
-              color: incidentsTeal,
+              color: _brandPrimary,
               colorBlendMode: BlendMode.srcIn,
               placeholder: (context, url) => const SizedBox.shrink(),
-              errorWidget: (context, url, error) => const Icon(
+              errorWidget: (context, url, error) => Icon(
                 Icons.assignment_outlined,
                 size: 22,
-                color: incidentsTeal,
+                color: _brandPrimary,
               ),
             )
-          : const Icon(
+          : Icon(
               Icons.assignment_outlined,
               size: 22,
-              color: incidentsTeal,
+              color: _brandPrimary,
             ),
     );
   }
@@ -459,13 +465,13 @@ class _EmptyState extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              color: incidentsTeal.withValues(alpha: 0.08),
+              color: _brandTint(0.08),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.qr_code_2,
               size: 32,
-              color: incidentsTeal,
+              color: _brandPrimary,
             ),
           ),
         ),
@@ -497,21 +503,20 @@ class _EmptyState extends StatelessWidget {
         Center(
           child: OutlinedButton.icon(
             onPressed: onRetry,
-            icon: const Icon(Icons.refresh, size: 16, color: incidentsTeal),
+            icon: Icon(Icons.refresh, size: 16, color: _brandPrimary),
             label: Text(
               localize.tryAgainButton,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: incidentsFontFamily,
                 fontFamilyFallback: incidentsFontFamilyFallback,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-                color: incidentsTeal,
+                color: _brandPrimary,
               ),
             ),
             style: OutlinedButton.styleFrom(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-              side: const BorderSide(color: incidentsTeal, width: 1.5),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+              side: BorderSide(color: _brandPrimary, width: 1.5),
               shape: const StadiumBorder(),
             ),
           ),
@@ -541,24 +546,29 @@ class _ZeroReportFooter extends StackedHookView<ReportTypeViewModel> {
         ],
       ),
       padding: EdgeInsets.fromLTRB(14, 10, 14, 10 + media.padding.bottom),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: incidentsTeal.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(
-              Icons.check_circle_outline,
-              size: 18,
-              color: incidentsTeal,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final shouldStackAction = constraints.maxWidth < 360 ||
+              localize.zeroReportPillLabel.length > 14;
+
+          Widget statusIcon() {
+            return Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: _brandTint(0.12),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                Icons.check_circle_outline,
+                size: 18,
+                color: _brandPrimary,
+              ),
+            );
+          }
+
+          Widget statusCopy() {
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -577,11 +587,39 @@ class _ZeroReportFooter extends StackedHookView<ReportTypeViewModel> {
                 const SizedBox(height: 1),
                 _LastZeroReport(viewModel: viewModel),
               ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          _ZeroReportButton(viewModel: viewModel),
-        ],
+            );
+          }
+
+          final statusRow = Row(
+            children: [
+              statusIcon(),
+              const SizedBox(width: 12),
+              Expanded(child: statusCopy()),
+            ],
+          );
+
+          if (shouldStackAction) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                statusRow,
+                const SizedBox(height: 10),
+                _ZeroReportButton(viewModel: viewModel, expand: true),
+              ],
+            );
+          }
+
+          return Row(
+            children: [
+              statusIcon(),
+              const SizedBox(width: 12),
+              Expanded(child: statusCopy()),
+              const SizedBox(width: 12),
+              _ZeroReportButton(viewModel: viewModel),
+            ],
+          );
+        },
       ),
     );
   }
@@ -622,13 +660,14 @@ class _LastZeroReport extends StatelessWidget {
 
 class _ZeroReportButton extends StatelessWidget {
   final ReportTypeViewModel viewModel;
+  final bool expand;
 
-  const _ZeroReportButton({required this.viewModel});
+  const _ZeroReportButton({required this.viewModel, this.expand = false});
 
   @override
   Widget build(BuildContext context) {
     final localize = AppLocalizations.of(context)!;
-    return TextButton(
+    final button = TextButton(
       onPressed: () async {
         final success = await viewModel.submitZeroReport();
         if (context.mounted) {
@@ -636,7 +675,7 @@ class _ZeroReportButton extends StatelessWidget {
         }
       },
       style: TextButton.styleFrom(
-        backgroundColor: incidentsTeal,
+        backgroundColor: _brandPrimary,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         shape: const StadiumBorder(),
@@ -645,6 +684,9 @@ class _ZeroReportButton extends StatelessWidget {
       ),
       child: Text(
         localize.zeroReportPillLabel,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
         style: const TextStyle(
           fontFamily: incidentsFontFamily,
           fontFamilyFallback: incidentsFontFamilyFallback,
@@ -653,6 +695,10 @@ class _ZeroReportButton extends StatelessWidget {
         ),
       ),
     );
+    if (expand) {
+      return SizedBox(width: double.infinity, child: button);
+    }
+    return button;
   }
 
   void _showZeroReportResult(BuildContext context, bool success) {
@@ -686,11 +732,10 @@ class _ZeroReportButton extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.pop(context),
             style: TextButton.styleFrom(
-              backgroundColor: incidentsTeal,
+              backgroundColor: _brandPrimary,
               foregroundColor: Colors.white,
               shape: const StadiumBorder(),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
             ),
             child: Text(
               localize.ok,

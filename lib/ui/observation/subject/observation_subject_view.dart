@@ -368,7 +368,7 @@ class _MapCard extends StackedHookView<ObservationSubjectViewModel> {
                   markers: markers,
                 )
               : Container(
-                  color: OhtkColor.teal50,
+                  color: OhtkTheme.palette.teal50,
                   alignment: Alignment.center,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

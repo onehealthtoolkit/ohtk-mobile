@@ -62,9 +62,9 @@
   "noComment": "ບໍ່ມີຄວາມຄິດເຫັນ",
   "noGpsProvided": "ບໍ່ໄດ້ລະບຸສະຖານທີ່ gps",
   "zeroReportLabel": "ບົດ​ລາຍ​ງານ​ບໍ່​ໄດ້​ພົບ​ເຫັນ​ຄວາມ​ຜິດ​ປົກກະຕິ",
-  "zeroReportPillLabel": "Zero report",
+  "zeroReportPillLabel": "ບໍ່ພົບເຫດຜິດປົກກະຕິ",
   "nothingToReportTitle": "ບໍ່ມີຫຍັງລາຍງານໃນອາທິດນີ້",
-  "lastZeroReportLabel": "Zero report ຄັ້ງສຸດທ້າຍ {datetime}",
+  "lastZeroReportLabel": "ລາຍງານຫຼ້າສຸດກ່ຽວກັບ {datetime}",
   "@lastZeroReportLabel": {
     "placeholders": {
       "datetime": {
@@ -306,6 +306,10 @@
   "censusNoVillage": "ບໍ່ມີບ້ານ",
   "censusNoSubmittedYet": "ຍັງບໍ່ໄດ້ສົ່ງສຳມະໂນ",
   "censusEditedBadge": "ແກ້ໄຂແລ້ວ",
+  "censusHouseholdSummaryTitle": "ສະຫຼຸບຄົວເຮືອຂອງບ້ານ",
+  "censusVillageHouseholdQuantityLabel": "ຈຳນວນຄົວເຮືອໃນບ້ານ",
+  "censusAnimalHouseholdQuantityLabel": "ຈຳນວນຄົວເຮືອທີ່ມີສັດ",
+  "censusAnimalHouseholdsExceedVillageError": "ຈຳນວນຄົວເຮືອທີ່ມີສັດຕ້ອງບໍ່ເກີນຈຳນວນຄົວເຮືອໃນບ້ານ.",
   "censusSaveCurrentButton": "ບັນທຶກສຳມະໂນປັດຈຸບັນ",
   "censusSubmittedMessage": "ສົ່ງສຳມະໂນແລ້ວ.",
   "censusDraftSavedNotice": "ບັນທຶກຮ່າງໄວ້ໃນອຸປະກອນນີ້ແລ້ວ.",

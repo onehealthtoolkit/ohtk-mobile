@@ -201,14 +201,14 @@ class AppLocalizationsLo extends AppLocalizations {
   String get zeroReportLabel => 'ບົດ​ລາຍ​ງານ​ບໍ່​ໄດ້​ພົບ​ເຫັນ​ຄວາມ​ຜິດ​ປົກກະຕິ';
 
   @override
-  String get zeroReportPillLabel => 'Zero report';
+  String get zeroReportPillLabel => 'ບໍ່ພົບເຫດຜິດປົກກະຕິ';
 
   @override
   String get nothingToReportTitle => 'ບໍ່ມີຫຍັງລາຍງານໃນອາທິດນີ້';
 
   @override
   String lastZeroReportLabel(String datetime) {
-    return 'Zero report ຄັ້ງສຸດທ້າຍ $datetime';
+    return 'ລາຍງານຫຼ້າສຸດກ່ຽວກັບ $datetime';
   }
 
   @override
@@ -942,6 +942,19 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get censusEditedBadge => 'ແກ້ໄຂແລ້ວ';
+
+  @override
+  String get censusHouseholdSummaryTitle => 'ສະຫຼຸບຄົວເຮືອຂອງບ້ານ';
+
+  @override
+  String get censusVillageHouseholdQuantityLabel => 'ຈຳນວນຄົວເຮືອໃນບ້ານ';
+
+  @override
+  String get censusAnimalHouseholdQuantityLabel => 'ຈຳນວນຄົວເຮືອທີ່ມີສັດ';
+
+  @override
+  String get censusAnimalHouseholdsExceedVillageError =>
+      'ຈຳນວນຄົວເຮືອທີ່ມີສັດຕ້ອງບໍ່ເກີນຈຳນວນຄົວເຮືອໃນບ້ານ.';
 
   @override
   String get censusSaveCurrentButton => 'ບັນທຶກສຳມະໂນປັດຈຸບັນ';

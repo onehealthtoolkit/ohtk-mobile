@@ -961,6 +961,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get censusEditedBadge => 'EDITED';
 
   @override
+  String get censusHouseholdSummaryTitle => 'Village household summary';
+
+  @override
+  String get censusVillageHouseholdQuantityLabel => 'Village households';
+
+  @override
+  String get censusAnimalHouseholdQuantityLabel => 'Households with animals';
+
+  @override
+  String get censusAnimalHouseholdsExceedVillageError =>
+      'Households with animals cannot exceed village households.';
+
+  @override
   String get censusSaveCurrentButton => 'Save current census';
 
   @override

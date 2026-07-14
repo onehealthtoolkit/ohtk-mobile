@@ -29,6 +29,7 @@ import 'package:podd_app/services/file_service.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_image.dart';
 import 'package:podd_app/services/image_service.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 
 import '../opsv_form.dart' as opsv;
@@ -51,3 +52,7 @@ part 'multiple_choices_field.dart';
 part 'subform_field.dart';
 part 'dashed_line_painter.dart';
 part 'qr_scanner.dart';
+
+Color get _ohtkFormBrand => OhtkTheme.palette.teal700;
+Color _ohtkFormBrandTint(double alpha) =>
+    OhtkTheme.palette.teal700.withValues(alpha: alpha);

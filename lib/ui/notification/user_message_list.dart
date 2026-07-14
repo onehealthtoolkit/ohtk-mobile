@@ -3,11 +3,16 @@ import 'package:intl/intl.dart';
 import 'package:podd_app/components/motion.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/entities/user_message.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/notification/user_message_view.dart';
 import 'package:podd_app/ui/notification/user_message_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+
+Color get _brandPrimary => OhtkTheme.palette.teal700;
+Color get _brandDeep => OhtkTheme.palette.teal900;
+Color get _brandTint => OhtkTheme.palette.teal700.withValues(alpha: 0.10);
 
 class UserMessageList extends StatelessWidget {
   const UserMessageList({Key? key}) : super(key: key);
@@ -51,8 +56,8 @@ class _UserMessageList extends StackedHookView<UserMessageListViewModel> {
     if (viewModel.userMessages.isEmpty) {
       return _StateMessage(
         icon: Icons.mark_email_read_outlined,
-        iconColor: incidentsTeal,
-        iconBackground: const Color(0x140F8A82),
+        iconColor: _brandPrimary,
+        iconBackground: _brandPrimary.withValues(alpha: 0.08),
         title: "You're all caught up",
         helper:
             'New messages from the authority will appear here when your reports are reviewed.',
@@ -86,7 +91,7 @@ class _UserMessageList extends StackedHookView<UserMessageListViewModel> {
     }
 
     return RefreshIndicator(
-      color: incidentsTeal,
+      color: _brandPrimary,
       onRefresh: viewModel.fetch,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -137,7 +142,9 @@ List<_MessageGroup> _groupMessages(List<UserMessage> messages) {
 
   final groups = <_MessageGroup>[];
   if (recent.isNotEmpty) groups.add(_MessageGroup(_GroupKind.recent, recent));
-  if (earlier.isNotEmpty) groups.add(_MessageGroup(_GroupKind.earlier, earlier));
+  if (earlier.isNotEmpty) {
+    groups.add(_MessageGroup(_GroupKind.earlier, earlier));
+  }
   return groups;
 }
 
@@ -198,86 +205,89 @@ class _NotificationRow extends StatelessWidget {
                   bottom: 10,
                   child: Container(
                     width: 3,
-                    decoration: const BoxDecoration(
-                      color: incidentsTeal,
-                      borderRadius: BorderRadius.horizontal(
+                    decoration: BoxDecoration(
+                      color: _brandPrimary,
+                      borderRadius: const BorderRadius.horizontal(
                         right: Radius.circular(2),
                       ),
                     ),
                   ),
                 ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _MessageGlyph(unread: unread),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                userMessage.message.title,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _MessageGlyph(unread: unread),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  userMessage.message.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: incidentsInk,
+                                    fontFamily: incidentsFontFamily,
+                                    fontFamilyFallback:
+                                        incidentsFontFamilyFallback,
+                                    fontSize: 14,
+                                    fontWeight: unread
+                                        ? FontWeight.w700
+                                        : FontWeight.w600,
+                                    height: 1.35,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                _formatListTime(userMessage.createdAt),
                                 style: TextStyle(
-                                  color: incidentsInk,
+                                  color:
+                                      unread ? _brandPrimary : incidentsMuted,
                                   fontFamily: incidentsFontFamily,
                                   fontFamilyFallback:
                                       incidentsFontFamilyFallback,
-                                  fontSize: 14,
-                                  fontWeight: unread
-                                      ? FontWeight.w700
-                                      : FontWeight.w600,
-                                  height: 1.35,
+                                  fontFeatures: const [
+                                    FontFeature.tabularFigures(),
+                                  ],
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              _formatListTime(userMessage.createdAt),
-                              style: TextStyle(
-                                color: unread ? incidentsTeal : incidentsMuted,
-                                fontFamily: incidentsFontFamily,
-                                fontFamilyFallback: incidentsFontFamilyFallback,
-                                fontFeatures: const [
-                                  FontFeature.tabularFigures(),
-                                ],
-                                fontSize: 11.5,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          userMessage.message.body,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: incidentsBody,
-                            fontFamily: incidentsFontFamily,
-                            fontFamilyFallback: incidentsFontFamilyFallback,
-                            fontSize: 12.5,
-                            fontWeight:
-                                unread ? FontWeight.w500 : FontWeight.w400,
-                            height: 1.45,
+                            ],
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 3),
+                          Text(
+                            userMessage.message.body,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: incidentsBody,
+                              fontFamily: incidentsFontFamily,
+                              fontFamilyFallback: incidentsFontFamilyFallback,
+                              fontSize: 12.5,
+                              fontWeight:
+                                  unread ? FontWeight.w500 : FontWeight.w400,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         ),
       ),
     );
@@ -295,12 +305,12 @@ class _MessageGlyph extends StatelessWidget {
       width: 36,
       height: 36,
       decoration: BoxDecoration(
-        color: unread ? const Color(0x1A0F8A82) : const Color(0x146B7370),
+        color: unread ? _brandTint : const Color(0x146B7370),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Icon(
         Icons.verified_outlined,
-        color: unread ? incidentsTeal : incidentsMuted,
+        color: unread ? _brandPrimary : incidentsMuted,
         size: 18,
       ),
     );
@@ -412,7 +422,7 @@ class _StateMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      color: incidentsTeal,
+      color: _brandPrimary,
       onRefresh: onAction,
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -425,78 +435,78 @@ class _StateMessage extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
                 child: EmptyStateAppear(
                   child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 88,
-                      height: 88,
-                      decoration: BoxDecoration(
-                        color: iconBackground,
-                        borderRadius: BorderRadius.circular(24),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 88,
+                        height: 88,
+                        decoration: BoxDecoration(
+                          color: iconBackground,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Icon(icon, color: iconColor, size: 38),
                       ),
-                      child: Icon(icon, color: iconColor, size: 38),
-                    ),
-                    const SizedBox(height: 18),
-                    Text(
-                      title,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: incidentsInk,
-                        fontFamily: incidentsFontFamily,
-                        fontFamilyFallback: incidentsFontFamilyFallback,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 260),
-                      child: Text(
-                        helper,
+                      const SizedBox(height: 18),
+                      Text(
+                        title,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                          color: incidentsMuted,
+                          color: incidentsInk,
                           fontFamily: incidentsFontFamily,
                           fontFamilyFallback: incidentsFontFamilyFallback,
-                          fontSize: 13.5,
-                          height: 1.55,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 22),
-                    filledAction
-                        ? ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              elevation: 0,
-                              backgroundColor: incidentsTeal,
-                              foregroundColor: Colors.white,
-                              shape: const StadiumBorder(),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 24),
-                              minimumSize: const Size(0, 44),
-                            ),
-                            onPressed: onAction,
-                            icon: const Icon(Icons.refresh, size: 15),
-                            label: _ActionLabel(actionLabel),
-                          )
-                        : OutlinedButton.icon(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: incidentsTeal,
-                              side: const BorderSide(
-                                color: incidentsTeal,
-                                width: 1.5,
-                              ),
-                              shape: const StadiumBorder(),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 18),
-                              minimumSize: const Size(0, 38),
-                            ),
-                            onPressed: onAction,
-                            icon: const Icon(Icons.refresh, size: 14),
-                            label: _ActionLabel(actionLabel),
+                      const SizedBox(height: 6),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 260),
+                        child: Text(
+                          helper,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: incidentsMuted,
+                            fontFamily: incidentsFontFamily,
+                            fontFamilyFallback: incidentsFontFamilyFallback,
+                            fontSize: 13.5,
+                            height: 1.55,
                           ),
-                  ],
-                ),
+                        ),
+                      ),
+                      const SizedBox(height: 22),
+                      filledAction
+                          ? ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                                backgroundColor: _brandPrimary,
+                                foregroundColor: Colors.white,
+                                shape: const StadiumBorder(),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 24),
+                                minimumSize: const Size(0, 44),
+                              ),
+                              onPressed: onAction,
+                              icon: const Icon(Icons.refresh, size: 15),
+                              label: _ActionLabel(actionLabel),
+                            )
+                          : OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: _brandPrimary,
+                                side: BorderSide(
+                                  color: _brandPrimary,
+                                  width: 1.5,
+                                ),
+                                shape: const StadiumBorder(),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 18),
+                                minimumSize: const Size(0, 38),
+                              ),
+                              onPressed: onAction,
+                              icon: const Icon(Icons.refresh, size: 14),
+                              label: _ActionLabel(actionLabel),
+                            ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -539,7 +549,7 @@ class _NotificationAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: incidentsTealDeep,
+      color: _brandDeep,
       child: SafeArea(
         bottom: false,
         child: SizedBox(

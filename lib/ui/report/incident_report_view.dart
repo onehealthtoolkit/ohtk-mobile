@@ -15,6 +15,7 @@ import 'package:podd_app/components/playable_file_view.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/router.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/report/full_screen_view.dart';
 import 'package:podd_app/ui/report/incident_report_view_model.dart';
@@ -24,6 +25,9 @@ import 'package:stacked/stacked.dart';
 
 final _timestampFormatter = DateFormat('dd/MM/yy HH:mm');
 final _dateFormatter = DateFormat('dd/MM/yy');
+Color get _brandPrimary => OhtkTheme.palette.teal700;
+Color get _brandDeep => OhtkTheme.palette.teal900;
+Color get _brandTint => OhtkTheme.palette.teal700.withValues(alpha: 0.08);
 
 class IncidentReportView extends HookWidget {
   final String id;
@@ -58,7 +62,7 @@ class _DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final topInset = MediaQuery.of(context).padding.top;
     return Container(
-      color: incidentsTealDeep,
+      color: _brandDeep,
       padding: EdgeInsets.only(top: topInset),
       height: 60 + topInset,
       child: Stack(
@@ -131,8 +135,8 @@ class _DetailBody extends HookWidget {
     }, [tabController]);
 
     final canFollowup = incident.reportTypeFollowable && !incident.testFlag;
-    final showFab = canFollowup &&
-        (activeTab.value == 0 || activeTab.value == 2);
+    final showFab =
+        canFollowup && (activeTab.value == 0 || activeTab.value == 2);
 
     final localize = AppLocalizations.of(context)!;
     final labels = [
@@ -209,13 +213,13 @@ class _TabStrip extends StatelessWidget {
               child: InkWell(
                 onTap: () => controller.animateTo(i),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12, horizontal: 6),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
                         color: activeIndex == i
-                            ? incidentsAccent
+                            ? _brandPrimary
                             : Colors.transparent,
                         width: 2.5,
                       ),
@@ -228,9 +232,7 @@ class _TabStrip extends StatelessWidget {
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.3,
-                      color: activeIndex == i
-                          ? incidentsInk
-                          : incidentsMuted,
+                      color: activeIndex == i ? incidentsInk : incidentsMuted,
                     ),
                   ),
                 ),
@@ -254,8 +256,7 @@ class _DetailTab extends StatelessWidget {
       _HeaderBlock(incident: incident),
       _DescriptionBlock(incident: incident),
       _MetaBlock(incident: incident),
-      if ((incident.images ?? []).isNotEmpty)
-        _PhotosBlock(incident: incident),
+      if ((incident.images ?? []).isNotEmpty) _PhotosBlock(incident: incident),
       if ((incident.files ?? []).isNotEmpty)
         _AttachmentsBlock(incident: incident),
       _LocationBlock(viewModel: viewModel),
@@ -477,8 +478,7 @@ class _MetaBlock extends StatelessWidget {
             Expanded(
               child: _MetaCell(
                 label: localize.incidentDate,
-                value:
-                    _dateFormatter.format(incident.incidentDate.toLocal()),
+                value: _dateFormatter.format(incident.incidentDate.toLocal()),
               ),
             ),
           ],
@@ -553,8 +553,7 @@ class _PhotosBlock extends StatelessWidget {
                 fit: BoxFit.contain,
                 placeholder: (context, url) =>
                     const Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) =>
-                    const Icon(Icons.error),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
@@ -691,13 +690,13 @@ class _AttachmentRow extends StatelessWidget {
               width: 38,
               height: 38,
               decoration: BoxDecoration(
-                color: incidentsTeal.withValues(alpha: 0.08),
+                color: _brandTint,
                 borderRadius: BorderRadius.circular(9),
               ),
               child: Icon(
                 _iconFor(file.fileType),
                 size: 20,
-                color: incidentsTeal,
+                color: _brandPrimary,
               ),
             ),
             const SizedBox(width: 12),
@@ -714,10 +713,10 @@ class _AttachmentRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            const Icon(
+            Icon(
               Icons.file_download_outlined,
               size: 18,
-              color: incidentsTeal,
+              color: _brandPrimary,
             ),
           ],
         ),
@@ -769,10 +768,10 @@ class _LocationBlock extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.location_on,
                   size: 16,
-                  color: incidentsTeal,
+                  color: _brandPrimary,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -868,7 +867,7 @@ class _FollowUpFab extends StatelessWidget {
             maxWidth: extended ? double.infinity : 56,
           ),
           decoration: BoxDecoration(
-            color: incidentsFabGreen,
+            color: _brandPrimary,
             borderRadius: BorderRadius.circular(28),
             boxShadow: const [
               BoxShadow(
@@ -914,12 +913,12 @@ class _LoadingState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(
+          SizedBox(
             width: 56,
             height: 56,
             child: CircularProgressIndicator(
               strokeWidth: 4,
-              valueColor: AlwaysStoppedAnimation<Color>(incidentsTeal),
+              valueColor: AlwaysStoppedAnimation<Color>(_brandPrimary),
               backgroundColor: incidentsHair,
             ),
           ),
@@ -987,14 +986,14 @@ class _ErrorState extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Material(
-            color: incidentsTeal,
+            color: _brandPrimary,
             borderRadius: BorderRadius.circular(24),
             child: InkWell(
               borderRadius: BorderRadius.circular(24),
               onTap: () => GoRouter.of(context).go('/reports'),
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 18, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                 child: Text(
                   localize?.backToIncidentsButton ?? 'Back to incidents',
                   style: const TextStyle(

@@ -106,6 +106,106 @@ void main() {
       );
     });
 
+    test('keeps drafts isolated by occurrence and restores legacy draft',
+        () async {
+      final service = CensusService(
+        censusApi: FakeCensusApi(),
+        dbService: ThrowingDbService(),
+      );
+      final legacyDraft = VillageCensusDraft(
+        villageId: 11,
+        kind: 'ANIMAL',
+        definitionVersionId: 3,
+        measureValues: const {
+          'species:1': {'animal_quantity': '12'},
+        },
+        savedAt: DateTime(2026, 5, 28),
+      );
+      final productionDraft = VillageCensusDraft(
+        villageId: 11,
+        kind: 'ANIMAL',
+        definitionVersionId: 3,
+        occurrenceId: 7,
+        measureValues: const {
+          'species:1': {'animal_quantity': '20'},
+        },
+        savedAt: DateTime(2026, 5, 29),
+      );
+      final trainingDraft = VillageCensusDraft(
+        villageId: 11,
+        kind: 'ANIMAL',
+        definitionVersionId: 3,
+        occurrenceId: 17,
+        measureValues: const {
+          'species:1': {'animal_quantity': '99'},
+        },
+        savedAt: DateTime(2026, 5, 30),
+      );
+
+      await service.saveDraft(legacyDraft);
+      expect(
+        (await service.getDraft(
+          villageId: 11,
+          kind: 'ANIMAL',
+          definitionVersionId: 3,
+          occurrenceId: 7,
+        ))
+            ?.measureValues['species:1']?['animal_quantity'],
+        '12',
+      );
+
+      await service.saveDraft(productionDraft);
+      await service.saveDraft(trainingDraft);
+
+      expect(
+        (await service.getDraft(
+          villageId: 11,
+          kind: 'ANIMAL',
+          definitionVersionId: 3,
+          occurrenceId: 7,
+        ))
+            ?.measureValues['species:1']?['animal_quantity'],
+        '20',
+      );
+      expect(
+        (await service.getDraft(
+          villageId: 11,
+          kind: 'ANIMAL',
+          definitionVersionId: 3,
+          occurrenceId: 17,
+        ))
+            ?.measureValues['species:1']?['animal_quantity'],
+        '99',
+      );
+
+      await service.clearDraft(
+        villageId: 11,
+        kind: 'ANIMAL',
+        definitionVersionId: 3,
+        occurrenceId: 7,
+      );
+
+      expect(
+        await service.getDraft(
+          villageId: 11,
+          kind: 'ANIMAL',
+          definitionVersionId: 3,
+          occurrenceId: 7,
+        ),
+        isNull,
+      );
+      expect(
+        (await service.getDraft(
+          villageId: 11,
+          kind: 'ANIMAL',
+          definitionVersionId: 3,
+          occurrenceId: 17,
+        ))
+            ?.measureValues['species:1']?['animal_quantity'],
+        '99',
+      );
+    });
+
     test('falls back to cached latest V2 census when refresh fails', () async {
       final latest = VillageCensusSnapshot(
         id: 99,

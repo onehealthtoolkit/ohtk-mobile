@@ -111,12 +111,12 @@ class _FileRow extends StatelessWidget {
                 bottom: const BorderSide(color: incidentsHair, width: 1),
               ),
             ),
-            child: const SizedBox(
+            child: SizedBox(
               height: 16,
               width: 16,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: incidentsTeal,
+                color: _ohtkFormBrand,
               ),
             ),
           );
@@ -205,10 +205,10 @@ class _FileGlyph extends StatelessWidget {
       width: 32,
       height: 32,
       decoration: BoxDecoration(
-        color: incidentsTeal.withValues(alpha: 0.08),
+        color: _ohtkFormBrandTint(0.08),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Icon(_iconFor(mimeType), size: 18, color: incidentsTeal),
+      child: Icon(_iconFor(mimeType), size: 18, color: _ohtkFormBrand),
     );
   }
 }
@@ -224,7 +224,7 @@ class _AttachFileButton extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: DottedBorder(
-        color: incidentsTeal,
+        color: _ohtkFormBrand,
         strokeWidth: 1.5,
         dashPattern: const [5, 4],
         borderType: BorderType.RRect,
@@ -234,23 +234,23 @@ class _AttachFileButton extends StatelessWidget {
           height: 44,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: incidentsTeal.withValues(alpha: 0.06),
+            color: _ohtkFormBrandTint(0.06),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.add, size: 18, color: incidentsTeal),
+              Icon(Icons.add, size: 18, color: _ohtkFormBrand),
               const SizedBox(width: 6),
               Text(
                 localize.attachFileButton.toUpperCase(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: incidentsFontFamily,
                   fontFamilyFallback: incidentsFontFamilyFallback,
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.6,
-                  color: incidentsTeal,
+                  color: _ohtkFormBrand,
                 ),
               ),
             ],

@@ -8,6 +8,7 @@ import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart' as opsv;
 import 'package:podd_app/opsv_form/widgets/widgets.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/report_type/form_simulator_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -23,10 +24,12 @@ class FormSimulatorView extends StatelessWidget {
       viewModelBuilder: () => FormSimulatorViewModel(reportType),
       builder: (context, viewModel, child) {
         if (!viewModel.isReady) {
-          return const Scaffold(
+          return Scaffold(
             backgroundColor: incidentsSand,
             body: Center(
-              child: CircularProgressIndicator(color: incidentsTeal),
+              child: CircularProgressIndicator(
+                color: OhtkTheme.palette.teal700,
+              ),
             ),
           );
         }
@@ -196,7 +199,7 @@ class _ConfirmSubmit extends StackedHookView<FormSimulatorViewModel> {
             width: double.infinity,
             child: TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: incidentsTeal,
+                backgroundColor: OhtkTheme.palette.teal700,
                 foregroundColor: Colors.white,
                 shape: const StadiumBorder(),
                 padding: const EdgeInsets.symmetric(vertical: 12),

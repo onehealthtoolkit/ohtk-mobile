@@ -157,7 +157,7 @@ class _SectionHeader extends StatelessWidget {
           height: 32,
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: OhtkColor.teal700,
+              backgroundColor: OhtkTheme.palette.teal700,
               foregroundColor: Colors.white,
               shape: const StadiumBorder(),
               padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -236,13 +236,13 @@ class _Thumbnail extends StatelessWidget {
       return Container(
         width: 56,
         height: 56,
-        decoration: const BoxDecoration(
-          color: OhtkColor.teal100,
+        decoration: BoxDecoration(
+          color: OhtkTheme.palette.teal100,
           borderRadius: OhtkRadius.tile,
         ),
-        child: const Icon(
+        child: Icon(
           Icons.event_note_outlined,
-          color: OhtkColor.teal700,
+          color: OhtkTheme.palette.teal700,
           size: 24,
         ),
       );
@@ -255,12 +255,12 @@ class _Thumbnail extends StatelessWidget {
         child: CachedNetworkImage(
           imageUrl: imageUrl!,
           fit: BoxFit.cover,
-          placeholder: (_, __) => Container(color: OhtkColor.teal100),
+          placeholder: (_, __) => Container(color: OhtkTheme.palette.teal100),
           errorWidget: (_, __, ___) => Container(
-            color: OhtkColor.teal100,
-            child: const Icon(
+            color: OhtkTheme.palette.teal100,
+            child: Icon(
               Icons.event_note_outlined,
-              color: OhtkColor.teal700,
+              color: OhtkTheme.palette.teal700,
               size: 24,
             ),
           ),
@@ -339,12 +339,12 @@ class _EmptyState extends StatelessWidget {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                    color: OhtkColor.teal700.withValues(alpha: 0.08),
+                    color: OhtkTheme.palette.teal700.withValues(alpha: 0.08),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.event_note_outlined,
-                    color: OhtkColor.teal700,
+                    color: OhtkTheme.palette.teal700,
                     size: 36,
                   ),
                 ),

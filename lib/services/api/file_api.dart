@@ -25,25 +25,31 @@ class FileApi extends GraphQlBaseApi {
       }
     ''';
 
-    final fileBytes = await reportFile.localFile!.readAsBytes();
-    var file = dio.MultipartFile.fromBytes(
-      fileBytes,
-      filename: reportFile.id,
-    );
-
     try {
+      final fileBytes = await reportFile.localFile!.readAsBytes();
+      var file = dio.MultipartFile.fromBytes(
+        fileBytes,
+        filename: reportFile.id,
+      );
+
       var result = await runGqlMutation<IncidentReportFile>(
           mutation: mutation,
           parseData: (json) => IncidentReportFile.fromJson(json!),
           variables: {
             "file": file,
             "fileId": reportFile.id,
-            "reportId": reportFile.reportId
+            "reportId": reportFile.effectiveParentId
           });
 
       return FileSubmitSuccess(result);
     } on OperationException catch (e) {
       return FileSubmitFailure(e);
+    } catch (e) {
+      return FileSubmitFailure(
+        OperationException(
+          graphqlErrors: [GraphQLError(message: e.toString())],
+        ),
+      );
     }
   }
 
@@ -68,13 +74,13 @@ class FileApi extends GraphQlBaseApi {
       }
     ''';
 
-    final fileBytes = await recordFile.localFile!.readAsBytes();
-    var file = dio.MultipartFile.fromBytes(
-      fileBytes,
-      filename: recordFile.id,
-    );
-
     try {
+      final fileBytes = await recordFile.localFile!.readAsBytes();
+      var file = dio.MultipartFile.fromBytes(
+        fileBytes,
+        filename: recordFile.id,
+      );
+
       var result = await runGqlMutation<ObservationRecordFile>(
           mutation: mutation,
           parseData: (json) => ObservationRecordFile.fromJson(json!),
@@ -87,6 +93,12 @@ class FileApi extends GraphQlBaseApi {
       return FileSubmitSuccess(result);
     } on OperationException catch (e) {
       return FileSubmitFailure(e);
+    } catch (e) {
+      return FileSubmitFailure(
+        OperationException(
+          graphqlErrors: [GraphQLError(message: e.toString())],
+        ),
+      );
     }
   }
 }

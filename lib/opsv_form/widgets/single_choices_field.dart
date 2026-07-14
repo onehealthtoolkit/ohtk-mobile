@@ -104,7 +104,7 @@ class _RadioIndicator extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: selected ? incidentsTeal : incidentsHair,
+            color: selected ? _ohtkFormBrand : incidentsHair,
             width: 2,
           ),
         ),
@@ -113,8 +113,8 @@ class _RadioIndicator extends StatelessWidget {
                 child: Container(
                   width: 10,
                   height: 10,
-                  decoration: const BoxDecoration(
-                    color: incidentsTeal,
+                  decoration: BoxDecoration(
+                    color: _ohtkFormBrand,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -243,10 +243,10 @@ class _CheckIndicator extends StatelessWidget {
       width: 20,
       height: 20,
       decoration: BoxDecoration(
-        color: checked ? incidentsTeal : Colors.white,
+        color: checked ? _ohtkFormBrand : Colors.white,
         borderRadius: BorderRadius.circular(5),
         border: Border.all(
-          color: checked ? incidentsTeal : incidentsHair,
+          color: checked ? _ohtkFormBrand : incidentsHair,
           width: 2,
         ),
       ),
@@ -372,21 +372,21 @@ class _OtherInlineInput extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
-            color: isInvalid ? incidentsErrorRed : incidentsTeal,
+            color: isInvalid ? incidentsErrorRed : _ohtkFormBrand,
             width: 1.5,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
-            color: isInvalid ? incidentsErrorRed : incidentsTeal,
+            color: isInvalid ? incidentsErrorRed : _ohtkFormBrand,
             width: 1.5,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
-            color: isInvalid ? incidentsErrorRed : incidentsTeal,
+            color: isInvalid ? incidentsErrorRed : _ohtkFormBrand,
             width: 1.8,
           ),
         ),

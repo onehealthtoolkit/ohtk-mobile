@@ -3,9 +3,14 @@ import 'package:intl/intl.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/entities/user_message.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/notification/user_message_view_model.dart';
 import 'package:stacked/stacked.dart';
+
+Color get _brandPrimary => OhtkTheme.palette.teal700;
+Color get _brandDeep => OhtkTheme.palette.teal900;
+Color get _brandTint => OhtkTheme.palette.teal700.withValues(alpha: 0.10);
 
 class UserMessageView extends StatelessWidget {
   final String id;
@@ -87,19 +92,23 @@ class _HeroHeader extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.fromLTRB(8, 4, 10, 4),
-            decoration: const ShapeDecoration(
-              color: Color(0x1A0F8A82),
-              shape: StadiumBorder(),
+            decoration: ShapeDecoration(
+              color: _brandTint,
+              shape: const StadiumBorder(),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.verified_outlined, color: incidentsTeal, size: 14),
-                SizedBox(width: 8),
+                Icon(
+                  Icons.verified_outlined,
+                  color: _brandPrimary,
+                  size: 14,
+                ),
+                const SizedBox(width: 8),
                 Text(
                   'REPORT ACKNOWLEDGED',
                   style: TextStyle(
-                    color: incidentsTeal,
+                    color: _brandPrimary,
                     fontFamily: incidentsFontFamily,
                     fontFamilyFallback: incidentsFontFamilyFallback,
                     fontSize: 11,
@@ -189,12 +198,12 @@ class _RelatedReportTile extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: const Color(0x1A0F8A82),
+              color: _brandTint,
               borderRadius: BorderRadius.circular(9),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.verified_outlined,
-              color: incidentsTeal,
+              color: _brandPrimary,
               size: 18,
             ),
           ),
@@ -272,7 +281,7 @@ class _NotificationAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: incidentsTealDeep,
+      color: _brandDeep,
       child: SafeArea(
         bottom: false,
         child: SizedBox(

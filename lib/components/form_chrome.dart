@@ -24,7 +24,7 @@ class FormChromeAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: incidentsTealDeep,
+      color: OhtkTheme.palette.teal900,
       child: SafeArea(
         bottom: false,
         child: SizedBox(
@@ -170,7 +170,7 @@ class FormChromeProgressStrip extends StatelessWidget {
                   final color = isCurrent
                       ? incidentsAccent
                       : isPast
-                          ? incidentsTeal
+                          ? OhtkTheme.palette.teal700
                           : incidentsHair;
                   return Expanded(
                     child: Padding(

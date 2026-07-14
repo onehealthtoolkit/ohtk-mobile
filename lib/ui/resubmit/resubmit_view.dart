@@ -514,9 +514,19 @@ class _BottomActionBar extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed:
-                      viewModel.isEmpty ? null : viewModel.submitAllPendings,
-                  icon: const Icon(Icons.cloud_upload_outlined, size: 20),
+                  onPressed: viewModel.isEmpty || viewModel.isSubmittingAll
+                      ? null
+                      : viewModel.submitAllPendings,
+                  icon: viewModel.isSubmittingAll
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.cloud_upload_outlined, size: 20),
                   label: Text(
                     localize.resubmit.toUpperCase(),
                     style: const TextStyle(

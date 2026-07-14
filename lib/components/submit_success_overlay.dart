@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 
 class SubmitSuccessOverlay extends StatefulWidget {
@@ -110,7 +111,8 @@ class _SubmitSuccessOverlayState extends State<SubmitSuccessOverlay>
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: incidentsTeal.withValues(alpha: 0.12),
+                            color: OhtkTheme.palette.teal700
+                                .withValues(alpha: 0.12),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -119,9 +121,9 @@ class _SubmitSuccessOverlayState extends State<SubmitSuccessOverlay>
                             parent: _checkCtrl,
                             curve: Curves.easeOutCubic,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.check_rounded,
-                            color: incidentsTeal,
+                            color: OhtkTheme.palette.teal700,
                             size: 46,
                           ),
                         ),

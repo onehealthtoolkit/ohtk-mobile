@@ -82,7 +82,7 @@ class ObservationView extends HookWidget {
               boxShadow: OhtkShadow.raised,
             ),
             child: FloatingActionButton.extended(
-              backgroundColor: OhtkColor.teal700,
+              backgroundColor: OhtkTheme.palette.teal700,
               foregroundColor: Colors.white,
               elevation: 0,
               highlightElevation: 0,

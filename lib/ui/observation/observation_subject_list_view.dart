@@ -53,9 +53,9 @@ class _SubjectListing extends StackedHookView<ObservationSubjectListViewModel> {
           OhtkLayout.pagePad,
           120,
         ),
-        separatorBuilder: (_, __) =>
-            const SizedBox(height: OhtkLayout.rowGap),
-        itemCount: viewModel.observationSubjects.length + (showLoadMore ? 1 : 0),
+        separatorBuilder: (_, __) => const SizedBox(height: OhtkLayout.rowGap),
+        itemCount:
+            viewModel.observationSubjects.length + (showLoadMore ? 1 : 0),
         itemBuilder: (context, index) {
           if (index >= viewModel.observationSubjects.length) {
             return Padding(
@@ -130,7 +130,7 @@ class _Thumbnail extends StatelessWidget {
         child: CachedNetworkImage(
           imageUrl: imageUrl!,
           fit: BoxFit.cover,
-          placeholder: (_, __) => Container(color: OhtkColor.teal100),
+          placeholder: (_, __) => Container(color: OhtkTheme.palette.teal100),
           errorWidget: (_, __, ___) => const _FallbackTile(),
         ),
       ),
@@ -146,13 +146,13 @@ class _FallbackTile extends StatelessWidget {
     return Container(
       width: 64,
       height: 64,
-      decoration: const BoxDecoration(
-        color: OhtkColor.teal100,
+      decoration: BoxDecoration(
+        color: OhtkTheme.palette.teal100,
         borderRadius: OhtkRadius.tile,
       ),
-      child: const Icon(
+      child: Icon(
         Icons.visibility_outlined,
-        color: OhtkColor.teal700,
+        color: OhtkTheme.palette.teal700,
         size: 28,
       ),
     );
@@ -233,12 +233,12 @@ class _EmptyState extends StatelessWidget {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                    color: OhtkColor.teal700.withValues(alpha: 0.08),
+                    color: OhtkTheme.palette.teal700.withValues(alpha: 0.08),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.visibility_outlined,
-                    color: OhtkColor.teal700,
+                    color: OhtkTheme.palette.teal700,
                     size: 36,
                   ),
                 ),

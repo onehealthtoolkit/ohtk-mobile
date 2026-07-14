@@ -1,6 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/entities/pending_media_parent_type.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/entities/report.dart';
@@ -152,8 +153,18 @@ class ReportService extends IReportService {
       var result = await _reportApi.submit(report);
 
       if (result is ReportSubmitSuccess) {
-        await _deleteFromLocalDB(report);
         result.incidentReport.images = List.of([]);
+
+        await _imageService.markForRemoteParent(
+          localParentId: report.id,
+          parentType: PendingMediaParentType.incidentReport,
+          remoteParentId: result.incidentReport.id,
+        );
+        await _fileService.markForRemoteParent(
+          localParentId: report.id,
+          parentType: PendingMediaParentType.incidentReport,
+          remoteParentId: result.incidentReport.id,
+        );
 
         // submit images
         var localImages = await _imageService.findByReportId(report.id);
@@ -184,19 +195,20 @@ class ReportService extends IReportService {
           }
         }
 
+        await _deleteFromLocalDB(report);
         _incidents.insert(0, result.incidentReport);
         _myIncidents.insert(0, result.incidentReport);
       }
 
       if (result is ReportSubmitFailure) {
         _logger.e(result.messages);
-        _saveToLocalDB(report);
+        await _saveToLocalDB(report);
         return ReportSubmitPending();
       }
       return result;
     } on LinkException catch (e) {
       _logger.e(e);
-      _saveToLocalDB(report);
+      await _saveToLocalDB(report);
       return ReportSubmitPending();
     }
   }
@@ -266,7 +278,7 @@ class ReportService extends IReportService {
 
   _deleteFromLocalDB(Report report) async {
     var db = _dbService.db;
-    db.delete(
+    await db.delete(
       "report",
       where: "id = ?",
       whereArgs: [report.id],
@@ -279,7 +291,7 @@ class ReportService extends IReportService {
     var db = _dbService.db;
     var isInDB = await _isReportInLocalDB(report.id);
     if (isInDB) {
-      db.update(
+      await db.update(
         "report",
         report.toMap(),
         where: "id = ?",
@@ -288,7 +300,7 @@ class ReportService extends IReportService {
         ],
       );
     } else {
-      db.insert("report", report.toMap());
+      await db.insert("report", report.toMap());
       _pendingReports.add(report);
     }
   }
@@ -298,9 +310,9 @@ class ReportService extends IReportService {
 
   @override
   Future<void> submitAllPendingReport() async {
-    for (var report in _pendingReports) {
+    for (var report in List<Report>.of(_pendingReports)) {
       try {
-        submit(report);
+        await submit(report);
       } catch (e) {
         _logger.e(e);
       }

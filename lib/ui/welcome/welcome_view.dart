@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:podd_app/components/language_dropdown.dart';
 import 'package:podd_app/keys/application_keys.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/welcome/welcome_view_model.dart';
 import 'package:stacked/stacked.dart';
 
-const _tealDeep = Color(0xFF08423F);
-const _tealAccent = Color(0xFF7FD4CC);
+Color get _tealDeep => OhtkTheme.palette.teal900;
+Color get _tealAccent => OhtkTheme.palette.teal100;
 const _onDark = Colors.white;
 const _onDarkMuted = Color(0xB3FFFFFF); // 70% white
 const _cardBg = Color(0x0AFFFFFF); // 4% white
@@ -17,8 +18,8 @@ const _footerBg = Color(0x26000000); // 15% black
 const _footerBorder = Color(0x1AFFFFFF); // 10% white
 const _disabledBg = Color(0x26FFFFFF); // 15% white
 const _disabledFg = Color(0x66FFFFFF); // 40% white
-const _fontFamily = 'Inter';
-const _fontFamilyFallback = <String>['NotoSansThai', 'NotoSansLao'];
+const _fontFamily = OhtkType.family;
+const _fontFamilyFallback = OhtkType.fallback;
 
 class WelcomeView extends StackedView<WelcomeViewModel> {
   final VoidCallback? onContinue;
@@ -26,8 +27,7 @@ class WelcomeView extends StackedView<WelcomeViewModel> {
   const WelcomeView({Key? key, this.onContinue}) : super(key: key);
 
   @override
-  WelcomeViewModel viewModelBuilder(BuildContext context) =>
-      WelcomeViewModel();
+  WelcomeViewModel viewModelBuilder(BuildContext context) => WelcomeViewModel();
 
   @override
   Widget builder(
@@ -114,8 +114,9 @@ class _TitleBlock extends StatelessWidget {
         children: [
           Text(
             l10n.welcomeTitle,
-            style: const TextStyle(
-              fontFamily: _fontFamily, fontFamilyFallback: _fontFamilyFallback,
+            style: TextStyle(
+              fontFamily: _fontFamily,
+              fontFamilyFallback: _fontFamilyFallback,
               color: _onDark,
               fontSize: 22,
               fontWeight: FontWeight.w700,
@@ -127,8 +128,9 @@ class _TitleBlock extends StatelessWidget {
           Text(
             l10n.welcomeSubtitle,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontFamily: _fontFamily, fontFamilyFallback: _fontFamilyFallback,
+            style: TextStyle(
+              fontFamily: _fontFamily,
+              fontFamilyFallback: _fontFamilyFallback,
               color: _onDarkMuted,
               fontSize: 13,
               fontWeight: FontWeight.w400,
@@ -164,14 +166,15 @@ class _Section extends StatelessWidget {
                 width: 22,
                 height: 22,
                 alignment: Alignment.center,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: _tealAccent,
                   shape: BoxShape.circle,
                 ),
                 child: Text(
                   number,
-                  style: const TextStyle(
-                    fontFamily: _fontFamily, fontFamilyFallback: _fontFamilyFallback,
+                  style: TextStyle(
+                    fontFamily: _fontFamily,
+                    fontFamilyFallback: _fontFamilyFallback,
                     color: _tealDeep,
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
@@ -181,8 +184,9 @@ class _Section extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 title,
-                style: const TextStyle(
-                  fontFamily: _fontFamily, fontFamilyFallback: _fontFamilyFallback,
+                style: TextStyle(
+                  fontFamily: _fontFamily,
+                  fontFamilyFallback: _fontFamilyFallback,
                   color: _onDark,
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
@@ -227,8 +231,9 @@ class _LanguageGrid extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontFamily: _fontFamily, fontFamilyFallback: _fontFamilyFallback,
+                  style: TextStyle(
+                    fontFamily: _fontFamily,
+                    fontFamilyFallback: _fontFamilyFallback,
                     color: _onDark,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -252,8 +257,8 @@ class _ServerList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (viewModel.busy('tenants') && viewModel.servers.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 24),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
         child: Center(
           child: SizedBox(
             width: 24,
@@ -274,8 +279,9 @@ class _ServerList extends StatelessWidget {
           viewModel.loadFailed
               ? l10n.welcomeCannotLoadServers
               : l10n.welcomeNoServersText,
-          style: const TextStyle(
-            fontFamily: _fontFamily, fontFamilyFallback: _fontFamilyFallback,
+          style: TextStyle(
+            fontFamily: _fontFamily,
+            fontFamilyFallback: _fontFamilyFallback,
             color: _onDarkMuted,
             fontSize: 13,
           ),
@@ -332,8 +338,9 @@ class _ServerCard extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
-                    fontFamily: _fontFamily, fontFamilyFallback: _fontFamilyFallback,
+                  style: TextStyle(
+                    fontFamily: _fontFamily,
+                    fontFamilyFallback: _fontFamilyFallback,
                     color: _onDark,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -345,8 +352,9 @@ class _ServerCard extends StatelessWidget {
                     domain,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontFamily: _fontFamily, fontFamilyFallback: _fontFamilyFallback,
+                    style: TextStyle(
+                      fontFamily: _fontFamily,
+                      fontFamilyFallback: _fontFamilyFallback,
                       color: _onDarkMuted,
                       fontSize: 12,
                     ),
@@ -438,7 +446,7 @@ class _ContinueFooter extends StatelessWidget {
     final ready = viewModel.continueEnabled && !viewModel.isBusy;
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 18),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: _footerBg,
         border: Border(top: BorderSide(color: _footerBorder, width: 1)),
       ),
@@ -480,8 +488,9 @@ class _ContinueFooter extends StatelessWidget {
                 viewModel.isBusy
                     ? l10n.welcomeSavingLabel
                     : l10n.welcomeContinueButton,
-                style: const TextStyle(
-                  fontFamily: _fontFamily, fontFamilyFallback: _fontFamilyFallback,
+                style: TextStyle(
+                  fontFamily: _fontFamily,
+                  fontFamilyFallback: _fontFamilyFallback,
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                 ),

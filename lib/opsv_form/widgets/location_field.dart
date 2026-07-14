@@ -70,7 +70,7 @@ class _FormLocationFieldState extends State<FormLocationField> {
         actions: [
           TextButton(
             style: TextButton.styleFrom(
-              foregroundColor: incidentsTeal,
+              foregroundColor: _ohtkFormBrand,
             ),
             child: Text(
               localize.ok,
@@ -117,7 +117,7 @@ class _FormLocationFieldState extends State<FormLocationField> {
               child: TextButton.icon(
                 onPressed: _onUseCurrent,
                 style: TextButton.styleFrom(
-                  foregroundColor: incidentsTeal,
+                  foregroundColor: _ohtkFormBrand,
                   padding: EdgeInsets.zero,
                   minimumSize: const Size(0, 32),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -180,7 +180,7 @@ class _LocationEmptyPanel extends StatelessWidget {
           TextButton.icon(
             onPressed: onUseCurrent,
             style: TextButton.styleFrom(
-              backgroundColor: incidentsTeal,
+              backgroundColor: _ohtkFormBrand,
               foregroundColor: Colors.white,
               shape: const StadiumBorder(),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -261,13 +261,13 @@ class _LocationMapPreview extends StatelessWidget {
                 },
               ),
             ),
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.only(bottom: 20),
                 child: Icon(
                   Icons.location_on,
                   size: 36,
-                  color: incidentsTeal,
+                  color: _ohtkFormBrand,
                 ),
               ),
             ),

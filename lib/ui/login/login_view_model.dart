@@ -74,9 +74,11 @@ class LoginViewModel extends BaseViewModel {
     await featureCapabilityService.refresh();
   }
 
-  changeLanguage(String value) async {
+  Future<void> changeLanguage(String value) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(languageKey, value);
+    await prefs.setString(languageKey, value);
+    language = value;
+    notifyListeners();
   }
 
   authenticate() async {

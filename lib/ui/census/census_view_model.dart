@@ -13,6 +13,9 @@ import 'package:podd_app/services/feature_capability_service.dart';
 import 'package:stacked/stacked.dart';
 
 class CensusViewModel extends BaseViewModel {
+  static const villageHouseholdQuantityKey = 'village_household_quantity';
+  static const animalHouseholdQuantityKey = 'animal_household_quantity';
+
   final IAuthService authService = locator<IAuthService>();
   final ICensusService censusService = locator<ICensusService>();
   final IFeatureCapabilityService featureCapabilityService =
@@ -24,15 +27,26 @@ class CensusViewModel extends BaseViewModel {
   List<CensusSchemaMeasure> measures = [];
   CensusDefinitionVersion? activeDefinition;
   CensusKindSummary? activeKindSummary;
+  CensusRoundOccurrence? activeOccurrence;
+  List<CensusRoundOccurrence> productionOccurrences = [];
+  List<CensusRoundOccurrence> trainingOccurrences = [];
   VillageCensusSnapshot? latestCensus;
   VillageCensusDraft? draft;
   final measureValues = <String, Map<String, String>>{};
   final measureErrors = <String, String>{};
+  final summaryValues = <String, String>{
+    villageHouseholdQuantityKey: '',
+    animalHouseholdQuantityKey: '',
+  };
+  final summaryErrors = <String, String>{};
   final _initialMeasureValues = <String, Map<String, String>>{};
+  final _initialSummaryValues = <String, String>{};
   String? message;
   bool usingCachedDefinition = false;
   bool unsupportedSchema = false;
   bool definitionInactive = false;
+  bool noActiveRound = false;
+  bool trainingMode = false;
   bool definitionChanged = false;
   bool latestSnapshotUsesOlderDefinition = false;
   bool latestSnapshotPrefilledAnyValue = false;
@@ -44,7 +58,11 @@ class CensusViewModel extends BaseViewModel {
   List<String> _visibleInputKeys = const [];
   Future<void>? _pendingDraftWrite;
 
-  CensusViewModel({String? kind}) : requestedKind = _normalizeKind(kind) {
+  CensusViewModel({
+    String? kind,
+    bool initialTrainingMode = false,
+  }) : requestedKind = _normalizeKind(kind) {
+    trainingMode = initialTrainingMode;
     init();
   }
 
@@ -62,13 +80,36 @@ class CensusViewModel extends BaseViewModel {
 
   bool get hasRows => rows.isNotEmpty;
 
+  bool get requiresAnimalSummary => activeKind == 'ANIMAL' && hasRows;
+
   bool get canSubmit =>
       hasRows &&
       !unsupportedSchema &&
       !definitionInactive &&
+      !noActiveRound &&
       !definitionChanged;
 
   bool get isHubMode => activeKind == null;
+
+  bool get hasTrainingOccurrence => trainingOccurrences.isNotEmpty;
+
+  bool get hasProductionOccurrence => productionOccurrences.isNotEmpty;
+
+  String get activeOccurrenceMode => trainingMode ? 'TRAINING' : 'PRODUCTION';
+
+  bool get isTrainingSubmission =>
+      activeOccurrence?.mode == 'TRAINING' || trainingMode;
+
+  String get noActiveRoundTitle =>
+      trainingMode ? 'No active training round' : 'No active census round';
+
+  String get noActiveRoundMessage => trainingMode
+      ? 'Ask your trainer to open a training census round.'
+      : 'Production census submission is closed for this village.';
+
+  String get submitSuccessMessage => isTrainingSubmission
+      ? 'Training census submitted. This practice submission does not update official census coverage.'
+      : localize.censusSubmittedMessage;
 
   String get activeKindName =>
       _kindDisplayName(activeKind ?? activeKindSummary?.kind);
@@ -163,6 +204,52 @@ class CensusViewModel extends BaseViewModel {
     );
   }
 
+  bool get isSummaryDirty {
+    return summaryValues.entries.any(
+      (entry) => entry.value != (_initialSummaryValues[entry.key] ?? ''),
+    );
+  }
+
+  void setSummaryValue(String key, String value) {
+    summaryValues[key] = value.trim();
+    summaryErrors.remove(key);
+    _clearSubmitError();
+    _pendingDraftWrite = _saveDraft();
+    unawaited(_pendingDraftWrite!);
+    notifyListeners();
+  }
+
+  Future<void> setTrainingMode(bool value) async {
+    if (trainingMode == value) {
+      return;
+    }
+    trainingMode = value;
+    message = null;
+    clearErrors();
+    notifyListeners();
+    await _pendingDraftWrite;
+    await _saveDraft(force: _hasAnyEnteredValue(measureValues));
+    final kind = activeKind;
+    if (kind != null) {
+      setBusy(true);
+      try {
+        await _reloadActiveOccurrenceForMode();
+      } catch (e) {
+        setError(e.toString());
+      }
+      setBusy(false);
+    }
+    notifyListeners();
+  }
+
+  String summaryValue(String key) {
+    return summaryValues[key] ?? '';
+  }
+
+  String? summaryError(String key) {
+    return summaryErrors[key];
+  }
+
   bool hasMeasureError(CensusSchemaRow row, CensusSchemaMeasure measure) {
     return measureErrors.containsKey(_inputKey(row, measure));
   }
@@ -241,6 +328,10 @@ class CensusViewModel extends BaseViewModel {
       );
       return null;
     }
+    if (noActiveRound || activeOccurrence == null) {
+      setErrorForObject('submit', noActiveRoundTitle);
+      return null;
+    }
 
     final formData = _buildFormData();
     if (formData == null) {
@@ -255,6 +346,7 @@ class CensusViewModel extends BaseViewModel {
         result = await censusService.submitVillageCensusSnapshotV2(
           villageId: selectedVillage!.id,
           definitionVersionId: activeDefinition!.id,
+          occurrenceId: activeOccurrence!.id,
           censusDate: DateTime.now(),
           formData: formData,
         );
@@ -275,7 +367,7 @@ class CensusViewModel extends BaseViewModel {
       _captureInitialValues();
       await _pendingDraftWrite;
       await _clearDraft();
-      message = localize.censusSubmittedMessage;
+      message = submitSuccessMessage;
     } else if (result is VillageCensusSubmitValidationFailure) {
       setErrorForObject('submit', result.messages.join(', '));
     } else if (result is VillageCensusSubmitFailure) {
@@ -305,6 +397,14 @@ class CensusViewModel extends BaseViewModel {
       definitionVersionId: snapshot.definitionVersionId ?? activeDefinition?.id,
       definitionVersionNumber:
           snapshot.definitionVersionNumber ?? activeDefinition?.version,
+      villageHouseholdQuantity: snapshot.villageHouseholdQuantity ??
+          _parseQuantity(
+            formData['summary']?[villageHouseholdQuantityKey]?.toString(),
+          ),
+      animalHouseholdQuantity: snapshot.animalHouseholdQuantity ??
+          _parseQuantity(
+            formData['summary']?[animalHouseholdQuantityKey]?.toString(),
+          ),
       facts: snapshot.facts,
       formData: snapshot.formData.isNotEmpty ? snapshot.formData : formData,
     );
@@ -321,6 +421,7 @@ class CensusViewModel extends BaseViewModel {
       for (final entry in measureValues.entries)
         entry.key: Map<String, String>.from(entry.value),
     };
+    final previousSummaryValues = Map<String, String>.from(summaryValues);
 
     setBusy(true);
     message = null;
@@ -329,9 +430,12 @@ class CensusViewModel extends BaseViewModel {
     try {
       await _loadFormForKind(kind, allowCachedDefinitionFallback: false);
       definitionChanged = false;
-      final restoredAll = _restoreCompatibleValues(previousValues);
+      final restoredRows = _restoreCompatibleValues(previousValues);
+      final restoredSummary = _restoreCompatibleSummaryValues(
+        previousSummaryValues,
+      );
       await _saveDraft(force: _hasAnyEnteredValue(measureValues));
-      message = restoredAll
+      message = restoredRows && restoredSummary
           ? localize.censusFormReloadedMessage
           : localize.censusFormReloadedPartialMessage;
     } catch (e) {
@@ -345,6 +449,8 @@ class CensusViewModel extends BaseViewModel {
   Map<String, dynamic>? _buildFormData() {
     final formRows = <Map<String, dynamic>>[];
     measureErrors.clear();
+    summaryErrors.clear();
+    final summary = _buildAnimalSummary();
     for (final row in rows) {
       final measureMap = <String, int>{};
       for (final measure in measures) {
@@ -383,13 +489,78 @@ class CensusViewModel extends BaseViewModel {
       _focusFirstInvalidMeasure();
       return null;
     }
-    return {'rows': formRows};
+    if (summaryErrors.isNotEmpty) {
+      setErrorForObject('submit', null);
+      notifyListeners();
+      return null;
+    }
+    return {
+      if (summary != null) 'summary': summary,
+      'rows': formRows,
+    };
+  }
+
+  Map<String, int>? _buildAnimalSummary() {
+    if (!requiresAnimalSummary) {
+      return null;
+    }
+    final villageHouseholds = _parseSummaryQuantity(
+      villageHouseholdQuantityKey,
+      localize.censusVillageHouseholdQuantityLabel,
+    );
+    final animalHouseholds = _parseSummaryQuantity(
+      animalHouseholdQuantityKey,
+      localize.censusAnimalHouseholdQuantityLabel,
+    );
+    if (villageHouseholds == null || animalHouseholds == null) {
+      return null;
+    }
+    if (animalHouseholds > villageHouseholds) {
+      summaryErrors[animalHouseholdQuantityKey] =
+          localize.censusAnimalHouseholdsExceedVillageError;
+      return null;
+    }
+    return {
+      villageHouseholdQuantityKey: villageHouseholds,
+      animalHouseholdQuantityKey: animalHouseholds,
+    };
+  }
+
+  int? _parseSummaryQuantity(String key, String label) {
+    final value = summaryValue(key);
+    final quantity = _parseQuantity(value);
+    if (quantity == null) {
+      summaryErrors[key] = value.isEmpty
+          ? localize.validateRequiredMsg
+          : localize.censusInvalidNumberError(label);
+      return null;
+    }
+    return quantity;
   }
 
   Future<void> _loadHubOrSingleForm() async {
     censusKinds = await censusService
         .getActiveVillageCensusDefinitions(selectedVillage!.id);
     _clearLoadedForm();
+    productionOccurrences = [];
+    trainingOccurrences = [];
+    if (censusKinds.any((summary) => summary.kind == 'ANIMAL')) {
+      productionOccurrences =
+          await censusService.getOpenVillageCensusRoundOccurrences(
+        villageId: selectedVillage!.id,
+        kind: 'ANIMAL',
+        mode: 'PRODUCTION',
+      );
+      trainingOccurrences =
+          await censusService.getOpenVillageCensusRoundOccurrences(
+        villageId: selectedVillage!.id,
+        kind: 'ANIMAL',
+        mode: 'TRAINING',
+      );
+      if (trainingOccurrences.isEmpty) {
+        trainingMode = false;
+      }
+    }
   }
 
   Future<void> loadKind(String kind) async {
@@ -416,12 +587,33 @@ class CensusViewModel extends BaseViewModel {
 
     activeKind = normalizedKind;
     activeKindSummary = summary;
+    activeOccurrence = null;
+    productionOccurrences = [];
+    trainingOccurrences = [];
+    noActiveRound = false;
     await _loadCensusRows(
       normalizedKind,
       summary: summary,
       allowCachedDefinitionFallback: allowCachedDefinitionFallback,
     );
     if (activeDefinition != null) {
+      productionOccurrences =
+          await censusService.getOpenVillageCensusRoundOccurrences(
+        villageId: selectedVillage!.id,
+        kind: normalizedKind,
+        mode: 'PRODUCTION',
+      );
+      trainingOccurrences =
+          await censusService.getOpenVillageCensusRoundOccurrences(
+        villageId: selectedVillage!.id,
+        kind: normalizedKind,
+        mode: 'TRAINING',
+      );
+      if (trainingMode && trainingOccurrences.isEmpty) {
+        trainingMode = false;
+      }
+      activeOccurrence = _occurrenceForActiveMode();
+      noActiveRound = activeOccurrence == null;
       latestCensus = await censusService.getLatestVillageCensusV2(
         villageId: selectedVillage!.id,
         kind: normalizedKind,
@@ -439,6 +631,7 @@ class CensusViewModel extends BaseViewModel {
     usingCachedDefinition = false;
     unsupportedSchema = false;
     definitionInactive = false;
+    noActiveRound = false;
     latestSnapshotUsesOlderDefinition = false;
     latestSnapshotPrefilledAnyValue = false;
     latestSnapshotPrefilledAllValues = false;
@@ -508,6 +701,7 @@ class CensusViewModel extends BaseViewModel {
       return;
     }
 
+    _prefillSummaryFromLatestCensus();
     var prefilledAny = false;
     var prefilledCount = 0;
     final expectedCount = rows.length * measures.length;
@@ -568,6 +762,32 @@ class CensusViewModel extends BaseViewModel {
     _captureInitialValues();
   }
 
+  void _prefillSummaryFromLatestCensus() {
+    if (!requiresAnimalSummary || latestCensus == null) {
+      return;
+    }
+    final submittedSummary = latestCensus!.formData['summary'];
+    final villageHouseholds = latestCensus!.villageHouseholdQuantity ??
+        (submittedSummary is Map
+            ? _parseQuantity(
+                submittedSummary[villageHouseholdQuantityKey]?.toString(),
+              )
+            : null);
+    final animalHouseholds = latestCensus!.animalHouseholdQuantity ??
+        (submittedSummary is Map
+            ? _parseQuantity(
+                submittedSummary[animalHouseholdQuantityKey]?.toString(),
+              )
+            : null);
+
+    if (villageHouseholds != null) {
+      summaryValues[villageHouseholdQuantityKey] = villageHouseholds.toString();
+    }
+    if (animalHouseholds != null) {
+      summaryValues[animalHouseholdQuantityKey] = animalHouseholds.toString();
+    }
+  }
+
   Future<void> _loadDraft() async {
     final village = selectedVillage;
     final kind = activeKind;
@@ -580,13 +800,15 @@ class CensusViewModel extends BaseViewModel {
       villageId: village.id,
       kind: kind,
       definitionVersionId: activeDefinition?.id,
+      occurrenceId: activeOccurrence?.id,
     );
     if (loaded == null) {
       draft = null;
       return;
     }
-
-    final appliedAny = _applyCompatibleValues(loaded.measureValues);
+    final appliedRows = _applyCompatibleValues(loaded.measureValues);
+    final appliedSummary = _applyCompatibleSummaryValues(loaded.summaryValues);
+    final appliedAny = appliedRows || appliedSummary;
     if (!appliedAny) {
       draft = null;
       await _clearDraft();
@@ -612,7 +834,9 @@ class CensusViewModel extends BaseViewModel {
       villageId: village.id,
       kind: kind,
       definitionVersionId: activeDefinition?.id,
+      occurrenceId: activeOccurrence?.id,
       measureValues: _cloneMeasureValues(measureValues),
+      summaryValues: Map<String, String>.from(summaryValues),
       savedAt: DateTime.now(),
     );
     draft = currentDraft;
@@ -630,8 +854,24 @@ class CensusViewModel extends BaseViewModel {
       villageId: village.id,
       kind: kind,
       definitionVersionId: activeDefinition?.id,
+      occurrenceId: activeOccurrence?.id,
     );
     draft = null;
+  }
+
+  CensusRoundOccurrence? _occurrenceForActiveMode() {
+    final occurrences =
+        trainingMode ? trainingOccurrences : productionOccurrences;
+    return occurrences.isNotEmpty ? occurrences.first : null;
+  }
+
+  Future<void> _reloadActiveOccurrenceForMode() async {
+    activeOccurrence = _occurrenceForActiveMode();
+    noActiveRound = activeOccurrence == null;
+    _clearFormDataValues();
+    _ensureValueSlots();
+    _prefillFromLatestCensus();
+    await _loadDraft();
   }
 
   Future<void> discardDraft() async {
@@ -644,6 +884,10 @@ class CensusViewModel extends BaseViewModel {
           (entry) => MapEntry(entry.key, Map<String, String>.from(entry.value)),
         ),
       );
+    summaryValues
+      ..clear()
+      ..addAll(_initialSummaryValues);
+    summaryErrors.clear();
     formValueRevision++;
     message = localize.censusDraftDiscardedMessage;
     notifyListeners();
@@ -672,6 +916,28 @@ class CensusViewModel extends BaseViewModel {
     return totalPrevious == restored;
   }
 
+  bool _restoreCompatibleSummaryValues(Map<String, String> previousValues) {
+    if (!requiresAnimalSummary) {
+      return true;
+    }
+    var totalPrevious = 0;
+    var restored = 0;
+    for (final key in [
+      villageHouseholdQuantityKey,
+      animalHouseholdQuantityKey,
+    ]) {
+      final value = previousValues[key] ?? '';
+      if (value.isEmpty) {
+        continue;
+      }
+      totalPrevious++;
+      summaryValues[key] = value;
+      restored++;
+    }
+    _captureInitialValues();
+    return totalPrevious == restored;
+  }
+
   bool _applyCompatibleValues(
     Map<String, Map<String, String>> previousValues,
   ) {
@@ -692,12 +958,34 @@ class CensusViewModel extends BaseViewModel {
     return appliedAny;
   }
 
+  bool _applyCompatibleSummaryValues(Map<String, String> previousValues) {
+    if (!requiresAnimalSummary) {
+      return false;
+    }
+    var appliedAny = false;
+    for (final key in [
+      villageHouseholdQuantityKey,
+      animalHouseholdQuantityKey,
+    ]) {
+      final value = previousValues[key];
+      if (value == null) {
+        continue;
+      }
+      summaryValues[key] = value;
+      appliedAny = true;
+    }
+    return appliedAny;
+  }
+
   void _captureInitialValues() {
     _initialMeasureValues
       ..clear()
       ..addEntries(
         _cloneMeasureValues(measureValues).entries,
       );
+    _initialSummaryValues
+      ..clear()
+      ..addAll(summaryValues);
   }
 
   Map<String, Map<String, String>> _cloneMeasureValues(
@@ -721,13 +1009,17 @@ class CensusViewModel extends BaseViewModel {
         }
       }
     }
+    if (isSummaryDirty) {
+      return true;
+    }
     return false;
   }
 
   bool _hasAnyEnteredValue(Map<String, Map<String, String>> values) {
     return values.values.any(
-      (rowValues) => rowValues.values.any((value) => value.isNotEmpty),
-    );
+          (rowValues) => rowValues.values.any((value) => value.isNotEmpty),
+        ) ||
+        summaryValues.values.any((value) => value.isNotEmpty);
   }
 
   String _dateOnly(DateTime date) {
@@ -763,17 +1055,32 @@ class CensusViewModel extends BaseViewModel {
 
   void _clearFormData() {
     activeDefinition = null;
+    activeOccurrence = null;
+    productionOccurrences = [];
+    trainingOccurrences = [];
     latestCensus = null;
     draft = null;
     definitionInactive = false;
     rows = [];
     measures = [];
+    _clearFormDataValues();
+  }
+
+  void _clearFormDataValues() {
     latestSnapshotUsesOlderDefinition = false;
     latestSnapshotPrefilledAnyValue = false;
     latestSnapshotPrefilledAllValues = false;
     measureValues.clear();
     measureErrors.clear();
+    summaryValues
+      ..clear()
+      ..addAll({
+        villageHouseholdQuantityKey: '',
+        animalHouseholdQuantityKey: '',
+      });
+    summaryErrors.clear();
     _initialMeasureValues.clear();
+    _initialSummaryValues.clear();
     _syncInputFocusNodes();
   }
 

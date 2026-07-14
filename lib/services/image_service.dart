@@ -1,8 +1,10 @@
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/models/entities/pending_media_parent_type.dart';
 import 'package:podd_app/models/entities/report_image.dart';
 import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/db_service.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:stacked/stacked.dart';
 
 abstract class IImageService with ListenableServiceMixin {
@@ -21,6 +23,12 @@ abstract class IImageService with ListenableServiceMixin {
   Future<void> remove(String reportId);
 
   Future<ImageSubmitResult> submit(ReportImage image);
+
+  Future<List<ReportImage>> markForRemoteParent({
+    required String localParentId,
+    required String parentType,
+    required String remoteParentId,
+  });
 
   Future<ImageSubmitResult> submitObservationRecordImage(
     ReportImage image,
@@ -55,7 +63,14 @@ class ImageService extends IImageService {
 
   @override
   Future<ImageSubmitResult> submit(ReportImage image) async {
-    var result = await _imageApi.submit(image);
+    final recordType = PendingMediaParentType.recordTypeFor(image.parentType);
+    final result = recordType == null
+        ? await _imageApi.submit(image)
+        : await _imageApi.submitObservationRecordImage(
+            image,
+            image.effectiveParentId,
+            recordType,
+          );
     if (result is ImageSubmitSuccess) {
       await removeImage(image.id);
       _pendingImages.remove(image);
@@ -91,7 +106,33 @@ class ImageService extends IImageService {
   @override
   Future<void> saveImage(ReportImage reportImage) async {
     var db = _dbService.db;
-    await db.insert("report_image", reportImage.toMap());
+    await db.insert(
+      "report_image",
+      reportImage.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    final pendingIndex =
+        _pendingImages.indexWhere((image) => image.id == reportImage.id);
+    if (pendingIndex != -1) {
+      _pendingImages[pendingIndex] = reportImage;
+    }
+  }
+
+  @override
+  Future<List<ReportImage>> markForRemoteParent({
+    required String localParentId,
+    required String parentType,
+    required String remoteParentId,
+  }) async {
+    final images = await findByReportId(localParentId);
+    for (final image in images) {
+      final updated = image.withRemoteParent(
+        parentType: parentType,
+        remoteParentId: remoteParentId,
+      );
+      await saveImage(updated);
+    }
+    return findByReportId(localParentId);
   }
 
   @override

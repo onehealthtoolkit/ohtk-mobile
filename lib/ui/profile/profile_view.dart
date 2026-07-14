@@ -5,9 +5,11 @@ import 'package:flutter/rendering.dart';
 import 'package:gal/gal.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/language_dropdown.dart';
 import 'package:podd_app/components/restart_widget.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
+import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
@@ -19,6 +21,13 @@ import 'package:podd_app/ui/report_type/qr_report_type_view.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+
+Color get _profileTeal => OhtkTheme.palette.teal700;
+Color get _profileTealMid => OhtkTheme.palette.teal800;
+
+String _themePresetLabel(OhtkThemePreset preset) {
+  return preset.label;
+}
 
 class ProfileView extends StatelessWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -227,19 +236,19 @@ class _Avatar extends StackedHookView<ProfileViewModel> {
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
-                color: incidentsTeal.withValues(alpha: 0.08),
+                color: _profileTeal.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
                 border: Border.all(color: incidentsHair, width: 1),
               ),
               child: ClipOval(
                 child: viewModel.isBusy
-                    ? const Center(
+                    ? Center(
                         child: SizedBox(
                           width: 22,
                           height: 22,
                           child: CircularProgressIndicator(
                             strokeWidth: 2.5,
-                            color: incidentsTeal,
+                            color: _profileTeal,
                           ),
                         ),
                       )
@@ -260,7 +269,7 @@ class _Avatar extends StackedHookView<ProfileViewModel> {
             right: 0,
             bottom: 0,
             child: Material(
-              color: incidentsTeal,
+              color: _profileTeal,
               shape: const CircleBorder(
                 side: BorderSide(color: Colors.white, width: 2.5),
               ),
@@ -325,12 +334,12 @@ class _AvatarFallback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: incidentsTeal.withValues(alpha: 0.08),
+      color: _profileTeal.withValues(alpha: 0.08),
       alignment: Alignment.center,
-      child: const Icon(
+      child: Icon(
         Icons.person_outline,
         size: 40,
-        color: incidentsTeal,
+        color: _profileTeal,
       ),
     );
   }
@@ -466,10 +475,11 @@ class _ConsolidatedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final localize = AppLocalizations.of(context)!;
     final isMulti = viewModel.hasMultipleAssignedVillages;
-    final activeVillage = viewModel.selectedVillage?.name ??
-        viewModel.assignedVillageNames;
+    final activeVillage =
+        viewModel.selectedVillage?.name ?? viewModel.assignedVillageNames;
     final hasVillage = (activeVillage ?? '').trim().isNotEmpty;
     final languageLabel = _resolveLanguageNativeName(viewModel.language);
+    final appTheme = locator<AppTheme>();
 
     return ProfileSectionCard(
       children: [
@@ -508,6 +518,12 @@ class _ConsolidatedCard extends StatelessWidget {
           icon: Icons.qr_code_2_outlined,
           title: localize.getLoginQrcodeButton,
           onTap: () => _openQrDialog(context),
+        ),
+        ProfileActionRow(
+          icon: Icons.palette_outlined,
+          title: 'Theme',
+          value: _themePresetLabel(appTheme.preset),
+          onTap: () => _openThemeSheet(context),
           isLast: true,
         ),
       ],
@@ -578,7 +594,7 @@ class _ConsolidatedCard extends StatelessWidget {
               }
             },
             style: TextButton.styleFrom(
-              backgroundColor: incidentsTeal,
+              backgroundColor: _profileTeal,
               foregroundColor: Colors.white,
               shape: const StadiumBorder(),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
@@ -604,6 +620,202 @@ class _ConsolidatedCard extends StatelessWidget {
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (_, __, ___) => _QrLoginDialog(viewModel: viewModel),
+    );
+  }
+
+  void _openThemeSheet(BuildContext context) {
+    final appTheme = locator<AppTheme>();
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) => _ThemePresetSheet(
+        currentPreset: appTheme.preset,
+        onPicked: (preset) async {
+          Navigator.pop(sheetContext);
+          await appTheme.setPreset(preset);
+        },
+      ),
+    );
+  }
+}
+
+class _ThemePresetSheet extends StatelessWidget {
+  final OhtkThemePreset currentPreset;
+  final ValueChanged<OhtkThemePreset> onPicked;
+
+  const _ThemePresetSheet({
+    required this.currentPreset,
+    required this.onPicked,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: media.viewInsets.bottom,
+        ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: media.size.height * 0.78),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 10),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: incidentsHair,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(20, 14, 20, 12),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Theme',
+                    style: TextStyle(
+                      color: incidentsInk,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                ),
+              ),
+              const Divider(height: 1, color: incidentsHair),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  itemCount: OhtkThemePreset.values.length,
+                  itemBuilder: (context, index) {
+                    final preset = OhtkThemePreset.values[index];
+                    return _ThemePresetRow(
+                      preset: preset,
+                      selected: currentPreset == preset,
+                      isLast: index == OhtkThemePreset.values.length - 1,
+                      onTap: () => onPicked(preset),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ThemePresetRow extends StatelessWidget {
+  final OhtkThemePreset preset;
+  final bool selected;
+  final bool isLast;
+  final VoidCallback onTap;
+
+  const _ThemePresetRow({
+    required this.preset,
+    required this.selected,
+    required this.isLast,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = preset.palette;
+    return Material(
+      color: selected ? palette.teal700.withValues(alpha: 0.06) : Colors.white,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            border: isLast
+                ? null
+                : const Border(
+                    bottom: BorderSide(color: incidentsHair, width: 1),
+                  ),
+          ),
+          constraints: const BoxConstraints(minHeight: 56),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+          child: Row(
+            children: [
+              _ThemeSwatches(palette: palette),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  _themePresetLabel(preset),
+                  style: const TextStyle(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w700,
+                    color: incidentsInk,
+                  ),
+                ),
+              ),
+              _RadioRing(selected: selected),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ThemeSwatches extends StatelessWidget {
+  final OhtkBrandPalette palette;
+
+  const _ThemeSwatches({required this.palette});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 48,
+      height: 24,
+      child: Stack(
+        children: [
+          _SwatchDot(color: palette.teal900, left: 0),
+          _SwatchDot(color: palette.teal700, left: 12),
+          _SwatchDot(color: palette.teal100, left: 24),
+        ],
+      ),
+    );
+  }
+}
+
+class _SwatchDot extends StatelessWidget {
+  final Color color;
+  final double left;
+
+  const _SwatchDot({required this.color, required this.left});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: left,
+      top: 0,
+      child: Container(
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 2),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x14000000),
+              offset: Offset(0, 1),
+              blurRadius: 2,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -706,7 +918,7 @@ class _VillageRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? incidentsTeal.withValues(alpha: 0.06) : Colors.white,
+      color: selected ? _profileTeal.withValues(alpha: 0.06) : Colors.white,
       child: InkWell(
         onTap: onTap,
         child: Container(
@@ -719,10 +931,10 @@ class _VillageRow extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
           child: Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.location_city_outlined,
                 size: 20,
-                color: incidentsTeal,
+                color: _profileTeal,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -755,9 +967,9 @@ class _RadioRing extends StatelessWidget {
       height: 22,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: selected ? incidentsTeal : Colors.transparent,
+        color: selected ? _profileTeal : Colors.transparent,
         border: Border.all(
-          color: selected ? incidentsTeal : incidentsHair,
+          color: selected ? _profileTeal : incidentsHair,
           width: 2,
         ),
       ),
@@ -807,7 +1019,7 @@ class _QrLoginDialogState extends State<_QrLoginDialog> {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: incidentsTeal,
+          backgroundColor: _profileTeal,
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 2),
           content: Text(
@@ -865,11 +1077,11 @@ class _QrLoginDialogState extends State<_QrLoginDialog> {
                   children: [
                     Text(
                       localize.qrDialogEyebrow.toUpperCase(),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 10.5,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.5,
-                        color: incidentsTeal,
+                        color: _profileTeal,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -909,24 +1121,24 @@ class _QrLoginDialogState extends State<_QrLoginDialog> {
                     Container(
                       padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
                       decoration: BoxDecoration(
-                        color: incidentsTeal.withValues(alpha: 0.06),
+                        color: _profileTeal.withValues(alpha: 0.06),
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.shield_outlined,
                             size: 13,
-                            color: incidentsTealDark,
+                            color: _profileTealMid,
                           ),
                           const SizedBox(width: 6),
                           Text(
                             localize.qrKeepPrivate,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: incidentsTealDark,
+                              color: _profileTealMid,
                             ),
                           ),
                         ],
@@ -962,10 +1174,10 @@ class _QrLoginDialogState extends State<_QrLoginDialog> {
                       ),
                     ),
                     style: TextButton.styleFrom(
-                      backgroundColor: incidentsTeal,
+                      backgroundColor: _profileTeal,
                       foregroundColor: Colors.white,
                       disabledBackgroundColor:
-                          incidentsTeal.withValues(alpha: 0.5),
+                          _profileTeal.withValues(alpha: 0.5),
                       disabledForegroundColor: Colors.white,
                       shape: const StadiumBorder(),
                       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -1003,35 +1215,35 @@ class _QrPanel extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: incidentsTeal.withValues(alpha: 0.04),
+          color: _profileTeal.withValues(alpha: 0.04),
           borderRadius: BorderRadius.circular(14),
         ),
         alignment: Alignment.center,
         child: CustomPaint(
           painter: _DashedRectPainter(
-            color: incidentsTeal.withValues(alpha: 0.3),
+            color: _profileTeal.withValues(alpha: 0.3),
             radius: 14,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
+              SizedBox(
                 width: 30,
                 height: 30,
                 child: CircularProgressIndicator(
-                  color: incidentsTeal,
+                  color: _profileTeal,
                   strokeWidth: 2.5,
                 ),
               ),
               const SizedBox(height: 10),
               Text(
                 localize.qrLoading.toUpperCase(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.4,
-                  color: incidentsTeal,
+                  color: _profileTeal,
                 ),
               ),
             ],

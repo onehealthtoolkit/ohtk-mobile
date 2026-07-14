@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 
 typedef OnSubmit = Future<void> Function();
+
+Color get _brandPrimary => OhtkTheme.palette.teal700;
+Color _brandTint(double alpha) =>
+    OhtkTheme.palette.teal700.withValues(alpha: alpha);
 
 class FormConfirmSubmit extends StatelessWidget {
   final OnSubmit onSubmit;
@@ -127,9 +132,9 @@ class _AuthorityCard extends StatelessWidget {
     final localize = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
-        color: incidentsTeal.withValues(alpha: 0.05),
+        color: _brandTint(0.05),
         border: Border.all(
-          color: incidentsTeal.withValues(alpha: 0.18),
+          color: _brandTint(0.18),
           width: 1,
         ),
         borderRadius: BorderRadius.circular(12),
@@ -140,13 +145,13 @@ class _AuthorityCard extends StatelessWidget {
         children: [
           Text(
             localize.authorityEyebrow,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: incidentsFontFamily,
               fontFamilyFallback: incidentsFontFamilyFallback,
               fontSize: 10.5,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.5,
-              color: incidentsTeal,
+              color: _brandPrimary,
             ),
           ),
           const SizedBox(height: 6),
@@ -225,16 +230,16 @@ class _DataSummaryCard extends StatelessWidget {
                 onTap: onEdit,
                 behavior: HitTestBehavior.opaque,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 4, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                   child: Text(
                     localize.reviewEditButton,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: incidentsFontFamily,
                       fontFamilyFallback: incidentsFontFamilyFallback,
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
-                      color: incidentsTeal,
+                      color: _brandPrimary,
                     ),
                   ),
                 ),
@@ -341,10 +346,9 @@ class _ReviewFooter extends StatelessWidget {
             child: TextButton(
               onPressed: busy ? null : () => onSubmit(),
               style: TextButton.styleFrom(
-                backgroundColor: incidentsTeal,
+                backgroundColor: _brandPrimary,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor:
-                    incidentsTeal.withValues(alpha: 0.5),
+                disabledBackgroundColor: _brandTint(0.5),
                 disabledForegroundColor: Colors.white,
                 shape: const StadiumBorder(),
                 padding: const EdgeInsets.symmetric(vertical: 12),
