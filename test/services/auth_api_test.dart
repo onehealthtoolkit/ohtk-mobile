@@ -75,13 +75,16 @@ void main() {
       ]);
       final api = authApiFor(link);
 
-      final result = await api.refreshToken();
+      final result = await api.refreshToken('old-refresh-token');
 
       expect(result, isA<AuthSuccess>());
       final success = result as AuthSuccess;
       expect(success.token, 'new-access-token');
       expect(success.refreshToken, 'new-refresh-token');
       expect(success.refreshExpiresIn, 456);
+      expect(link.requests.single.variables, {
+        'refreshToken': 'old-refresh-token',
+      });
     });
 
     test('getUserProfile parses me query response', () async {
