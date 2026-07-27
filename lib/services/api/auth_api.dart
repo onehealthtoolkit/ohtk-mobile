@@ -33,10 +33,10 @@ class AuthApi extends GraphQlBaseApi {
     }
   }
 
-  Future<AuthResult> refreshToken() async {
+  Future<AuthResult> refreshToken(String refreshToken) async {
     const mutation = r'''
-          mutation RefreshToken {
-            refreshToken {
+          mutation RefreshToken($refreshToken: String!) {
+            refreshToken(refreshToken: $refreshToken) {
               token,
               refreshExpiresIn,
               refreshToken
@@ -46,9 +46,10 @@ class AuthApi extends GraphQlBaseApi {
     try {
       final result = await runGqlMutation(
         mutation: mutation,
+        variables: {'refreshToken': refreshToken},
         parseData: (resp) => AuthSuccess(
           token: resp?['token'],
-          refreshToken: resp?['refreshToken'],
+          refreshToken: resp?['refreshToken'] ?? refreshToken,
           refreshExpiresIn: resp?['refreshExpiresIn'],
         ),
       );

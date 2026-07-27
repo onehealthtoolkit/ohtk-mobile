@@ -426,86 +426,99 @@ class _StateMessage extends StatelessWidget {
       onRefresh: onAction,
       child: LayoutBuilder(
         builder: (context, constraints) {
+          // Fill the body, then Center the empty-state block. Relying on
+          // Column.mainAxisAlignment alone fails when EmptyStateAppear
+          // (opacity/scale) does not expand to the viewport height.
+          final minHeight = constraints.hasBoundedHeight
+              ? constraints.maxHeight
+              : MediaQuery.sizeOf(context).height * 0.6;
+
           return SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              constraints: BoxConstraints(
+                minHeight: minHeight,
+                minWidth: constraints.maxWidth,
+              ),
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
-                child: EmptyStateAppear(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 88,
-                        height: 88,
-                        decoration: BoxDecoration(
-                          color: iconBackground,
-                          borderRadius: BorderRadius.circular(24),
+                child: Center(
+                  child: EmptyStateAppear(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 88,
+                          height: 88,
+                          decoration: BoxDecoration(
+                            color: iconBackground,
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Icon(icon, color: iconColor, size: 38),
                         ),
-                        child: Icon(icon, color: iconColor, size: 38),
-                      ),
-                      const SizedBox(height: 18),
-                      Text(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: incidentsInk,
-                          fontFamily: incidentsFontFamily,
-                          fontFamilyFallback: incidentsFontFamilyFallback,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 260),
-                        child: Text(
-                          helper,
+                        const SizedBox(height: 18),
+                        Text(
+                          title,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            color: incidentsMuted,
+                            color: incidentsInk,
                             fontFamily: incidentsFontFamily,
                             fontFamilyFallback: incidentsFontFamilyFallback,
-                            fontSize: 13.5,
-                            height: 1.55,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 22),
-                      filledAction
-                          ? ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                elevation: 0,
-                                backgroundColor: _brandPrimary,
-                                foregroundColor: Colors.white,
-                                shape: const StadiumBorder(),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 24),
-                                minimumSize: const Size(0, 44),
-                              ),
-                              onPressed: onAction,
-                              icon: const Icon(Icons.refresh, size: 15),
-                              label: _ActionLabel(actionLabel),
-                            )
-                          : OutlinedButton.icon(
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: _brandPrimary,
-                                side: BorderSide(
-                                  color: _brandPrimary,
-                                  width: 1.5,
-                                ),
-                                shape: const StadiumBorder(),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 18),
-                                minimumSize: const Size(0, 38),
-                              ),
-                              onPressed: onAction,
-                              icon: const Icon(Icons.refresh, size: 14),
-                              label: _ActionLabel(actionLabel),
+                        const SizedBox(height: 6),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 260),
+                          child: Text(
+                            helper,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: incidentsMuted,
+                              fontFamily: incidentsFontFamily,
+                              fontFamilyFallback: incidentsFontFamilyFallback,
+                              fontSize: 13.5,
+                              height: 1.55,
                             ),
-                    ],
+                          ),
+                        ),
+                        const SizedBox(height: 22),
+                        filledAction
+                            ? ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0,
+                                  backgroundColor: _brandPrimary,
+                                  foregroundColor: Colors.white,
+                                  shape: const StadiumBorder(),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24),
+                                  minimumSize: const Size(0, 44),
+                                ),
+                                onPressed: onAction,
+                                icon: const Icon(Icons.refresh, size: 15),
+                                label: _ActionLabel(actionLabel),
+                              )
+                            : OutlinedButton.icon(
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: _brandPrimary,
+                                  side: BorderSide(
+                                    color: _brandPrimary,
+                                    width: 1.5,
+                                  ),
+                                  shape: const StadiumBorder(),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 18),
+                                  minimumSize: const Size(0, 38),
+                                ),
+                                onPressed: onAction,
+                                icon: const Icon(Icons.refresh, size: 14),
+                                label: _ActionLabel(actionLabel),
+                              ),
+                      ],
+                    ),
                   ),
                 ),
               ),

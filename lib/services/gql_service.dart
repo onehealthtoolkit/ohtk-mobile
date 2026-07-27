@@ -6,7 +6,7 @@ import 'package:podd_app/locator.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
 import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/config_service.dart';
-import 'package:podd_app/services/secure_storage_service.dart';
+import 'package:podd_app/services/jwt.dart';
 import "package:gql_dio_link/gql_dio_link.dart";
 import 'package:dio/dio.dart' as http;
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -22,8 +22,9 @@ class InvalidRefreshTokenError extends http.DioException {
 class GqlService {
   final backendUrlKey = "backendUrl";
 
+  static const _authRetriedExtraKey = 'authRetried';
+
   final _configService = locator<ConfigService>();
-  final _secureStorage = locator<ISecureStorageService>();
   final _dio = http.Dio();
   final _cache = GraphQLCache(store: HiveStore());
 
@@ -35,6 +36,12 @@ class GqlService {
 
   final _jwtExpiredMessages = [
     'Signature has expired',
+  ];
+
+  final _authBootstrapOperationMarkers = [
+    'refreshToken',
+    'tokenAuth',
+    'verifyLoginQrToken',
   ];
 
   overrideDioSelfSignCertificateHandling() {
@@ -61,7 +68,11 @@ class GqlService {
     _dio.interceptors.add(
       http.InterceptorsWrapper(
         onResponse: (response, handler) async {
-          final errors = response.data['errors'];
+          final data = response.data;
+          if (data is! Map) {
+            return handler.resolve(response);
+          }
+          final errors = data['errors'];
           if (errors is List && errors.isNotEmpty) {
             if (_isInvalidRefreshToken(errors)) {
               var authService = locator<IAuthService>();
@@ -71,13 +82,31 @@ class GqlService {
                 InvalidRefreshTokenError(response.requestOptions),
               );
             } else if (_isJWTExpire(errors)) {
-              bool success = await _refreshToken();
-              if (success) {
-                final cloneReq = await _retry(response.requestOptions);
-                return handler.resolve(cloneReq);
-              } else {
+              // S5: no refresh-on-refresh / no second retry / skip auth bootstrap ops.
+              if (_alreadyRetried(response.requestOptions) ||
+                  _isAuthBootstrapOperation(response.requestOptions)) {
                 return handler.next(response);
               }
+
+              final authService = locator<IAuthService>();
+              final current = authService.accessToken;
+              // If another refresh already produced a still-valid access token
+              // (wall-clock, no skew), just retry — avoid a redundant rotation.
+              if (current != null &&
+                  !Jwt.isExpired(current, delta: Duration.zero)) {
+                final cloneReq = await _retry(response.requestOptions);
+                return handler.resolve(cloneReq);
+              }
+
+              final result = await authService.ensureValidAccessToken(
+                force: true,
+                failedAccessToken: current,
+              );
+              if (result == EnsureAccessTokenResult.valid) {
+                final cloneReq = await _retry(response.requestOptions);
+                return handler.resolve(cloneReq);
+              }
+              return handler.next(response);
             }
           }
           return handler.resolve(response);
@@ -98,51 +127,43 @@ class GqlService {
     _client?.cache.store.reset();
   }
 
-  Future<bool> _refreshToken() async {
-    final refreshToken = await _secureStorage.get('refreshToken');
-    if (refreshToken == null) {
-      return false;
-    }
-
-    const mutation = r'''
-          mutation RefreshToken($refreshToken: String!) {
-            refreshToken(refreshToken: $refreshToken) {
-              token,
-              refreshExpiresIn,
-              refreshToken
-            }
-          }
-    ''';
-
-    try {
-      final endpoint = await _endpoint();
-      final response = await _dio.post(endpoint, data: {
-        'query': mutation,
-        'variables': {'refreshToken': refreshToken}
-      });
-
-      final refreshResult = response.data['data']['refreshToken'];
-      await _secureStorage.set('token', refreshResult['token']);
-      await _secureStorage.set('refreshToken', refreshResult['refreshToken']);
-      await _secureStorage.set(
-        'refreshExpiresIn',
-        refreshResult['refreshExpiresIn'].toString(),
-      );
-      return true;
-    } on InvalidRefreshTokenError {
-      return false;
-    }
-  }
-
   Future<http.Response<dynamic>> _retry(http.RequestOptions requestOptions) {
     final options = http.Options(
       method: requestOptions.method,
       headers: requestOptions.headers,
+      extra: {
+        ...requestOptions.extra,
+        _authRetriedExtraKey: true,
+      },
     );
     return _dio.request<dynamic>(requestOptions.path,
         data: requestOptions.data,
         queryParameters: requestOptions.queryParameters,
         options: options);
+  }
+
+  bool _alreadyRetried(http.RequestOptions requestOptions) {
+    return requestOptions.extra[_authRetriedExtraKey] == true;
+  }
+
+  bool _isAuthBootstrapOperation(http.RequestOptions requestOptions) {
+    final data = requestOptions.data;
+    String query = '';
+    if (data is Map) {
+      query = data['query']?.toString() ?? '';
+    } else if (data is String) {
+      query = data;
+    }
+    if (query.isEmpty) {
+      return false;
+    }
+    final normalized = query.toLowerCase();
+    for (final marker in _authBootstrapOperationMarkers) {
+      if (normalized.contains(marker.toLowerCase())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   _isJWTExpire(errors) {
@@ -161,12 +182,8 @@ class GqlService {
 
   _isInvalidRefreshToken(errors) {
     for (var element in errors) {
-      final err = element['message'] as String;
-      final m = ["Refresh has expired"].firstWhere(
-        (element) => err.contains(element),
-        orElse: () => '',
-      );
-      if (m != '') {
+      final err = element['message'] as String?;
+      if (err != null && AuthTokenFailureMessages.isHardRefreshFailure(err)) {
         return true;
       }
     }

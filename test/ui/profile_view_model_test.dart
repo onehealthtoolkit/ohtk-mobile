@@ -46,6 +46,17 @@ class _AuthServiceMock extends ChangeNotifier implements IAuthService {
   }
 
   @override
+  String? get accessToken => null;
+
+  @override
+  Future<EnsureAccessTokenResult> ensureValidAccessToken({
+    bool force = false,
+    String? failedAccessToken,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
   Future<bool> requestAccessTokenIfExpired() {
     throw UnimplementedError();
   }
@@ -94,6 +105,8 @@ class _ProfileServiceMock implements IProfileService {
     required String lastName,
     String? telephone,
     String? address,
+    String? gender,
+    int? age,
   }) {
     throw UnimplementedError();
   }
