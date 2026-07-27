@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/components/report_file_grid_view.dart';
 import 'package:podd_app/components/report_image_carousel.dart';
+import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
+import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/report/followup_report_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+
+Color get _brandDeep => OhtkTheme.palette.teal900;
 
 var formatter = DateFormat("dd/MM/yyyy HH:mm");
 
@@ -23,9 +26,23 @@ class FollowupReportView extends StatelessWidget {
       viewModelBuilder: () => FollowupReportViewModel(id),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
-          leading: const BackAppBarAction(),
-          automaticallyImplyLeading: false,
-          title: Text(AppLocalizations.of(context)!.followupDetailTitle),
+          backgroundColor: _brandDeep,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, size: 22),
+            onPressed: () => Navigator.maybePop(context),
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.followupDetailTitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          automaticallyImplyActions: true,
         ),
         body: viewModel.isBusy
             ? const Center(child: OhtkProgressIndicator(size: 100))

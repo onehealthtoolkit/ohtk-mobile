@@ -35,6 +35,19 @@ class _FormLocationFieldState extends State<FormLocationField> {
       if (result.isSuccess) {
         final p = result.position!;
         widget.field.value = "${p.longitude},${p.latitude}";
+        
+        // Animate camera to the new position
+        if (_controller.isCompleted) {
+          final controller = await _controller.future;
+          await controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: LatLng(p.latitude, p.longitude),
+                zoom: 17.0,
+              ),
+            ),
+          );
+        }
       } else if (result.failure != null &&
           result.failure != DeviceLocationFailure.rationaleDeclined &&
           result.failure != DeviceLocationFailure.serviceDisabled &&

@@ -10,8 +10,10 @@ class AppViewModel extends ReactiveViewModel {
   late Timer timer;
 
   AppViewModel() : super() {
+    // S6: timer is check-only; ensureValidAccessToken is a no-op when access
+    // is still valid outside skew, and single-flight coalesces concurrent work.
     timer = Timer.periodic(const Duration(minutes: 1), (timer) {
-      authService.requestAccessTokenIfExpired();
+      authService.ensureValidAccessToken();
     });
   }
 
