@@ -7,6 +7,7 @@ class Report {
   String reportTypeId;
   DateTime incidentDate;
   String? gpsLocation;
+  int? villageId;
   bool? incidentInAuthority;
   String? reportTypeName;
   bool testFlag;
@@ -18,6 +19,7 @@ class Report {
     required this.incidentDate,
     required this.testFlag,
     this.gpsLocation,
+    this.villageId,
     this.incidentInAuthority,
     this.reportTypeName,
   });
@@ -30,6 +32,7 @@ class Report {
         reportTypeName = map["report_type_name"],
         incidentDate = DateFormat("yyyy-MM-dd").parse(map["incident_date"]),
         gpsLocation = map["gps_location"],
+        villageId = map["village_id"] as int?,
         incidentInAuthority = map["incident_in_authority"] == 1;
 
   Map<String, dynamic> toMap() {
@@ -41,6 +44,7 @@ class Report {
       "report_type_name": reportTypeName,
       "incident_date": DateFormat("yyyy-MM-dd").format(incidentDate),
       "gps_location": gpsLocation,
+      "village_id": villageId,
       "incident_in_authority": incidentInAuthority,
     };
   }

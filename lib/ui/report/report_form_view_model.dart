@@ -6,6 +6,7 @@ import 'package:podd_app/models/entities/report.dart';
 import 'package:podd_app/models/entities/report_type.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
+import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/file_service.dart';
 import 'package:podd_app/services/image_service.dart';
 import 'package:podd_app/services/report_service.dart';
@@ -20,6 +21,7 @@ class ReportFormViewModel extends FormBaseViewModel {
   final IReportTypeService _reportTypeService = locator<IReportTypeService>();
   final IImageService _imageService = locator<IImageService>();
   final IFileService _fileService = locator<IFileService>();
+  final IAuthService _authService = locator<IAuthService>();
 
   final String _reportTypeId;
   final bool _testFlag;
@@ -96,6 +98,7 @@ class ReportFormViewModel extends FormBaseViewModel {
       reportTypeName: reportType!.name,
       incidentDate: incidentDate ?? DateTime.now(),
       gpsLocation: gpsLocation,
+      villageId: _authService.selectedVillage?.id,
       incidentInAuthority: _incidentInAuthority,
       testFlag: _testFlag,
     );
