@@ -14,7 +14,7 @@ class DbService extends IDbService {
     // follow this migration pattern https://github.com/tekartik/sqflite/blob/master/sqflite/doc/migration_example.md
     _db = await openDatabase(
       'podd.db',
-      version: 13,
+      version: 14,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onDowngrade: onDatabaseDowngradeDelete,
@@ -77,6 +77,9 @@ class DbService extends IDbService {
     await batch.commit();
     if (oldVersion < 13) {
       await _alterTableMediaParentV13(db);
+    }
+    if (oldVersion < 14) {
+      await _alterTableReportV14(db);
     }
   }
 
@@ -166,6 +169,7 @@ class DbService extends IDbService {
         report_type_name TEXT,
         incident_date TEXT,
         gps_location TEXT,
+        village_id INT,
         submitted INT,
         incident_in_authority BOOLEAN,
         test_flag INT
@@ -293,6 +297,10 @@ class DbService extends IDbService {
     await _addColumnIfMissing(db, 'report_image', 'remote_parent_id', 'TEXT');
     await _addColumnIfMissing(db, 'report_file', 'parent_type', 'TEXT');
     await _addColumnIfMissing(db, 'report_file', 'remote_parent_id', 'TEXT');
+  }
+
+  Future<void> _alterTableReportV14(Database db) async {
+    await _addColumnIfMissing(db, 'report', 'village_id', 'INT');
   }
 
   Future<void> _addColumnIfMissing(
