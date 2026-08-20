@@ -226,10 +226,6 @@ class RegisterViewModel extends BaseViewModel {
       setErrorForObject("lastName", localize.fieldRequired);
       isValidData = false;
     }
-    if (email == null || email!.isEmpty) {
-      setErrorForObject("email", localize.fieldRequired);
-      isValidData = false;
-    }
     if (phone == null || phone!.isEmpty) {
       setErrorForObject("phone", localize.fieldRequired);
       isValidData = false;
@@ -252,9 +248,11 @@ class RegisterViewModel extends BaseViewModel {
       setErrorForObject("consent", localize.registerConsentRequired);
       isValidData = false;
     }
-    // test email regexp
-    if (email != null &&
-        !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email!)) {
+    // Email is optional; only validate format when the user entered one.
+    final trimmedEmail = (email ?? "").trim();
+    if (trimmedEmail.isNotEmpty &&
+        !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+            .hasMatch(trimmedEmail)) {
       setErrorForObject("email", "Email is invalid");
       isValidData = false;
     }
@@ -269,7 +267,7 @@ class RegisterViewModel extends BaseViewModel {
       username: username,
       firstName: firstName,
       lastName: lastName,
-      email: email,
+      email: trimmedEmail.isEmpty ? "" : trimmedEmail,
       phone: phone,
       address: address,
       gender: (gender == null || gender!.isEmpty) ? null : gender,
