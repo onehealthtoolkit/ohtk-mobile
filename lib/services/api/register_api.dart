@@ -63,7 +63,7 @@ class RegisterApi extends GraphQlBaseApi {
   }) async {
     String mutation = r'''
       mutation UserRegister(
-        $email: String!,
+        $email: String = "",
         $firstName: String!,
         $invitationCode: String!,
         $lastName: String!,
@@ -106,7 +106,7 @@ class RegisterApi extends GraphQlBaseApi {
       final result = await runGqlMutation(
         mutation: mutation,
         variables: {
-          "email": email,
+          "email": (email == null || email.trim().isEmpty) ? "" : email.trim(),
           "firstName": firstName,
           "invitationCode": invitationCode,
           "lastName": lastName,
