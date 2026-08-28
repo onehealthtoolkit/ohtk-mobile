@@ -71,7 +71,9 @@ class ReportFormView extends StatelessWidget {
                           busy: viewModel.isBusy,
                           showDataSummary: true,
                           dataSummary: viewModel.dataSummary,
-                          authority: const _AuthorityRadios(),
+                          authority: viewModel.showIncidentInAuthorityBlock
+                              ? const _AuthorityRadios()
+                              : null,
                           onSubmit: () async {
                             final result = await viewModel.submit();
                             if (result is ReportSubmitSuccess ||
