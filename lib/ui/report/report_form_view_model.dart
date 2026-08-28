@@ -56,6 +56,11 @@ class ReportFormViewModel extends FormBaseViewModel {
 
   bool? get incidentInAuthority => _incidentInAuthority;
 
+  bool get showIncidentInAuthorityBlock =>
+      !(_authService.userProfile
+              ?.hasFeatureEnabled('report_restrict_to_assigned_scope') ??
+          false);
+
   set incidentInAuthority(bool? value) {
     _incidentInAuthority = value;
     notifyListeners();
