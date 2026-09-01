@@ -14,14 +14,18 @@ abstract class IFeatureCapabilityService with ListenableServiceMixin {
 }
 
 class FeatureCapabilityService extends IFeatureCapabilityService {
-  final _api = locator<FeatureCapabilityApi>();
-  final _logger = locator<Logger>();
+  final FeatureCapabilityApi _api;
+  final Logger _logger;
 
   final ReactiveValue<bool> _villageEnabled = ReactiveValue<bool>(false);
   final ReactiveValue<bool> _villageCapabilityKnown =
       ReactiveValue<bool>(false);
 
-  FeatureCapabilityService() {
+  FeatureCapabilityService({
+    FeatureCapabilityApi? api,
+    Logger? logger,
+  })  : _api = api ?? locator<FeatureCapabilityApi>(),
+        _logger = logger ?? locator<Logger>() {
     listenToReactiveValues([
       _villageEnabled,
       _villageCapabilityKnown,
@@ -40,9 +44,8 @@ class FeatureCapabilityService extends IFeatureCapabilityService {
       _villageEnabled.value = await _api.fetchVillageEnabled();
       _villageCapabilityKnown.value = true;
     } catch (e) {
+      // Keep last known value; a transport failure is not "disabled".
       _logger.w('Cannot refresh feature capabilities: $e');
-      _villageEnabled.value = false;
-      _villageCapabilityKnown.value = false;
     }
   }
 
