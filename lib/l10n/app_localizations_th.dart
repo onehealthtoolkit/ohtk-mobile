@@ -348,10 +348,20 @@ class AppLocalizationsTh extends AppLocalizations {
   String get descriptionSectionLabel => 'รายละเอียด';
 
   @override
+  String get accumulatedTotalsHeading => 'Totals (report + follow-ups)';
+
+  @override
   String get noDescriptionProvided => 'ไม่มีรายละเอียด';
 
   @override
   String get photosSectionLabel => 'ภาพถ่าย';
+
+  @override
+  String get noImagesLabel => 'No Images';
+
+  @override
+  String get fileOpenErrorMessage =>
+      'Cannot open file.\nEither no app supports it or the file is corrupted.';
 
   @override
   String get attachmentsSectionLabel => 'เอกสารแนบ';

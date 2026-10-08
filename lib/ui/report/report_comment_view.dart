@@ -423,7 +423,7 @@ class _CommentComposer extends StackedHookView<ReportCommentViewModel> {
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_library_outlined),
-                title: const Text('Pick from Gallery'),
+                title: Text(AppLocalizations.of(context)!.pickFromGallery),
                 onTap: () async {
                   final image = await _pickImage(ImageSource.gallery);
                   if (image != null) viewModel.addImage(image);
@@ -432,7 +432,7 @@ class _CommentComposer extends StackedHookView<ReportCommentViewModel> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera_outlined),
-                title: const Text('Take a Photo'),
+                title: Text(AppLocalizations.of(context)!.takeAPhoto),
                 onTap: () async {
                   final image = await _pickImage(ImageSource.camera);
                   if (image != null) viewModel.addImage(image);

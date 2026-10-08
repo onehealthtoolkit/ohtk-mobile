@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/components/playable_file_view.dart';
 import 'package:podd_app/locator.dart';
+import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/entities/base_report_file.dart';
 import 'package:open_file/open_file.dart';
 
@@ -109,11 +110,10 @@ class OpenableReportFile<T extends BaseReportFile> extends StatelessWidget {
             final result = await OpenFile.open(filePath, type: file.fileType);
 
             if (context.mounted && result.type != ResultType.done) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: Colors.red,
-                content: Text(
-                    "Cannot open file. \nEither no app supports or file is corrupted"),
-                duration: Duration(milliseconds: 3000),
+                content: Text(AppLocalizations.of(context)!.fileOpenErrorMessage),
+                duration: const Duration(milliseconds: 3000),
               ));
             }
           }

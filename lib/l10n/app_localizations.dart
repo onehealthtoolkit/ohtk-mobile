@@ -756,6 +756,12 @@ abstract class AppLocalizations {
   /// **'Description'**
   String get descriptionSectionLabel;
 
+  /// No description provided for @accumulatedTotalsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Totals (report + follow-ups)'**
+  String get accumulatedTotalsHeading;
+
   /// No description provided for @noDescriptionProvided.
   ///
   /// In en, this message translates to:
@@ -767,6 +773,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Photos'**
   String get photosSectionLabel;
+
+  /// No description provided for @noImagesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'No Images'**
+  String get noImagesLabel;
+
+  /// No description provided for @fileOpenErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot open file.\nEither no app supports it or the file is corrupted.'**
+  String get fileOpenErrorMessage;
 
   /// No description provided for @attachmentsSectionLabel.
   ///
