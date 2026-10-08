@@ -786,12 +786,6 @@ abstract class AppLocalizations {
   /// **'Follow up'**
   String get followUpFabLabel;
 
-  /// No description provided for @accumulatedTotalsLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Totals (report + follow-ups)'**
-  String get accumulatedTotalsLabel;
-
   /// No description provided for @commentPlaceholder.
   ///
   /// In en, this message translates to:
@@ -2123,96 +2117,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Report submitted'**
   String get reportSubmitSuccess;
-
-  /// No description provided for @animalSickDeathReportName.
-  ///
-  /// In en, this message translates to:
-  /// **'Animal Sick/Death'**
-  String get animalSickDeathReportName;
-
-  /// No description provided for @animalReportAffectedHouseholds.
-  ///
-  /// In en, this message translates to:
-  /// **'Number of affected households'**
-  String get animalReportAffectedHouseholds;
-
-  /// No description provided for @animalReportTotalAnimals.
-  ///
-  /// In en, this message translates to:
-  /// **'Number of animals'**
-  String get animalReportTotalAnimals;
-
-  /// No description provided for @animalReportSick.
-  ///
-  /// In en, this message translates to:
-  /// **'Number of sick'**
-  String get animalReportSick;
-
-  /// No description provided for @animalReportDead.
-  ///
-  /// In en, this message translates to:
-  /// **'Number of dead'**
-  String get animalReportDead;
-
-  /// No description provided for @animalReportRecovered.
-  ///
-  /// In en, this message translates to:
-  /// **'Number of recover'**
-  String get animalReportRecovered;
-
-  /// No description provided for @animalReportPhotos.
-  ///
-  /// In en, this message translates to:
-  /// **'Photos of animals'**
-  String get animalReportPhotos;
-
-  /// No description provided for @animalMetricAffectedHouseholds.
-  ///
-  /// In en, this message translates to:
-  /// **'Number of affected households'**
-  String get animalMetricAffectedHouseholds;
-
-  /// No description provided for @animalMetricTotalAnimals.
-  ///
-  /// In en, this message translates to:
-  /// **'Total animals'**
-  String get animalMetricTotalAnimals;
-
-  /// No description provided for @animalMetricSick.
-  ///
-  /// In en, this message translates to:
-  /// **'Sick'**
-  String get animalMetricSick;
-
-  /// No description provided for @animalMetricDead.
-  ///
-  /// In en, this message translates to:
-  /// **'Dead'**
-  String get animalMetricDead;
-
-  /// No description provided for @animalMetricRecovered.
-  ///
-  /// In en, this message translates to:
-  /// **'Recovered'**
-  String get animalMetricRecovered;
-
-  /// No description provided for @animalSummaryDisease.
-  ///
-  /// In en, this message translates to:
-  /// **'Disease'**
-  String get animalSummaryDisease;
-
-  /// No description provided for @animalSummaryAgeGroups.
-  ///
-  /// In en, this message translates to:
-  /// **'Age groups'**
-  String get animalSummaryAgeGroups;
-
-  /// No description provided for @animalSummarySex.
-  ///
-  /// In en, this message translates to:
-  /// **'Sex'**
-  String get animalSummarySex;
 }
 
 class _AppLocalizationsDelegate

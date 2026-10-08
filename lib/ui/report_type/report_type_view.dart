@@ -9,7 +9,6 @@ import 'package:podd_app/router.dart';
 import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/report_type/report_type_view_model.dart';
-import 'package:podd_app/ui/report/animal_report_localization.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
@@ -368,7 +367,6 @@ class _TypeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localize = AppLocalizations.of(context)!;
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(12),
@@ -387,7 +385,7 @@ class _TypeRow extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  localizeAnimalReportName(reportType.name, localize),
+                  reportType.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(

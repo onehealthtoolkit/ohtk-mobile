@@ -4,7 +4,6 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/report.dart';
 import 'package:podd_app/models/entities/report_type.dart';
-import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/opsv_form/opsv_form.dart';
 import 'package:podd_app/services/auth_service.dart';
@@ -13,7 +12,6 @@ import 'package:podd_app/services/image_service.dart';
 import 'package:podd_app/services/report_service.dart';
 import 'package:podd_app/services/report_type_service.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
-import 'package:podd_app/ui/report/animal_report_localization.dart';
 import 'package:uuid/uuid.dart';
 
 var _uuid = const Uuid();
@@ -43,10 +41,7 @@ class ReportFormViewModel extends FormBaseViewModel {
       final timezone = (await FlutterTimezone.getLocalTimezone()).identifier;
       _reportId = _uuid.v4();
       _formStore = Form.fromJson(
-          localizeAnimalReportDefinition(reportType!.name,
-              json.decode(reportType!.definition), locator<AppLocalizations>()),
-          _reportId,
-          _testFlag);
+          json.decode(reportType!.definition), _reportId, _testFlag);
       _formStore.setTimezone(timezone);
       isReady = true;
       notifyListeners();
@@ -61,9 +56,10 @@ class ReportFormViewModel extends FormBaseViewModel {
 
   bool? get incidentInAuthority => _incidentInAuthority;
 
-  bool get showIncidentInAuthorityBlock => !(_authService.userProfile
-          ?.hasFeatureEnabled('report_restrict_to_assigned_scope') ??
-      false);
+  bool get showIncidentInAuthorityBlock =>
+      !(_authService.userProfile
+              ?.hasFeatureEnabled('report_restrict_to_assigned_scope') ??
+          false);
 
   set incidentInAuthority(bool? value) {
     _incidentInAuthority = value;
@@ -91,12 +87,7 @@ class ReportFormViewModel extends FormBaseViewModel {
         formStore.toJsonValue(),
         incidentDate ?? DateTime.now(),
         location ?? "");
-    dataSummary = localizeAnimalReportSummary(
-            reportType?.name ?? '',
-            formStore.toJsonValue(),
-            incidentDate,
-            locator<AppLocalizations>()) ??
-        result;
+    dataSummary = result;
     notifyListeners();
   }
 

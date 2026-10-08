@@ -20,7 +20,6 @@ import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/report/full_screen_view.dart';
 import 'package:podd_app/ui/report/incident_report_view_model.dart';
 import 'package:podd_app/ui/report/report_comment_view.dart';
-import 'package:podd_app/ui/report/animal_report_localization.dart';
 import 'package:podd_app/ui/report/followup_list_view.dart';
 import 'package:stacked/stacked.dart';
 
@@ -339,7 +338,7 @@ class _HeaderBlock extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              localizeAnimalReportName(incident.reportTypeName, localize),
+              incident.reportTypeName,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
@@ -433,14 +432,13 @@ class _DescriptionBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localize = AppLocalizations.of(context)!;
-    final body = localizeAnimalReportSummary(incident.reportTypeName,
-            incident.data, incident.incidentDate, localize) ??
-        incident.trimWhitespaceDescription;
-    final hasBody = body.trim().isNotEmpty;
+    final hasBody = incident.description.trim().isNotEmpty;
     return _DetailBlock(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       child: Text(
-        hasBody ? body : localize.noDescriptionProvided,
+        hasBody
+            ? incident.trimWhitespaceDescription
+            : localize.noDescriptionProvided,
         style: TextStyle(
           fontSize: 15,
           height: 1.55,
@@ -458,10 +456,9 @@ class _AccumulatedMetricsBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localize = AppLocalizations.of(context)!;
     final metrics = incident.accumulatedMetrics ?? const [];
     return _DetailBlock(
-      eyebrow: localize.accumulatedTotalsLabel,
+      eyebrow: 'Totals (report + follow-ups)',
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
       child: Column(
         children: [
@@ -471,12 +468,7 @@ class _AccumulatedMetricsBlock extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    localizeAnimalMetricLabel(
-                      incident.reportTypeName,
-                      metric.id,
-                      metric.label,
-                      localize,
-                    ),
+                    metric.label,
                     style: const TextStyle(
                       fontSize: 13.5,
                       color: incidentsBody,
