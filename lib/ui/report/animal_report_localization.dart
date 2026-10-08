@@ -106,12 +106,12 @@ Map<String, dynamic> localizeAnimalReportDefinition(
   localized['sections'] = [
     for (final section in definition['sections'] as List? ?? [])
       if (section is Map)
-        {
+        <String, dynamic>{
           ...section,
           'questions': [
             for (final question in section['questions'] as List? ?? [])
               if (question is Map)
-                {
+                <String, dynamic>{
                   ...question,
                   'label': labels[
                           (question['fields'] as List?)?.firstOrNull?['id']] ??

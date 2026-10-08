@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
+import 'package:podd_app/opsv_form/opsv_form.dart' as opsv;
 import 'package:podd_app/ui/report/animal_report_localization.dart';
 
 void main() {
@@ -10,11 +11,12 @@ void main() {
     final definition = <String, dynamic>{
       'sections': [
         {
+          'label': 'Animals',
           'questions': [
             {
               'label': 'Number of affected households',
               'fields': [
-                {'id': 'num_household', 'name': 'num_household'}
+                {'type': 'text', 'id': 'num_household', 'name': 'num_household'}
               ],
             },
             {
@@ -38,6 +40,8 @@ void main() {
     expect(questions.first['label'], lao.animalReportAffectedHouseholds);
     expect(questions.first['fields'][0]['id'], 'num_household');
     expect(questions.last['label'], 'Unrelated question');
+    expect(opsv.Form.fromJson(localized, 'animal-report').sections.first
+        .questions.first.label, lao.animalReportAffectedHouseholds);
     expect((definition['sections'] as List).first['questions'][0]['label'],
         'Number of affected households');
     expect(localizeAnimalReportName('Animal Sick/Death', lao),
