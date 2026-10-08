@@ -367,6 +367,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get followUpFabLabel => 'Suivi';
 
   @override
+  String get accumulatedTotalsLabel => 'Totals (report + follow-ups)';
+
+  @override
   String get commentPlaceholder => 'Écrire un commentaire…';
 
   @override
@@ -1124,4 +1127,49 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get reportSubmitSuccess => 'Report submitted';
+
+  @override
+  String get animalSickDeathReportName => 'Animal Sick/Death';
+
+  @override
+  String get animalReportAffectedHouseholds => 'Number of affected households';
+
+  @override
+  String get animalReportTotalAnimals => 'Number of animals';
+
+  @override
+  String get animalReportSick => 'Number of sick';
+
+  @override
+  String get animalReportDead => 'Number of dead';
+
+  @override
+  String get animalReportRecovered => 'Number of recover';
+
+  @override
+  String get animalReportPhotos => 'Photos of animals';
+
+  @override
+  String get animalMetricAffectedHouseholds => 'Number of affected households';
+
+  @override
+  String get animalMetricTotalAnimals => 'Total animals';
+
+  @override
+  String get animalMetricSick => 'Sick';
+
+  @override
+  String get animalMetricDead => 'Dead';
+
+  @override
+  String get animalMetricRecovered => 'Recovered';
+
+  @override
+  String get animalSummaryDisease => 'Disease';
+
+  @override
+  String get animalSummaryAgeGroups => 'Age groups';
+
+  @override
+  String get animalSummarySex => 'Sex';
 }

@@ -322,7 +322,7 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get reviewAccuracyConfirmLabel =>
-      'I confirm that the information provided is accurate';
+      'ຂ້າພະເຈົ້າຍືນຢັນວ່າຂໍ້ມູນທີ່ໃຫ້ໄວ້ນັ້ນຖືກຕ້ອງ.';
 
   @override
   String get reviewBackToFormButton => 'ກັບໄປແບບຟອມ';
@@ -360,6 +360,9 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get followUpFabLabel => 'ຕິດຕາມຜົນ';
+
+  @override
+  String get accumulatedTotalsLabel => 'ຍອດລວມ (ບົດລາຍງານ ແລະ ການຕິດຕາມຜົນ)';
 
   @override
   String get commentPlaceholder => 'ຂຽນຄຳເຫັນ…';
@@ -1103,4 +1106,49 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get reportSubmitSuccess => 'ສົ່ງລາຍງານສຳເລັດ';
+
+  @override
+  String get animalSickDeathReportName => 'ສັດປ່ວຍ/ຕາຍ';
+
+  @override
+  String get animalReportAffectedHouseholds => 'ຄອບຄົວທີ່ມີຜົນກະທົບ';
+
+  @override
+  String get animalReportTotalAnimals => 'ຈຳນວນສັດທັງໝົດ';
+
+  @override
+  String get animalReportSick => 'ຈຳນວນສັດປ່ວຍ';
+
+  @override
+  String get animalReportDead => 'ຈຳນວນສັດຕາຍ';
+
+  @override
+  String get animalReportRecovered => 'ຈຳນວນສັດຫາຍປ່ວຍ';
+
+  @override
+  String get animalReportPhotos => 'ຖ່າຍຮູບສັດ';
+
+  @override
+  String get animalMetricAffectedHouseholds => 'ຄອບຄົວທີ່ມີຜົນກະທົບ';
+
+  @override
+  String get animalMetricTotalAnimals => 'ຈຳນວນສັດທັງໝົດ';
+
+  @override
+  String get animalMetricSick => 'ຈຳນວນສັດປ່ວຍ';
+
+  @override
+  String get animalMetricDead => 'ຈຳນວນສັດຕາຍ';
+
+  @override
+  String get animalMetricRecovered => 'ຈຳນວນສັດຫາຍປ່ວຍ';
+
+  @override
+  String get animalSummaryDisease => 'ພະຍາດ';
+
+  @override
+  String get animalSummaryAgeGroups => 'ກຸ່ມອາຍຸ';
+
+  @override
+  String get animalSummarySex => 'ເພດ';
 }

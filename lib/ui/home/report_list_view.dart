@@ -8,6 +8,7 @@ import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/router.dart';
 import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
+import 'package:podd_app/ui/report/animal_report_localization.dart';
 
 import 'all_reports_view_model.dart';
 
@@ -261,6 +262,10 @@ class _Content extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final showCase = report.caseId != null;
+    final localize = AppLocalizations.of(context)!;
+    final description = localizeAnimalReportSummary(report.reportTypeName,
+            report.data, report.incidentDate, localize) ??
+        report.trimWhitespaceDescription;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -270,7 +275,7 @@ class _Content extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                report.reportTypeName,
+                localizeAnimalReportName(report.reportTypeName, localize),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -295,9 +300,9 @@ class _Content extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          report.trimWhitespaceDescription.isEmpty
-              ? report.reportTypeName
-              : report.trimWhitespaceDescription,
+          description.isEmpty
+              ? localizeAnimalReportName(report.reportTypeName, localize)
+              : description,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
