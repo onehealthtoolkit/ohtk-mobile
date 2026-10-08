@@ -322,7 +322,7 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get reviewAccuracyConfirmLabel =>
-      'I confirm that the information provided is accurate';
+      'ຂ້າພະເຈົ້າຍືນຢັນວ່າຂໍ້ມູນທີ່ໃຫ້ໄວ້ນັ້ນຖືກຕ້ອງ.';
 
   @override
   String get reviewBackToFormButton => 'ກັບໄປແບບຟອມ';
@@ -347,10 +347,21 @@ class AppLocalizationsLo extends AppLocalizations {
   String get descriptionSectionLabel => 'ລາຍລະອຽດ';
 
   @override
+  String get accumulatedTotalsHeading =>
+      'ຍອດລວມ (ລາຍງານຕົ້ນເລື່ອງ + ການຕິດຕາມຜົນ)';
+
+  @override
   String get noDescriptionProvided => 'ບໍ່ມີລາຍລະອຽດ';
 
   @override
   String get photosSectionLabel => 'ຮູບພາບ';
+
+  @override
+  String get noImagesLabel => 'ບໍ່ມີຮູບພາບ';
+
+  @override
+  String get fileOpenErrorMessage =>
+      'ບໍ່ສາມາດເປີດໄຟລ໌ໄດ້.\nອາດບໍ່ມີແອັບທີ່ຮອງຮັບ ຫຼື ໄຟລ໌ເສຍຫາຍ.';
 
   @override
   String get attachmentsSectionLabel => 'ເອກະສານແນບ';

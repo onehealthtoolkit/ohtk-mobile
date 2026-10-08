@@ -351,10 +351,20 @@ class AppLocalizationsMy extends AppLocalizations {
   String get descriptionSectionLabel => 'ဖော်ပြချက်';
 
   @override
+  String get accumulatedTotalsHeading => 'Totals (report + follow-ups)';
+
+  @override
   String get noDescriptionProvided => 'ဖော်ပြချက် မရှိပါ';
 
   @override
   String get photosSectionLabel => 'ဓာတ်ပုံများ';
+
+  @override
+  String get noImagesLabel => 'No Images';
+
+  @override
+  String get fileOpenErrorMessage =>
+      'Cannot open file.\nEither no app supports it or the file is corrupted.';
 
   @override
   String get attachmentsSectionLabel => 'တွဲဖက်ဖိုင်များ';

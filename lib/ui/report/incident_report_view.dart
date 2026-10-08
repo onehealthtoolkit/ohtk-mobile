@@ -458,7 +458,7 @@ class _AccumulatedMetricsBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     final metrics = incident.accumulatedMetrics ?? const [];
     return _DetailBlock(
-      eyebrow: 'Totals (report + follow-ups)',
+      eyebrow: AppLocalizations.of(context)!.accumulatedTotalsHeading,
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
       child: Column(
         children: [
@@ -681,12 +681,12 @@ class _AttachmentRow extends StatelessWidget {
     if (!context.mounted) return;
     final result = await OpenFile.open(filePath, type: file.fileType);
     if (context.mounted && result.type != ResultType.done) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: incidentsErrorRed,
         content: Text(
-          'Cannot open file.\nEither no app supports or file is corrupted',
+          AppLocalizations.of(context)!.fileOpenErrorMessage,
         ),
-        duration: Duration(milliseconds: 3000),
+        duration: const Duration(milliseconds: 3000),
       ));
     }
   }

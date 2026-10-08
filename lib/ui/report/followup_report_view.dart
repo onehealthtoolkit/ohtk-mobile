@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:podd_app/components/back_appbar_action.dart';
 import 'package:podd_app/components/progress_indicator.dart';
 import 'package:podd_app/components/report_file_grid_view.dart';
 import 'package:podd_app/components/report_image_carousel.dart';
@@ -48,7 +47,7 @@ class FollowupReportView extends StatelessWidget {
             ? const Center(child: OhtkProgressIndicator(size: 100))
             : !viewModel.hasError
                 ? _FollowupReportView()
-                : const Text("Incident report not found"),
+                : Text(AppLocalizations.of(context)!.reportNotFoundTitle),
       ),
     );
   }
@@ -112,7 +111,7 @@ class _FollowupReportView extends StackedHookView<FollowupReportViewModel> {
       padding: const EdgeInsets.fromLTRB(28, 20, 28, 10),
       child: Text(
         followup.description.isEmpty
-            ? "no description"
+            ? AppLocalizations.of(context)!.noDescriptionProvided
             : followup.trimWhitespaceDescription,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
               fontSize: 14.sp,

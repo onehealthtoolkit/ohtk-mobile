@@ -352,10 +352,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get descriptionSectionLabel => 'Descripción';
 
   @override
+  String get accumulatedTotalsHeading => 'Totals (report + follow-ups)';
+
+  @override
   String get noDescriptionProvided => 'Sin descripción';
 
   @override
   String get photosSectionLabel => 'Fotos';
+
+  @override
+  String get noImagesLabel => 'No Images';
+
+  @override
+  String get fileOpenErrorMessage =>
+      'Cannot open file.\nEither no app supports it or the file is corrupted.';
 
   @override
   String get attachmentsSectionLabel => 'Adjuntos';
