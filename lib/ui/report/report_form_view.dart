@@ -10,6 +10,7 @@ import 'package:podd_app/models/report_submit_result.dart';
 import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
+import 'package:podd_app/ui/report/animal_report_localization.dart';
 import 'package:podd_app/ui/report/report_form_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -37,7 +38,8 @@ class ReportFormView extends StatelessWidget {
           );
         }
         final localize = AppLocalizations.of(context)!;
-        final reportName = viewModel.reportType?.name ?? '';
+        final reportName = localizeAnimalReportName(
+            viewModel.reportType?.name ?? '', localize);
         final title = reportName.isEmpty
             ? localize.reportTitle
             : '${localize.reportTitle} $reportName';
