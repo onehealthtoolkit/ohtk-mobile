@@ -46,6 +46,15 @@ class AppLocalizationsKm extends AppLocalizations {
   String get caseTag => 'Case';
 
   @override
+  String get caseClosedTag => 'Case closed';
+
+  @override
+  String get caseAutomaticCloseTag => 'Automatic close';
+
+  @override
+  String get caseFalsePositiveTag => 'False positive';
+
+  @override
   String get reportTitle => 'រាយការណ៍';
 
   @override

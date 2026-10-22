@@ -180,6 +180,24 @@ abstract class AppLocalizations {
   /// **'Case'**
   String get caseTag;
 
+  /// No description provided for @caseClosedTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Case closed'**
+  String get caseClosedTag;
+
+  /// No description provided for @caseAutomaticCloseTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic close'**
+  String get caseAutomaticCloseTag;
+
+  /// No description provided for @caseFalsePositiveTag.
+  ///
+  /// In en, this message translates to:
+  /// **'False positive'**
+  String get caseFalsePositiveTag;
+
   /// No description provided for @reportTitle.
   ///
   /// In en, this message translates to:

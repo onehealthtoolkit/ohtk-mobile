@@ -46,6 +46,15 @@ class AppLocalizationsTh extends AppLocalizations {
   String get caseTag => 'Case';
 
   @override
+  String get caseClosedTag => 'ปิดเคสแล้ว';
+
+  @override
+  String get caseAutomaticCloseTag => 'ปิดอัตโนมัติ';
+
+  @override
+  String get caseFalsePositiveTag => 'ผลบวกลวง';
+
+  @override
   String get reportTitle => 'รายงาน';
 
   @override

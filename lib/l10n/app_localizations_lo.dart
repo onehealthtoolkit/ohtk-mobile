@@ -45,6 +45,15 @@ class AppLocalizationsLo extends AppLocalizations {
   String get caseTag => 'ກໍລະນີ';
 
   @override
+  String get caseClosedTag => 'ປິດກໍລະນີແລ້ວ';
+
+  @override
+  String get caseAutomaticCloseTag => 'ປິດອັດຕະໂນມັດ';
+
+  @override
+  String get caseFalsePositiveTag => 'ຜົນບວກປອມ';
+
+  @override
   String get reportTitle => 'ລາຍງານ';
 
   @override

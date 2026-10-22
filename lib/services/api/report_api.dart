@@ -13,6 +13,53 @@ import 'package:intl/intl.dart';
 class ReportApi extends GraphQlBaseApi {
   ReportApi(ResolveGraphqlClient client) : super(client);
 
+  static const _caseStatusSelection =
+      'caseStatus { isFinished closeSource closeOutcome }';
+
+  Future<T> _runReportQuery<T>({
+    required String query,
+    required Map<String, dynamic> variables,
+    required TypeConverter<T> typeConverter,
+    FetchPolicy fetchPolicy = FetchPolicy.networkOnly,
+  }) async {
+    try {
+      return await runGqlQuery<T>(
+        query: query,
+        variables: variables,
+        typeConverter: typeConverter,
+        fetchPolicy: fetchPolicy,
+      );
+    } on CacheMissException {
+      // Old cached reports have no lifecycle selection. Read that shape offline
+      // without contacting the server or inventing a finish outcome.
+      if (fetchPolicy != FetchPolicy.cacheOnly) rethrow;
+      return runGqlQuery<T>(
+        query: query.replaceFirst(_caseStatusSelection, ''),
+        variables: variables,
+        typeConverter: typeConverter,
+        fetchPolicy: FetchPolicy.cacheOnly,
+      );
+    } on OperationException catch (error) {
+      // main before CO2c has no caseStatus. Retry only that validation failure;
+      // auth, transport and other GraphQL errors must remain visible.
+      if (error.linkException != null ||
+          error.graphqlErrors.isEmpty ||
+          !error.graphqlErrors.every((e) =>
+              e.message ==
+                  'Cannot query field "caseStatus" on type "IncidentReportType".' ||
+              e.message ==
+                  "Cannot query field 'caseStatus' on type 'IncidentReportType'.")) {
+        rethrow;
+      }
+      return runGqlQuery<T>(
+        query: query.replaceFirst(_caseStatusSelection, ''),
+        variables: variables,
+        typeConverter: typeConverter,
+        fetchPolicy: fetchPolicy,
+      );
+    }
+  }
+
   Future<ReportSubmitResult> submit(Report report) async {
     const mutation = r'''
       mutation submitIncidentReport(
@@ -134,18 +181,20 @@ class ReportApi extends GraphQlBaseApi {
               fileType
             }    
             caseId
+            caseStatus { isFinished closeSource closeOutcome }
             testFlag
           }          
         }
       }
     ''';
     final connectivityResult = await (Connectivity().checkConnectivity());
-    var fetchPolicy = FetchPolicy.cacheAndNetwork;
+    var fetchPolicy =
+        resetFlag ? FetchPolicy.networkOnly : FetchPolicy.cacheAndNetwork;
     if (connectivityResult.contains(ConnectivityResult.none)) {
       fetchPolicy = FetchPolicy.cacheOnly;
     }
 
-    return runGqlQuery<IncidentReportQueryResult>(
+    return _runReportQuery<IncidentReportQueryResult>(
       query: query,
       variables: {
         "limit": limit,
@@ -193,12 +242,13 @@ class ReportApi extends GraphQlBaseApi {
             fileType
           }
           caseId
+          caseStatus { isFinished closeSource closeOutcome }
           threadId
           testFlag
         }
       }
     ''';
-    return runGqlQuery(
+    return _runReportQuery(
         query: query,
         variables: {"id": id},
         typeConverter: (resp) => IncidentReportGetResult.fromJson(resp));
@@ -244,17 +294,19 @@ class ReportApi extends GraphQlBaseApi {
               fileType
             }   
             caseId
+            caseStatus { isFinished closeSource closeOutcome }
             testFlag            
           }          
         }
       }
     ''';
     final connectivityResult = await (Connectivity().checkConnectivity());
-    var fetchPolicy = FetchPolicy.cacheAndNetwork;
+    var fetchPolicy =
+        resetFlag ? FetchPolicy.networkOnly : FetchPolicy.cacheAndNetwork;
     if (connectivityResult.contains(ConnectivityResult.none)) {
       fetchPolicy = FetchPolicy.cacheOnly;
     }
-    return runGqlQuery<IncidentReportQueryResult>(
+    return _runReportQuery<IncidentReportQueryResult>(
       query: query,
       variables: {
         "limit": limit,

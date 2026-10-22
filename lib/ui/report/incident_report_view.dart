@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:logger/logger.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:podd_app/components/report_case_badge.dart';
 import 'package:podd_app/components/playable_file_view.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
@@ -351,40 +352,38 @@ class _HeaderBlock extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                _timestampFormatter.format(incident.createdAt.toLocal()),
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: incidentsMuted,
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  _timestampFormatter.format(incident.createdAt.toLocal()),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: incidentsMuted,
+                  ),
                 ),
-              ),
-              if (hasPills) ...[
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  alignment: WrapAlignment.end,
-                  children: [
-                    if (incident.caseId != null)
-                      _StatusPill(
-                        label: localize.caseTag,
-                        bg: incidentsCasePillBg,
-                        fg: incidentsCasePillFg,
-                      ),
-                    if (incident.testFlag)
-                      _StatusPill(
-                        label: localize.testTag,
-                        bg: incidentsTestPillBg,
-                        fg: incidentsTestPillFg,
-                      ),
-                  ],
-                ),
+                if (hasPills) ...[
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    alignment: WrapAlignment.end,
+                    children: [
+                      if (incident.caseId != null)
+                        ReportCaseBadge(report: incident),
+                      if (incident.testFlag)
+                        _StatusPill(
+                          label: localize.testTag,
+                          bg: incidentsTestPillBg,
+                          fg: incidentsTestPillFg,
+                        ),
+                    ],
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ],
       ),
