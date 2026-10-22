@@ -1,0 +1,15 @@
+{
+  "source": "ohtk-api origin/main f9b4e99dc1b678672da446786dc21bbff28877ab (2026-10-22); graphql.validate on its actual schema",
+  "errors": [
+    {
+      "message": "Cannot query field 'caseStatus' on type 'IncidentReportType'.",
+      "locations": [
+        {
+          "line": 1,
+          "column": 36
+        }
+      ],
+      "path": null
+    }
+  ]
+}

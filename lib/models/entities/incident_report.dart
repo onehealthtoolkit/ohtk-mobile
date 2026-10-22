@@ -30,9 +30,11 @@ class IncidentReport {
   List<IncidentReportImage>? images;
   List<IncidentReportFile>? files;
   String? caseId;
+  ReportCaseStatus? caseStatus;
   int? threadId;
   String? authorityName;
   bool testFlag;
+
   /// Derived report + follow-up totals from ReportType.metric_accumulation.
   List<AccumulatedMetric>? accumulatedMetrics;
 
@@ -49,6 +51,7 @@ class IncidentReport {
     this.images,
     this.files,
     this.caseId,
+    this.caseStatus,
     this.threadId,
     this.authorityName,
     this.testFlag = false,
@@ -85,6 +88,9 @@ class IncidentReport {
       gpsLocation: json["gpsLocation"],
       data: json["data"],
       caseId: json["caseId"],
+      caseStatus: json["caseStatus"] is Map
+          ? ReportCaseStatus.fromJson(json["caseStatus"])
+          : null,
       threadId: json["threadId"],
       testFlag: json["testFlag"] != null ? (json["testFlag"] as bool) : false,
       images: json["images"] != null
@@ -151,5 +157,37 @@ class AccumulatedMetric {
     if (v is int) return v;
     if (v is num) return v.toInt();
     return int.tryParse(v?.toString() ?? "") ?? 0;
+  }
+}
+
+/// Unknown/legacy finish combinations deliberately retain the generic case badge.
+enum ReportCaseOutcome { unknown, open, closed, automaticClose, falsePositive }
+
+class ReportCaseStatus {
+  final bool? isFinished;
+  final String? closeSource;
+  final String? closeOutcome;
+
+  const ReportCaseStatus(
+      {this.isFinished, this.closeSource, this.closeOutcome});
+
+  factory ReportCaseStatus.fromJson(Map json) => ReportCaseStatus(
+        isFinished: json['isFinished'] is bool ? json['isFinished'] : null,
+        closeSource: json['closeSource'] is String ? json['closeSource'] : null,
+        closeOutcome:
+            json['closeOutcome'] is String ? json['closeOutcome'] : null,
+      );
+
+  ReportCaseOutcome get outcome {
+    if (isFinished == false) return ReportCaseOutcome.open;
+    if (isFinished != true) return ReportCaseOutcome.unknown;
+    if (closeSource == 'system') return ReportCaseOutcome.automaticClose;
+    if (closeSource == 'officer') {
+      if (closeOutcome == 'close_case') return ReportCaseOutcome.closed;
+      if (closeOutcome == 'false_positive') {
+        return ReportCaseOutcome.falsePositive;
+      }
+    }
+    return ReportCaseOutcome.unknown;
   }
 }

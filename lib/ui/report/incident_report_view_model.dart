@@ -2,6 +2,7 @@ import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/services/api/report_api.dart';
 import 'package:podd_app/services/config_service.dart';
+import 'package:podd_app/services/report_service.dart';
 import 'package:stacked/stacked.dart';
 
 class IncidentReportViewModel extends FutureViewModel<IncidentReport> {
@@ -16,6 +17,7 @@ class IncidentReportViewModel extends FutureViewModel<IncidentReport> {
   @override
   Future<IncidentReport> futureToRun() async {
     final incident = await reportApi.getIncidentReport(id);
+    locator<IReportService>().updateLoadedIncident(incident.data);
     return incident.data;
   }
 

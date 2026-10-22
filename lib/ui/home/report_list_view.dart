@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:podd_app/components/report_case_badge.dart';
 import 'package:podd_app/components/motion.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
@@ -308,33 +309,9 @@ class _Content extends StatelessWidget {
         ),
         if (showCase) ...[
           const SizedBox(height: 4),
-          const _CasePill(),
+          ReportCaseBadge(report: report),
         ],
       ],
-    );
-  }
-}
-
-class _CasePill extends StatelessWidget {
-  const _CasePill();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        color: incidentsCasePillBg,
-        borderRadius: OhtkRadius.chip,
-      ),
-      child: Text(
-        (AppLocalizations.of(context)?.caseTag ?? 'Case').toUpperCase(),
-        style: const TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.4,
-          color: incidentsCasePillFg,
-        ),
-      ),
     );
   }
 }

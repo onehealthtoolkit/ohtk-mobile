@@ -42,6 +42,8 @@ abstract class IReportService with ListenableServiceMixin {
 
   Future<void> fetchFollowups(String incidentId);
 
+  void updateLoadedIncident(IncidentReport report);
+
   Future<void> removeAllPendingReports();
 
   Future<void> removePendingReport(String id);
@@ -110,7 +112,7 @@ class ReportService extends IReportService {
     var result = await _reportApi.fetchIncidentReports(
       offset: currentIncidentReportNextOffset,
       limit: incidentReportLimit,
-      resetFlag: resetFlag, // TODO should remove reset flag from here
+      resetFlag: resetFlag,
     );
     if (resetFlag) {
       _incidents.clear();
@@ -138,6 +140,14 @@ class ReportService extends IReportService {
     hasMoreMyIncidentReports = result.hasNextPage;
     currentMyIncidentReportNextOffset =
         currentMyIncidentReportNextOffset + myIncidentReportLimit;
+  }
+
+  @override
+  void updateLoadedIncident(IncidentReport report) {
+    for (final reports in [_incidents, _myIncidents]) {
+      final index = reports.indexWhere((item) => item.id == report.id);
+      if (index != -1) reports[index] = report;
+    }
   }
 
   @override
