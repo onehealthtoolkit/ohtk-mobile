@@ -28,6 +28,7 @@ class CommentService extends ICommentService {
     _comments.clear();
     var result = await _commentApi.fetchComments(threadId);
     _comments.addAll(result.data);
+    _sortComments();
   }
 
   @override
@@ -38,6 +39,16 @@ class CommentService extends ICommentService {
     var result = await _commentApi.submit(body, threadId, images);
     if (result is CommentSubmitSuccess) {
       _comments.add(result.comment);
+      _sortComments();
     }
+  }
+
+  void _sortComments() {
+    // Keep the mobile conversation oldest first regardless of API ordering.
+    _comments.sort((a, b) {
+      final byCreatedAt = a.createdAt.compareTo(b.createdAt);
+      if (byCreatedAt != 0) return byCreatedAt;
+      return int.parse(a.id).compareTo(int.parse(b.id));
+    });
   }
 }
