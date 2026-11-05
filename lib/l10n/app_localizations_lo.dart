@@ -827,64 +827,65 @@ class AppLocalizationsLo extends AppLocalizations {
   String get registerCreating => 'ກຳລັງສ້າງບັນຊີ…';
 
   @override
-  String get genderLabel => 'Gender';
+  String get genderLabel => 'ເພດ';
 
   @override
-  String get ageLabel => 'Age';
+  String get ageLabel => 'ອາຍຸ';
 
   @override
-  String get registerAgePlaceholder => 'Years';
+  String get registerAgePlaceholder => 'ປີ';
 
   @override
-  String get registerAgeInvalid => 'Enter an age between 1 and 120';
+  String get registerAgeInvalid => 'ກະລຸນາລະບຸອາຍຸລະຫວ່າງ 1 ຫາ 120 ປີ';
 
   @override
-  String get registerGenderMale => 'Male';
+  String get registerEmailInvalid => 'ຮູບແບບອີເມວບໍ່ຖືກຕ້ອງ';
 
   @override
-  String get registerGenderFemale => 'Female';
+  String get registerGenderMale => 'ຊາຍ';
 
   @override
-  String get registerGenderOther => 'Other';
+  String get registerGenderFemale => 'ຍິງ';
 
   @override
-  String get registerGenderPlaceholder => 'Select gender';
+  String get registerGenderOther => 'ອື່ນໆ';
 
   @override
-  String get registerConsentLabel => 'I accept the terms and agreement';
+  String get registerGenderPlaceholder => 'ເລືອກເພດ';
+
+  @override
+  String get registerConsentLabel => 'ຂ້າພະເຈົ້າຍອມຮັບເງື່ອນໄຂ ແລະ ຂໍ້ຕົກລົງ';
 
   @override
   String get registerConsentRequired =>
-      'You must accept the terms and agreement to register';
+      'ທ່ານຕ້ອງຍອມຮັບເງື່ອນໄຂ ແລະ ຂໍ້ຕົກລົງກ່ອນລົງທະບຽນ';
 
   @override
-  String get registerConsentReadFirst =>
-      'Please open and read the terms before accepting';
+  String get registerConsentReadFirst => 'ກະລຸນາເປີດອ່ານເງື່ອນໄຂກ່ອນຍອມຮັບ';
 
   @override
-  String get registerConsentConfirmRead => 'I have read the terms';
+  String get registerConsentConfirmRead => 'ຂ້າພະເຈົ້າໄດ້ອ່ານເງື່ອນໄຂແລ້ວ';
 
   @override
-  String get registerConsentSectionTitle => 'Privacy & terms';
+  String get registerConsentSectionTitle => 'ຄວາມເປັນສ່ວນຕົວ ແລະ ເງື່ອນໄຂ';
 
   @override
-  String get registerConsentSectionSubtitle =>
-      'Required before you can register';
+  String get registerConsentSectionSubtitle => 'ຕ້ອງຍອມຮັບກ່ອນລົງທະບຽນ';
 
   @override
-  String get registerConsentReadButton => 'Read privacy notice';
+  String get registerConsentReadButton => 'ອ່ານແຈ້ງການຄວາມເປັນສ່ວນຕົວ';
 
   @override
-  String get registerConsentViewAgain => 'View again';
+  String get registerConsentViewAgain => 'ເບິ່ງອີກຄັ້ງ';
 
   @override
-  String get registerConsentReviewed => 'Privacy notice reviewed';
+  String get registerConsentReviewed => 'ອ່ານແຈ້ງການຄວາມເປັນສ່ວນຕົວແລ້ວ';
 
   @override
-  String get registerConsentSubmitBlocked => 'Accept the terms to continue';
+  String get registerConsentSubmitBlocked => 'ຍອມຮັບເງື່ອນໄຂເພື່ອສືບຕໍ່';
 
   @override
-  String get registerViewTerms => 'View terms';
+  String get registerViewTerms => 'ເບິ່ງເງື່ອນໄຂ';
 
   @override
   String get profileSectionContactInfo => 'ຂໍ້ມູນຕິດຕໍ່';

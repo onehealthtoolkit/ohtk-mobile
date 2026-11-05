@@ -845,6 +845,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get registerAgeInvalid => 'Enter an age between 1 and 120';
 
   @override
+  String get registerEmailInvalid => 'Email is invalid';
+
+  @override
   String get registerGenderMale => 'Male';
 
   @override
