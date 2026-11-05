@@ -30,6 +30,7 @@ Map<String, dynamic> caseReportJson({
       'caseStatus': status,
       'threadId': 1,
       'testFlag': false,
+      'hasFollowupPermission': true,
       'authorities': <dynamic>[],
       'accumulatedMetrics': null,
     };

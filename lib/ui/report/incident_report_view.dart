@@ -135,9 +135,8 @@ class _DetailBody extends HookWidget {
       return () => tabController.removeListener(listener);
     }, [tabController]);
 
-    final canFollowup = incident.reportTypeFollowable && !incident.testFlag;
     final showFab =
-        canFollowup && (activeTab.value == 0 || activeTab.value == 2);
+        incident.canFollowup && (activeTab.value == 0 || activeTab.value == 2);
 
     final localize = AppLocalizations.of(context)!;
     final labels = [
