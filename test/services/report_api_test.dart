@@ -71,4 +71,50 @@ void main() {
       contains(r'villageId: $villageId'),
     );
   });
+
+  test('report detail requests and reads current followup permission',
+      () async {
+    for (final allowed in [true, false]) {
+      final link = QueueLink([
+        {
+          '__typename': 'Query',
+          'incidentReport': {
+            '__typename': 'IncidentReportType',
+            'gpsLocation': null,
+            'accumulatedMetrics': null,
+            'authorities': [],
+            'reportedBy': null,
+            'images': [],
+            'uploadFiles': [],
+            'caseId': null,
+            'caseStatus': null,
+            'threadId': null,
+            'testFlag': false,
+            'id': 'report-1',
+            'incidentDate': '2026-11-05',
+            'rendererData': 'Sick animal',
+            'createdAt': '2026-11-05T08:00:00Z',
+            'updatedAt': '2026-11-05T08:00:00Z',
+            'reportType': {
+              '__typename': 'ReportTypeType',
+              'id': 'type-1',
+              'name': 'Animal Sick/Death',
+              'isFollowable': true,
+            },
+            'hasFollowupPermission': allowed,
+          },
+        }
+      ]);
+      final api = ReportApi(
+        () => GraphQLClient(link: link, cache: GraphQLCache()),
+      )..baseLogger = null;
+
+      final result = await api.getIncidentReport('report-1');
+
+      expect(result.data.canFollowup, allowed);
+      expect(link.requests.single.operation.toString(),
+          contains('hasFollowupPermission'));
+      expect(link.requests.single.variables['id'], 'report-1');
+    }
+  });
 }

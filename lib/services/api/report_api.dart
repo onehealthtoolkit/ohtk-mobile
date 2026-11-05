@@ -245,6 +245,7 @@ class ReportApi extends GraphQlBaseApi {
           caseStatus { isFinished closeSource closeOutcome }
           threadId
           testFlag
+          hasFollowupPermission
         }
       }
     ''';
