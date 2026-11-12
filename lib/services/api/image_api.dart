@@ -1,10 +1,11 @@
-import "package:dio/dio.dart" as dio;
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/entities/observation_subject.dart';
 import 'package:podd_app/models/entities/report_image.dart';
 import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
+
+import "package:dio/dio.dart" as dio;
 
 class ImageApi extends GraphQlBaseApi {
   ImageApi(ResolveGraphqlClient client) : super(client);
@@ -14,7 +15,7 @@ class ImageApi extends GraphQlBaseApi {
       mutation submitImage(
         $image: Upload!,
         $imageId: UUID,
-        $reportId: UUID
+        $reportId: UUID!
       ) {
         submitImage(image: $image, imageId: $imageId, reportId: $reportId) {
           id

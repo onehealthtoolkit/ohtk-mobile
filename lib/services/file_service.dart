@@ -1,12 +1,16 @@
 import 'dart:io';
 
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/pending_media_parent_type.dart';
 import 'package:podd_app/models/entities/report_file.dart';
 import 'package:podd_app/models/file_submit_result.dart';
+import 'package:podd_app/models/submission_problem.dart';
 import 'package:podd_app/services/api/file_api.dart';
 import 'package:podd_app/services/db_service.dart';
+import 'package:podd_app/services/submission_flights.dart';
+import 'package:podd_app/services/submission_session.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stacked/stacked.dart';
 
@@ -66,25 +70,49 @@ class FileService extends IFileService {
   @override
   List<ReportFile> get pendingReportFiles => _pendingReportFiles;
 
+  final _flights = SubmissionFlights<FileSubmitResult>();
+
   @override
-  Future<FileSubmitResult> submit(ReportFile file) async {
-    final result = PendingMediaParentType.isObservation(file.parentType)
-        ? await _fileApi.submitObservationRecordFile(
-            file,
-            file.effectiveParentId,
-          )
-        : await _fileApi.submit(file);
-    if (result is FileSubmitSuccess) {
-      await removeLocalFileFromAppDirectory(file.id);
-      await removeReportFile(file.id);
-      _pendingReportFiles.remove(file);
+  Future<FileSubmitResult> submit(ReportFile file) =>
+      _flights.run(file.id, () => _submitOnce(file));
+
+  Future<FileSubmitResult> _submitOnce(ReportFile file) async {
+    FileSubmitResult result;
+    try {
+      await ensureSubmissionSession();
+      result = PendingMediaParentType.isObservation(file.parentType)
+          ? await _fileApi.submitObservationRecordFile(
+              file,
+              file.effectiveParentId,
+            )
+          : await _fileApi.submit(file);
+    } catch (e) {
+      final problem = SubmissionProblem.from(e);
+      result = FileSubmitFailure(
+          e is OperationException
+              ? e
+              : OperationException(
+                  linkException: e is LinkException ? e : null,
+                  graphqlErrors: e is LinkException
+                      ? []
+                      : [GraphQLError(message: problem.message)]),
+          problem: problem);
     }
-    if (result is FileSubmitFailure) {
+    if (result is FileSubmitSuccess) {
+      await removeReportFile(file.id);
+      _pendingReportFiles.removeWhere((item) => item.id == file.id);
+      // Local cleanup must not turn an acknowledged upload into a retry.
+      try {
+        final localFile = file.localFile;
+        if (localFile != null && await localFile.exists()) {
+          await localFile.delete();
+        }
+      } on FileSystemException {
+        // A leftover cache file can be cleaned up independently.
+      }
+    } else {
       _pendingReportFiles.addIf(
-        _pendingReportFiles.indexWhere((element) => element.id == file.id) ==
-            -1,
-        file,
-      );
+          !_pendingReportFiles.any((item) => item.id == file.id), file);
     }
     return result;
   }
@@ -92,20 +120,13 @@ class FileService extends IFileService {
   @override
   Future<FileSubmitResult> submitObservationRecordFile(
       ReportFile file, String recordId) async {
-    var result = await _fileApi.submitObservationRecordFile(file, recordId);
-    if (result is FileSubmitSuccess) {
-      await removeLocalFileFromAppDirectory(file.id);
-      await removeReportFile(file.id);
-      _pendingReportFiles.remove(file);
-    }
-    if (result is FileSubmitFailure) {
-      _pendingReportFiles.addIf(
-        _pendingReportFiles.indexWhere((element) => element.id == file.id) ==
-            -1,
-        file,
-      );
-    }
-    return result;
+    final updated = file.withRemoteParent(
+        parentType: PendingMediaParentType.isObservation(file.parentType)
+            ? file.parentType
+            : PendingMediaParentType.observationSubject,
+        remoteParentId: recordId);
+    await saveReportFile(updated);
+    return submit(updated);
   }
 
   Future<String> get _localFilePath async {
@@ -160,6 +181,8 @@ class FileService extends IFileService {
         remoteParentId: remoteParentId,
       );
       await saveReportFile(updated);
+      _pendingReportFiles.addIf(
+          !_pendingReportFiles.any((item) => item.id == updated.id), updated);
     }
     return findAllReportFilesByReportId(localParentId);
   }

@@ -1,22 +1,23 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/constants.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/login_result.dart';
+import 'package:podd_app/models/submission_problem.dart';
 import 'package:podd_app/models/user_profile.dart';
 import 'package:podd_app/models/village.dart';
 import 'package:podd_app/services/feature_capability_service.dart';
 import 'package:podd_app/services/gql_service.dart';
 import 'package:podd_app/services/jwt.dart';
 import 'package:podd_app/services/observation_definition_service.dart';
-import 'package:podd_app/services/observation_record_service.dart';
-import 'package:podd_app/services/report_service.dart';
+import 'package:podd_app/services/queue_ownership_service.dart';
 import 'package:podd_app/services/report_type_service.dart';
 import 'package:podd_app/services/secure_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
-import 'dart:async';
 
 import 'api/auth_api.dart';
 
@@ -109,10 +110,8 @@ class AuthService with ListenableServiceMixin implements IAuthService {
   final AuthApi _authApi;
   final IFeatureCapabilityService _featureCapabilityService;
   final IReportTypeService _reportTypeService;
-  final IReportService _reportService;
   final GqlService _gqlService;
   final IObservationDefinitionService _observationDefinitionService;
-  final IObservationRecordService _observationRecordService;
 
   final ReactiveValue<bool?> _isLogin = ReactiveValue<bool?>(null);
 
@@ -148,29 +147,31 @@ class AuthService with ListenableServiceMixin implements IAuthService {
     AuthApi? authApi,
     IFeatureCapabilityService? featureCapabilityService,
     IReportTypeService? reportTypeService,
-    IReportService? reportService,
     GqlService? gqlService,
     IObservationDefinitionService? observationDefinitionService,
-    IObservationRecordService? observationRecordService,
   })  : _secureStorageService =
             secureStorageService ?? locator<ISecureStorageService>(),
         _logger = logger ?? locator<Logger>(),
         _authApi = authApi ?? locator<AuthApi>(),
         _featureCapabilityService =
             featureCapabilityService ?? locator<IFeatureCapabilityService>(),
-        _reportTypeService =
-            reportTypeService ?? locator<IReportTypeService>(),
-        _reportService = reportService ?? locator<IReportService>(),
+        _reportTypeService = reportTypeService ?? locator<IReportTypeService>(),
         _gqlService = gqlService ?? locator<GqlService>(),
         _observationDefinitionService = observationDefinitionService ??
-            locator<IObservationDefinitionService>(),
-        _observationRecordService = observationRecordService ??
-            locator<IObservationRecordService>() {
+            locator<IObservationDefinitionService>() {
     listenToReactiveValues([_isLogin, _selectedVillage]);
   }
 
   init() async {
     final prefs = await SharedPreferences.getInstance();
+    // Capture ownership of legacy queues while the original cached identity
+    // still exists, before refresh failure or first-run cleanup can erase it.
+    final cachedProfile = await _secureStorageService.getUserProfile();
+    if (cachedProfile != null &&
+        locator.isRegistered<QueueOwnershipService>()) {
+      await locator<QueueOwnershipService>()
+          .bind(cachedProfile, adoptLegacyQueue: true);
+    }
     if (prefs.getBool('first_run') ?? true) {
       await _secureStorageService.deleteAll();
 
@@ -226,7 +227,6 @@ class AuthService with ListenableServiceMixin implements IAuthService {
   Future<AuthResult> authenticate(String username, String password) async {
     var authResult = await _authApi.tokenAuth(username, password);
     if (authResult is AuthSuccess) {
-      _logger.d("loginResule ${authResult.token}");
       await saveTokenAndFetchProfile(authResult);
     }
     return authResult;
@@ -260,8 +260,8 @@ class AuthService with ListenableServiceMixin implements IAuthService {
 
     try {
       await _secureStorageService.deleteAll();
-      await _reportService.removeAllPendingReports();
-      await _observationRecordService.removeAllPendingRecords();
+      // Outbox rows/media belong to their persisted owner and survive logout.
+      // QueueOwnershipService blocks a different account or tenant from sending them.
       await _reportTypeService.removeAll();
       await _observationDefinitionService.removeAll();
       await _gqlService.clearCookies();
@@ -274,11 +274,16 @@ class AuthService with ListenableServiceMixin implements IAuthService {
 
   @override
   Future<void> saveTokenAndFetchProfile(AuthSuccess authSuccess) async {
-    _sessionGeneration++;
+    final generation = ++_sessionGeneration;
     _logoutInProgress = false;
-    await _saveToken(authSuccess, expectedGeneration: _sessionGeneration);
-    await _fetchProfile();
-    _isLogin.value = true;
+    if (!await _saveToken(authSuccess, expectedGeneration: generation)) return;
+    try {
+      await _fetchProfile();
+      if (generation == _sessionGeneration) _isLogin.value = true;
+    } on SubmissionProblem {
+      if (generation == _sessionGeneration) await logout();
+      rethrow;
+    }
   }
 
   /// Durable write then memory. Returns false if [expectedGeneration] is stale
@@ -305,9 +310,7 @@ class AuthService with ListenableServiceMixin implements IAuthService {
   }
 
   Future<void> _repairStorageAfterStaleCommit() async {
-    if (_token != null &&
-        _refreshToken != null &&
-        _refreshToken!.isNotEmpty) {
+    if (_token != null && _refreshToken != null && _refreshToken!.isNotEmpty) {
       // A newer login owns memory — rewrite durable state from memory.
       await _secureStorageService.setLoginSuccess(AuthSuccess(
         token: _token!,
@@ -322,6 +325,9 @@ class AuthService with ListenableServiceMixin implements IAuthService {
 
   _fetchProfile() async {
     var profile = await _authApi.getUserProfile();
+    if (locator.isRegistered<QueueOwnershipService>()) {
+      await locator<QueueOwnershipService>().bind(profile);
+    }
     await _refreshFeatureCapabilitiesAndAssignedVillages(profile);
     _userProfile = profile;
     await _syncSelectedVillage();
@@ -482,7 +488,6 @@ class AuthService with ListenableServiceMixin implements IAuthService {
   Future<AuthResult> verifyQrToken(String token) async {
     var authResult = await _authApi.verifyLoginQrToken(token);
     if (authResult is AuthSuccess) {
-      _logger.d("loginResult success ${authResult.token}");
       await saveTokenAndFetchProfile(authResult);
     }
     return authResult;

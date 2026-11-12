@@ -1,5 +1,6 @@
 import 'package:podd_app/models/entities/base_report_file.dart';
 import 'package:podd_app/models/operation_exception_failure.dart';
+import 'package:podd_app/models/submission_problem.dart';
 
 abstract class FileSubmitResult {}
 
@@ -13,5 +14,6 @@ class FileSubmitSuccess extends FileSubmitResult {
 
 class FileSubmitFailure extends OperationExceptionFailure
     implements FileSubmitResult {
-  FileSubmitFailure(e) : super(e);
+  final SubmissionProblem? problem;
+  FileSubmitFailure(e, {this.problem}) : super(e);
 }

@@ -1,10 +1,14 @@
 import 'package:podd_app/models/entities/incident_report.dart';
 import 'package:podd_app/models/operation_exception_failure.dart';
+import 'package:podd_app/models/submission_problem.dart';
 
 abstract class ReportSubmitResult {}
 
 class ReportSubmitSuccess extends ReportSubmitResult {
   final IncidentReport _incidentReport;
+
+  int pendingAttachments = 0;
+  final attachmentProblems = <String, SubmissionProblem>{};
 
   ReportSubmitSuccess(this._incidentReport);
 
@@ -13,10 +17,14 @@ class ReportSubmitSuccess extends ReportSubmitResult {
 
 class ReportSubmitFailure extends OperationExceptionFailure
     implements ReportSubmitResult {
-  ReportSubmitFailure(e) : super(e);
+  final SubmissionProblem? problem;
+  ReportSubmitFailure(e, {this.problem}) : super(e);
 }
 
-class ReportSubmitPending extends ReportSubmitResult {}
+class ReportSubmitPending extends ReportSubmitResult {
+  final SubmissionProblem? problem;
+  ReportSubmitPending([this.problem]);
+}
 
 class ZeroReportSubmitSuccess extends ReportSubmitResult {
   final String _id;

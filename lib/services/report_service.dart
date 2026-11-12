@@ -1,21 +1,23 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
-import 'package:podd_app/models/entities/pending_media_parent_type.dart';
 import 'package:podd_app/models/entities/followup_report.dart';
 import 'package:podd_app/models/entities/incident_report.dart';
+import 'package:podd_app/models/entities/pending_media_parent_type.dart';
 import 'package:podd_app/models/entities/report.dart';
 import 'package:podd_app/models/file_submit_result.dart';
 import 'package:podd_app/models/followup_submit_result.dart';
 import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/models/report_submit_result.dart';
+import 'package:podd_app/models/submission_problem.dart';
 import 'package:podd_app/services/api/report_api.dart';
 import 'package:podd_app/services/db_service.dart';
 import 'package:podd_app/services/file_service.dart';
 import 'package:podd_app/services/image_service.dart';
+import 'package:podd_app/services/submission_flights.dart';
+import 'package:podd_app/services/submission_session.dart';
 import 'package:podd_app/ui/report_type/report_type_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:stacked/stacked.dart';
 
 abstract class IReportService with ListenableServiceMixin {
@@ -157,9 +159,21 @@ class ReportService extends IReportService {
     _followups.addAll(result.data);
   }
 
+  final _submitFlights = SubmissionFlights<ReportSubmitResult>();
+
   @override
-  submit(Report report) async {
+  Future<ReportSubmitResult> submit(Report report) =>
+      _submitFlights.run(report.id, () => _submitOnce(report));
+
+  Future<ReportSubmitResult> _submitOnce(Report report) async {
+    ReportSubmitSuccess? accepted;
+    bool saved = false;
+
     try {
+      await bindSubmissionOwner();
+      await _saveToLocalDB(report);
+      saved = true;
+      await ensureSubmissionSession();
       var result = await _reportApi.submit(report);
 
       if (result is ReportSubmitSuccess) {
@@ -176,50 +190,71 @@ class ReportService extends IReportService {
           remoteParentId: result.incidentReport.id,
         );
 
+        // Both media mappings are durable before removing the parent. A crash
+        // before this point can safely replay the parent's client-generated ID.
+        final localImages = await _imageService.findByReportId(report.id);
+        final localFiles =
+            await _fileService.findAllReportFilesByReportId(report.id);
+        result.pendingAttachments = localImages.length + localFiles.length;
+        await _deleteFromLocalDB(report);
+        accepted = result;
+        _incidents.insert(0, result.incidentReport);
+        _myIncidents.insert(0, result.incidentReport);
+
         // submit images
-        var localImages = await _imageService.findByReportId(report.id);
         for (var img in localImages) {
           var submitImageResult = await _imageService.submit(img);
           if (submitImageResult is ImageSubmitSuccess) {
+            result.pendingAttachments--;
             result.incidentReport.images!
                 .add(submitImageResult.image as IncidentReportImage);
           }
           if (submitImageResult is ImageSubmitFailure) {
+            result.attachmentProblems[img.id] = submitImageResult.problem ??
+                SubmissionProblem.from(submitImageResult.exception);
             _logger.e("Failed to submit image",
                 error: submitImageResult.exception);
           }
         }
 
         // submit files
-        var localFiles =
-            await _fileService.findAllReportFilesByReportId(report.id);
         for (var file in localFiles) {
           var submitFileResult = await _fileService.submit(file);
           if (submitFileResult is FileSubmitSuccess) {
+            result.pendingAttachments--;
             result.incidentReport.files!
                 .add(submitFileResult.file as IncidentReportFile);
           }
           if (submitFileResult is FileSubmitFailure) {
+            result.attachmentProblems[file.id] = submitFileResult.problem ??
+                SubmissionProblem.from(submitFileResult.exception);
             _logger.e("Failed to submit file",
                 error: submitFileResult.exception);
           }
         }
-
-        await _deleteFromLocalDB(report);
-        _incidents.insert(0, result.incidentReport);
-        _myIncidents.insert(0, result.incidentReport);
       }
 
       if (result is ReportSubmitFailure) {
         _logger.e(result.messages);
-        await _saveToLocalDB(report);
-        return ReportSubmitPending();
+        return ReportSubmitPending(SubmissionProblem.from(result.exception));
       }
       return result;
-    } on LinkException catch (e) {
+    } catch (e) {
       _logger.e(e);
-      await _saveToLocalDB(report);
-      return ReportSubmitPending();
+      if (accepted != null) return accepted;
+      final problem = SubmissionProblem.from(e);
+      if (!saved) {
+        // Do not dismiss the form as "saved" when the durable write failed.
+        return ReportSubmitFailure(
+            OperationException(graphqlErrors: [
+              GraphQLError(message: problem.message),
+            ]),
+            problem: e is SubmissionProblem
+                ? e
+                : const SubmissionProblem(SubmissionProblemKind.storage,
+                    'Could not save this item. Keep the form open.'));
+      }
+      return ReportSubmitPending(problem);
     }
   }
 
@@ -294,7 +329,7 @@ class ReportService extends IReportService {
       whereArgs: [report.id],
     );
 
-    _pendingReports.remove(report);
+    _pendingReports.removeWhere((item) => item.id == report.id);
   }
 
   _saveToLocalDB(Report report) async {

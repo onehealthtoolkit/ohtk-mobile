@@ -100,6 +100,8 @@ void main() {
             'telephone': '123',
             'email': 'alice@example.test',
             'address': 'HQ',
+            'gender': null,
+            'age': null,
             'authorityId': 7,
             'authorityName': 'Authority',
             'role': 'reporter',

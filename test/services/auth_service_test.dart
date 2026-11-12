@@ -200,10 +200,8 @@ AuthService buildAuthService({
     authApi: authApi,
     featureCapabilityService: StubFeatureCapabilityService(),
     reportTypeService: StubReportTypeService(),
-    reportService: StubReportService(),
     gqlService: gqlService ?? StubGqlService(),
     observationDefinitionService: StubObservationDefinitionService(),
-    observationRecordService: StubObservationRecordService(),
   );
 }
 

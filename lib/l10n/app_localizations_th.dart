@@ -1132,4 +1132,32 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get reportSubmitSuccess => 'ส่งรายงานสำเร็จ';
+
+  @override
+  String get pendingSavedNotice =>
+      'บันทึกไว้ในเครื่องแล้ว เปิดรายการรอส่งเพื่อลองส่งอีกครั้ง';
+
+  @override
+  String get pendingAttachmentsNotice =>
+      'ส่งรายงานแล้ว ยังมีไฟล์แนบที่เก็บไว้ในเครื่องและรอส่ง';
+
+  @override
+  String get pendingConnectionError =>
+      'ยังไม่ได้รับการยืนยันจากเซิร์ฟเวอร์ ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง';
+
+  @override
+  String get pendingAuthenticationError =>
+      'เข้าสู่ระบบอีกครั้งด้วยบัญชีและเซิร์ฟเวอร์เดิม เพื่อส่งรายการที่บันทึกไว้';
+
+  @override
+  String get pendingLocalFileError =>
+      'ไม่สามารถอ่านไฟล์แนบได้ โปรดเก็บรายการนี้ไว้และตรวจสอบไฟล์ต้นฉบับ';
+
+  @override
+  String get pendingUnexpectedError =>
+      'ไม่สามารถส่งรายการนี้ได้ รายการที่บันทึกไว้ยังอยู่ในเครื่อง';
+
+  @override
+  String get pendingStorageError =>
+      'บันทึกรายการไม่สำเร็จ โปรดเปิดแบบฟอร์มค้างไว้และตรวจสอบพื้นที่ว่างก่อนลองอีกครั้ง';
 }

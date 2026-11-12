@@ -3,7 +3,9 @@ import 'dart:ui';
 
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
+import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/constants.dart';
+import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/services/api/auth_api.dart';
 import 'package:podd_app/services/api/census_api.dart';
 import 'package:podd_app/services/api/comment_api.dart';
@@ -32,14 +34,13 @@ import 'package:podd_app/services/notification_service.dart';
 import 'package:podd_app/services/observation_definition_service.dart';
 import 'package:podd_app/services/observation_record_service.dart';
 import 'package:podd_app/services/profile_service.dart';
+import 'package:podd_app/services/queue_ownership_service.dart';
 import 'package:podd_app/services/register_service.dart';
 import 'package:podd_app/services/report_service.dart';
 import 'package:podd_app/services/report_type_service.dart';
 import 'package:podd_app/services/secure_storage_service.dart';
-import 'package:podd_app/app_theme.dart';
 import 'package:podd_app/ui/home/all_reports_view_model.dart';
 import 'package:podd_app/ui/home/my_reports_view_model.dart';
-import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final locator = GetIt.instance;
@@ -126,6 +127,14 @@ StreamController<String> setupLocator(String environment) {
     controller.add("init db service success");
     return dbService;
   }, dependsOn: []);
+
+  if (locator.isRegistered<QueueOwnershipService>()) {
+    locator.unregister<QueueOwnershipService>();
+  }
+  locator.registerSingletonAsync<QueueOwnershipService>(
+      () async => QueueOwnershipService(
+          locator<IDbService>(), locator<ConfigService>().graphqlEndpoint),
+      dependsOn: [IDbService]);
 
   if (locator.isRegistered<IImageService>()) {
     locator.unregister<IImageService>();
@@ -244,6 +253,7 @@ StreamController<String> setupLocator(String environment) {
     return authService;
   }, dependsOn: [
     ISecureStorageService,
+    QueueOwnershipService,
     AuthApi,
     IFeatureCapabilityService,
     IReportTypeService,
