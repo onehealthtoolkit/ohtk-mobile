@@ -23,6 +23,7 @@ class IncidentReport {
   String reportTypeId;
   String reportTypeName;
   bool reportTypeFollowable;
+  bool hasFollowupPermission;
   DateTime incidentDate;
   DateTime createdAt;
   DateTime updatedAt;
@@ -56,6 +57,7 @@ class IncidentReport {
     this.authorityName,
     this.testFlag = false,
     this.reportTypeFollowable = false,
+    this.hasFollowupPermission = false,
     this.accumulatedMetrics,
   });
 
@@ -109,9 +111,13 @@ class IncidentReport {
               .join(",")
           : "",
       reportTypeFollowable: reportTypeFollowable,
+      hasFollowupPermission: json["hasFollowupPermission"] == true,
       accumulatedMetrics: metrics,
     );
   }
+
+  bool get canFollowup =>
+      reportTypeFollowable && !testFlag && hasFollowupPermission;
 
   String get trimWhitespaceDescription {
     // replace multiple consecutive whitespace or newline with single whitespace

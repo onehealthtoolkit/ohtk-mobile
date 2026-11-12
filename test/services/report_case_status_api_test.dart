@@ -133,6 +133,9 @@ void main() {
         ['You do not have permission to perform this action'],
         ['Cannot query field "other" on type "IncidentReportType".'],
         [
+          'Cannot query field "hasFollowupPermission" on type "IncidentReportType".'
+        ],
+        [
           'Cannot query field "caseStatus" on type "IncidentReportType".',
           'Permission denied.'
         ],
