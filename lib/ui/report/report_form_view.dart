@@ -7,6 +7,7 @@ import 'package:podd_app/components/form_input.dart';
 import 'package:podd_app/components/submit_success_overlay.dart';
 import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/report_submit_result.dart';
+import 'package:podd_app/models/submission_problem.dart';
 import 'package:podd_app/theme/ohtk_style_system.dart';
 import 'package:podd_app/ui/home/incidents_theme.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
@@ -76,15 +77,29 @@ class ReportFormView extends StatelessWidget {
                               : null,
                           onSubmit: () async {
                             final result = await viewModel.submit();
-                            if (result is ReportSubmitSuccess ||
-                                result is ReportSubmitPending) {
-                              if (context.mounted) {
-                                await SubmitSuccessOverlay.show(
-                                  context,
-                                  message: localize.reportSubmitSuccess,
-                                );
-                                if (context.mounted) Navigator.pop(context);
-                              }
+                            if (!context.mounted) return;
+                            if (result is ReportSubmitSuccess &&
+                                result.pendingAttachments == 0) {
+                              await SubmitSuccessOverlay.show(context,
+                                  message: localize.reportSubmitSuccess);
+                              if (context.mounted) Navigator.pop(context);
+                            } else if (result is ReportSubmitPending ||
+                                result is ReportSubmitSuccess) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          result is ReportSubmitPending
+                                              ? localize.pendingSavedNotice
+                                              : localize
+                                                  .pendingAttachmentsNotice)));
+                              Navigator.pop(context);
+                            } else if (result is ReportSubmitFailure) {
+                              final problem = result.problem ??
+                                  SubmissionProblem.from(result.exception);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          problem.localizedMessage(localize))));
                             }
                           },
                           onBack: () {

@@ -1147,4 +1147,32 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get reportSubmitSuccess => 'Report submitted';
+
+  @override
+  String get pendingSavedNotice =>
+      'Saved on this device. Open Pending submissions to try again.';
+
+  @override
+  String get pendingAttachmentsNotice =>
+      'Report sent. Some attachments are saved on this device and still need to be sent.';
+
+  @override
+  String get pendingConnectionError =>
+      'The server did not confirm this attempt. Check your connection and try again.';
+
+  @override
+  String get pendingAuthenticationError =>
+      'Sign in again with the original account and server to send your saved items.';
+
+  @override
+  String get pendingLocalFileError =>
+      'The attachment cannot be read. Keep this item and check the original file.';
+
+  @override
+  String get pendingUnexpectedError =>
+      'This attempt could not be completed. Your saved item is still on this device.';
+
+  @override
+  String get pendingStorageError =>
+      'Could not save this item. Keep the form open and check available storage before trying again.';
 }

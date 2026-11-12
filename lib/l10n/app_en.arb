@@ -494,5 +494,12 @@
   },
   "notificationsTitle": "Notifications",
   "notificationDetailTitle": "Message",
-  "reportSubmitSuccess": "Report submitted"
+  "reportSubmitSuccess": "Report submitted",
+  "pendingSavedNotice": "Saved on this device. Open Pending submissions to try again.",
+  "pendingAttachmentsNotice": "Report sent. Some attachments are saved on this device and still need to be sent.",
+  "pendingConnectionError": "The server did not confirm this attempt. Check your connection and try again.",
+  "pendingAuthenticationError": "Sign in again with the original account and server to send your saved items.",
+  "pendingLocalFileError": "The attachment cannot be read. Keep this item and check the original file.",
+  "pendingUnexpectedError": "This attempt could not be completed. Your saved item is still on this device.",
+  "pendingStorageError": "Could not save this item. Keep the form open and check available storage before trying again."
 }

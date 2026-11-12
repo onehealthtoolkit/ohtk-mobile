@@ -2159,6 +2159,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Report submitted'**
   String get reportSubmitSuccess;
+
+  /// No description provided for @pendingSavedNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this device. Open Pending submissions to try again.'**
+  String get pendingSavedNotice;
+
+  /// No description provided for @pendingAttachmentsNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Report sent. Some attachments are saved on this device and still need to be sent.'**
+  String get pendingAttachmentsNotice;
+
+  /// No description provided for @pendingConnectionError.
+  ///
+  /// In en, this message translates to:
+  /// **'The server did not confirm this attempt. Check your connection and try again.'**
+  String get pendingConnectionError;
+
+  /// No description provided for @pendingAuthenticationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in again with the original account and server to send your saved items.'**
+  String get pendingAuthenticationError;
+
+  /// No description provided for @pendingLocalFileError.
+  ///
+  /// In en, this message translates to:
+  /// **'The attachment cannot be read. Keep this item and check the original file.'**
+  String get pendingLocalFileError;
+
+  /// No description provided for @pendingUnexpectedError.
+  ///
+  /// In en, this message translates to:
+  /// **'This attempt could not be completed. Your saved item is still on this device.'**
+  String get pendingUnexpectedError;
+
+  /// No description provided for @pendingStorageError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save this item. Keep the form open and check available storage before trying again.'**
+  String get pendingStorageError;
 }
 
 class _AppLocalizationsDelegate

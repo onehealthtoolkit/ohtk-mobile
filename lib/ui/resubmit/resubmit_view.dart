@@ -54,35 +54,47 @@ class _PendingListBody extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(14, 14, 14, 24),
             children: [
               _SummaryPanel(count: totalCount),
+              if (viewModel.batchProblem != null)
+                Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Text(
+                        viewModel.batchProblem!.localizedMessage(localize),
+                        style: const TextStyle(
+                            color: incidentsErrorRed, fontSize: 14))),
               const SizedBox(height: 14),
               _PendingSection(
                 title: localize.pendingReportsTitle,
                 icon: Icons.assignment_outlined,
                 items: viewModel.pendingReports,
+                canDismiss: !viewModel.isSubmittingAll,
                 onDismissed: viewModel.deletePendingReport,
               ),
               _PendingSection(
                 title: localize.pendingSubjectsTitle,
                 icon: Icons.fact_check_outlined,
                 items: viewModel.pendingSubjectRecords,
+                canDismiss: !viewModel.isSubmittingAll,
                 onDismissed: viewModel.deletePendingSubjectRecord,
               ),
               _PendingSection(
                 title: localize.pendingMonitoringsTitle,
                 icon: Icons.monitor_heart_outlined,
                 items: viewModel.pendingMonitoringRecords,
+                canDismiss: !viewModel.isSubmittingAll,
                 onDismissed: viewModel.deletePendingMonitoringRecord,
               ),
               _PendingSection(
                 title: localize.pendingImagesTitle,
                 icon: Icons.image_outlined,
                 items: viewModel.pendingImages,
+                canDismiss: !viewModel.isSubmittingAll,
                 onDismissed: viewModel.deletePendingImage,
               ),
               _PendingSection(
                 title: localize.pendingFilesTitle,
                 icon: Icons.attach_file,
                 items: viewModel.pendingFiles,
+                canDismiss: !viewModel.isSubmittingAll,
                 onDismissed: viewModel.deletePendingFile,
               ),
             ],
@@ -184,12 +196,14 @@ class _PendingSection extends StatelessWidget {
   final IconData icon;
   final List<SubmissionState> items;
   final Future<void> Function(String id) onDismissed;
+  final bool canDismiss;
 
   const _PendingSection({
     required this.title,
     required this.icon,
     required this.items,
     required this.onDismissed,
+    required this.canDismiss,
   });
 
   @override
@@ -250,6 +264,7 @@ class _PendingSection extends StatelessWidget {
                       state: items[i],
                       sectionIcon: icon,
                       onDismissed: onDismissed,
+                      canDismiss: canDismiss,
                     ),
                     if (i != items.length - 1)
                       const Divider(
@@ -273,17 +288,20 @@ class _DismissiblePendingSubmission extends StatelessWidget {
   final SubmissionState state;
   final IconData sectionIcon;
   final Future<void> Function(String id) onDismissed;
+  final bool canDismiss;
 
   const _DismissiblePendingSubmission({
     required this.state,
     required this.sectionIcon,
     required this.onDismissed,
+    required this.canDismiss,
   });
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(state.item.id),
+      confirmDismiss: (_) async => canDismiss,
       background: const _DeleteBackground(alignment: Alignment.centerLeft),
       secondaryBackground:
           const _DeleteBackground(alignment: Alignment.centerRight),
@@ -361,6 +379,16 @@ class _PendingSubmission extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
+                  if (state.problem != null) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                        state.problem!
+                            .localizedMessage(AppLocalizations.of(context)!),
+                        style: const TextStyle(
+                            color: incidentsErrorRed,
+                            fontSize: 12,
+                            height: 1.4)),
+                  ],
                 ],
               ),
             ),

@@ -1,18 +1,21 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart' as http;
 import 'package:dio/io.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/services/api/graph_ql_base_api.dart';
 import 'package:podd_app/services/auth_service.dart';
+import 'package:podd_app/services/bounded_request_link.dart';
 import 'package:podd_app/services/config_service.dart';
-import 'package:podd_app/services/jwt.dart';
-import "package:gql_dio_link/gql_dio_link.dart";
-import 'package:dio/dio.dart' as http;
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:podd_app/services/queue_ownership_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import "package:gql_dio_link/gql_dio_link.dart";
 
 class InvalidRefreshTokenError extends http.DioException {
   InvalidRefreshTokenError(requestOptions)
@@ -24,11 +27,23 @@ class GqlService {
 
   static const _authRetriedExtraKey = 'authRetried';
 
-  final _configService = locator<ConfigService>();
-  final _dio = http.Dio();
-  final _cache = GraphQLCache(store: HiveStore());
+  static const _failedAccessTokenKey = 'failedAccessToken';
+  final ConfigService _configService;
+  final http.Dio _dio;
+  final GraphQLCache _cache;
+  final Duration requestTimeout;
+  CookieJar? _cookieJar;
 
-  PersistCookieJar? _cookieJar;
+  GqlService(
+      {http.Dio? dio,
+      GraphQLCache? cache,
+      CookieJar? cookieJar,
+      ConfigService? configService,
+      this.requestTimeout = const Duration(seconds: 90)})
+      : _dio = dio ?? http.Dio(),
+        _cache = cache ?? GraphQLCache(store: HiveStore()),
+        _cookieJar = cookieJar,
+        _configService = configService ?? locator<ConfigService>();
 
   GraphQLClient? _client;
 
@@ -45,8 +60,9 @@ class GqlService {
   ];
 
   overrideDioSelfSignCertificateHandling() {
-    IOHttpClientAdapter httpClient =
-        _dio.httpClientAdapter as IOHttpClientAdapter;
+    final adapter = _dio.httpClientAdapter;
+    if (adapter is! IOHttpClientAdapter) return;
+    final httpClient = adapter;
     httpClient.createHttpClient = () {
       final client = HttpClient();
       client.badCertificateCallback =
@@ -57,59 +73,62 @@ class GqlService {
     };
   }
 
+  IAuthService? _readyAuth() {
+    if (!locator.isRegistered<IAuthService>()) return null;
+    try {
+      return locator<IAuthService>();
+    } on StateError {
+      // Auth.init itself makes GraphQL requests before its async singleton is
+      // ready. Those bootstrap responses are classified by AuthService.
+      return null;
+    }
+  }
+
   init() async {
     overrideDioSelfSignCertificateHandling();
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String appDocPath = appDocDir.path;
-    _cookieJar =
-        PersistCookieJar(storage: FileStorage("$appDocPath/.cookies/"));
+    _dio.options.connectTimeout = const Duration(seconds: 15);
+    _dio.options.sendTimeout = const Duration(seconds: 60);
+    _dio.options.receiveTimeout = const Duration(seconds: 60);
+    if (_cookieJar == null) {
+      final appDocDir = await getApplicationDocumentsDirectory();
+      _cookieJar =
+          PersistCookieJar(storage: FileStorage("${appDocDir.path}/.cookies/"));
+    }
 
     _dio.interceptors.add(CookieManager(_cookieJar!));
     _dio.interceptors.add(
       http.InterceptorsWrapper(
+        onRequest: (options, handler) {
+          options.extra[_failedAccessTokenKey] = _readyAuth()?.accessToken;
+          handler.next(options);
+        },
         onResponse: (response, handler) async {
           final data = response.data;
-          if (data is! Map) {
-            return handler.resolve(response);
+          final errors = data is Map ? data['errors'] : null;
+          final options = response.requestOptions;
+          final auth = _readyAuth();
+          if (errors is! List ||
+              !_isJWTExpire(errors) ||
+              _alreadyRetried(options) ||
+              _isAuthBootstrapOperation(options) ||
+              auth == null) {
+            return handler.next(response);
           }
-          final errors = data['errors'];
-          if (errors is List && errors.isNotEmpty) {
-            if (_isInvalidRefreshToken(errors)) {
-              var authService = locator<IAuthService>();
-              await authService.logout();
-
-              return handler.reject(
-                InvalidRefreshTokenError(response.requestOptions),
-              );
-            } else if (_isJWTExpire(errors)) {
-              // S5: no refresh-on-refresh / no second retry / skip auth bootstrap ops.
-              if (_alreadyRetried(response.requestOptions) ||
-                  _isAuthBootstrapOperation(response.requestOptions)) {
-                return handler.next(response);
-              }
-
-              final authService = locator<IAuthService>();
-              final current = authService.accessToken;
-              // If another refresh already produced a still-valid access token
-              // (wall-clock, no skew), just retry — avoid a redundant rotation.
-              if (current != null &&
-                  !Jwt.isExpired(current, delta: Duration.zero)) {
-                final cloneReq = await _retry(response.requestOptions);
-                return handler.resolve(cloneReq);
-              }
-
-              final result = await authService.ensureValidAccessToken(
+          try {
+            final result = await auth.ensureValidAccessToken(
                 force: true,
-                failedAccessToken: current,
-              );
-              if (result == EnsureAccessTokenResult.valid) {
-                final cloneReq = await _retry(response.requestOptions);
-                return handler.resolve(cloneReq);
-              }
-              return handler.next(response);
+                failedAccessToken:
+                    options.extra[_failedAccessTokenKey] as String?);
+            if (result == EnsureAccessTokenResult.valid) {
+              return handler.resolve(await _retry(options));
             }
+            handler.next(response);
+          } catch (e, stack) {
+            handler.reject(e is http.DioException
+                ? e
+                : http.DioException(
+                    requestOptions: options, error: e, stackTrace: stack));
           }
-          return handler.resolve(response);
         },
         onError: (error, handler) async {
           return handler.reject(error);
@@ -120,7 +139,7 @@ class GqlService {
   }
 
   Future<void> clearCookies() async {
-    _cookieJar?.deleteAll();
+    await _cookieJar?.deleteAll();
   }
 
   Future<void> clearGraphqlCache() async {
@@ -128,16 +147,22 @@ class GqlService {
   }
 
   Future<http.Response<dynamic>> _retry(http.RequestOptions requestOptions) {
+    // CookieManager will load the newly refreshed cookies. Do not merge the
+    // expired Cookie header from the original request into the retry.
+    final headers = Map<String, dynamic>.from(requestOptions.headers)
+      ..removeWhere((key, _) => key.toLowerCase() == 'cookie');
+    final data = requestOptions.data;
     final options = http.Options(
       method: requestOptions.method,
-      headers: requestOptions.headers,
+      headers: headers,
       extra: {
         ...requestOptions.extra,
         _authRetriedExtraKey: true,
       },
     );
     return _dio.request<dynamic>(requestOptions.path,
-        data: requestOptions.data,
+        data: data is http.FormData ? data.clone() : data,
+        cancelToken: requestOptions.cancelToken,
         queryParameters: requestOptions.queryParameters,
         options: options);
   }
@@ -153,6 +178,19 @@ class GqlService {
       query = data['query']?.toString() ?? '';
     } else if (data is String) {
       query = data;
+    } else if (data is http.FormData) {
+      for (final field in data.fields) {
+        if (field.key == 'operations') {
+          try {
+            final operations = jsonDecode(field.value);
+            if (operations is Map) {
+              query = operations['query']?.toString() ?? '';
+            }
+          } on FormatException {
+            return false;
+          }
+        }
+      }
     }
     if (query.isEmpty) {
       return false;
@@ -166,36 +204,20 @@ class GqlService {
     return false;
   }
 
-  _isJWTExpire(errors) {
-    for (var element in errors) {
-      final err = element['message'] as String;
-      final m = _jwtExpiredMessages.firstWhere(
-        (element) => err.contains(element),
-        orElse: () => '',
-      );
-      if (m != '') {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  _isInvalidRefreshToken(errors) {
-    for (var element in errors) {
-      final err = element['message'] as String?;
-      if (err != null && AuthTokenFailureMessages.isHardRefreshFailure(err)) {
-        return true;
-      }
-    }
-    return false;
-  }
+  bool _isJWTExpire(List errors) => errors.whereType<Map>().any((error) {
+        final message = error['message'];
+        return message is String && _jwtExpiredMessages.any(message.contains);
+      });
 
   setBackendSubDomain(String subDomain) async {
+    if (locator.isRegistered<QueueOwnershipService>()) {
+      await locator<QueueOwnershipService>().checkTenantChange(subDomain);
+    }
     final prefs = await SharedPreferences.getInstance();
     if (subDomain == "") {
-      prefs.remove(backendUrlKey);
+      await prefs.remove(backendUrlKey);
     } else {
-      prefs.setString(backendUrlKey, subDomain);
+      await prefs.setString(backendUrlKey, subDomain);
     }
 
     // const String environment = String.fromEnvironment(
@@ -210,7 +232,12 @@ class GqlService {
       await _endpoint(),
       client: _dio,
     );
-    _client = GraphQLClient(link: dioLink, cache: _cache);
+    _client = GraphQLClient(
+      link: BoundedRequestLink(requestTimeout).concat(dioLink),
+      cache: _cache,
+      // The outer link owns cancellation and ignores late responses.
+      queryRequestTimeout: null,
+    );
   }
 
   _endpoint() async {

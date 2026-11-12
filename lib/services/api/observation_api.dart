@@ -176,8 +176,8 @@ class ObservationApi extends GraphQlBaseApi {
   Future<SubjectRecordSubmitResult> submitSubjectRecord(
       SubjectRecord report) async {
     const mutation = r'''
-      mutation submitObservationSubject($data: GenericScalar!, $definitionId: Int!, $gpsLocation: String) {
-        submitObservationSubject(data: $data, definitionId: $definitionId, gpsLocation: $gpsLocation) {
+      mutation submitObservationSubject($data: GenericScalar!, $definitionId: Int!, $gpsLocation: String, $recordId: UUID!) {
+        submitObservationSubject(data: $data, definitionId: $definitionId, gpsLocation: $gpsLocation, recordId: $recordId) {
           result {
             id
             definitionId
@@ -200,6 +200,7 @@ class ObservationApi extends GraphQlBaseApi {
         mutation: mutation,
         parseData: (json) => ObservationSubjectRecord.fromJson(json!["result"]),
         variables: {
+          "recordId": report.id,
           "definitionId": report.definitionId,
           "data": report.data,
           "gpsLocation": report.gpsLocation,
@@ -215,8 +216,8 @@ class ObservationApi extends GraphQlBaseApi {
   Future<MonitoringRecordSubmitResult> submitMonitoringRecord(
       MonitoringRecord report) async {
     const mutation = r'''
-      mutation submitObservationSubjectMonitoring($data: GenericScalar!, $monitoringDefinitionId: Int!, $subjectId: UUID!) {
-        submitObservationSubjectMonitoring(data: $data, monitoringDefinitionId: $monitoringDefinitionId, subjectId: $subjectId) {
+      mutation submitObservationSubjectMonitoring($data: GenericScalar!, $monitoringDefinitionId: Int!, $subjectId: UUID!, $recordId: UUID!) {
+        submitObservationSubjectMonitoring(data: $data, monitoringDefinitionId: $monitoringDefinitionId, subjectId: $subjectId, recordId: $recordId) {
           result {
             id
             title
@@ -235,6 +236,7 @@ class ObservationApi extends GraphQlBaseApi {
         parseData: (json) =>
             ObservationMonitoringRecord.fromJson(json!["result"]),
         variables: {
+          "recordId": report.id,
           "monitoringDefinitionId": report.monitoringDefinitionId,
           "subjectId": report.subjectId,
           "data": report.data,

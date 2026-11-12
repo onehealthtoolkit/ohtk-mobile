@@ -3,6 +3,7 @@ import 'package:jwt_decode/jwt_decode.dart';
 import 'package:logger/logger.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/login_result.dart';
+import 'package:podd_app/models/submission_problem.dart';
 import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/gql_service.dart';
 import 'package:stacked/stacked.dart';
@@ -29,6 +30,8 @@ class QrLoginViewModel extends BaseViewModel {
         _logger.i(authResult.messages.join(','));
         error = "Invalid QR code";
       }
+    } on SubmissionProblem catch (e) {
+      error = e.message;
     } on DioLinkServerException {
       error = "Server Error";
     } on DioLinkUnkownException {

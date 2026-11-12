@@ -1124,4 +1124,32 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get reportSubmitSuccess => 'ສົ່ງລາຍງານສຳເລັດ';
+
+  @override
+  String get pendingSavedNotice =>
+      'ບັນທຶກໄວ້ໃນເຄື່ອງແລ້ວ. ເປີດລາຍການລໍຖ້າສົ່ງເພື່ອລອງສົ່ງອີກຄັ້ງ.';
+
+  @override
+  String get pendingAttachmentsNotice =>
+      'ສົ່ງລາຍງານແລ້ວ. ບາງໄຟລ໌ແນບຍັງຢູ່ໃນເຄື່ອງ ແລະ ລໍຖ້າສົ່ງ.';
+
+  @override
+  String get pendingConnectionError =>
+      'ຍັງບໍ່ໄດ້ຮັບການຢືນຢັນຈາກເຊີບເວີ. ກວດສອບການເຊື່ອມຕໍ່ ແລ້ວລອງອີກຄັ້ງ.';
+
+  @override
+  String get pendingAuthenticationError =>
+      'ເຂົ້າສູ່ລະບົບອີກຄັ້ງດ້ວຍບັນຊີ ແລະ ເຊີບເວີເດີມ ເພື່ອສົ່ງລາຍການທີ່ບັນທຶກໄວ້.';
+
+  @override
+  String get pendingLocalFileError =>
+      'ບໍ່ສາມາດອ່ານໄຟລ໌ແນບໄດ້. ກະລຸນາເກັບລາຍການນີ້ໄວ້ ແລະ ກວດສອບໄຟລ໌ຕົ້ນສະບັບ.';
+
+  @override
+  String get pendingUnexpectedError =>
+      'ບໍ່ສາມາດສົ່ງລາຍການນີ້ໄດ້. ລາຍການທີ່ບັນທຶກໄວ້ຍັງຢູ່ໃນເຄື່ອງ.';
+
+  @override
+  String get pendingStorageError =>
+      'ບັນທຶກລາຍການບໍ່ສຳເລັດ. ກະລຸນາເປີດແບບຟອມໄວ້ ແລະ ກວດສອບພື້ນທີ່ວ່າງກ່ອນລອງອີກຄັ້ງ.';
 }

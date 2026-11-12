@@ -1,5 +1,6 @@
-import 'package:intl/intl.dart';
 import 'dart:convert';
+
+import 'package:intl/intl.dart';
 
 class Report {
   String id;
@@ -33,7 +34,9 @@ class Report {
         incidentDate = DateFormat("yyyy-MM-dd").parse(map["incident_date"]),
         gpsLocation = map["gps_location"],
         villageId = map["village_id"] as int?,
-        incidentInAuthority = map["incident_in_authority"] == 1;
+        incidentInAuthority = map["incident_in_authority"] == null
+            ? null
+            : map["incident_in_authority"] == 1;
 
   Map<String, dynamic> toMap() {
     return {
@@ -45,7 +48,8 @@ class Report {
       "incident_date": DateFormat("yyyy-MM-dd").format(incidentDate),
       "gps_location": gpsLocation,
       "village_id": villageId,
-      "incident_in_authority": incidentInAuthority,
+      "incident_in_authority":
+          incidentInAuthority == null ? null : (incidentInAuthority! ? 1 : 0),
     };
   }
 

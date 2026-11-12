@@ -8,6 +8,7 @@ import 'package:podd_app/models/image_submit_result.dart';
 import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
 import 'package:podd_app/models/observation_subject_submit_result.dart';
 import 'package:podd_app/models/report_submit_result.dart';
+import 'package:podd_app/models/submission_problem.dart';
 import 'package:podd_app/services/file_service.dart';
 import 'package:podd_app/services/image_service.dart';
 import 'package:podd_app/services/observation_record_service.dart';
@@ -25,13 +26,20 @@ class ReSubmitViewModel extends ReactiveViewModel {
   final IFileService _fileService = locator<IFileService>();
 
   final submissionStates = <String, Progress>{};
+  final submissionProblems = <String, SubmissionProblem>{};
 
   bool isOffline = true;
   bool isSubmittingAll = false;
+  bool _stopBatch = false;
+  SubmissionProblem? batchProblem;
 
   ReSubmitViewModel() {
     _connectionChangeStream =
         Connectivity().onConnectivityChanged.listen(connectionChanged);
+    Connectivity().checkConnectivity().then(connectionChanged,
+        onError: (Object error) {
+      _logger.w('Cannot check network interface');
+    });
   }
 
   void connectionChanged(List<ConnectivityResult> result) async {
@@ -59,7 +67,9 @@ class ReSubmitViewModel extends ReactiveViewModel {
                 name: report.reportTypeName ?? "",
                 date: report.incidentDate,
               ),
-            )..state = submissionStates[report.id] ?? Progress.none)
+            )
+              ..state = submissionStates[report.id] ?? Progress.none
+              ..problem = submissionProblems[report.id])
         .toList();
   }
 
@@ -71,7 +81,9 @@ class ReSubmitViewModel extends ReactiveViewModel {
                 name: record.definitionName,
                 date: record.recordDate,
               ),
-            )..state = submissionStates[record.id] ?? Progress.none)
+            )
+              ..state = submissionStates[record.id] ?? Progress.none
+              ..problem = submissionProblems[record.id])
         .toList();
   }
 
@@ -83,7 +95,9 @@ class ReSubmitViewModel extends ReactiveViewModel {
                 name: record.monitoringDefinitionName,
                 date: record.recordDate,
               ),
-            )..state = submissionStates[record.id] ?? Progress.none)
+            )
+              ..state = submissionStates[record.id] ?? Progress.none
+              ..problem = submissionProblems[record.id])
         .toList();
   }
 
@@ -110,7 +124,9 @@ class ReSubmitViewModel extends ReactiveViewModel {
                 id: image.id,
                 name: image.id,
               ),
-            )..state = submissionStates[image.id] ?? Progress.none)
+            )
+              ..state = submissionStates[image.id] ?? Progress.none
+              ..problem = submissionProblems[image.id])
         .toList();
   }
 
@@ -134,7 +150,9 @@ class ReSubmitViewModel extends ReactiveViewModel {
                 id: file.id,
                 name: file.id,
               ),
-            )..state = submissionStates[file.id] ?? Progress.none)
+            )
+              ..state = submissionStates[file.id] ?? Progress.none
+              ..problem = submissionProblems[file.id])
         .toList();
   }
 
@@ -147,22 +165,31 @@ class ReSubmitViewModel extends ReactiveViewModel {
       return;
     }
     isSubmittingAll = true;
+    _stopBatch = false;
+    batchProblem = null;
     notifyListeners();
     try {
-      for (var report in List<SubmissionState>.of(pendingReports)) {
-        await _submitReport(report);
+      // Snapshot every category before draining: an attachment attempted with
+      // its parent must not immediately be retried a second time in this batch.
+      final reports = List<SubmissionState>.of(pendingReports);
+      final subjects = List<SubmissionState>.of(pendingSubjectRecords);
+      final monitorings = List<SubmissionState>.of(pendingMonitoringRecords);
+      final images = List<SubmissionState>.of(pendingImages);
+      final files = List<SubmissionState>.of(pendingFiles);
+      for (final item in reports) {
+        await _submitReport(item);
       }
-      for (var record in List<SubmissionState>.of(pendingSubjectRecords)) {
-        await _submitSubjectRecord(record);
+      for (final item in subjects) {
+        await _submitSubjectRecord(item);
       }
-      for (var record in List<SubmissionState>.of(pendingMonitoringRecords)) {
-        await _submitMonitoringRecord(record);
+      for (final item in monitorings) {
+        await _submitMonitoringRecord(item);
       }
-      for (var image in List<SubmissionState>.of(pendingImages)) {
-        await _submitImage(image);
+      for (final item in images) {
+        await _submitImage(item);
       }
-      for (var file in List<SubmissionState>.of(pendingFiles)) {
-        await _submitFile(file);
+      for (final item in files) {
+        await _submitFile(item);
       }
     } finally {
       isSubmittingAll = false;
@@ -170,110 +197,136 @@ class ReSubmitViewModel extends ReactiveViewModel {
     }
   }
 
-  _submitReport(SubmissionState state) async {
-    var item = state.item;
-    submissionStates[item.id] = Progress.pending;
-    notifyListeners();
-
-    var report = _reportService.pendingReports
-        .firstWhere((report) => report.id == item.id);
-    var result = await _reportService.submit(report);
-
-    if (result is ReportSubmitSuccess) {
-      _logger.i("resubmit report success");
-      submissionStates[item.id] = Progress.complete;
-      notifyListeners();
+  void _pauseIfSessionUnavailable(SubmissionProblem problem) {
+    if (problem.kind == SubmissionProblemKind.authentication ||
+        problem.kind == SubmissionProblemKind.connection) {
+      _stopBatch = true;
+      batchProblem = problem;
     }
-    if (result is ReportSubmitPending) {
-      _logger.e("resubmit report fail");
-      submissionStates[item.id] = Progress.fail;
+  }
+
+  void _rememberAttachments(Map<String, SubmissionProblem> problems) {
+    for (final entry in problems.entries) {
+      submissionProblems[entry.key] = entry.value;
+      submissionStates[entry.key] = Progress.fail;
+      _pauseIfSessionUnavailable(entry.value);
+    }
+  }
+
+  Future<void> _attempt(
+      SubmissionState state, Future<SubmissionProblem?> Function() send) async {
+    if (_stopBatch) return;
+    final id = state.item.id;
+    submissionStates[id] = Progress.pending;
+    submissionProblems.remove(id);
+    notifyListeners();
+    try {
+      final problem = await send();
+      if (problem != null) {
+        submissionProblems[id] = problem;
+        _pauseIfSessionUnavailable(problem);
+      }
+      submissionStates[id] =
+          problem == null ? Progress.complete : Progress.fail;
+    } catch (e) {
+      final problem = SubmissionProblem.from(e);
+      submissionProblems[id] = problem;
+      _pauseIfSessionUnavailable(problem);
+      submissionStates[id] = Progress.fail;
+    } finally {
       notifyListeners();
     }
   }
 
-  _submitSubjectRecord(SubmissionState state) async {
-    var item = state.item;
-    submissionStates[item.id] = Progress.pending;
-    notifyListeners();
+  Future<void> _submitReport(SubmissionState state) =>
+      _attempt(state, () async {
+        final records = _reportService.pendingReports
+            .where((item) => item.id == state.item.id);
+        if (records.isEmpty) return null;
+        final result = await _reportService.submit(records.first);
+        if (result is ReportSubmitSuccess) {
+          _rememberAttachments(result.attachmentProblems);
+          return null;
+        }
+        if (result is ReportSubmitFailure) {
+          return result.problem ?? SubmissionProblem.from(result.exception);
+        }
+        if (result is ReportSubmitPending) {
+          return result.problem ??
+              SubmissionProblem.from(StateError('No acknowledgement'));
+        }
+        return SubmissionProblem.from(
+            StateError('Unexpected submission result'));
+      });
 
-    var record = _recordService.pendingSubjectRecords
-        .firstWhere((record) => record.id == item.id);
-    var result = await _recordService.submitSubjectRecord(record);
+  Future<void> _submitSubjectRecord(SubmissionState state) =>
+      _attempt(state, () async {
+        final records = _recordService.pendingSubjectRecords
+            .where((item) => item.id == state.item.id);
+        if (records.isEmpty) return null;
+        final result = await _recordService.submitSubjectRecord(records.first);
+        if (result is SubjectRecordSubmitSuccess) {
+          _rememberAttachments(result.attachmentProblems);
+          return null;
+        }
+        if (result is SubjectRecordSubmitFailure) {
+          return result.problem ?? SubmissionProblem.from(result.exception);
+        }
+        if (result is SubjectRecordSubmitPending) {
+          return result.problem ??
+              SubmissionProblem.from(StateError('No acknowledgement'));
+        }
+        return SubmissionProblem.from(
+            StateError('Unexpected submission result'));
+      });
 
-    if (result is SubjectRecordSubmitSuccess) {
-      _logger.i("resubmit subject record success");
-      submissionStates[item.id] = Progress.complete;
-      notifyListeners();
-    }
-    if (result is SubjectRecordSubmitPending) {
-      _logger.e("resubmit subject record fail");
-      submissionStates[item.id] = Progress.fail;
-      notifyListeners();
-    }
-  }
+  Future<void> _submitMonitoringRecord(SubmissionState state) =>
+      _attempt(state, () async {
+        final records = _recordService.pendingMonitoringRecords
+            .where((item) => item.id == state.item.id);
+        if (records.isEmpty) return null;
+        final result =
+            await _recordService.submitMonitoringRecord(records.first);
+        if (result is MonitoringRecordSubmitSuccess) {
+          _rememberAttachments(result.attachmentProblems);
+          return null;
+        }
+        if (result is MonitoringRecordSubmitFailure) {
+          return result.problem ?? SubmissionProblem.from(result.exception);
+        }
+        if (result is MonitoringRecordSubmitPending) {
+          return result.problem ??
+              SubmissionProblem.from(StateError('No acknowledgement'));
+        }
+        return SubmissionProblem.from(
+            StateError('Unexpected submission result'));
+      });
 
-  _submitMonitoringRecord(SubmissionState state) async {
-    var item = state.item;
-    submissionStates[item.id] = Progress.pending;
-    notifyListeners();
+  Future<void> _submitImage(SubmissionState state) => _attempt(state, () async {
+        final records = _imageService.pendingImages
+            .where((item) => item.id == state.item.id);
+        if (records.isEmpty) return null;
+        final result = await _imageService.submit(records.first);
+        if (result is ImageSubmitSuccess) return null;
+        if (result is ImageSubmitFailure) {
+          return result.problem ?? SubmissionProblem.from(result.exception);
+        }
+        return SubmissionProblem.from(
+            StateError('Unexpected submission result'));
+      });
 
-    var record = _recordService.pendingMonitoringRecords
-        .firstWhere((record) => record.id == item.id);
-    var result = await _recordService.submitMonitoringRecord(record);
-
-    if (result is MonitoringRecordSubmitSuccess) {
-      _logger.i("resubmit monitoring record success");
-      submissionStates[item.id] = Progress.complete;
-      notifyListeners();
-    }
-    if (result is MonitoringRecordSubmitPending) {
-      _logger.e("resubmit monitoring record fail");
-      submissionStates[item.id] = Progress.fail;
-      notifyListeners();
-    }
-  }
-
-  _submitImage(SubmissionState state) async {
-    var item = state.item;
-    submissionStates[item.id] = Progress.pending;
-    notifyListeners();
-
-    var record = _imageService.pendingImages
-        .firstWhere((record) => record.id == item.id);
-    var result = await _imageService.submit(record);
-
-    if (result is ImageSubmitSuccess) {
-      _logger.i("resubmit report image success");
-      submissionStates[item.id] = Progress.complete;
-      notifyListeners();
-    }
-    if (result is ImageSubmitFailure) {
-      _logger.e("resubmit report image fail");
-      submissionStates[item.id] = Progress.fail;
-      notifyListeners();
-    }
-  }
-
-  _submitFile(SubmissionState state) async {
-    var item = state.item;
-    submissionStates[item.id] = Progress.pending;
-    notifyListeners();
-
-    var record = _fileService.pendingReportFiles
-        .firstWhere((record) => record.id == item.id);
-    var result = await _fileService.submit(record);
-
-    if (result is FileSubmitSuccess) {
-      _logger.i("resubmit report file success");
-      submissionStates[item.id] = Progress.complete;
-      notifyListeners();
-    }
-    if (result is FileSubmitFailure) {
-      _logger.e("resubmit report file fail");
-      submissionStates[item.id] = Progress.fail;
-      notifyListeners();
-    }
-  }
+  Future<void> _submitFile(SubmissionState state) => _attempt(state, () async {
+        final records = _fileService.pendingReportFiles
+            .where((item) => item.id == state.item.id);
+        if (records.isEmpty) return null;
+        final result = await _fileService.submit(records.first);
+        if (result is FileSubmitSuccess) return null;
+        if (result is FileSubmitFailure) {
+          return result.problem ?? SubmissionProblem.from(result.exception);
+        }
+        return SubmissionProblem.from(
+            StateError('Unexpected submission result'));
+      });
 
   Future<void> deletePendingReport(String id) async {
     await _reportService.removePendingReport(id);
@@ -319,6 +372,7 @@ enum Progress {
 class SubmissionState {
   final SubmissionItem item;
   Progress state = Progress.none;
+  SubmissionProblem? problem;
 
   SubmissionState({
     required this.item,

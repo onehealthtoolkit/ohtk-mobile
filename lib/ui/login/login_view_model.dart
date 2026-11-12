@@ -3,6 +3,7 @@ import 'package:gql_dio_link/gql_dio_link.dart';
 import 'package:podd_app/constants.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/login_result.dart';
+import 'package:podd_app/models/submission_problem.dart';
 import 'package:podd_app/services/auth_service.dart';
 import 'package:podd_app/services/config_service.dart';
 import 'package:podd_app/services/feature_capability_service.dart';
@@ -61,17 +62,17 @@ class LoginViewModel extends BaseViewModel {
   }
 
   changeServer(String value) async {
-    if (value == "") {
-      subDomain = value;
+    try {
       await gqlService.setBackendSubDomain(value);
+      subDomain = value;
       await gqlService.renewClient();
       featureCapabilityService.reset();
-      return;
+      if (value.isNotEmpty) await featureCapabilityService.refresh();
+      setErrorForObject('general', null);
+    } on SubmissionProblem catch (e) {
+      setErrorForObject('general', e.message);
     }
-    subDomain = value;
-    await gqlService.setBackendSubDomain(value);
-    await gqlService.renewClient();
-    await featureCapabilityService.refresh();
+    notifyListeners();
   }
 
   Future<void> changeLanguage(String value) async {
@@ -106,13 +107,17 @@ class LoginViewModel extends BaseViewModel {
       } else {
         clearErrors();
       }
+    } on SubmissionProblem catch (e) {
+      setErrorForObject("general", e.message);
     } on DioLinkServerException {
       setErrorForObject("general", "Server Error");
     } on DioLinkUnkownException {
       setErrorForObject("general", "Connection refused");
+    } catch (_) {
+      setErrorForObject("general", "Cannot sign in. Please try again.");
+    } finally {
+      setBusy(false);
     }
-
-    setBusy(false);
   }
 
   void setUsername(String value) {

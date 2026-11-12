@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart' hide Form;
-import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/components/confirm.dart';
 import 'package:podd_app/components/form_confirm.dart';
 import 'package:podd_app/components/form_input.dart';
 import 'package:podd_app/components/form_stepper.dart';
 import 'package:podd_app/components/progress_indicator.dart';
+import 'package:podd_app/l10n/app_localizations.dart';
 import 'package:podd_app/models/entities/observation_subject_monitoring.dart';
 import 'package:podd_app/models/observation_monitoring_record_submit_result.dart';
+import 'package:podd_app/models/submission_problem.dart';
 import 'package:podd_app/ui/observation/form/monitoring_record_form_view_model.dart';
 import 'package:podd_app/ui/report/form_base_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -54,11 +55,33 @@ class ObservationMonitoringRecordFormView extends StatelessWidget {
                           busy: viewModel.isBusy,
                           onSubmit: () async {
                             var result = await viewModel.submit();
+                            if (!context.mounted) return;
+                            final localize = AppLocalizations.of(context)!;
                             if (result is MonitoringRecordSubmitSuccess ||
                                 result is MonitoringRecordSubmitPending) {
-                              if (context.mounted) {
-                                Navigator.pop(context);
+                              if (result is MonitoringRecordSubmitSuccess &&
+                                  result.pendingAttachments > 0) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(localize
+                                            .pendingAttachmentsNotice)));
+                              } else if (result
+                                      is MonitoringRecordSubmitPending &&
+                                  result.problem != null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text(localize.pendingSavedNotice)));
                               }
+                              Navigator.pop(context);
+                            } else if (result
+                                is MonitoringRecordSubmitFailure) {
+                              final problem = result.problem ??
+                                  SubmissionProblem.from(result.exception);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          problem.localizedMessage(localize))));
                             }
                           },
                           onBack: () {

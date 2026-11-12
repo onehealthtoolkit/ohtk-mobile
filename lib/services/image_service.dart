@@ -1,9 +1,13 @@
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:podd_app/locator.dart';
 import 'package:podd_app/models/entities/pending_media_parent_type.dart';
 import 'package:podd_app/models/entities/report_image.dart';
 import 'package:podd_app/models/image_submit_result.dart';
+import 'package:podd_app/models/submission_problem.dart';
 import 'package:podd_app/services/api/image_api.dart';
 import 'package:podd_app/services/db_service.dart';
+import 'package:podd_app/services/submission_flights.dart';
+import 'package:podd_app/services/submission_session.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stacked/stacked.dart';
 
@@ -61,46 +65,60 @@ class ImageService extends IImageService {
   @override
   List<ReportImage> get pendingImages => _pendingImages;
 
+  final _flights = SubmissionFlights<ImageSubmitResult>();
+
   @override
-  Future<ImageSubmitResult> submit(ReportImage image) async {
-    final recordType = PendingMediaParentType.recordTypeFor(image.parentType);
-    final result = recordType == null
-        ? await _imageApi.submit(image)
-        : await _imageApi.submitObservationRecordImage(
-            image,
-            image.effectiveParentId,
-            recordType,
-          );
+  Future<ImageSubmitResult> submit(ReportImage image) =>
+      _flights.run(image.id, () => _submitOnce(image));
+
+  Future<ImageSubmitResult> _submitOnce(ReportImage image) async {
+    ImageSubmitResult result;
+    try {
+      await ensureSubmissionSession();
+      final recordType = PendingMediaParentType.recordTypeFor(image.parentType);
+      result = recordType == null
+          ? await _imageApi.submit(image)
+          : await _imageApi.submitObservationRecordImage(
+              image,
+              image.effectiveParentId,
+              recordType,
+            );
+    } catch (e) {
+      final problem = SubmissionProblem.from(e);
+      result = ImageSubmitFailure(
+          e is OperationException
+              ? e
+              : OperationException(
+                  linkException: e is LinkException ? e : null,
+                  graphqlErrors: e is LinkException
+                      ? []
+                      : [GraphQLError(message: problem.message)]),
+          problem: problem);
+    }
     if (result is ImageSubmitSuccess) {
       await removeImage(image.id);
-      _pendingImages.remove(image);
-    }
-    if (result is ImageSubmitFailure) {
+      _pendingImages.removeWhere((item) => item.id == image.id);
+    } else {
       _pendingImages.addIf(
-          _pendingImages.indexWhere((element) => element.id == image.id) == -1,
-          image);
+          !_pendingImages.any((item) => item.id == image.id), image);
     }
     return result;
   }
 
   @override
   Future<ImageSubmitResult> submitObservationRecordImage(
-    ReportImage image,
-    String recordId,
-    String recordType,
-  ) async {
-    var result = await _imageApi.submitObservationRecordImage(
-        image, recordId, recordType);
-    if (result is ImageSubmitSuccess) {
-      await removeImage(image.id);
-      _pendingImages.remove(image);
+      ReportImage image, String recordId, String recordType) async {
+    if (recordType != 'subject' && recordType != 'monitoring') {
+      throw const SubmissionProblem(
+          SubmissionProblemKind.validation, 'Unknown observation record type.');
     }
-    if (result is ImageSubmitFailure) {
-      _pendingImages.addIf(
-          _pendingImages.indexWhere((element) => element.id == image.id) == -1,
-          image);
-    }
-    return result;
+    final updated = image.withRemoteParent(
+        parentType: recordType == 'subject'
+            ? PendingMediaParentType.observationSubject
+            : PendingMediaParentType.observationMonitoring,
+        remoteParentId: recordId);
+    await saveImage(updated);
+    return submit(updated);
   }
 
   @override
@@ -131,6 +149,8 @@ class ImageService extends IImageService {
         remoteParentId: remoteParentId,
       );
       await saveImage(updated);
+      _pendingImages.addIf(
+          !_pendingImages.any((item) => item.id == updated.id), updated);
     }
     return findByReportId(localParentId);
   }
