@@ -1632,6 +1632,12 @@ abstract class AppLocalizations {
   /// **'Enter an age between 1 and 120'**
   String get registerAgeInvalid;
 
+  /// No description provided for @registerEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is invalid'**
+  String get registerEmailInvalid;
+
   /// No description provided for @registerGenderMale.
   ///
   /// In en, this message translates to:

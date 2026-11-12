@@ -383,6 +383,7 @@
   "ageLabel": "Age",
   "registerAgePlaceholder": "Years",
   "registerAgeInvalid": "Enter an age between 1 and 120",
+  "registerEmailInvalid": "Email is invalid",
   "registerGenderMale": "Male",
   "registerGenderFemale": "Female",
   "registerGenderOther": "Other",

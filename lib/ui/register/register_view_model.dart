@@ -253,7 +253,7 @@ class RegisterViewModel extends BaseViewModel {
     if (trimmedEmail.isNotEmpty &&
         !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
             .hasMatch(trimmedEmail)) {
-      setErrorForObject("email", "Email is invalid");
+      setErrorForObject("email", localize.registerEmailInvalid);
       isValidData = false;
     }
 
